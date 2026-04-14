@@ -1,0 +1,101 @@
+<main class="shell">
+  <section class="menu-panel">
+    <div class="section-heading">
+      <p class="eyebrow">Modes de jeu</p>
+      <p class="intro">Choisis une famille de jeux, puis lance une partie en un clic.</p>
+    </div>
+
+    <div class="category-list">
+      <details class="category-card" open>
+        <summary class="category-head">
+          <div>
+            <p class="category-kicker">Quiz</p>
+            <h2>Quiz</h2>
+          </div>
+          <div class="category-meta">
+            <p class="category-description">Mode classique avec choix du format et de la difficulte.</p>
+            <span class="category-count">{{ quizGames.length + 1 }} jeux</span>
+          </div>
+        </summary>
+
+        <div class="mode-grid">
+          <article class="mode-card classic-card">
+            <div class="mode-topline">
+              <span class="mode-line">Classique</span>
+            </div>
+            <span class="description">Choisis le type de quiz puis lance la difficulte.</span>
+
+            <div class="classic-controls">
+              <label class="classic-label" for="classic-mode">Type de quiz</label>
+              <select
+                id="classic-mode"
+                class="classic-select"
+                [value]="classicMode()"
+                (change)="setClassicMode($any($event.target).value)"
+              >
+                <option value="country-to-flag">Pays -> Drapeaux</option>
+                <option value="flag-to-country">Drapeaux -> Pays</option>
+              </select>
+            </div>
+
+            <div class="classic-actions">
+              <a class="play-link" [routerLink]="getClassicRoute('easy')">Facile</a>
+              <a class="play-link alt" [routerLink]="getClassicRoute('hard')">Difficile</a>
+            </div>
+          </article>
+
+          @for (game of quizGames; track game.id) {
+            <article class="mode-card" [class.locked]="!game.available">
+              <div class="mode-topline">
+                <span class="mode-line">{{ game.label }}</span>
+                @if (game.badge) {
+                  <span class="mode-badge">{{ game.badge }}</span>
+                }
+              </div>
+              <span class="description">{{ game.description }}</span>
+
+              @if (game.available && game.route; as route) {
+                <a class="play-link" [routerLink]="route">Jouer</a>
+              } @else {
+                <span class="coming-soon">Bientot disponible</span>
+              }
+            </article>
+          }
+        </div>
+      </details>
+
+      <details class="category-card">
+        <summary class="category-head">
+          <div>
+            <p class="category-kicker">Defis visuels</p>
+            <h2>Defis visuels</h2>
+          </div>
+          <div class="category-meta">
+            <p class="category-description">Repere les erreurs et joue sur la perception visuelle.</p>
+            <span class="category-count">{{ visualGames.length }} jeux</span>
+          </div>
+        </summary>
+
+        <div class="mode-grid">
+          @for (game of visualGames; track game.id) {
+            <article class="mode-card" [class.locked]="!game.available">
+              <div class="mode-topline">
+                <span class="mode-line">{{ game.label }}</span>
+                @if (game.badge) {
+                  <span class="mode-badge">{{ game.badge }}</span>
+                }
+              </div>
+              <span class="description">{{ game.description }}</span>
+
+              @if (game.available && game.route; as route) {
+                <a class="play-link" [routerLink]="route">Jouer</a>
+              } @else {
+                <span class="coming-soon">Bientot disponible</span>
+              }
+            </article>
+          }
+        </div>
+      </details>
+    </div>
+  </section>
+</main>

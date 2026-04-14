@@ -1,0 +1,23 @@
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" routerLink="/">FindTheFlag</a>
+
+    <details class="header-menu" #mainMenu>
+      <summary class="menu-trigger" aria-label="Ouvrir le menu principal">
+        <span class="menu-line"></span>
+        <span class="menu-line"></span>
+        <span class="menu-line"></span>
+      </summary>
+
+      <nav class="menu-panel" aria-label="Navigation principale">
+        <a routerLink="/pays" (click)="closeMenu(mainMenu)">Tous les pays</a>
+        <button type="button" (click)="toggleTheme(); closeMenu(mainMenu)">
+          {{ themeLabel() }}
+        </button>
+        <a routerLink="/records" (click)="closeMenu(mainMenu)">Mes records</a>
+      </nav>
+    </details>
+  </header>
+
+  <router-outlet />
+</div>

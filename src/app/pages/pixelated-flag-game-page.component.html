@@ -1,0 +1,126 @@
+<main class="pixel-shell">
+  <section class="hero-card">
+    <div>
+      <p class="eyebrow">Mode jeu</p>
+      <h1>Le drapeau pixelise</h1>
+      <p class="intro">Devine le pays en 5 essais. A chaque erreur, l image devient plus nette.</p>
+    </div>
+
+    <div class="hero-actions">
+      <a class="ghost-link" routerLink="/">Retour a l'accueil</a>
+    </div>
+  </section>
+
+  @if (isLoading()) {
+    <section class="board-card loading-card">
+      <p>Chargement des drapeaux...</p>
+    </section>
+  } @else if (currentCountry(); as country) {
+    <section class="board-card">
+      <div class="board-copy">
+        <p class="question-label">Quel pays est affiche ?</p>
+        <h2>Drapeau mystere</h2>
+        <div class="attempt-track" aria-label="Suivi des 5 essais">
+          @for (marker of attemptMarkers(); track $index) {
+            <span class="attempt-dot" [class.wrong]="marker === 'wrong'" [class.correct]="marker === 'correct'">
+              @if (marker === 'wrong') {
+                <span class="attempt-icon">×</span>
+              } @else if (marker === 'correct') {
+                <span class="attempt-icon">✓</span>
+              }
+            </span>
+          }
+        </div>
+        <p class="board-hint">Cette tentative vaut {{ pointsForCurrentTry() }} point{{ pointsForCurrentTry() > 1 ? 's' : '' }}.</p>
+      </div>
+
+      @if (resultMessage(); as message) {
+        <p class="result-feedback" [class.wrong]="roundResult() === 'wrong'">{{ message }}</p>
+      }
+
+      <div class="canvas-frame">
+        <canvas #pixelCanvas class="pixel-canvas"></canvas>
+      </div>
+
+      @if (roundResult() === null) {
+        <form class="answer-form" (submit)="$event.preventDefault(); submitAnswer()">
+          <input
+            #answerInput
+            type="text"
+            class="answer-input"
+            placeholder="Ecris le nom du pays"
+            [value]="answer()"
+            [disabled]="isLocked()"
+            (input)="answer.set($any($event.target).value)"
+          />
+          <button type="submit" class="primary-button" [disabled]="isLocked() || !answer().trim()">Valider</button>
+        </form>
+      } @else {
+        <div class="next-wrap">
+          <button #nextButton type="button" class="primary-button" (click)="goToNextRound()">Suivant</button>
+        </div>
+      }
+    </section>
+  }
+</main>
+
+<section class="status-dock" aria-label="Etat du jeu">
+  <div class="status-block">
+    <p class="status-label">Progression</p>
+    <p class="status-value">{{ progressLabel() }}</p>
+    <div class="progress-track" aria-hidden="true">
+      <div class="progress-fill" [style.width.%]="progressPercent()"></div>
+    </div>
+  </div>
+
+  <div class="status-block">
+    <p class="status-label">Score</p>
+    <p class="status-value">{{ score() }} / {{ getMaxScore() }}</p>
+  </div>
+</section>
+
+@if (isComplete()) {
+  <div class="modal-backdrop"></div>
+  <section class="summary-modal" role="dialog" aria-modal="true" aria-labelledby="summary-title">
+    <div class="summary-head">
+      <div>
+        <p class="eyebrow">Partie terminee</p>
+        <h2 id="summary-title">Resultat final</h2>
+      </div>
+    </div>
+
+    <div class="summary-score">
+      <div>
+        <p class="status-label">Score total</p>
+        <p class="summary-value">{{ score() }} / {{ getMaxScore() }}</p>
+      </div>
+      <div>
+        <p class="status-label">Drapeaux a revoir</p>
+        <p class="summary-value">{{ errors().length }}</p>
+      </div>
+    </div>
+
+    <div class="mistakes-list">
+      @if (errors().length === 0) {
+        <p class="empty-state">Aucune erreur sur cette partie.</p>
+      } @else {
+        @for (error of errors(); track error.country.code) {
+          <article class="mistake-card">
+            <div>
+              <p class="mistake-country">{{ error.country.nameFrench }}</p>
+              <p class="mistake-detail">Ta reponse: {{ error.answer || 'Aucune' }}</p>
+            </div>
+            <div class="mistake-reference">
+              <img [src]="error.country.flagUrl" [alt]="'Drapeau de ' + error.country.nameFrench" />
+            </div>
+          </article>
+        }
+      }
+    </div>
+
+    <div class="summary-actions">
+      <a class="ghost-link" routerLink="/">Retour a l'accueil</a>
+      <button type="button" class="primary-button" (click)="restartGame()">Recommencer</button>
+    </div>
+  </section>
+}

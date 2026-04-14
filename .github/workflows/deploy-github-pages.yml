@@ -1,0 +1,67 @@
+name: Deploy Angular to GitHub Pages
+
+on:
+  push:
+    branches: ['main']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      app_dir: ${{ steps.dist.outputs.app_dir }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (GitHub Pages base href)
+        run: npm run build -- --base-href /TreborKaa/
+
+      - name: Resolve dist directory
+        id: dist
+        run: |
+          APP_DIR="$(find dist -mindepth 1 -maxdepth 1 -type d | head -n 1)"
+          if [ -z "$APP_DIR" ]; then
+            echo "No build output found in dist/"
+            exit 1
+          fi
+          echo "app_dir=$APP_DIR" >> "$GITHUB_OUTPUT"
+          echo "Build output: $APP_DIR"
+
+      - name: SPA fallback for client-side routing
+        run: cp "${{ steps.dist.outputs.app_dir }}/index.html" "${{ steps.dist.outputs.app_dir }}/404.html"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ steps.dist.outputs.app_dir }}
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+

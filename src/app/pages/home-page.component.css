@@ -1,0 +1,259 @@
+:host {
+  display: block;
+}
+
+.shell {
+  padding-bottom: 24px;
+}
+
+.menu-panel {
+  padding: 32px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 32px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+}
+
+.section-heading {
+  margin-bottom: 26px;
+}
+
+.eyebrow,
+.category-kicker {
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  color: var(--accent-dark);
+}
+
+h2,
+p {
+  margin: 0;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.intro,
+.description,
+.category-description {
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
+.intro {
+  max-width: 30rem;
+  margin-top: 4px;
+  font-size: 1.02rem;
+}
+
+.play-link,
+.coming-soon,
+.classic-select {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.category-list {
+  display: grid;
+  gap: 18px;
+}
+
+.category-card {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top right, rgba(61, 125, 255, 0.14), transparent 26%),
+    var(--surface);
+}
+
+.category-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.category-head::-webkit-details-marker {
+  display: none;
+}
+
+.category-description {
+  max-width: 22rem;
+}
+
+.category-meta {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+}
+
+.category-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--line-soft);
+  color: var(--accent-dark);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.category-card:not([open]) .mode-grid {
+  display: none;
+}
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.mode-card {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--line-soft);
+  border-radius: 24px;
+  background: var(--surface-raise);
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.mode-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-line);
+  box-shadow: var(--shadow);
+}
+
+.mode-card.locked {
+  opacity: 0.74;
+}
+
+.mode-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mode-line {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.mode-badge {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--line-soft);
+  color: var(--accent-dark);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.play-link {
+  justify-self: start;
+  color: var(--on-accent);
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+}
+
+.play-link.alt {
+  background: linear-gradient(135deg, #5a6e95, #45557a);
+}
+
+.coming-soon {
+  justify-self: start;
+  color: var(--ink-soft);
+  background: var(--line-soft);
+}
+
+.classic-card {
+  gap: 16px;
+  grid-column: 1 / -1;
+}
+
+.classic-controls {
+  display: grid;
+  gap: 10px;
+}
+
+.classic-label {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+
+.classic-select {
+  justify-content: flex-start;
+  width: min(360px, 100%);
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+  color: var(--ink);
+  font-weight: 700;
+  appearance: none;
+}
+
+.classic-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 980px) {
+  .category-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .category-meta {
+    justify-items: start;
+  }
+
+  .mode-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .menu-panel {
+    padding: 22px;
+  }
+
+  .category-card,
+  .mode-card {
+    padding: 18px;
+  }
+
+  .play-link,
+  .coming-soon,
+  .classic-select {
+    width: 100%;
+  }
+
+  .classic-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+}
+
+

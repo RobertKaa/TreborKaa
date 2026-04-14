@@ -1,0 +1,17 @@
+export type FlagRebuildPattern =
+  | 'horizontal-stripes'
+  | 'vertical-stripes'
+  | 'triangle-left-bands-2'
+  | 'triangle-left-bands-3'
+  | 'left-band-horizontal'
+  | 'nordic-cross';
+
+export type FlagRebuildPuzzle = {
+  code: string;
+  nameFrench: string;
+  targetPattern: FlagRebuildPattern;
+  patternOptions: FlagRebuildPattern[];
+  targetColors: string[];
+  palette: string[];
+  flagUrl: string;
+};

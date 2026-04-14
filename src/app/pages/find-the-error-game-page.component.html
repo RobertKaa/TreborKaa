@@ -1,0 +1,209 @@
+<main class="error-shell">
+  <section class="hero-card">
+    <div>
+      <p class="eyebrow">Mode jeu</p>
+      <h1>Trouver l'erreur</h1>
+      <p class="intro">Un seul element est faux. Clique sur la mauvaise zone du drapeau.</p>
+    </div>
+
+    <div class="hero-actions">
+      <a class="ghost-link" routerLink="/">Retour a l'accueil</a>
+    </div>
+  </section>
+
+  @if (currentErrorPuzzle(); as current) {
+    <section class="board-card">
+      <div class="board-copy">
+        <p class="question-label">Quel element est incorrect ?</p>
+        <h2>{{ current.puzzle.nameFrench }}</h2>
+        <p class="board-hint">Il n'y a qu'une seule erreur visible.</p>
+      </div>
+
+      <div class="flag-board">
+        @switch (current.puzzle.targetPattern) {
+          @case ('vertical-stripes') {
+            <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              @for (color of previewColorsForPattern(); track $index; let total = $count) {
+                <rect
+                  class="svg-zone"
+                  [attr.x]="($index * 100) / total"
+                  y="0"
+                  [attr.width]="100 / total"
+                  height="100"
+                  [attr.fill]="color"
+                  (click)="clickZone($index)"
+                />
+              }
+            </svg>
+          }
+          @case ('horizontal-stripes') {
+            <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              @for (color of previewColorsForPattern(); track $index; let total = $count) {
+                <rect
+                  class="svg-zone"
+                  x="0"
+                  [attr.y]="($index * 100) / total"
+                  width="100"
+                  [attr.height]="100 / total"
+                  [attr.fill]="color"
+                  (click)="clickZone($index)"
+                />
+              }
+            </svg>
+          }
+          @case ('triangle-left-bands-2') {
+            <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              @for (color of previewColorsForPattern().slice(1); track $index; let total = $count) {
+                <rect
+                  class="svg-zone"
+                  x="0"
+                  [attr.y]="($index * 100) / total"
+                  width="100"
+                  [attr.height]="100 / total"
+                  [attr.fill]="color"
+                  (click)="clickZone($index + 1)"
+                />
+              }
+              <polygon
+                class="svg-zone"
+                points="0,0 48,50 0,100"
+                [attr.fill]="previewColorsForPattern()[0]"
+                (click)="clickZone(0)"
+              />
+            </svg>
+          }
+          @case ('triangle-left-bands-3') {
+            <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              @for (color of previewColorsForPattern().slice(1); track $index; let total = $count) {
+                <rect
+                  class="svg-zone"
+                  x="0"
+                  [attr.y]="($index * 100) / total"
+                  width="100"
+                  [attr.height]="100 / total"
+                  [attr.fill]="color"
+                  (click)="clickZone($index + 1)"
+                />
+              }
+              <polygon
+                class="svg-zone"
+                points="0,0 48,50 0,100"
+                [attr.fill]="previewColorsForPattern()[0]"
+                (click)="clickZone(0)"
+              />
+            </svg>
+          }
+          @case ('left-band-horizontal') {
+            <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              <rect
+                class="svg-zone"
+                x="0"
+                y="0"
+                width="28"
+                height="100"
+                [attr.fill]="previewColorsForPattern()[0]"
+                (click)="clickZone(0)"
+              />
+              @for (color of previewColorsForPattern().slice(1); track $index; let total = $count) {
+                <rect
+                  class="svg-zone"
+                  x="28"
+                  [attr.y]="($index * 100) / total"
+                  width="72"
+                  [attr.height]="100 / total"
+                  [attr.fill]="color"
+                  (click)="clickZone($index + 1)"
+                />
+              }
+            </svg>
+          }
+          @case ('nordic-cross') {
+            <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              <rect
+                class="svg-zone"
+                x="0"
+                y="0"
+                width="100"
+                height="100"
+                [attr.fill]="previewColorsForPattern()[0]"
+                (click)="clickZone(0)"
+              />
+              <path
+                class="svg-zone"
+                d="M30 0 H46 V41.5 H100 V58.5 H46 V100 H30 V58.5 H0 V41.5 H30 Z"
+                [attr.fill]="previewColorsForPattern()[1]"
+                (click)="clickZone(1)"
+              />
+            </svg>
+          }
+        }
+      </div>
+    </section>
+  }
+</main>
+
+<section class="status-dock" aria-label="Etat du jeu">
+  <div class="status-block">
+    <p class="status-label">Question</p>
+    <p class="status-value">{{ progressLabel() }}</p>
+    <div class="progress-track" aria-hidden="true">
+      <div class="progress-fill" [style.width.%]="progressPercent()"></div>
+    </div>
+  </div>
+
+  <div class="status-block">
+    <p class="status-label">Serie</p>
+    <p class="status-value">{{ score() }}</p>
+  </div>
+</section>
+
+@if (isComplete()) {
+  <div class="modal-backdrop"></div>
+  <section class="summary-modal" role="dialog" aria-modal="true" aria-labelledby="summary-title">
+    <div class="summary-head">
+      <div>
+        <p class="eyebrow">Partie terminee</p>
+        <h2 id="summary-title">Resultat final</h2>
+      </div>
+    </div>
+
+    <div class="summary-score">
+      <div>
+        <p class="status-label">Serie finale</p>
+        <p class="summary-value">{{ score() }}</p>
+      </div>
+      <div>
+        <p class="status-label">Erreur fatale</p>
+        <p class="summary-value">{{ errors().length }}</p>
+      </div>
+    </div>
+
+    <div class="mistakes-list">
+      @if (errors().length === 0) {
+        <p class="empty-state">Aucune erreur sur cette partie.</p>
+      } @else {
+        @for (error of errors(); track error.puzzle.code) {
+          <article class="mistake-card">
+            <div>
+              <p class="mistake-country">{{ error.puzzle.nameFrench }}</p>
+              <p class="mistake-detail">
+                Couleur affichee: <span [style.color]="error.wrongColor">{{ error.wrongColor }}</span>
+              </p>
+              <p class="mistake-detail">
+                Bonne couleur: <span [style.color]="error.correctColor">{{ error.correctColor }}</span>
+              </p>
+            </div>
+            <div class="mistake-reference">
+              <img [src]="error.puzzle.flagUrl" [alt]="'Drapeau de ' + error.puzzle.nameFrench" />
+            </div>
+          </article>
+        }
+      }
+    </div>
+
+    <div class="summary-actions">
+      <a class="ghost-link" routerLink="/">Retour a l'accueil</a>
+      <button type="button" class="primary-button" (click)="restartGame()">Recommencer</button>
+    </div>
+  </section>
+}
