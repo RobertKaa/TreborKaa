@@ -1,4 +1,4 @@
-import { toSignal } from '@angular/core/rxjs-interop';
+﻿import { toSignal } from '@angular/core/rxjs-interop';
 import { Component, OnDestroy, computed, effect, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CountrySummary } from '../models/country-summary';
@@ -180,9 +180,9 @@ export class ChronoFlagsGamePageComponent implements OnDestroy {
       case 'country-to-flag':
         return 'Trouve le drapeau de ce pays';
       case 'flag-to-country':
-        return 'A quel pays appartient ce drapeau ?';
+        return 'À quel pays appartient ce drapeau ?';
       case 'capital-to-flag':
-        return 'Trouve le drapeau correspondant a cette capitale';
+        return 'Trouve le drapeau correspondant à cette capitale';
     }
   }
 
@@ -191,7 +191,7 @@ export class ChronoFlagsGamePageComponent implements OnDestroy {
       case 'country-to-flag':
         return question.promptCountry.nameFrench;
       case 'flag-to-country':
-        return 'Drapeau mystere';
+        return 'Drapeau mystère';
       case 'capital-to-flag':
         return question.promptCountry.capitalFrench;
     }
@@ -217,7 +217,7 @@ export class ChronoFlagsGamePageComponent implements OnDestroy {
       case 'country-to-flag':
         return `Pays: ${error.question.promptCountry.nameFrench}`;
       case 'flag-to-country':
-        return 'Drapeau mystere';
+        return 'Drapeau mystère';
       case 'capital-to-flag':
         return `Capitale: ${error.question.promptCountry.capitalFrench}`;
     }
@@ -449,3 +449,4 @@ export class ChronoFlagsGamePageComponent implements OnDestroy {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }
 }
+

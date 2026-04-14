@@ -1,4 +1,4 @@
-<main class="shell">
+﻿<main class="shell">
   <section class="menu-panel">
     <div class="section-heading">
       <p class="eyebrow">Modes de jeu</p>
@@ -13,7 +13,7 @@
             <h2>Quiz</h2>
           </div>
           <div class="category-meta">
-            <p class="category-description">Mode classique avec choix du format et de la difficulte.</p>
+            <p class="category-description">Mode classique avec choix du format et de la difficulté.</p>
             <span class="category-count">{{ quizGames.length + 1 }} jeux</span>
           </div>
         </summary>
@@ -23,7 +23,7 @@
             <div class="mode-topline">
               <span class="mode-line">Classique</span>
             </div>
-            <span class="description">Choisis le type de quiz puis lance la difficulte.</span>
+            <span class="description">Choisis le type de quiz puis lance la difficulté.</span>
 
             <div class="classic-controls">
               <label class="classic-label" for="classic-mode">Type de quiz</label>
@@ -39,8 +39,8 @@
             </div>
 
             <div class="classic-actions">
-              <a class="play-link" [routerLink]="getClassicRoute('easy')">Facile</a>
-              <a class="play-link alt" [routerLink]="getClassicRoute('hard')">Difficile</a>
+              <a class="play-link easy" [routerLink]="getClassicRoute('easy')">Facile</a>
+              <a class="play-link hard" [routerLink]="getClassicRoute('hard')">Difficile</a>
             </div>
           </article>
 
@@ -57,7 +57,7 @@
               @if (game.available && game.route; as route) {
                 <a class="play-link" [routerLink]="route">Jouer</a>
               } @else {
-                <span class="coming-soon">Bientot disponible</span>
+                <span class="coming-soon">Bientôt disponible</span>
               }
             </article>
           }
@@ -67,11 +67,11 @@
       <details class="category-card">
         <summary class="category-head">
           <div>
-            <p class="category-kicker">Defis visuels</p>
-            <h2>Defis visuels</h2>
+            <p class="category-kicker">Défis visuels</p>
+            <h2>Défis visuels</h2>
           </div>
           <div class="category-meta">
-            <p class="category-description">Repere les erreurs et joue sur la perception visuelle.</p>
+            <p class="category-description">Repère les erreurs et joue sur la perception visuelle.</p>
             <span class="category-count">{{ visualGames.length }} jeux</span>
           </div>
         </summary>
@@ -90,7 +90,7 @@
               @if (game.available && game.route; as route) {
                 <a class="play-link" [routerLink]="route">Jouer</a>
               } @else {
-                <span class="coming-soon">Bientot disponible</span>
+                <span class="coming-soon">Bientôt disponible</span>
               }
             </article>
           }
@@ -99,3 +99,4 @@
     </div>
   </section>
 </main>
+

@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+﻿import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { GameRecordKey, PersonalRecord } from '../models/personal-record';
 import { PersonalRecordsService } from '../services/personal-records.service';
@@ -23,8 +23,12 @@ export class RecordsPageComponent {
     { key: 'flag-to-country-easy', label: 'Classique D->P (Facile)' },
     { key: 'flag-to-country-hard', label: 'Classique D->P (Difficile)' },
     { key: 'chrono-flags', label: 'Chrono drapeaux' },
+    { key: 'flag-culture-easy', label: 'Culture drapeaux (Facile)' },
+    { key: 'flag-culture-medium', label: 'Culture drapeaux (Moyen)' },
+    { key: 'flag-culture-hard', label: 'Culture drapeaux (Difficile)' },
+    { key: 'flag-culture-mixed', label: 'Culture drapeaux (Mélange)' },
     { key: 'find-the-error', label: "Trouver l'erreur" },
-    { key: 'pixel-flag', label: 'Drapeau pixelise' },
+    { key: 'pixel-flag', label: 'Drapeau pixelisé' },
     { key: 'flag-rebuild', label: 'Reconstruction de drapeau' }
   ];
 
@@ -50,16 +54,16 @@ export class RecordsPageComponent {
       key === 'flag-to-country-easy' ||
       key === 'flag-to-country-hard'
     ) {
-      return `${record.bestScore} bonnes reponses`;
+      return `${record.bestScore} bonnes réponses`;
     }
 
     if (key === 'find-the-error' || key === 'flag-rebuild') {
-      return `Serie max: ${record.bestScore}`;
+      return `Série max: ${record.bestScore}`;
     }
 
     if (key === 'chrono-flags') {
-      const streak = record.bestStreak ? ` | meilleure serie x${record.bestStreak}` : '';
-      return `Score ${record.bestScore} | precision ${record.bestPercent}%${streak}`;
+      const streak = record.bestStreak ? ` | meilleure série x${record.bestStreak}` : '';
+      return `Score ${record.bestScore} | précision ${record.bestPercent}%${streak}`;
     }
 
     return `${record.bestScore} / ${record.bestMaxScore} (${record.bestPercent}%)`;
@@ -75,3 +79,5 @@ export class RecordsPageComponent {
     });
   }
 }
+
+

@@ -1,13 +1,13 @@
-<main class="game-shell">
+﻿<main class="game-shell">
   <section class="hero-card">
     <div>
       <p class="eyebrow">Mode de jeu</p>
       <h1>Drapeau vers pays</h1>
-      <p class="intro">Choisis le bon pays correspondant au drapeau affiche.</p>
+      <p class="intro">Choisis le bon pays correspondant au drapeau affiché.</p>
     </div>
 
     <div class="hero-actions">
-      <a class="ghost-link" routerLink="/">Retour a l'accueil</a>
+      <a class="ghost-link" routerLink="/">Retour à l'accueil</a>
       <a
         class="switch-link"
         [routerLink]="difficulty() === 'easy' ? '/jeu/drapeaux-vers-pays/hard' : '/jeu/drapeaux-vers-pays/easy'"
@@ -19,7 +19,7 @@
 
   @if (currentQuestion(); as question) {
     <section class="question-card">
-      <p class="question-label">A quel pays appartient ce drapeau ?</p>
+      <p class="question-label">À quel pays appartient ce drapeau ?</p>
       <div class="prompt-flag">
         <img [src]="question.promptCountry.flagUrl" [alt]="'Drapeau de ' + question.promptCountry.nameFrench" />
       </div>
@@ -48,9 +48,9 @@
 </main>
 
 @if (currentQuestion()) {
-  <section class="status-dock" aria-label="Etat de la partie">
+  <section class="status-dock" aria-label="État de la partie">
     <div class="status-block">
-      <p class="status-label">Difficulte</p>
+      <p class="status-label">Difficulté</p>
       <p class="status-value">{{ difficulty() === 'easy' ? 'Facile' : 'Difficile' }}</p>
     </div>
 
@@ -81,14 +81,14 @@
   <section class="summary-modal" role="dialog" aria-modal="true" aria-labelledby="summary-title">
     <div class="summary-head">
       <div>
-        <p class="eyebrow">Partie terminee</p>
-        <h2 id="summary-title">Resultat final</h2>
+        <p class="eyebrow">Partie terminée</p>
+        <h2 id="summary-title">Résultat final</h2>
       </div>
     </div>
 
     <div class="summary-score">
       <div>
-        <p class="status-label">Bonnes reponses</p>
+        <p class="status-label">Bonnes réponses</p>
         <p class="summary-value">{{ score() }}</p>
       </div>
       <div>
@@ -106,16 +106,18 @@
             <div class="mistake-flag">
               <img [src]="error.promptCountry.flagUrl" [alt]="'Drapeau de ' + error.promptCountry.nameFrench" />
             </div>
-            <p class="mistake-line">Ta reponse: {{ error.selectedCountry?.nameFrench ?? 'Aucune' }}</p>
-            <p class="mistake-line">Bonne reponse: {{ error.correctCountry.nameFrench }}</p>
+            <p class="mistake-line">Ta réponse: {{ error.selectedCountry?.nameFrench ?? 'Aucune' }}</p>
+            <p class="mistake-line">Bonne réponse: {{ error.correctCountry.nameFrench }}</p>
           </article>
         }
       }
     </div>
 
     <div class="summary-actions">
-      <a class="ghost-link" routerLink="/">Retour a l'accueil</a>
+      <a class="ghost-link" routerLink="/">Retour à l'accueil</a>
       <button type="button" class="next-button" (click)="restartGame()">Recommencer</button>
     </div>
   </section>
 }
+
+

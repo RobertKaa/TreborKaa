@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+﻿import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, catchError, map, of } from 'rxjs';
 import { resolveFlagUrl, resolveRemoteFlagUrl } from '../config/flag-source.config';
@@ -7,12 +7,12 @@ import { CAPITAL_LOCALIZATIONS_FR } from '../data/capital-localizations.fr';
 import { CountrySummary } from '../models/country-summary';
 
 const EXCLUDED_TERRITORY_CODES = new Set([
-  'ax', // Aland
-  'bq', // Pays-Bas caribeens
-  'bv', // Ile Bouvet
-  'hm', // Iles Heard-et-MacDonald
+  'ax', // Åland
+  'bq', // Pays-Bas caribéens
+  'bv', // Île Bouvet
+  'hm', // Îles Heard-et-MacDonald
   'sj', // Svalbard et Jan Mayen
-  'um' // Iles mineures eloignees des Etats-Unis
+  'um' // Îles mineures éloignées des États-Unis
 ]);
 const CAPITAL_OVERRIDES_EN: Record<string, string> = {
   mo: 'Macau'
@@ -109,3 +109,4 @@ export class CountriesService {
     return CAPITAL_LOCALIZATIONS_FR[capitalEnglish.toLowerCase()] ?? capitalEnglish;
   }
 }
+

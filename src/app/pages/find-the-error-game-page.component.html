@@ -1,20 +1,20 @@
-<main class="error-shell">
+﻿<main class="error-shell">
   <section class="hero-card">
     <div>
       <p class="eyebrow">Mode jeu</p>
       <h1>Trouver l'erreur</h1>
-      <p class="intro">Un seul element est faux. Clique sur la mauvaise zone du drapeau.</p>
+      <p class="intro">Un seul élément est faux. Clique sur la mauvaise zone du drapeau.</p>
     </div>
 
     <div class="hero-actions">
-      <a class="ghost-link" routerLink="/">Retour a l'accueil</a>
+      <a class="ghost-link" routerLink="/">Retour à l'accueil</a>
     </div>
   </section>
 
   @if (currentErrorPuzzle(); as current) {
     <section class="board-card">
       <div class="board-copy">
-        <p class="question-label">Quel element est incorrect ?</p>
+        <p class="question-label">Quel élément est incorrect ?</p>
         <h2>{{ current.puzzle.nameFrench }}</h2>
         <p class="board-hint">Il n'y a qu'une seule erreur visible.</p>
       </div>
@@ -142,7 +142,7 @@
   }
 </main>
 
-<section class="status-dock" aria-label="Etat du jeu">
+<section class="status-dock" aria-label="État du jeu">
   <div class="status-block">
     <p class="status-label">Question</p>
     <p class="status-value">{{ progressLabel() }}</p>
@@ -152,7 +152,7 @@
   </div>
 
   <div class="status-block">
-    <p class="status-label">Serie</p>
+    <p class="status-label">Série</p>
     <p class="status-value">{{ score() }}</p>
   </div>
 </section>
@@ -162,14 +162,14 @@
   <section class="summary-modal" role="dialog" aria-modal="true" aria-labelledby="summary-title">
     <div class="summary-head">
       <div>
-        <p class="eyebrow">Partie terminee</p>
-        <h2 id="summary-title">Resultat final</h2>
+        <p class="eyebrow">Partie terminée</p>
+        <h2 id="summary-title">Résultat final</h2>
       </div>
     </div>
 
     <div class="summary-score">
       <div>
-        <p class="status-label">Serie finale</p>
+        <p class="status-label">Série finale</p>
         <p class="summary-value">{{ score() }}</p>
       </div>
       <div>
@@ -187,7 +187,7 @@
             <div>
               <p class="mistake-country">{{ error.puzzle.nameFrench }}</p>
               <p class="mistake-detail">
-                Couleur affichee: <span [style.color]="error.wrongColor">{{ error.wrongColor }}</span>
+                Couleur affichée: <span [style.color]="error.wrongColor">{{ error.wrongColor }}</span>
               </p>
               <p class="mistake-detail">
                 Bonne couleur: <span [style.color]="error.correctColor">{{ error.correctColor }}</span>
@@ -202,8 +202,10 @@
     </div>
 
     <div class="summary-actions">
-      <a class="ghost-link" routerLink="/">Retour a l'accueil</a>
+      <a class="ghost-link" routerLink="/">Retour à l'accueil</a>
       <button type="button" class="primary-button" (click)="restartGame()">Recommencer</button>
     </div>
   </section>
 }
+
+

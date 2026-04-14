@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+﻿import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, ViewChild, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -68,11 +68,11 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
     const result = this.roundResult();
     const country = this.currentCountry();
     if (result === 'correct') {
-      return 'Bonne reponse !';
+      return 'Bonne réponse !';
     }
 
     if (result === 'wrong') {
-      return `Mauvaise reponse : '${country?.nameFrench ?? ''}'`;
+      return `Mauvaise réponse : '${country?.nameFrench ?? ''}'`;
     }
 
     return null;
@@ -446,4 +446,5 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
     this.hasSavedRecord = true;
   }
 }
+
 

@@ -6,7 +6,11 @@ export type GameRecordKey =
   | 'flag-rebuild'
   | 'find-the-error'
   | 'pixel-flag'
-  | 'chrono-flags';
+  | 'chrono-flags'
+  | 'flag-culture-easy'
+  | 'flag-culture-medium'
+  | 'flag-culture-hard'
+  | 'flag-culture-mixed';
 
 export type PersonalRecord = {
   bestScore: number;

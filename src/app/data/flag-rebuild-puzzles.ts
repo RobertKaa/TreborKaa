@@ -1,4 +1,4 @@
-import { FlagRebuildPuzzle } from '../models/flag-rebuild-puzzle';
+﻿import { FlagRebuildPuzzle } from '../models/flag-rebuild-puzzle';
 
 export const FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
   {
@@ -48,7 +48,7 @@ export const FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
   },
   {
     code: 'cz',
-    nameFrench: 'Tchequie',
+    nameFrench: 'Tchéquie',
     targetPattern: 'triangle-left-bands-2',
     patternOptions: ['triangle-left-bands-2', 'horizontal-stripes', 'vertical-stripes'],
     targetColors: ['#11457e', '#ffffff', '#d7141a'],
@@ -66,7 +66,7 @@ export const FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
   },
   {
     code: 'ae',
-    nameFrench: 'Emirats arabes unis',
+    nameFrench: 'Émirats arabes unis',
     targetPattern: 'left-band-horizontal',
     patternOptions: ['left-band-horizontal', 'horizontal-stripes', 'vertical-stripes'],
     targetColors: ['#ff0000', '#00732f', '#ffffff', '#000000'],
@@ -93,7 +93,7 @@ export const FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
   },
   {
     code: 'se',
-    nameFrench: 'Suede',
+    nameFrench: 'Suède',
     targetPattern: 'nordic-cross',
     patternOptions: ['nordic-cross', 'left-band-horizontal', 'triangle-left-bands-2'],
     targetColors: ['#006aa7', '#fecc00'],
@@ -165,7 +165,7 @@ export const FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
   },
   {
     code: 'gn',
-    nameFrench: 'Guinee',
+    nameFrench: 'Guinée',
     targetPattern: 'vertical-stripes',
     patternOptions: ['vertical-stripes', 'horizontal-stripes', 'triangle-left-bands-2'],
     targetColors: ['#ce1126', '#fcd116', '#009460'],
@@ -183,7 +183,7 @@ export const FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
   },
   {
     code: 'pe',
-    nameFrench: 'Perou',
+    nameFrench: 'Pérou',
     targetPattern: 'vertical-stripes',
     patternOptions: ['vertical-stripes', 'horizontal-stripes', 'triangle-left-bands-2'],
     targetColors: ['#d91023', '#ffffff', '#d91023'],
@@ -219,7 +219,7 @@ export const FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
   },
   {
     code: 'am',
-    nameFrench: 'Armenie',
+    nameFrench: 'Arménie',
     targetPattern: 'horizontal-stripes',
     patternOptions: ['horizontal-stripes', 'vertical-stripes', 'triangle-left-bands-2'],
     targetColors: ['#d90012', '#0033a0', '#f2a800'],
@@ -255,7 +255,7 @@ export const FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
   },
   {
     code: 'ye',
-    nameFrench: 'Yemen',
+    nameFrench: 'Yémen',
     targetPattern: 'horizontal-stripes',
     patternOptions: ['horizontal-stripes', 'vertical-stripes', 'left-band-horizontal'],
     targetColors: ['#ce1126', '#ffffff', '#000000'],
@@ -291,7 +291,7 @@ export const FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
   },
   {
     code: 'th',
-    nameFrench: 'Thailande',
+    nameFrench: 'Thaïlande',
     targetPattern: 'horizontal-stripes',
     patternOptions: ['horizontal-stripes', 'vertical-stripes', 'left-band-horizontal'],
     targetColors: ['#a51931', '#f4f5f8', '#2d2a4a', '#f4f5f8', '#a51931'],
@@ -299,4 +299,5 @@ export const FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     flagUrl: 'https://flagcdn.com/w320/th.png'
   }
 ];
+
 

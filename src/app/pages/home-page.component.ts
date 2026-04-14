@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+﻿import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 type HomeGame = {
@@ -23,7 +23,7 @@ export class HomePageComponent {
     {
       id: 'flag-chrono',
       label: 'Chrono drapeaux',
-      description: 'Enchaine les bonnes reponses avant la fin du temps.',
+      description: 'Enchaîne les bonnes réponses avant la fin du temps.',
       badge: 'Nouveau',
       route: ['/jeu/chrono-drapeaux'],
       available: true
@@ -31,9 +31,10 @@ export class HomePageComponent {
     {
       id: 'flag-culture',
       label: 'Culture drapeaux',
-      description: 'Questions sur l histoire, les evolutions et anecdotes des drapeaux.',
-      badge: 'A venir',
-      available: false
+      description: "Questions sur l'histoire, les évolutions et anecdotes des drapeaux.",
+      badge: 'Nouveau',
+      route: ['/jeu/culture-drapeaux'],
+      available: true
     }
   ];
 
@@ -41,14 +42,14 @@ export class HomePageComponent {
     {
       id: 'find-the-error',
       label: "Trouver l'erreur",
-      description: 'Clique sur la mauvaise zone du drapeau modifie.',
+      description: 'Clique sur la mauvaise zone du drapeau modifié.',
       route: ['/jeu/trouver-erreur'],
       available: true
     },
     {
       id: 'pixel-flag',
-      label: 'Le drapeau pixelise',
-      description: 'Devine le pays a partir d un drapeau de plus en plus net.',
+      label: 'Le drapeau pixelisé',
+      description: "Devine le pays à partir d'un drapeau de plus en plus net.",
       badge: 'Nouveau',
       route: ['/jeu/drapeau-pixelise'],
       available: true
@@ -76,3 +77,6 @@ export class HomePageComponent {
     return ['/jeu/drapeaux-vers-pays', difficulty];
   }
 }
+
+
+

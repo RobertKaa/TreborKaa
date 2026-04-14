@@ -1,4 +1,4 @@
-import { CountryFlag } from '../models/country-flag';
+﻿import { CountryFlag } from '../models/country-flag';
 
 export const COUNTRIES: CountryFlag[] = [
   {
@@ -20,7 +20,7 @@ export const COUNTRIES: CountryFlag[] = [
     name: 'Irlande',
     capital: 'Dublin',
     flagAssetName: 'ie.svg',
-    similarFlags: ['Italie', 'Cote d Ivoire']
+    similarFlags: ['Italie', "Côte d'Ivoire"]
   },
   {
     code: 'ro',
@@ -32,7 +32,7 @@ export const COUNTRIES: CountryFlag[] = [
   {
     code: 'td',
     name: 'Tchad',
-    capital: 'N Djamena',
+    capital: "N'Djamena",
     flagAssetName: 'td.svg',
     similarFlags: ['Roumanie']
   },
@@ -44,3 +44,4 @@ export const COUNTRIES: CountryFlag[] = [
     similarFlags: ['Pays-Bas']
   }
 ];
+
