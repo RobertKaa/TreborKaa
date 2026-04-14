@@ -43,11 +43,21 @@ jobs:
             echo "No build output found in dist/"
             exit 1
           fi
+          if [ -d "$APP_DIR/browser" ]; then
+            APP_DIR="$APP_DIR/browser"
+          fi
+          if [ ! -f "$APP_DIR/index.html" ]; then
+            echo "No index.html found in resolved output: $APP_DIR"
+            exit 1
+          fi
           echo "app_dir=$APP_DIR" >> "$GITHUB_OUTPUT"
           echo "Build output: $APP_DIR"
 
       - name: SPA fallback for client-side routing
         run: cp "${{ steps.dist.outputs.app_dir }}/index.html" "${{ steps.dist.outputs.app_dir }}/404.html"
+
+      - name: Disable Jekyll processing
+        run: touch "${{ steps.dist.outputs.app_dir }}/.nojekyll"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
@@ -64,4 +74,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
