@@ -1,5 +1,6 @@
-import { Component, OnDestroy, computed, effect, inject, signal, untracked } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, computed, effect, inject, signal, untracked } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import iro from '@jaames/iro';
 import { FLAG_REBUILD_PUZZLES } from '../data/flag-rebuild-puzzles';
 import { FlagRebuildPattern, FlagRebuildPuzzle } from '../models/flag-rebuild-puzzle';
 import { PersonalRecordsService } from '../services/personal-records.service';
@@ -14,16 +15,10 @@ type PuzzleError = {
   score: number;
 };
 
-const EXTRA_COLORS = [
-  '#6c757d',
-  '#8d99ae',
-  '#ff7f50',
-  '#2a9d8f',
-  '#8338ec',
-  '#f4a261',
-  '#457b9d',
-  '#e9c46a'
-];
+type PuzzleEvaluation = {
+  score: number;
+  accepted: boolean;
+};
 
 const ALL_PATTERNS: FlagRebuildPattern[] = [
   'horizontal-stripes',
@@ -49,8 +44,12 @@ const PATTERN_LABELS: Record<FlagRebuildPattern, string> = {
   templateUrl: './flag-rebuild-game-page.component.html',
   styleUrl: './flag-rebuild-game-page.component.css'
 })
-export class FlagRebuildGamePageComponent implements OnDestroy {
+export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
+  private static readonly VALUE_SLIDER_SIZE = 18;
+  private static readonly VALUE_SLIDER_MARGIN = 16;
+  private static readonly WHEEL_EXTRA_HEIGHT = 24;
   private readonly personalRecordsService = inject(PersonalRecordsService);
+  @ViewChild('iroWheelHost') private iroWheelHost?: ElementRef<HTMLDivElement>;
   protected readonly allPuzzles = FLAG_REBUILD_PUZZLES;
   protected readonly gamePuzzles = signal<FlagRebuildPuzzle[]>([]);
   protected readonly puzzleIndex = signal(0);
@@ -60,9 +59,12 @@ export class FlagRebuildGamePageComponent implements OnDestroy {
   protected readonly errors = signal<PuzzleError[]>([]);
   protected readonly isComplete = signal(false);
   protected readonly isLocked = signal(false);
-  private readonly paletteByPuzzle = signal<Record<string, string[]>>({});
-  private readonly pieceOptionsByPuzzle = signal<Record<string, Record<string, string[]>>>({});
+  protected readonly activeZoneIndex = signal(0);
+  protected readonly isColorPickerOpen = signal(false);
   private readonly patternOptionsByPuzzle = signal<Record<string, FlagRebuildPattern[]>>({});
+  private colorWheelPicker: ReturnType<typeof iro.ColorPicker> | null = null;
+  private colorChangeHandler: ((color: { hexString: string }) => void) | null = null;
+  private wheelSyncFrameId: number | null = null;
   private nextTimeoutId: number | null = null;
   private hasSavedRecord = false;
 
@@ -85,14 +87,6 @@ export class FlagRebuildGamePageComponent implements OnDestroy {
       puzzle.targetColors.length
     );
   });
-  protected readonly displayedPalette = computed(() => {
-    const puzzle = this.currentPuzzle();
-    if (!puzzle) {
-      return [];
-    }
-
-    return this.paletteByPuzzle()[puzzle.code] ?? puzzle.palette;
-  });
   protected readonly displayedPatternOptions = computed(() => {
     const puzzle = this.currentPuzzle();
     if (!puzzle) {
@@ -101,6 +95,8 @@ export class FlagRebuildGamePageComponent implements OnDestroy {
 
     return this.patternOptionsByPuzzle()[puzzle.code] ?? [puzzle.targetPattern];
   });
+  protected readonly activePiece = computed(() => this.pieces()[this.activeZoneIndex()] ?? null);
+  protected readonly activeZoneLabel = computed(() => this.getZoneLabel(this.activeZoneIndex()));
 
   constructor() {
     this.startNewGame();
@@ -112,29 +108,25 @@ export class FlagRebuildGamePageComponent implements OnDestroy {
       }
 
       const code = puzzle.code;
-      const palette =
-        untracked(() => this.paletteByPuzzle()[code]) ?? this.shuffle([...puzzle.palette]);
       const patternOptions =
         untracked(() => this.patternOptionsByPuzzle()[code]) ?? this.buildPatternOptions(puzzle);
-      const pieceOptions =
-        untracked(() => this.pieceOptionsByPuzzle()[code]) ?? this.buildPieceOptions(puzzle, palette);
-
-      this.paletteByPuzzle.update((palettes) => ({
-        ...palettes,
-        [code]: palette
-      }));
       this.patternOptionsByPuzzle.update((options) => ({
         ...options,
         [code]: patternOptions
       }));
-      this.pieceOptionsByPuzzle.update((options) => ({
-        ...options,
-        [code]: pieceOptions
-      }));
+      this.destroyColorWheelPicker();
       this.isLocked.set(false);
       this.selectedPattern.set(patternOptions[0] ?? puzzle.targetPattern);
-      this.pieces.set(this.buildInitialPieces(puzzle, palette));
+      this.activeZoneIndex.set(0);
+      this.isColorPickerOpen.set(false);
+      this.pieces.set(this.buildInitialPieces(puzzle));
     });
+  }
+
+  ngAfterViewInit(): void {
+    if (this.isColorPickerOpen()) {
+      this.scheduleColorWheelSync();
+    }
   }
 
   protected getPatternLabel(pattern: FlagRebuildPattern): string {
@@ -160,15 +152,6 @@ export class FlagRebuildGamePageComponent implements OnDestroy {
     }
   }
 
-  protected getColorOptions(pieceId: string): string[] {
-    const puzzle = this.currentPuzzle();
-    if (!puzzle) {
-      return [];
-    }
-
-    return this.pieceOptionsByPuzzle()[puzzle.code]?.[pieceId] ?? this.displayedPalette();
-  }
-
   protected isBlankColor(color: string | undefined): boolean {
     return color?.toLowerCase() === '#ffffff';
   }
@@ -179,6 +162,33 @@ export class FlagRebuildGamePageComponent implements OnDestroy {
     }
 
     this.selectedPattern.set(pattern);
+  }
+
+  protected openColorPicker(index: number): void {
+    if (this.isLocked()) {
+      return;
+    }
+
+    this.activeZoneIndex.set(index);
+    this.isColorPickerOpen.set(true);
+    this.scheduleColorWheelSync();
+  }
+
+  protected closeColorPicker(): void {
+    this.isColorPickerOpen.set(false);
+    this.destroyColorWheelPicker();
+  }
+
+  protected selectPresetColor(color: '#000000' | '#ffffff'): void {
+    const piece = this.activePiece();
+    if (!piece || this.isLocked()) {
+      return;
+    }
+
+    this.updatePieceColor(piece.id, color);
+    if (this.colorWheelPicker) {
+      this.colorWheelPicker.color.hexString = color;
+    }
   }
 
   protected updatePieceColor(pieceId: string, color: string): void {
@@ -198,15 +208,15 @@ export class FlagRebuildGamePageComponent implements OnDestroy {
     }
 
     this.isLocked.set(true);
-    const puzzleScore = this.computePuzzleScore(
+    const evaluation = this.evaluatePuzzle(
       puzzle.targetPattern,
       this.selectedPattern(),
       puzzle.targetColors,
       this.previewColors()
     );
 
-    if (puzzleScore < 100) {
-      this.errors.update((errors) => [...errors, { puzzle, score: puzzleScore }]);
+    if (!evaluation.accepted) {
+      this.errors.update((errors) => [...errors, { puzzle, score: evaluation.score }]);
       this.scheduleGameOver();
       return;
     }
@@ -217,6 +227,7 @@ export class FlagRebuildGamePageComponent implements OnDestroy {
 
   protected restartGame(): void {
     this.clearTimers();
+    this.destroyColorWheelPicker();
     this.startNewGame();
   }
 
@@ -226,6 +237,7 @@ export class FlagRebuildGamePageComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.clearTimers();
+    this.destroyColorWheelPicker();
   }
 
   private advancePuzzle(): void {
@@ -242,31 +254,11 @@ export class FlagRebuildGamePageComponent implements OnDestroy {
     this.puzzleIndex.update((index) => index + 1);
   }
 
-  private buildInitialPieces(puzzle: FlagRebuildPuzzle, _displayPalette: string[]): PuzzlePiece[] {
+  private buildInitialPieces(puzzle: FlagRebuildPuzzle): PuzzlePiece[] {
     return puzzle.targetColors.map((_, index) => ({
       id: `${puzzle.code}-${index}`,
       color: '#ffffff'
     }));
-  }
-
-  private buildPieceOptions(
-    puzzle: FlagRebuildPuzzle,
-    displayPalette: string[]
-  ): Record<string, string[]> {
-    const paletteSource = this.shuffle([...puzzle.palette, ...EXTRA_COLORS]);
-    const options: Record<string, string[]> = {};
-
-    for (let index = 0; index < puzzle.targetColors.length; index += 1) {
-      const pieceId = `${puzzle.code}-${index}`;
-      const correct = puzzle.targetColors[index];
-      const distractors = this.shuffle(
-        paletteSource.filter((color) => color !== correct && !displayPalette.includes(color))
-      ).slice(0, 3);
-
-      options[pieceId] = this.shuffle([correct, ...distractors]);
-    }
-
-    return options;
   }
 
   private buildPatternOptions(puzzle: FlagRebuildPuzzle): FlagRebuildPattern[] {
@@ -330,31 +322,28 @@ export class FlagRebuildGamePageComponent implements OnDestroy {
     this.errors.set([]);
     this.isComplete.set(false);
     this.isLocked.set(false);
-    this.paletteByPuzzle.set({});
-    this.pieceOptionsByPuzzle.set({});
     this.patternOptionsByPuzzle.set({});
+    this.destroyColorWheelPicker();
     this.hasSavedRecord = false;
   }
 
-  private computePuzzleScore(
+  private evaluatePuzzle(
     targetPattern: FlagRebuildPattern,
     selectedPattern: FlagRebuildPattern,
     targetColors: string[],
     userColors: string[]
-  ): number {
-    let score = selectedPattern === targetPattern ? 30 : 0;
-    const colorBudget = 70;
-    const step = colorBudget / targetColors.length;
+  ): PuzzleEvaluation {
+    const patternMatch = selectedPattern === targetPattern;
+    const similarities = targetColors.map((targetColor, index) =>
+      this.computeColorSimilarity((userColors[index] ?? '#ffffff').toLowerCase(), targetColor.toLowerCase())
+    );
+    const averageSimilarity =
+      similarities.reduce((sum, value) => sum + value, 0) / Math.max(1, similarities.length);
+    const minimumSimilarity = Math.min(...similarities, 1);
+    const score = Math.round((patternMatch ? 30 : 0) + averageSimilarity * 70);
+    const accepted = patternMatch && averageSimilarity >= 0.78 && minimumSimilarity >= 0.46;
 
-    for (let index = 0; index < targetColors.length; index += 1) {
-      if (userColors[index] === targetColors[index]) {
-        score += step;
-      } else if (targetColors.includes(userColors[index])) {
-        score += step * 0.35;
-      }
-    }
-
-    return Math.round(Math.min(score, 100));
+    return { score: Math.min(score, 100), accepted };
   }
 
   private scheduleAdvance(): void {
@@ -376,6 +365,11 @@ export class FlagRebuildGamePageComponent implements OnDestroy {
   }
 
   private clearTimers(): void {
+    if (this.wheelSyncFrameId !== null) {
+      window.cancelAnimationFrame(this.wheelSyncFrameId);
+      this.wheelSyncFrameId = null;
+    }
+
     if (this.nextTimeoutId !== null) {
       window.clearTimeout(this.nextTimeoutId);
       this.nextTimeoutId = null;
@@ -410,5 +404,207 @@ export class FlagRebuildGamePageComponent implements OnDestroy {
     }
 
     return copy;
+  }
+
+  private scheduleColorWheelSync(): void {
+    if (!this.isColorPickerOpen()) {
+      return;
+    }
+
+    if (this.wheelSyncFrameId !== null) {
+      window.cancelAnimationFrame(this.wheelSyncFrameId);
+    }
+
+    this.wheelSyncFrameId = window.requestAnimationFrame(() => {
+      this.mountOrSyncColorWheelPicker();
+      this.wheelSyncFrameId = null;
+    });
+  }
+
+  private mountOrSyncColorWheelPicker(): void {
+    const host = this.iroWheelHost?.nativeElement;
+    const activePiece = this.activePiece();
+
+    if (!host || !activePiece || !this.isColorPickerOpen()) {
+      return;
+    }
+
+    const wheelSize = this.getWheelSize(host);
+    host.style.width = `${wheelSize}px`;
+    host.style.height = `${this.getWheelHostHeight(wheelSize)}px`;
+
+    if (!this.colorWheelPicker) {
+      host.innerHTML = '';
+      this.colorWheelPicker = iro.ColorPicker(host, {
+        width: wheelSize,
+        color: activePiece.color,
+        padding: 0,
+        borderWidth: 1,
+        handleRadius: 8,
+        activeHandleRadius: 10,
+        wheelLightness: false,
+        sliderSize: FlagRebuildGamePageComponent.VALUE_SLIDER_SIZE,
+        sliderMargin: FlagRebuildGamePageComponent.VALUE_SLIDER_MARGIN,
+        layout: [
+          {
+            component: iro.ui.Wheel
+          },
+          {
+            component: iro.ui.Slider,
+            options: {
+              sliderType: 'value',
+              sliderShape: 'bar'
+            }
+          }
+        ]
+      });
+
+      this.colorChangeHandler = (color: { hexString: string }) => {
+        const piece = this.activePiece();
+        if (!piece || this.isLocked()) {
+          return;
+        }
+
+        this.updatePieceColor(piece.id, color.hexString.toLowerCase());
+      };
+
+      this.colorWheelPicker.on('color:change', this.colorChangeHandler);
+      return;
+    }
+
+    this.colorWheelPicker.color.hexString = activePiece.color;
+    this.colorWheelPicker.resize(wheelSize);
+  }
+
+  private destroyColorWheelPicker(): void {
+    if (this.wheelSyncFrameId !== null) {
+      window.cancelAnimationFrame(this.wheelSyncFrameId);
+      this.wheelSyncFrameId = null;
+    }
+
+    if (this.colorWheelPicker && this.colorChangeHandler) {
+      this.colorWheelPicker.off('color:change', this.colorChangeHandler);
+    }
+
+    this.colorChangeHandler = null;
+    this.colorWheelPicker = null;
+  }
+
+  private getWheelSize(host: HTMLElement): number {
+    const width = host.clientWidth || host.getBoundingClientRect().width || 280;
+    return Math.round(Math.max(240, Math.min(320, width)));
+  }
+
+  private getWheelHostHeight(wheelSize: number): number {
+    return (
+      wheelSize +
+      FlagRebuildGamePageComponent.VALUE_SLIDER_SIZE +
+      FlagRebuildGamePageComponent.VALUE_SLIDER_MARGIN +
+      FlagRebuildGamePageComponent.WHEEL_EXTRA_HEIGHT
+    );
+  }
+
+  private computeColorSimilarity(left: string, right: string): number {
+    const distance = this.computePerceptualDistance(left, right);
+
+    if (distance <= 6) {
+      return 1;
+    }
+
+    if (distance <= 12) {
+      return 0.92;
+    }
+
+    if (distance <= 18) {
+      return 0.84;
+    }
+
+    if (distance <= 24) {
+      return 0.8;
+    }
+
+    if (distance <= 32) {
+      return 0.7;
+    }
+
+    if (distance <= 40) {
+      return 0.58;
+    }
+
+    if (distance <= 52) {
+      return 0.44;
+    }
+
+    return 0.22;
+  }
+
+  private computePerceptualDistance(left: string, right: string): number {
+    const a = this.hexToRgb(left);
+    const b = this.hexToRgb(right);
+
+    if (!a || !b) {
+      return Number.MAX_SAFE_INTEGER;
+    }
+
+    const labA = this.rgbToLab(a);
+    const labB = this.rgbToLab(b);
+    const dL = labA.l - labB.l;
+    const dA = labA.a - labB.a;
+    const dB = labA.b - labB.b;
+    return Math.sqrt(dL * dL + dA * dA + dB * dB);
+  }
+
+  private rgbToLab(color: { r: number; g: number; b: number }): { l: number; a: number; b: number } {
+    const r = this.pivotRgb(color.r / 255);
+    const g = this.pivotRgb(color.g / 255);
+    const b = this.pivotRgb(color.b / 255);
+
+    const x = (r * 0.4124 + g * 0.3576 + b * 0.1805) / 0.95047;
+    const y = r * 0.2126 + g * 0.7152 + b * 0.0722;
+    const z = (r * 0.0193 + g * 0.1192 + b * 0.9505) / 1.08883;
+
+    const fx = this.pivotLab(x);
+    const fy = this.pivotLab(y);
+    const fz = this.pivotLab(z);
+
+    return {
+      l: 116 * fy - 16,
+      a: 500 * (fx - fy),
+      b: 200 * (fy - fz)
+    };
+  }
+
+  private pivotRgb(value: number): number {
+    if (value <= 0.04045) {
+      return value / 12.92;
+    }
+
+    return ((value + 0.055) / 1.055) ** 2.4;
+  }
+
+  private pivotLab(value: number): number {
+    if (value > 0.008856) {
+      return value ** (1 / 3);
+    }
+
+    return 7.787 * value + 16 / 116;
+  }
+
+  private hexToRgb(color: string): { r: number; g: number; b: number } | null {
+    const normalized = color.replace('#', '');
+    if (normalized.length !== 6) {
+      return null;
+    }
+
+    const value = Number.parseInt(normalized, 16);
+    if (Number.isNaN(value)) {
+      return null;
+    }
+
+    return {
+      r: (value >> 16) & 255,
+      g: (value >> 8) & 255,
+      b: value & 255
+    };
   }
 }

@@ -33,12 +33,13 @@
           }
         </div>
 
-        <div class="flag-board" [attr.data-pattern]="selectedPattern()">
+      <div class="flag-board" [attr.data-pattern]="selectedPattern()">
           @switch (selectedPattern()) {
             @case ('vertical-stripes') {
               <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
                 @for (color of previewColorsForPattern(); track $index; let total = $count) {
                   <rect
+                    class="flag-zone"
                     [attr.x]="($index * 100) / total"
                     y="0"
                     [attr.width]="100 / total"
@@ -47,6 +48,7 @@
                     [attr.stroke]="isBlankColor(color) ? 'rgba(28, 43, 45, 0.16)' : 'none'"
                     stroke-width="0.6"
                     vector-effect="non-scaling-stroke"
+                    (click)="openColorPicker($index)"
                   />
                 }
               </svg>
@@ -55,6 +57,7 @@
               <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
                 @for (color of previewColorsForPattern(); track $index; let total = $count) {
                   <rect
+                    class="flag-zone"
                     x="0"
                     [attr.y]="($index * 100) / total"
                     width="100"
@@ -63,6 +66,7 @@
                     [attr.stroke]="isBlankColor(color) ? 'rgba(28, 43, 45, 0.16)' : 'none'"
                     stroke-width="0.6"
                     vector-effect="non-scaling-stroke"
+                    (click)="openColorPicker($index)"
                   />
                 }
               </svg>
@@ -72,6 +76,7 @@
                 <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
                   @for (color of previewColorsForPattern().slice(1); track $index; let total = $count) {
                     <rect
+                      class="flag-zone"
                       x="0"
                       [attr.y]="($index * 100) / total"
                       width="100"
@@ -80,15 +85,18 @@
                       [attr.stroke]="isBlankColor(color) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
                       stroke-width="0.6"
                       vector-effect="non-scaling-stroke"
+                      (click)="openColorPicker($index + 1)"
                     />
                   }
                   <polygon
+                    class="flag-zone"
                     points="0,0 48,50 0,100"
                     [attr.fill]="previewColorsForPattern()[0]"
                     [attr.stroke]="isBlankColor(previewColorsForPattern()[0]) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
                     stroke-width="0.6"
                     stroke-linejoin="round"
                     vector-effect="non-scaling-stroke"
+                    (click)="openColorPicker(0)"
                   />
                 </svg>
               </div>
@@ -98,6 +106,7 @@
                 <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
                   @for (color of previewColorsForPattern().slice(1); track $index; let total = $count) {
                     <rect
+                      class="flag-zone"
                       x="0"
                       [attr.y]="($index * 100) / total"
                       width="100"
@@ -106,15 +115,18 @@
                       [attr.stroke]="isBlankColor(color) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
                       stroke-width="0.6"
                       vector-effect="non-scaling-stroke"
+                      (click)="openColorPicker($index + 1)"
                     />
                   }
                   <polygon
+                    class="flag-zone"
                     points="0,0 48,50 0,100"
                     [attr.fill]="previewColorsForPattern()[0]"
                     [attr.stroke]="isBlankColor(previewColorsForPattern()[0]) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
                     stroke-width="0.6"
                     stroke-linejoin="round"
                     vector-effect="non-scaling-stroke"
+                    (click)="openColorPicker(0)"
                   />
                 </svg>
               </div>
@@ -122,6 +134,7 @@
             @case ('left-band-horizontal') {
               <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
                 <rect
+                  class="flag-zone"
                   x="0"
                   y="0"
                   width="28"
@@ -130,9 +143,11 @@
                   [attr.stroke]="isBlankColor(previewColorsForPattern()[0]) ? 'rgba(28, 43, 45, 0.16)' : 'none'"
                   stroke-width="0.6"
                   vector-effect="non-scaling-stroke"
+                  (click)="openColorPicker(0)"
                 />
                 @for (color of previewColorsForPattern().slice(1); track $index; let total = $count) {
                   <rect
+                    class="flag-zone"
                     x="28"
                     [attr.y]="($index * 100) / total"
                     width="72"
@@ -141,6 +156,7 @@
                     [attr.stroke]="isBlankColor(color) ? 'rgba(28, 43, 45, 0.16)' : 'none'"
                     stroke-width="0.6"
                     vector-effect="non-scaling-stroke"
+                    (click)="openColorPicker($index + 1)"
                   />
                 }
               </svg>
@@ -149,54 +165,60 @@
               <div class="pattern-cross">
                 <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
                   <rect
+                    class="flag-zone"
                     x="0"
                     y="0"
                     width="100"
                     height="100"
                     [attr.fill]="previewColorsForPattern()[0]"
+                    (click)="openColorPicker(0)"
                   />
                   <path
+                    class="flag-zone"
                     d="M30 0 H46 V41.5 H100 V58.5 H46 V100 H30 V58.5 H0 V41.5 H30 Z"
                     [attr.fill]="previewColorsForPattern()[1]"
                     [attr.stroke]="isBlankColor(previewColorsForPattern()[1]) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
                     stroke-width="0.6"
                     vector-effect="non-scaling-stroke"
+                    (click)="openColorPicker(1)"
                   />
                 </svg>
               </div>
             }
           }
         </div>
-      </div>
 
-      <div class="pieces-panel">
-        <p class="panel-title">Zones à régler</p>
-        <div class="piece-list">
-          @for (piece of pieces(); track piece.id; let index = $index) {
-            <article class="piece-card">
-              <div class="piece-head">
-                <span>{{ getZoneLabel(index) }}</span>
+        @if (isColorPickerOpen() && activePiece(); as piece) {
+          <div class="color-picker-overlay" (click)="closeColorPicker()">
+            <section class="color-picker-popover" (click)="$event.stopPropagation()">
+              <div class="color-picker-head">
+                <p class="panel-title">Sélecteur de couleur</p>
+                <button type="button" class="picker-close" aria-label="Fermer le sélecteur" (click)="closeColorPicker()">
+                  ×
+                </button>
               </div>
-
-              <div class="color-picker">
-                @for (color of getColorOptions(piece.id); track color) {
-                  <button
-                    type="button"
-                    class="color-swatch"
-                    [class.selected]="piece.color === color"
-                    [disabled]="isLocked()"
-                    (click)="updatePieceColor(piece.id, color)"
-                  >
-                    <span class="swatch-preview" [style.background]="color"></span>
-                    <span class="swatch-label">{{ color }}</span>
-                  </button>
-                }
+              <p class="picker-zone">Zone : {{ activeZoneLabel() }}</p>
+              <div class="color-wheel-shell">
+                <div class="color-wheel-host" #iroWheelHost aria-label="Roue de couleur interactive"></div>
               </div>
-            </article>
-          }
-        </div>
+              <div class="picker-presets" aria-label="Couleurs rapides">
+                <button type="button" class="preset-button preset-black" (click)="selectPresetColor('#000000')">
+                  Noir
+                </button>
+                <button type="button" class="preset-button preset-white" (click)="selectPresetColor('#ffffff')">
+                  Blanc
+                </button>
+              </div>
+              <div class="picker-actions">
+                <button type="button" class="primary-button" (click)="closeColorPicker()">Valider la couleur</button>
+              </div>
+            </section>
+          </div>
+        }
 
+        <div class="submit-row">
         <button type="button" class="primary-button" [disabled]="isLocked()" (click)="submitPuzzle()">Valider</button>
+        </div>
       </div>
     </section>
   }

@@ -57,7 +57,7 @@ export class RecordsPageComponent {
       return `${record.bestScore} bonnes réponses`;
     }
 
-    if (key === 'find-the-error' || key === 'flag-rebuild') {
+    if (key === 'find-the-error' || key === 'flag-rebuild' || key === 'pixel-flag') {
       return `Série max: ${record.bestScore}`;
     }
 

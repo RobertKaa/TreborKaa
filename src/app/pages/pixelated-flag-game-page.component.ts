@@ -1,10 +1,10 @@
-﻿import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, ViewChild, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { take } from 'rxjs';
-import { CountriesService } from '../services/countries.service';
 import { CountrySummary } from '../models/country-summary';
+import { CountriesService } from '../services/countries.service';
 import { PersonalRecordsService } from '../services/personal-records.service';
 
 type PixelatedError = {
@@ -12,7 +12,6 @@ type PixelatedError = {
   answer: string;
 };
 
-const GAME_SIZE = 10;
 const MAX_ATTEMPTS = 5;
 const PIXEL_GAME_EXCLUDED_CODES = new Set(['mf']);
 const REVEAL_STEPS = [
@@ -39,9 +38,11 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
   private readonly imageCache = new Map<string, HTMLImageElement>();
   private hasSavedRecord = false;
 
-  protected readonly rounds = signal<CountrySummary[]>([]);
-  protected readonly roundIndex = signal(0);
+  protected readonly countryPool = signal<CountrySummary[]>([]);
+  protected readonly usedCodes = signal<string[]>([]);
+  protected readonly currentCountry = signal<CountrySummary | null>(null);
   protected readonly score = signal(0);
+  protected readonly solvedCount = signal(0);
   protected readonly answer = signal('');
   protected readonly attemptsUsed = signal(0);
   protected readonly errors = signal<PixelatedError[]>([]);
@@ -50,23 +51,11 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
   protected readonly isComplete = signal(false);
   protected readonly roundResult = signal<'correct' | 'wrong' | null>(null);
 
-  protected readonly totalRounds = computed(() => this.rounds().length);
-  protected readonly currentCountry = computed(() => this.rounds()[this.roundIndex()] ?? null);
-  protected readonly progressLabel = computed(
-    () => `${Math.min(this.roundIndex() + 1, this.totalRounds())} / ${this.totalRounds()}`
-  );
-  protected readonly progressPercent = computed(() => {
-    const total = this.totalRounds();
-    if (total === 0) {
-      return 0;
-    }
-
-    return Math.round(((this.roundIndex() + 1) / total) * 100);
-  });
   protected readonly pointsForCurrentTry = computed(() => Math.max(1, MAX_ATTEMPTS - this.attemptsUsed()));
   protected readonly resultMessage = computed(() => {
     const result = this.roundResult();
     const country = this.currentCountry();
+
     if (result === 'correct') {
       return 'Bonne réponse !';
     }
@@ -114,7 +103,7 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
       this.roundResult();
 
       queueMicrotask(() => {
-        if (this.roundResult() !== null) {
+        if (this.roundResult() === 'correct' && !this.isComplete()) {
           this.focusNextButton();
           return;
         }
@@ -123,7 +112,7 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
       });
     });
 
-    this.loadRounds();
+    this.loadGame();
   }
 
   ngAfterViewInit(): void {
@@ -133,7 +122,7 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
 
   protected submitAnswer(): void {
     const country = this.currentCountry();
-    if (!country || this.isLocked() || this.isLoading()) {
+    if (!country || this.isLocked() || this.isLoading() || this.isComplete()) {
       return;
     }
 
@@ -143,14 +132,13 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
     }
 
     const normalizedAnswer = this.normalize(rawAnswer);
-    const acceptedAnswers = new Set([
-      this.normalize(country.nameFrench),
-      this.normalize(country.nameEnglish)
-    ]);
+    const acceptedAnswers = new Set([this.normalize(country.nameFrench), this.normalize(country.nameEnglish)]);
 
     if (acceptedAnswers.has(normalizedAnswer)) {
       const gained = this.pointsForCurrentTry();
       this.score.update((score) => score + gained);
+      this.solvedCount.update((count) => count + 1);
+      this.usedCodes.update((codes) => [...codes, country.code]);
       this.isLocked.set(true);
       this.roundResult.set('correct');
       return;
@@ -170,6 +158,7 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
       ]);
       this.isLocked.set(true);
       this.roundResult.set('wrong');
+      this.finishGame();
       return;
     }
 
@@ -177,26 +166,24 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
   }
 
   protected restartGame(): void {
-    this.loadRounds();
+    this.loadGame();
   }
 
   protected goToNextRound(): void {
-    if (this.roundResult() === null) {
+    if (this.roundResult() !== 'correct' || this.isComplete()) {
       return;
     }
 
     this.advanceRound();
   }
 
-  protected getMaxScore(): number {
-    return GAME_SIZE * MAX_ATTEMPTS;
-  }
-
-  private loadRounds(): void {
+  private loadGame(): void {
     this.isLoading.set(true);
-    this.rounds.set([]);
-    this.roundIndex.set(0);
+    this.countryPool.set([]);
+    this.usedCodes.set([]);
+    this.currentCountry.set(null);
     this.score.set(0);
+    this.solvedCount.set(0);
     this.answer.set('');
     this.attemptsUsed.set(0);
     this.errors.set([]);
@@ -210,25 +197,35 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
       .pipe(take(1))
       .subscribe((countries) => {
         const filtered = countries.filter((country) => !PIXEL_GAME_EXCLUDED_CODES.has(country.code));
-        const uniqueByFlag = this.keepSingleCountryByFlag(filtered);
-
-        this.rounds.set(this.shuffle(uniqueByFlag).slice(0, GAME_SIZE));
+        this.countryPool.set(this.keepSingleCountryByFlag(filtered));
+        this.pickNextCountry();
         this.isLoading.set(false);
         this.renderCurrentFlag();
       });
   }
 
   private advanceRound(): void {
-    if (this.roundIndex() >= this.totalRounds() - 1) {
-      this.finishGame();
-      return;
-    }
-
-    this.roundIndex.update((index) => index + 1);
     this.answer.set('');
     this.attemptsUsed.set(0);
     this.roundResult.set(null);
     this.isLocked.set(false);
+    this.pickNextCountry();
+  }
+
+  private pickNextCountry(): void {
+    const pool = this.countryPool();
+    if (pool.length === 0) {
+      this.currentCountry.set(null);
+      return;
+    }
+
+    const used = new Set(this.usedCodes());
+    const available = pool.filter((country) => !used.has(country.code));
+    const source = available.length > 0 ? available : pool;
+    const currentCode = this.currentCountry()?.code ?? null;
+    const choices = currentCode ? source.filter((country) => country.code !== currentCode) : source;
+
+    this.currentCountry.set(this.pickRandom(choices.length > 0 ? choices : source));
   }
 
   private renderCurrentFlag(): void {
@@ -392,7 +389,7 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
 
   private focusNextButton(): void {
     const button = this.nextButtonRef?.nativeElement;
-    if (!button || this.isLoading() || this.isComplete() || this.roundResult() === null) {
+    if (!button || this.isLoading() || this.isComplete() || this.roundResult() !== 'correct') {
       return;
     }
 
@@ -416,15 +413,8 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
     return deduped;
   }
 
-  private shuffle<T>(values: T[]): T[] {
-    const copy = [...values];
-
-    for (let index = copy.length - 1; index > 0; index -= 1) {
-      const swapIndex = Math.floor(Math.random() * (index + 1));
-      [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
-    }
-
-    return copy;
+  private pickRandom(countries: CountrySummary[]): CountrySummary {
+    return countries[Math.floor(Math.random() * countries.length)];
   }
 
   private finishGame(): void {
@@ -434,17 +424,11 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
       return;
     }
 
-    const maxScore = this.getMaxScore();
-    if (maxScore <= 0) {
-      return;
-    }
-
     this.personalRecordsService.saveResult('pixel-flag', {
-      score: this.score(),
-      maxScore
+      score: this.solvedCount(),
+      maxScore: Math.max(1, this.solvedCount()),
+      streak: this.solvedCount()
     });
     this.hasSavedRecord = true;
   }
 }
-
-
