@@ -1,24 +1,47 @@
-﻿<div class="app-shell">
+<div class="app-shell">
   <header class="topbar">
     <a class="brand" routerLink="/">FindTheFlag</a>
 
-    <details class="header-menu" #mainMenu>
-      <summary class="menu-trigger" aria-label="Ouvrir le menu principal">
+    <div class="header-menu">
+      <button
+        type="button"
+        class="menu-trigger"
+        aria-label="Ouvrir le menu principal"
+        aria-haspopup="menu"
+        [attr.aria-expanded]="isMenuOpen()"
+        (click)="toggleMenu()"
+      >
         <span class="menu-line"></span>
         <span class="menu-line"></span>
         <span class="menu-line"></span>
-      </summary>
+      </button>
 
-      <nav class="menu-panel" aria-label="Navigation principale">
-        <a routerLink="/pays" (click)="closeMenu(mainMenu)">Tous les pays</a>
-        <button type="button" (click)="toggleTheme(); closeMenu(mainMenu)">
-          {{ themeLabel() }}
-        </button>
-        <a routerLink="/records" (click)="closeMenu(mainMenu)">Mes records</a>
-      </nav>
-    </details>
+      @if (isMenuOpen()) {
+        <nav class="menu-panel" aria-label="Navigation principale">
+          <a routerLink="/pays" (click)="closeMenu()">Tous les pays</a>
+          <button type="button" (click)="toggleTheme(); closeMenu()">
+            {{ themeLabel() }}
+          </button>
+          <a routerLink="/records" (click)="closeMenu()">Mes records</a>
+        </nav>
+      }
+    </div>
   </header>
+
+  @if (isMenuOpen()) {
+    <button
+      type="button"
+      class="menu-backdrop"
+      aria-label="Fermer le menu principal"
+      (click)="closeMenu()"
+    ></button>
+  }
+
+  @if (mobileNotice(); as notice) {
+    <aside class="mobile-notice" role="status" aria-live="polite">
+      {{ notice }}
+    </aside>
+  }
 
   <router-outlet />
 </div>
-

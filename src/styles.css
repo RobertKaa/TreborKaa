@@ -4,12 +4,18 @@ html,
 body {
   margin: 0;
   min-height: 100%;
+  overscroll-behavior-y: contain;
 }
 
 body {
   font-family: Manrope, 'Segoe UI', sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+}
+
+:root {
+  --app-vh: 1vh;
+  --keyboard-offset: 0px;
 }
 
 h1,
@@ -26,6 +32,160 @@ select {
   font: inherit;
 }
 
+button,
+a,
+[role='button'],
+summary {
+  touch-action: manipulation;
+}
+
+img {
+  max-width: 100%;
+}
+
 ::selection {
   background: rgba(61, 125, 255, 0.25);
+}
+
+@media (pointer: coarse) {
+  button,
+  a,
+  summary,
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 860px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+
+  .game-shell,
+  .chrono-shell,
+  .culture-shell,
+  .pixel-shell,
+  .error-shell,
+  .rebuild-shell {
+    padding-bottom: calc(164px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .status-dock {
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px) + var(--keyboard-offset, 0px)) !important;
+    width: calc(100vw - 16px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) !important;
+    max-height: 42vh;
+    overflow: auto;
+  }
+
+  app-root.mobile-viewport .status-dock {
+    /* Remove gameplay overlay on mobile */
+    position: static !important;
+    inset: auto !important;
+    left: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-height: none;
+    margin-top: 8px;
+    z-index: 0;
+    overflow: visible;
+  }
+
+  .hero-card,
+  .question-card,
+  .board-card,
+  .workspace-card,
+  .difficulty-card {
+    border-radius: 20px !important;
+  }
+
+  .summary-modal {
+    top: calc(16px + env(safe-area-inset-top, 0px)) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    max-height: calc(100dvh - 32px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  app-root.mobile-viewport .game-shell,
+  app-root.mobile-viewport .chrono-shell,
+  app-root.mobile-viewport .culture-shell,
+  app-root.mobile-viewport .pixel-shell,
+  app-root.mobile-viewport .error-shell,
+  app-root.mobile-viewport .rebuild-shell {
+    padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  :is(
+      .ghost-link,
+      .switch-link,
+      .next-button,
+      .primary-button,
+      .difficulty-button,
+      .pattern-chip,
+      .piece-actions button,
+      .sort-controls button
+    ) {
+    min-height: 38px !important;
+    padding: 8px 12px !important;
+    font-size: 0.92rem;
+    line-height: 1.25;
+    max-width: 100%;
+    text-wrap: balance;
+  }
+
+  :is(.hero-actions, .summary-actions, .next-wrap, .difficulty-switch, .sort-controls) {
+    gap: 8px !important;
+    flex-wrap: wrap;
+  }
+}
+
+app-root.mobile-keyboard-open.mobile-viewport .status-dock {
+  opacity: 0;
+  pointer-events: none;
+}
+
+app-root.mobile-landscape .status-dock {
+  position: sticky !important;
+  inset: auto !important;
+  left: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  margin-top: 8px;
+  margin-bottom: 0;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+app-root.mobile-landscape .game-shell,
+app-root.mobile-landscape .chrono-shell,
+app-root.mobile-landscape .culture-shell,
+app-root.mobile-landscape .pixel-shell,
+app-root.mobile-landscape .error-shell,
+app-root.mobile-landscape .rebuild-shell {
+  padding-bottom: 12px !important;
+}
+
+.modal-backdrop {
+  z-index: 120 !important;
+}
+
+.summary-modal {
+  z-index: 121 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
