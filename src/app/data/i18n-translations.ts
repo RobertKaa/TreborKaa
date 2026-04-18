@@ -296,7 +296,7 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'achievement.mystery-combo.title': 'Combo cache',
     'achievement.mystery-combo.description': 'Succes mystere debloque.',
     'achievement.mystery.locked.title': 'Succes mystere',
-    'achievement.mystery.locked.description': 'Condition secrete.'
+    'achievement.mystery.locked.description': '???'
   },
   en: {
     'language.label': 'Language',

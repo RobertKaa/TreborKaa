@@ -59,9 +59,12 @@ img {
 .table-card,
 .records-card,
 .category-card,
-.mode-card,
-.summary-modal {
+.mode-card {
   animation: rise-in 560ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.summary-modal {
+  animation: none !important;
 }
 
 .mode-card:nth-child(2),
