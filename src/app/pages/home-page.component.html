@@ -1,102 +1,85 @@
-﻿<main class="shell">
-  <section class="menu-panel">
-    <div class="section-heading">
-      <p class="eyebrow">Modes de jeu</p>
-      <p class="intro">Choisis une famille de jeux, puis lance une partie en un clic.</p>
+<main class="shell">
+  <section class="hero-card">
+    <p class="eyebrow">{{ i18n.t('home.eyebrow') }}</p>
+    <h1>{{ i18n.t('home.heroTitle') }}</h1>
+    <p class="intro">{{ i18n.t('home.heroIntro') }}</p>
+  </section>
+
+  <section class="games-card">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">{{ i18n.t('home.gamesKicker') }}</p>
+        <h2>{{ i18n.t('home.gamesTitle') }}</h2>
+      </div>
+      <p class="games-summary">{{ i18n.t('home.gamesCount', { count: games().length }) }}</p>
     </div>
 
-    <div class="category-list">
-      <details class="category-card" open>
-        <summary class="category-head">
-          <div>
-            <p class="category-kicker">Quiz</p>
-            <h2>Quiz</h2>
-          </div>
-          <div class="category-meta">
-            <p class="category-description">Mode classique avec choix du format et de la difficulté.</p>
-            <span class="category-count">{{ quizGames.length + 1 }} jeux</span>
-          </div>
-        </summary>
+    <div class="tabs-row" role="tablist" [attr.aria-label]="i18n.t('home.gamesTabsAria')">
+      <button
+        type="button"
+        class="tab-button"
+        role="tab"
+        [attr.aria-selected]="selectedTab() === 'all'"
+        [class.active]="selectedTab() === 'all'"
+        (click)="setTab('all')"
+      >
+        {{ i18n.t('home.tab.games') }}
+      </button>
+      <button
+        type="button"
+        class="tab-button"
+        role="tab"
+        [attr.aria-selected]="selectedTab() === 'favorites'"
+        [class.active]="selectedTab() === 'favorites'"
+        (click)="setTab('favorites')"
+      >
+        {{ i18n.t('home.tab.favorites') }}
+      </button>
+    </div>
 
-        <div class="mode-grid">
-          <article class="mode-card classic-card">
-            <div class="mode-topline">
-              <span class="mode-line">Classique</span>
+    <div class="games-list">
+      @if (visibleGames().length === 0) {
+        <p class="empty-games">{{ i18n.t('home.emptyFavorites') }}</p>
+      } @else {
+        @for (game of visibleGames(); track game.id) {
+          <article class="game-row" [class.favorite]="game.isFavorite">
+            <div>
+              <div class="game-topline">
+                <h3>{{ i18n.t(game.labelKey) }}</h3>
+                <button
+                  type="button"
+                  class="favorite-button"
+                  [attr.aria-label]="favoriteAriaLabel(game)"
+                  [class.active]="game.isFavorite"
+                  (click)="toggleFavorite(game.id)"
+                >
+                  &#9733;
+                </button>
+              </div>
+              <p class="game-desc">{{ i18n.t(game.descriptionKey) }}</p>
+
+              @if (recordLine(game); as bestLine) {
+                <p class="game-record">{{ bestLine }}</p>
+              }
             </div>
-            <span class="description">Choisis le type de quiz puis lance la difficulté.</span>
 
-            <div class="classic-controls">
-              <label class="classic-label" for="classic-mode">Type de quiz</label>
-              <select
-                id="classic-mode"
-                class="classic-select"
-                [value]="classicMode()"
-                (change)="setClassicMode($any($event.target).value)"
-              >
-                <option value="country-to-flag">Pays -> Drapeaux</option>
-                <option value="flag-to-country">Drapeaux -> Pays</option>
-              </select>
-            </div>
+            <div class="game-actions">
+              @if (game.hasInProgress && game.progressLabel; as progressText) {
+                <div class="resume-block">
+                  <p class="resume-line">{{ progressText }}</p>
+                  <div class="progress-track" aria-hidden="true">
+                    <div class="progress-fill" [style.width.%]="game.progressPercent"></div>
+                  </div>
+                </div>
+              }
 
-            <div class="classic-actions">
-              <a class="play-link easy" [routerLink]="getClassicRoute('easy')">Facile</a>
-              <a class="play-link hard" [routerLink]="getClassicRoute('hard')">Difficile</a>
+              <a class="play-link" [routerLink]="game.route">
+                {{ game.hasInProgress ? i18n.t('home.resumeAction') : i18n.t('common.play') }}
+              </a>
             </div>
           </article>
-
-          @for (game of quizGames; track game.id) {
-            <article class="mode-card" [class.locked]="!game.available">
-              <div class="mode-topline">
-                <span class="mode-line">{{ game.label }}</span>
-                @if (game.badge) {
-                  <span class="mode-badge">{{ game.badge }}</span>
-                }
-              </div>
-              <span class="description">{{ game.description }}</span>
-
-              @if (game.available && game.route; as route) {
-                <a class="play-link" [routerLink]="route">Jouer</a>
-              } @else {
-                <span class="coming-soon">Bientôt disponible</span>
-              }
-            </article>
-          }
-        </div>
-      </details>
-
-      <details class="category-card">
-        <summary class="category-head">
-          <div>
-            <p class="category-kicker">Défis visuels</p>
-            <h2>Défis visuels</h2>
-          </div>
-          <div class="category-meta">
-            <p class="category-description">Repère les erreurs et joue sur la perception visuelle.</p>
-            <span class="category-count">{{ visualGames.length }} jeux</span>
-          </div>
-        </summary>
-
-        <div class="mode-grid">
-          @for (game of visualGames; track game.id) {
-            <article class="mode-card" [class.locked]="!game.available">
-              <div class="mode-topline">
-                <span class="mode-line">{{ game.label }}</span>
-                @if (game.badge) {
-                  <span class="mode-badge">{{ game.badge }}</span>
-                }
-              </div>
-              <span class="description">{{ game.description }}</span>
-
-              @if (game.available && game.route; as route) {
-                <a class="play-link" [routerLink]="route">Jouer</a>
-              } @else {
-                <span class="coming-soon">Bientôt disponible</span>
-              }
-            </article>
-          }
-        </div>
-      </details>
+        }
+      }
     </div>
   </section>
 </main>
-

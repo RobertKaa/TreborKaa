@@ -1,21 +1,21 @@
-﻿<main class="chrono-shell">
+<main class="chrono-shell">
   <section class="hero-card">
     <div>
-      <p class="eyebrow">Mode jeu</p>
-      <h1>Chrono drapeaux</h1>
-      <p class="intro">Enchaîne un maximum de bonnes réponses avant la fin du temps.</p>
+      <p class="eyebrow">{{ i18n.t('classic.chrono.eyebrow') }}</p>
+      <h1>{{ i18n.t('classic.chrono.title') }}</h1>
+      <p class="intro">{{ i18n.t('classic.chrono.intro') }}</p>
     </div>
     <div class="hero-actions">
-      <a class="ghost-link" routerLink="/">Retour à l'accueil</a>
+      <a class="ghost-link" routerLink="/">{{ i18n.t('common.backHome') }}</a>
       <button type="button" class="primary-button" (click)="restartGame()" [disabled]="!isReady()">
-        Relancer
+        {{ i18n.t('classic.chrono.restart') }}
       </button>
     </div>
   </section>
 
   @if (!isReady()) {
     <section class="board-card loading-card">
-      <p>Chargement des pays...</p>
+      <p>{{ i18n.t('common.loadingCountries') }}</p>
     </section>
   } @else if (currentQuestion(); as question) {
     <section class="board-card">
@@ -30,7 +30,7 @@
 
       @if (question.mode === 'flag-to-country') {
         <div class="prompt-flag">
-          <img [src]="question.promptCountry.flagUrl" [alt]="'Drapeau de ' + question.promptCountry.nameFrench" />
+          <img [src]="question.promptCountry.flagUrl" [alt]="i18n.t('countries.flagOf', { country: countryName(question.promptCountry) })" />
         </div>
       }
 
@@ -45,7 +45,7 @@
               [disabled]="answered() || isComplete()"
               (click)="selectAnswer(option.code)"
             >
-              {{ option.nameFrench }}
+              {{ countryName(option) }}
             </button>
           }
         </div>
@@ -61,7 +61,7 @@
               (click)="selectAnswer(option.code)"
             >
               <span class="flag-surface">
-                <img [src]="option.flagUrl" [alt]="'Drapeau de ' + option.nameFrench" />
+                <img [src]="option.flagUrl" [alt]="i18n.t('countries.flagOf', { country: countryName(option) })" />
               </span>
             </button>
           }
@@ -71,10 +71,10 @@
   }
 </main>
 
-<section class="status-dock" aria-label="État du mode chrono">
+<section class="status-dock" [attr.aria-label]="i18n.t('classic.chrono.stateAria')">
   <div class="status-block time-block">
     <div class="status-row">
-      <p class="status-label">Temps</p>
+      <p class="status-label">{{ i18n.t('classic.chrono.time') }}</p>
       <p class="status-value">{{ timerLabel() }}</p>
     </div>
     <div class="progress-track" aria-hidden="true">
@@ -83,17 +83,17 @@
   </div>
 
   <div class="status-block">
-    <p class="status-label">Score</p>
+    <p class="status-label">{{ i18n.t('classic.chrono.score') }}</p>
     <p class="status-value">{{ score() }}</p>
   </div>
 
   <div class="status-block">
-    <p class="status-label">Série</p>
+    <p class="status-label">{{ i18n.t('classic.chrono.streak') }}</p>
     <p class="status-value">x{{ streak() }}</p>
   </div>
 
   <div class="status-block">
-    <p class="status-label">Questions</p>
+    <p class="status-label">{{ i18n.t('classic.chrono.questions') }}</p>
     <p class="status-value">{{ totalAnswers() }}</p>
   </div>
 </section>
@@ -109,39 +109,39 @@
   <section class="summary-modal" role="dialog" aria-modal="true" aria-labelledby="summary-title">
     <div class="summary-head">
       <div>
-        <p class="eyebrow">Chrono terminé</p>
-        <h2 id="summary-title">Résultat final</h2>
+        <p class="eyebrow">{{ i18n.t('classic.chrono.completed') }}</p>
+        <h2 id="summary-title">{{ i18n.t('common.finalResult') }}</h2>
       </div>
     </div>
 
     <div class="summary-score">
       <div>
-        <p class="status-label">Score total</p>
+        <p class="status-label">{{ i18n.t('classic.chrono.totalScore') }}</p>
         <p class="summary-value">{{ score() }}</p>
       </div>
       <div>
-        <p class="status-label">Précision</p>
+        <p class="status-label">{{ i18n.t('common.accuracy') }}</p>
         <p class="summary-value">{{ accuracy() }}%</p>
       </div>
       <div>
-        <p class="status-label">Meilleure série</p>
+        <p class="status-label">{{ i18n.t('classic.chrono.bestStreak') }}</p>
         <p class="summary-value">x{{ bestStreak() }}</p>
       </div>
     </div>
 
     <div class="mistakes-list">
       @if (errors().length === 0) {
-        <p class="empty-state">Aucune erreur sur cette session.</p>
+        <p class="empty-state">{{ i18n.t('classic.chrono.emptyErrors') }}</p>
       } @else {
         @for (error of visibleErrors(); track $index) {
           <article class="mistake-card">
             <div>
               <p class="mistake-country">{{ getErrorPrompt(error) }}</p>
-              <p class="mistake-line">Ta réponse: {{ error.selectedCountry?.nameFrench ?? 'Aucune' }}</p>
-              <p class="mistake-line">Bonne réponse: {{ error.correctCountry.nameFrench }}</p>
+              <p class="mistake-line">{{ i18n.t('common.yourAnswer') }}: {{ error.selectedCountry ? countryName(error.selectedCountry) : i18n.t('common.none') }}</p>
+              <p class="mistake-line">{{ i18n.t('common.correctAnswer') }}: {{ countryName(error.correctCountry) }}</p>
             </div>
             <div class="mistake-flag">
-              <img [src]="error.correctCountry.flagUrl" [alt]="'Drapeau de ' + error.correctCountry.nameFrench" />
+              <img [src]="error.correctCountry.flagUrl" [alt]="i18n.t('countries.flagOf', { country: countryName(error.correctCountry) })" />
             </div>
           </article>
         }
@@ -149,10 +149,8 @@
     </div>
 
     <div class="summary-actions">
-      <a class="ghost-link" routerLink="/">Retour à l'accueil</a>
-      <button type="button" class="primary-button" (click)="restartGame()">Rejouer</button>
+      <a class="ghost-link" routerLink="/">{{ i18n.t('common.backHome') }}</a>
+      <button type="button" class="primary-button" (click)="restartGame()">{{ i18n.t('common.replay') }}</button>
     </div>
   </section>
 }
-
-

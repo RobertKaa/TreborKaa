@@ -3,8 +3,11 @@ import { AfterViewInit, Component, ElementRef, ViewChild, computed, effect, inje
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { take } from 'rxjs';
+import { GameId } from '../data/game-catalog';
 import { CountrySummary } from '../models/country-summary';
 import { CountriesService } from '../services/countries.service';
+import { GameProgressService } from '../services/game-progress.service';
+import { I18nService } from '../services/i18n.service';
 import { PersonalRecordsService } from '../services/personal-records.service';
 
 type PixelatedError = {
@@ -22,6 +25,25 @@ const REVEAL_STEPS = [
   { sampleWidth: 40, shiftRate: 0.03, jitterFactor: 0.08 }
 ];
 
+type PixelatedErrorSnapshot = {
+  countryCode: string;
+  answer: string;
+};
+
+type PixelProgressSnapshot = {
+  version: 1;
+  countryPoolCodes: string[];
+  usedCodes: string[];
+  currentCountryCode: string | null;
+  score: number;
+  solvedCount: number;
+  answer: string;
+  attemptsUsed: number;
+  errors: PixelatedErrorSnapshot[];
+  isLocked: boolean;
+  roundResult: 'correct' | 'wrong' | null;
+};
+
 @Component({
   selector: 'app-pixelated-flag-game-page',
   imports: [CommonModule, FormsModule, RouterLink],
@@ -29,12 +51,15 @@ const REVEAL_STEPS = [
   styleUrl: './pixelated-flag-game-page.component.css'
 })
 export class PixelatedFlagGamePageComponent implements AfterViewInit {
+  private static readonly PROGRESS_GAME_ID: GameId = 'pixel-flag';
   @ViewChild('pixelCanvas') private canvasRef?: ElementRef<HTMLCanvasElement>;
   @ViewChild('answerInput') private answerInputRef?: ElementRef<HTMLInputElement>;
   @ViewChild('nextButton') private nextButtonRef?: ElementRef<HTMLButtonElement>;
 
+  protected readonly i18n = inject(I18nService);
   private readonly countriesService = inject(CountriesService);
   private readonly personalRecordsService = inject(PersonalRecordsService);
+  private readonly progressService = inject(GameProgressService);
   private readonly imageCache = new Map<string, HTMLImageElement>();
   private hasSavedRecord = false;
 
@@ -57,11 +82,13 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
     const country = this.currentCountry();
 
     if (result === 'correct') {
-      return 'Bonne réponse !';
+      return this.i18n.t('classic.pixel.correct');
     }
 
     if (result === 'wrong') {
-      return `Mauvaise réponse : '${country?.nameFrench ?? ''}'`;
+      return this.i18n.t('classic.pixel.wrong', {
+        country: country ? this.countryName(country) : ''
+      });
     }
 
     return null;
@@ -113,6 +140,34 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
     });
 
     this.loadGame();
+
+    effect(() => {
+      const country = this.currentCountry();
+      const pool = this.countryPool();
+
+      if (pool.length === 0 || !country || this.isComplete()) {
+        if (this.isComplete()) {
+          this.clearProgress();
+        }
+        return;
+      }
+
+      this.progressService.saveProgress(
+        PixelatedFlagGamePageComponent.PROGRESS_GAME_ID,
+        this.buildProgressSnapshot(),
+        {
+          percent:
+            pool.length > 0
+              ? Math.max(0, Math.min(99, Math.round((this.usedCodes().length / pool.length) * 100)))
+              : 0,
+          labelKey: 'home.resume.pixel',
+          labelParams: {
+            score: this.score(),
+            solved: this.solvedCount()
+          }
+        }
+      );
+    });
   }
 
   ngAfterViewInit(): void {
@@ -166,6 +221,7 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
   }
 
   protected restartGame(): void {
+    this.clearProgress();
     this.loadGame();
   }
 
@@ -175,6 +231,10 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
     }
 
     this.advanceRound();
+  }
+
+  protected countryName(country: CountrySummary): string {
+    return this.i18n.countryName(country);
   }
 
   private loadGame(): void {
@@ -197,8 +257,13 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
       .pipe(take(1))
       .subscribe((countries) => {
         const filtered = countries.filter((country) => !PIXEL_GAME_EXCLUDED_CODES.has(country.code));
-        this.countryPool.set(this.keepSingleCountryByFlag(filtered));
-        this.pickNextCountry();
+        const deduped = this.keepSingleCountryByFlag(filtered);
+        this.countryPool.set(deduped);
+
+        if (!this.restoreProgress(deduped)) {
+          this.pickNextCountry();
+        }
+
         this.isLoading.set(false);
         this.renderCurrentFlag();
       });
@@ -430,5 +495,81 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
       streak: this.solvedCount()
     });
     this.hasSavedRecord = true;
+    this.clearProgress();
+  }
+
+  private buildProgressSnapshot(): PixelProgressSnapshot {
+    return {
+      version: 1,
+      countryPoolCodes: this.countryPool().map((country) => country.code),
+      usedCodes: [...this.usedCodes()],
+      currentCountryCode: this.currentCountry()?.code ?? null,
+      score: this.score(),
+      solvedCount: this.solvedCount(),
+      answer: this.answer(),
+      attemptsUsed: this.attemptsUsed(),
+      errors: this.errors().map((error) => ({
+        countryCode: error.country.code,
+        answer: error.answer
+      })),
+      isLocked: this.isLocked(),
+      roundResult: this.roundResult()
+    };
+  }
+
+  private restoreProgress(countries: CountrySummary[]): boolean {
+    const snapshot = this.progressService.getPayload<PixelProgressSnapshot>(
+      PixelatedFlagGamePageComponent.PROGRESS_GAME_ID
+    );
+    if (!snapshot || snapshot.version !== 1) {
+      return false;
+    }
+
+    const byCode = new Map(countries.map((country) => [country.code, country]));
+    const pool = snapshot.countryPoolCodes
+      .map((code) => byCode.get(code) ?? null)
+      .filter((country): country is CountrySummary => !!country);
+    if (pool.length === 0) {
+      return false;
+    }
+
+    this.countryPool.set(pool);
+    this.usedCodes.set(snapshot.usedCodes.filter((code) => byCode.has(code)));
+    this.currentCountry.set(
+      snapshot.currentCountryCode ? byCode.get(snapshot.currentCountryCode) ?? null : null
+    );
+    this.score.set(snapshot.score);
+    this.solvedCount.set(snapshot.solvedCount);
+    this.answer.set(snapshot.answer);
+    this.attemptsUsed.set(snapshot.attemptsUsed);
+    this.errors.set(
+      snapshot.errors
+        .map((error) => {
+          const country = byCode.get(error.countryCode);
+          if (!country) {
+            return null;
+          }
+
+          return {
+            country,
+            answer: error.answer
+          };
+        })
+        .filter((error): error is PixelatedError => !!error)
+    );
+    this.isLocked.set(snapshot.isLocked);
+    this.roundResult.set(snapshot.roundResult);
+    this.isComplete.set(false);
+    this.hasSavedRecord = false;
+
+    if (!this.currentCountry()) {
+      this.pickNextCountry();
+    }
+
+    return true;
+  }
+
+  private clearProgress(): void {
+    this.progressService.clearProgress(PixelatedFlagGamePageComponent.PROGRESS_GAME_ID);
   }
 }

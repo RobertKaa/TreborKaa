@@ -1,22 +1,22 @@
-﻿<main class="error-shell">
+<main class="error-shell">
   <section class="hero-card">
     <div>
-      <p class="eyebrow">Mode jeu</p>
-      <h1>Trouver l'erreur</h1>
-      <p class="intro">Un seul élément est faux. Clique sur la mauvaise zone du drapeau.</p>
+      <p class="eyebrow">{{ i18n.t('classic.findError.eyebrow') }}</p>
+      <h1>{{ i18n.t('classic.findError.title') }}</h1>
+      <p class="intro">{{ i18n.t('classic.findError.intro') }}</p>
     </div>
 
     <div class="hero-actions">
-      <a class="ghost-link" routerLink="/">Retour à l'accueil</a>
+      <a class="ghost-link" routerLink="/">{{ i18n.t('common.backHome') }}</a>
     </div>
   </section>
 
   @if (currentErrorPuzzle(); as current) {
     <section class="board-card">
       <div class="board-copy">
-        <p class="question-label">Quel élément est incorrect ?</p>
-        <h2>{{ current.puzzle.nameFrench }}</h2>
-        <p class="board-hint">Il n'y a qu'une seule erreur visible.</p>
+        <p class="question-label">{{ i18n.t('classic.findError.question') }}</p>
+        <h2>{{ countryName(current.puzzle) }}</h2>
+        <p class="board-hint">{{ i18n.t('classic.findError.hint') }}</p>
       </div>
 
       <div class="flag-board">
@@ -142,9 +142,9 @@
   }
 </main>
 
-<section class="status-dock" aria-label="État du jeu">
+<section class="status-dock" [attr.aria-label]="i18n.t('classic.findError.statusAria')">
   <div class="status-block">
-    <p class="status-label">Question</p>
+    <p class="status-label">{{ i18n.t('classic.rebuild.questionCount') }}</p>
     <p class="status-value">{{ progressLabel() }}</p>
     <div class="progress-track" aria-hidden="true">
       <div class="progress-fill" [style.width.%]="progressPercent()"></div>
@@ -152,7 +152,7 @@
   </div>
 
   <div class="status-block">
-    <p class="status-label">Série</p>
+    <p class="status-label">{{ i18n.t('classic.rebuild.streak') }}</p>
     <p class="status-value">{{ score() }}</p>
   </div>
 </section>
@@ -162,39 +162,39 @@
   <section class="summary-modal" role="dialog" aria-modal="true" aria-labelledby="summary-title">
     <div class="summary-head">
       <div>
-        <p class="eyebrow">Partie terminée</p>
-        <h2 id="summary-title">Résultat final</h2>
+        <p class="eyebrow">{{ i18n.t('common.completed') }}</p>
+        <h2 id="summary-title">{{ i18n.t('common.finalResult') }}</h2>
       </div>
     </div>
 
     <div class="summary-score">
       <div>
-        <p class="status-label">Série finale</p>
+        <p class="status-label">{{ i18n.t('classic.rebuild.finalStreak') }}</p>
         <p class="summary-value">{{ score() }}</p>
       </div>
       <div>
-        <p class="status-label">Erreur fatale</p>
+        <p class="status-label">{{ i18n.t('classic.rebuild.fatalError') }}</p>
         <p class="summary-value">{{ errors().length }}</p>
       </div>
     </div>
 
     <div class="mistakes-list">
       @if (errors().length === 0) {
-        <p class="empty-state">Aucune erreur sur cette partie.</p>
+        <p class="empty-state">{{ i18n.t('classic.rebuild.emptyErrors') }}</p>
       } @else {
         @for (error of errors(); track error.puzzle.code) {
           <article class="mistake-card">
             <div>
-              <p class="mistake-country">{{ error.puzzle.nameFrench }}</p>
+              <p class="mistake-country">{{ countryName(error.puzzle) }}</p>
               <p class="mistake-detail">
-                Couleur affichée: <span [style.color]="error.wrongColor">{{ error.wrongColor }}</span>
+                {{ i18n.t('classic.findError.colorShown', { color: error.wrongColor }) }}
               </p>
               <p class="mistake-detail">
-                Bonne couleur: <span [style.color]="error.correctColor">{{ error.correctColor }}</span>
+                {{ i18n.t('classic.findError.colorExpected', { color: error.correctColor }) }}
               </p>
             </div>
             <div class="mistake-reference">
-              <img [src]="error.puzzle.flagUrl" [alt]="'Drapeau de ' + error.puzzle.nameFrench" />
+              <img [src]="error.puzzle.flagUrl" [alt]="i18n.t('countries.flagOf', { country: countryName(error.puzzle) })" />
             </div>
           </article>
         }
@@ -202,10 +202,8 @@
     </div>
 
     <div class="summary-actions">
-      <a class="ghost-link" routerLink="/">Retour à l'accueil</a>
-      <button type="button" class="primary-button" (click)="restartGame()">Recommencer</button>
+      <a class="ghost-link" routerLink="/">{{ i18n.t('common.backHome') }}</a>
+      <button type="button" class="primary-button" (click)="restartGame()">{{ i18n.t('common.restart') }}</button>
     </div>
   </section>
 }
-
-

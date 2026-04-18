@@ -1,7 +1,10 @@
 import { Component, OnDestroy, computed, effect, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { GameId } from '../data/game-catalog';
 import { FLAG_REBUILD_PUZZLES } from '../data/flag-rebuild-puzzles';
 import { FlagRebuildPattern, FlagRebuildPuzzle } from '../models/flag-rebuild-puzzle';
+import { GameProgressService } from '../services/game-progress.service';
+import { I18nService } from '../services/i18n.service';
 import { PersonalRecordsService } from '../services/personal-records.service';
 
 type ErrorPuzzle = {
@@ -20,6 +23,28 @@ type GameError = {
 
 const EXTRA_COLORS = ['#ff7f50', '#2a9d8f', '#8d99ae', '#8338ec', '#f4a261', '#457b9d'];
 
+type ErrorPuzzleSnapshot = {
+  puzzleCode: string;
+  wrongZoneIndex: number;
+  displayedColors: string[];
+  wrongColor: string;
+  correctColor: string;
+};
+
+type FindErrorProgressSnapshot = {
+  version: 1;
+  gamePuzzleCodes: string[];
+  puzzleIndex: number;
+  score: number;
+  isLocked: boolean;
+  errors: Array<{
+    puzzleCode: string;
+    wrongColor: string;
+    correctColor: string;
+  }>;
+  currentErrorPuzzle: ErrorPuzzleSnapshot | null;
+};
+
 @Component({
   selector: 'app-find-the-error-game-page',
   imports: [RouterLink],
@@ -27,7 +52,11 @@ const EXTRA_COLORS = ['#ff7f50', '#2a9d8f', '#8d99ae', '#8338ec', '#f4a261', '#4
   styleUrl: './find-the-error-game-page.component.css'
 })
 export class FindTheErrorGamePageComponent implements OnDestroy {
+  private static readonly PROGRESS_GAME_ID: GameId = 'find-the-error';
+  protected readonly i18n = inject(I18nService);
   private readonly personalRecordsService = inject(PersonalRecordsService);
+  private readonly gameProgressService = inject(GameProgressService);
+  private readonly englishRegionNames = this.createEnglishRegionNames();
   protected readonly allPuzzles = FLAG_REBUILD_PUZZLES;
   protected readonly gamePuzzles = signal<FlagRebuildPuzzle[]>([]);
   protected readonly puzzleIndex = signal(0);
@@ -38,6 +67,7 @@ export class FindTheErrorGamePageComponent implements OnDestroy {
   protected readonly currentErrorPuzzle = signal<ErrorPuzzle | null>(null);
   private nextTimeoutId: number | null = null;
   private hasSavedRecord = false;
+  private skipNextPuzzleInitialization = false;
 
   protected readonly totalPuzzles = computed(() => this.gamePuzzles().length);
   protected readonly currentPuzzle = computed(() => this.gamePuzzles()[this.puzzleIndex()] ?? null);
@@ -59,7 +89,9 @@ export class FindTheErrorGamePageComponent implements OnDestroy {
   });
 
   constructor() {
-    this.startNewGame();
+    if (!this.restoreProgress()) {
+      this.startNewGame();
+    }
 
     effect(() => {
       const puzzle = this.currentPuzzle();
@@ -67,8 +99,35 @@ export class FindTheErrorGamePageComponent implements OnDestroy {
         return;
       }
 
+      if (this.skipNextPuzzleInitialization) {
+        this.skipNextPuzzleInitialization = false;
+        return;
+      }
+
       this.isLocked.set(false);
       this.currentErrorPuzzle.set(this.buildErrorPuzzle(puzzle));
+    });
+
+    effect(() => {
+      const current = this.currentErrorPuzzle();
+      if (!current || this.isComplete()) {
+        if (this.isComplete()) {
+          this.clearProgress();
+        }
+        return;
+      }
+
+      this.gameProgressService.saveProgress(
+        FindTheErrorGamePageComponent.PROGRESS_GAME_ID,
+        this.buildProgressSnapshot(),
+        {
+          percent: Math.max(0, Math.min(99, this.score() * 10)),
+          labelKey: 'home.resume.streak',
+          labelParams: {
+            score: this.score()
+          }
+        }
+      );
     });
   }
 
@@ -98,11 +157,20 @@ export class FindTheErrorGamePageComponent implements OnDestroy {
 
   protected restartGame(): void {
     this.clearTimers();
+    this.clearProgress();
     this.startNewGame();
   }
 
   protected getMaxScore(): number {
     return Math.max(1, this.score() + this.errors().length);
+  }
+
+  protected countryName(puzzle: FlagRebuildPuzzle): string {
+    if (this.i18n.isFrench()) {
+      return puzzle.nameFrench;
+    }
+
+    return this.englishRegionNames?.of(puzzle.code.toUpperCase()) ?? puzzle.nameFrench;
   }
 
   ngOnDestroy(): void {
@@ -236,6 +304,15 @@ export class FindTheErrorGamePageComponent implements OnDestroy {
       maxScore: Math.max(1, this.score())
     });
     this.hasSavedRecord = true;
+    this.clearProgress();
+  }
+
+  private createEnglishRegionNames(): Intl.DisplayNames | null {
+    try {
+      return new Intl.DisplayNames(['en'], { type: 'region' });
+    } catch {
+      return null;
+    }
   }
 
   private shuffle<T>(values: T[]): T[] {
@@ -247,5 +324,89 @@ export class FindTheErrorGamePageComponent implements OnDestroy {
     }
 
     return copy;
+  }
+
+  private buildProgressSnapshot(): FindErrorProgressSnapshot {
+    return {
+      version: 1,
+      gamePuzzleCodes: this.gamePuzzles().map((puzzle) => puzzle.code),
+      puzzleIndex: this.puzzleIndex(),
+      score: this.score(),
+      isLocked: this.isLocked(),
+      errors: this.errors().map((error) => ({
+        puzzleCode: error.puzzle.code,
+        wrongColor: error.wrongColor,
+        correctColor: error.correctColor
+      })),
+      currentErrorPuzzle: this.currentErrorPuzzle()
+        ? {
+            puzzleCode: this.currentErrorPuzzle()!.puzzle.code,
+            wrongZoneIndex: this.currentErrorPuzzle()!.wrongZoneIndex,
+            displayedColors: [...this.currentErrorPuzzle()!.displayedColors],
+            wrongColor: this.currentErrorPuzzle()!.wrongColor,
+            correctColor: this.currentErrorPuzzle()!.correctColor
+          }
+        : null
+    };
+  }
+
+  private restoreProgress(): boolean {
+    const snapshot = this.gameProgressService.getPayload<FindErrorProgressSnapshot>(
+      FindTheErrorGamePageComponent.PROGRESS_GAME_ID
+    );
+    if (!snapshot || snapshot.version !== 1 || snapshot.gamePuzzleCodes.length === 0) {
+      return false;
+    }
+
+    const byCode = new Map(this.allPuzzles.map((puzzle) => [puzzle.code, puzzle]));
+    const puzzles = snapshot.gamePuzzleCodes
+      .map((code) => byCode.get(code) ?? null)
+      .filter((puzzle): puzzle is FlagRebuildPuzzle => !!puzzle);
+    if (puzzles.length === 0) {
+      return false;
+    }
+
+    this.gamePuzzles.set(puzzles);
+    this.puzzleIndex.set(Math.max(0, Math.min(snapshot.puzzleIndex, puzzles.length - 1)));
+    this.score.set(snapshot.score);
+    this.isLocked.set(snapshot.isLocked);
+    this.errors.set(
+      snapshot.errors
+        .map((error) => {
+          const puzzle = byCode.get(error.puzzleCode);
+          if (!puzzle) {
+            return null;
+          }
+
+          return {
+            puzzle,
+            wrongColor: error.wrongColor,
+            correctColor: error.correctColor
+          };
+        })
+        .filter((error): error is GameError => !!error)
+    );
+    this.isComplete.set(false);
+    this.hasSavedRecord = false;
+
+    if (snapshot.currentErrorPuzzle) {
+      const puzzle = byCode.get(snapshot.currentErrorPuzzle.puzzleCode);
+      if (puzzle) {
+        this.skipNextPuzzleInitialization = true;
+        this.currentErrorPuzzle.set({
+          puzzle,
+          wrongZoneIndex: snapshot.currentErrorPuzzle.wrongZoneIndex,
+          displayedColors: snapshot.currentErrorPuzzle.displayedColors,
+          wrongColor: snapshot.currentErrorPuzzle.wrongColor,
+          correctColor: snapshot.currentErrorPuzzle.correctColor
+        });
+      }
+    }
+
+    return true;
+  }
+
+  private clearProgress(): void {
+    this.gameProgressService.clearProgress(FindTheErrorGamePageComponent.PROGRESS_GAME_ID);
   }
 }

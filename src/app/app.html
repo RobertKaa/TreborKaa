@@ -6,7 +6,7 @@
       <button
         type="button"
         class="menu-trigger"
-        aria-label="Ouvrir le menu principal"
+        [attr.aria-label]="i18n.t('menu.open')"
         aria-haspopup="menu"
         [attr.aria-expanded]="isMenuOpen()"
         (click)="toggleMenu()"
@@ -17,12 +17,45 @@
       </button>
 
       @if (isMenuOpen()) {
-        <nav class="menu-panel" aria-label="Navigation principale">
-          <a routerLink="/pays" (click)="closeMenu()">Tous les pays</a>
+        <nav class="menu-panel" [attr.aria-label]="i18n.t('menu.nav')">
+          <a routerLink="/pays" (click)="closeMenu()">
+            <span class="menu-icon icon-countries">&#127758;</span>
+            <span>{{ i18n.t('menu.countries') }}</span>
+          </a>
+          <a routerLink="/succes" (click)="closeMenu()">
+            <span class="menu-icon icon-achievements">&#127942;</span>
+            <span>{{ i18n.t('menu.achievements') }}</span>
+          </a>
           <button type="button" (click)="toggleTheme(); closeMenu()">
-            {{ themeLabel() }}
+            @if (isDarkTheme()) {
+              <span class="menu-icon icon-theme">&#9728;</span>
+            } @else {
+              <span class="menu-icon icon-theme">&#9790;</span>
+            }
+            <span>{{ themeLabel() }}</span>
           </button>
-          <a routerLink="/records" (click)="closeMenu()">Mes records</a>
+          <a routerLink="/records" (click)="closeMenu()">
+            <span class="menu-icon icon-records">&#128200;</span>
+            <span>{{ i18n.t('menu.records') }}</span>
+          </a>
+          <div class="language-switch" role="group" [attr.aria-label]="i18n.t('language.label')">
+            <button
+              type="button"
+              class="language-button"
+              [class.active]="isActiveLanguage('fr')"
+              (click)="setLanguage('fr')"
+            >
+              FR
+            </button>
+            <button
+              type="button"
+              class="language-button"
+              [class.active]="isActiveLanguage('en')"
+              (click)="setLanguage('en')"
+            >
+              EN
+            </button>
+          </div>
         </nav>
       }
     </div>
@@ -32,7 +65,7 @@
     <button
       type="button"
       class="menu-backdrop"
-      aria-label="Fermer le menu principal"
+      [attr.aria-label]="i18n.t('menu.close')"
       (click)="closeMenu()"
     ></button>
   }

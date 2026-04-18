@@ -1,5 +1,7 @@
-import { Component, OnDestroy, computed, signal } from '@angular/core';
+import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
+import { AppLanguage } from './data/i18n-translations';
+import { I18nService } from './services/i18n.service';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +16,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
   styleUrl: './app.css'
 })
 export class App implements OnDestroy {
+  protected readonly i18n = inject(I18nService);
   private readonly canUseWindow = typeof window !== 'undefined';
   private readonly viewportRef = this.canUseWindow ? window.visualViewport : null;
   private readonly prefersDark =
@@ -27,7 +30,9 @@ export class App implements OnDestroy {
   private readonly onGlobalResourceError = (event: Event) => this.handleResourceError(event);
 
   protected readonly isDarkTheme = signal(this.readInitialTheme());
-  protected readonly themeLabel = computed(() => (this.isDarkTheme() ? 'Mode clair' : 'Mode sombre'));
+  protected readonly themeLabel = computed(() =>
+    this.isDarkTheme() ? this.i18n.t('theme.light') : this.i18n.t('theme.dark')
+  );
   protected readonly isMobileViewport = signal(false);
   protected readonly isMobileLandscape = signal(false);
   protected readonly isOffline = signal(false);
@@ -35,11 +40,11 @@ export class App implements OnDestroy {
   protected readonly isMenuOpen = signal(false);
   protected readonly mobileNotice = computed(() => {
     if (this.isOffline()) {
-      return 'Mode hors ligne: certains drapeaux peuvent être indisponibles.';
+      return this.i18n.t('mobile.offline');
     }
 
     if (this.isMobileLandscape()) {
-      return 'Mode paysage compact activé pour rester jouable sur petit écran.';
+      return this.i18n.t('mobile.landscape');
     }
 
     return null;
@@ -66,6 +71,15 @@ export class App implements OnDestroy {
 
   protected closeMenu(): void {
     this.isMenuOpen.set(false);
+  }
+
+  protected setLanguage(language: AppLanguage): void {
+    this.i18n.setLanguage(language);
+    this.closeMenu();
+  }
+
+  protected isActiveLanguage(language: AppLanguage): boolean {
+    return this.i18n.currentLanguage() === language;
   }
 
   ngOnDestroy(): void {
@@ -154,11 +168,13 @@ export class App implements OnDestroy {
 
     target.dataset['ftfFallbackApplied'] = '1';
     target.src = this.buildFallbackFlagDataUri();
-    target.alt = target.alt ? `${target.alt} (indisponible)` : 'Drapeau indisponible';
+    const fallbackLabel = this.i18n.t('fallback.unavailable');
+    target.alt = target.alt ? `${target.alt} (${fallbackLabel.toLowerCase()})` : fallbackLabel;
   }
 
   private buildFallbackFlagDataUri(): string {
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-label="Drapeau indisponible">
+    const unavailable = this.i18n.t('fallback.unavailable');
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-label="${unavailable}">
       <defs>
         <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
           <stop offset="0%" stop-color="#dfe6ff"/>
@@ -167,7 +183,7 @@ export class App implements OnDestroy {
       </defs>
       <rect width="320" height="200" fill="url(#g)"/>
       <rect x="18" y="18" width="284" height="164" rx="14" fill="none" stroke="#8ca0d1" stroke-width="6" stroke-dasharray="10 8"/>
-      <text x="160" y="108" text-anchor="middle" font-family="Manrope, Arial, sans-serif" font-size="20" fill="#41507e">Drapeau indisponible</text>
+      <text x="160" y="108" text-anchor="middle" font-family="Manrope, Arial, sans-serif" font-size="20" fill="#41507e">${unavailable}</text>
     </svg>`;
 
     return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;

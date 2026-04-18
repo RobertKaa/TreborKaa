@@ -2,9 +2,12 @@ import { computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
+import { GameId } from '../data/game-catalog';
 import { CountrySummary } from '../models/country-summary';
 import { GameRecordKey } from '../models/personal-record';
 import { CountriesService } from '../services/countries.service';
+import { GameProgressService } from '../services/game-progress.service';
+import { I18nService } from '../services/i18n.service';
 import { PersonalRecordsService } from '../services/personal-records.service';
 
 type GameDifficulty = 'easy' | 'hard';
@@ -23,19 +26,53 @@ export type ClassicQuizError = {
 type QuizSetup<TQuestion extends BaseQuestion> = {
   buildQuestion: (countries: CountrySummary[], difficulty: GameDifficulty, excludeCodes: string[]) => TQuestion;
   getRecordKey: (difficulty: GameDifficulty) => GameRecordKey;
+  getProgressGameId: (difficulty: GameDifficulty) => GameId;
+  progressLabelKey: string;
 };
 
 const MAX_ERRORS = 3;
 
+type ClassicQuizErrorSnapshot = {
+  promptCode: string;
+  selectedCode: string | null;
+  correctCode: string;
+};
+
+type ClassicQuestionSnapshot = {
+  promptCode: string;
+  optionCodes: string[];
+  correctCode: string;
+};
+
+type ClassicQuizProgressSnapshot = {
+  version: 1;
+  difficulty: GameDifficulty;
+  score: number;
+  questionIndex: number;
+  answered: boolean;
+  selectedCode: string | null;
+  wrongCodes: string[];
+  wrongAttempts: number;
+  usedCodes: string[];
+  isComplete: boolean;
+  errors: ClassicQuizErrorSnapshot[];
+  currentQuestion: ClassicQuestionSnapshot | null;
+};
+
 export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
   private readonly route = inject(ActivatedRoute);
+  protected readonly i18n = inject(I18nService);
   private readonly countriesService = inject(CountriesService);
   private readonly personalRecordsService = inject(PersonalRecordsService);
+  private readonly gameProgressService = inject(GameProgressService);
   private buildQuestionFn: QuizSetup<TQuestion>['buildQuestion'] | null = null;
   private getRecordKeyFn: QuizSetup<TQuestion>['getRecordKey'] | null = null;
+  private getProgressGameIdFn: QuizSetup<TQuestion>['getProgressGameId'] | null = null;
+  private progressLabelKey = 'home.resume.classic';
   private advanceTimeoutId: number | null = null;
   private hasSavedRecord = false;
   private hasBoundEffect = false;
+  private hasBoundProgressEffect = false;
 
   protected readonly score = signal(0);
   protected readonly questionIndex = signal(1);
@@ -70,6 +107,8 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
   protected setupClassicQuiz(setup: QuizSetup<TQuestion>): void {
     this.buildQuestionFn = setup.buildQuestion;
     this.getRecordKeyFn = setup.getRecordKey;
+    this.getProgressGameIdFn = setup.getProgressGameId;
+    this.progressLabelKey = setup.progressLabelKey;
 
     if (this.hasBoundEffect) {
       return;
@@ -84,9 +123,14 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
         return;
       }
 
-      this.resetGameState();
-      this.currentQuestion.set(this.buildQuestionFn(countries, difficulty, []));
+      const restored = this.restoreProgressState(countries, difficulty);
+      if (!restored) {
+        this.resetGameState();
+        this.currentQuestion.set(this.buildQuestionFn(countries, difficulty, []));
+      }
     });
+
+    this.bindProgressEffect();
   }
 
   protected selectAnswer(code: string): void {
@@ -159,6 +203,7 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
 
   protected restartGame(): void {
     this.resetGameState();
+    this.clearProgressState();
     this.generateQuestion();
   }
 
@@ -188,6 +233,14 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
 
   protected clearQuizTimers(): void {
     this.clearPendingTransitions();
+  }
+
+  protected countryName(country: CountrySummary): string {
+    return this.i18n.countryName(country);
+  }
+
+  protected capitalName(country: CountrySummary): string {
+    return this.i18n.capitalName(country);
   }
 
   private resetGameState(): void {
@@ -244,6 +297,7 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
 
   private finishGame(): void {
     this.isComplete.set(true);
+    this.clearProgressState();
     this.persistRecordIfNeeded();
   }
 
@@ -257,5 +311,150 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
       maxScore: Math.max(1, this.score() + this.wrongAttempts())
     });
     this.hasSavedRecord = true;
+  }
+
+  private bindProgressEffect(): void {
+    if (this.hasBoundProgressEffect) {
+      return;
+    }
+
+    this.hasBoundProgressEffect = true;
+    effect(() => {
+      const countries = this.countriesSignal();
+      const difficulty = this.difficulty();
+      const question = this.currentQuestion();
+      const progressGameId = this.getProgressGameIdFn?.(difficulty) ?? null;
+
+      if (!progressGameId || countries.length < 4 || !question || this.isComplete()) {
+        if (progressGameId && this.isComplete()) {
+          this.gameProgressService.clearProgress(progressGameId);
+        }
+        return;
+      }
+
+      const snapshot = this.buildProgressSnapshot(difficulty, question);
+      this.gameProgressService.saveProgress(progressGameId, snapshot, {
+        percent: this.progressPercent(),
+        labelKey: this.progressLabelKey,
+        labelParams: {
+          current: Math.min(this.questionIndex(), this.totalQuestions()),
+          total: this.totalQuestions()
+        }
+      });
+    });
+  }
+
+  private buildProgressSnapshot(
+    difficulty: GameDifficulty,
+    question: TQuestion
+  ): ClassicQuizProgressSnapshot {
+    return {
+      version: 1,
+      difficulty,
+      score: this.score(),
+      questionIndex: this.questionIndex(),
+      answered: this.answered(),
+      selectedCode: this.selectedCode(),
+      wrongCodes: [...this.wrongCodes()],
+      wrongAttempts: this.wrongAttempts(),
+      usedCodes: [...this.usedCodes()],
+      isComplete: this.isComplete(),
+      errors: this.errors().map((error) => ({
+        promptCode: error.promptCountry.code,
+        selectedCode: error.selectedCountry?.code ?? null,
+        correctCode: error.correctCountry.code
+      })),
+      currentQuestion: {
+        promptCode: question.promptCountry.code,
+        optionCodes: question.options.map((option) => option.code),
+        correctCode: question.correctCode
+      }
+    };
+  }
+
+  private restoreProgressState(countries: CountrySummary[], difficulty: GameDifficulty): boolean {
+    const gameId = this.getProgressGameIdFn?.(difficulty);
+    if (!gameId) {
+      return false;
+    }
+
+    const snapshot = this.gameProgressService.getPayload<ClassicQuizProgressSnapshot>(gameId);
+    if (!snapshot || snapshot.version !== 1 || snapshot.difficulty !== difficulty || snapshot.isComplete) {
+      return false;
+    }
+
+    const byCode = new Map(countries.map((country) => [country.code, country]));
+    const question = this.hydrateQuestion(snapshot.currentQuestion, byCode);
+    if (!question) {
+      return false;
+    }
+
+    this.score.set(snapshot.score);
+    this.questionIndex.set(snapshot.questionIndex);
+    this.answered.set(false);
+    this.selectedCode.set(null);
+    this.wrongCodes.set(snapshot.wrongCodes);
+    this.wrongAttempts.set(snapshot.wrongAttempts);
+    this.usedCodes.set(snapshot.usedCodes);
+    this.isComplete.set(false);
+    this.errors.set(
+      snapshot.errors
+        .map((error) => {
+          const promptCountry = byCode.get(error.promptCode) ?? null;
+          const selectedCountry = error.selectedCode ? byCode.get(error.selectedCode) ?? null : null;
+          const correctCountry = byCode.get(error.correctCode) ?? null;
+          if (!promptCountry || !correctCountry) {
+            return null;
+          }
+
+          return {
+            promptCountry,
+            selectedCountry,
+            correctCountry
+          };
+        })
+        .filter((item): item is ClassicQuizError => !!item)
+    );
+    this.currentQuestion.set(question);
+    this.hasSavedRecord = false;
+    return true;
+  }
+
+  private hydrateQuestion(
+    snapshot: ClassicQuestionSnapshot | null,
+    byCode: Map<string, CountrySummary>
+  ): TQuestion | null {
+    if (!snapshot) {
+      return null;
+    }
+
+    const promptCountry = byCode.get(snapshot.promptCode);
+    if (!promptCountry) {
+      return null;
+    }
+
+    const options = snapshot.optionCodes
+      .map((code) => byCode.get(code) ?? null)
+      .filter((country): country is CountrySummary => !!country);
+    if (options.length < 2) {
+      return null;
+    }
+
+    const baseQuestion: BaseQuestion = {
+      promptCountry,
+      options,
+      correctCode: snapshot.correctCode
+    };
+
+    return baseQuestion as TQuestion;
+  }
+
+  private clearProgressState(): void {
+    const gameId = this.getProgressGameIdFn?.(this.difficulty());
+    if (!gameId) {
+      return;
+    }
+
+    this.gameProgressService.clearProgress(gameId);
   }
 }

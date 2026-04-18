@@ -12,9 +12,9 @@
 .records-card {
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 28px;
+  border-radius: 26px;
   box-shadow: var(--shadow);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px) saturate(120%);
 }
 
 .header-card {
@@ -23,17 +23,21 @@
   align-items: center;
   gap: 18px;
   padding: 22px 24px;
+  background:
+    radial-gradient(circle at 94% 8%, color-mix(in srgb, var(--secondary-soft) 72%, transparent), transparent 35%),
+    var(--card);
 }
 
 .records-card {
-  padding: 20px;
+  padding: 18px;
 }
 
 .eyebrow {
   margin: 0 0 10px;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  font-size: 0.68rem;
+  font-family: 'Space Mono', monospace;
   color: var(--accent-dark);
 }
 
@@ -43,10 +47,8 @@ p {
 }
 
 h1 {
-  font-size: clamp(2rem, 4.6vw, 3.1rem);
-  line-height: 0.95;
-  font-weight: 800;
-  letter-spacing: -0.04em;
+  font-size: clamp(2rem, 4.6vw, 3.4rem);
+  line-height: 0.9;
 }
 
 .intro,
@@ -73,16 +75,23 @@ h1 {
   border: 1px solid var(--line);
   text-decoration: none;
   font-weight: 700;
+  transition: transform 150ms ease, border-color 150ms ease;
 }
 
 .ghost-link {
   color: var(--ink);
-  background: var(--surface-strong);
+  background: color-mix(in srgb, var(--surface-strong) 86%, transparent);
+}
+
+.ghost-link:hover,
+.danger-button:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-line);
 }
 
 .danger-button {
   color: #fff;
-  background: #bc4e4e;
+  background: linear-gradient(135deg, var(--danger), color-mix(in srgb, var(--danger) 74%, #491720));
   cursor: pointer;
 }
 
@@ -94,9 +103,9 @@ h1 {
 
 .record-row {
   padding: 14px;
-  border-radius: 18px;
+  border-radius: 16px;
   border: 1px solid var(--line-soft);
-  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
 }
 
 .record-title {
@@ -105,7 +114,7 @@ h1 {
 }
 
 .record-value {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 800;
   margin-bottom: 6px;
 }

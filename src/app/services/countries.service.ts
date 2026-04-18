@@ -11,6 +11,7 @@ const EXCLUDED_TERRITORY_CODES = new Set([
   'bq', // Pays-Bas caribéens
   'bv', // Île Bouvet
   'hm', // Îles Heard-et-MacDonald
+  'mf', // Saint-Martin (doublon drapeau France)
   'sj', // Svalbard et Jan Mayen
   'um' // Îles mineures éloignées des États-Unis
 ]);

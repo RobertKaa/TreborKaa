@@ -1,0 +1,133 @@
+:host {
+  display: block;
+}
+
+.achievements-shell {
+  display: grid;
+  gap: 16px;
+  padding-bottom: 24px;
+}
+
+.hero-card,
+.grid-card {
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(9px) saturate(120%);
+  padding: 20px;
+  background:
+    radial-gradient(circle at 95% 0%, color-mix(in srgb, var(--accent-soft) 40%, transparent), transparent 36%),
+    var(--card);
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.68rem;
+  font-family: 'Space Mono', monospace;
+  color: var(--accent-dark);
+}
+
+h1,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 0.94;
+  letter-spacing: -0.02em;
+}
+
+.intro {
+  margin-top: 8px;
+  color: var(--ink-soft);
+}
+
+.summary {
+  margin-top: 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.achievement-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.achievement-card {
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  opacity: 0.72;
+}
+
+.achievement-card.unlocked {
+  opacity: 1;
+}
+
+.achievement-card[data-color='lime'].unlocked {
+  border-color: color-mix(in srgb, #45b36a 68%, var(--line));
+  background: color-mix(in srgb, #45b36a 18%, transparent);
+}
+
+.achievement-card[data-color='amber'].unlocked {
+  border-color: color-mix(in srgb, #f39c12 68%, var(--line));
+  background: color-mix(in srgb, #f39c12 18%, transparent);
+}
+
+.achievement-card[data-color='cyan'].unlocked {
+  border-color: color-mix(in srgb, #20b2aa 68%, var(--line));
+  background: color-mix(in srgb, #20b2aa 16%, transparent);
+}
+
+.achievement-card[data-color='rose'].unlocked {
+  border-color: color-mix(in srgb, #d9647a 68%, var(--line));
+  background: color-mix(in srgb, #d9647a 16%, transparent);
+}
+
+.achievement-card[data-color='violet'].unlocked {
+  border-color: color-mix(in srgb, #7d5cc6 68%, var(--line));
+  background: color-mix(in srgb, #7d5cc6 18%, transparent);
+}
+
+.card-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.card-title {
+  font-weight: 700;
+}
+
+.card-state {
+  font-size: 0.72rem;
+  font-family: 'Space Mono', monospace;
+  color: var(--ink-soft);
+}
+
+.card-desc {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 760px) {
+  .achievement-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-card,
+  .grid-card {
+    padding: 16px;
+  }
+}

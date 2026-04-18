@@ -1,22 +1,22 @@
-﻿<main class="culture-shell">
+<main class="culture-shell">
   <section class="hero-card">
     <div>
-      <p class="eyebrow">Mode quiz</p>
-      <h1>Culture drapeaux</h1>
+      <p class="eyebrow">{{ i18n.t('culture.eyebrow') }}</p>
+      <h1>{{ i18n.t('culture.title') }}</h1>
       <p class="intro">
-        Questions sur l'histoire, les symboles et les particularités des drapeaux.
+        {{ i18n.t('culture.intro') }}
       </p>
     </div>
 
     <div class="hero-actions">
-      <a class="ghost-link" routerLink="/">Retour à l'accueil</a>
+      <a class="ghost-link" routerLink="/">{{ i18n.t('common.backHome') }}</a>
     </div>
   </section>
 
   <section class="difficulty-card">
-    <p class="difficulty-label">Difficulté</p>
+    <p class="difficulty-label">{{ i18n.t('common.difficulty') }}</p>
     <div class="difficulty-switch">
-      @for (mode of difficultyModes; track mode.value) {
+      @for (mode of difficultyModes(); track mode.value) {
         <button
           type="button"
           class="difficulty-button"
@@ -31,11 +31,11 @@
 
   @if (isLoading()) {
     <section class="question-card loading-card">
-      <p>Préparation des questions...</p>
+      <p>{{ i18n.t('culture.loading') }}</p>
     </section>
   } @else if (currentQuestion(); as question) {
     <section class="question-card">
-      <p class="question-label">Question culture</p>
+      <p class="question-label">{{ i18n.t('culture.question') }}</p>
       <h2>{{ question.prompt }}</h2>
 
       <div class="option-grid">
@@ -54,18 +54,20 @@
       </div>
 
       @if (answered()) {
-        <section class="feedback-panel" [class.wrong]="feedbackLabel() === 'Mauvaise réponse'">
+        <section class="feedback-panel" [class.wrong]="feedbackLabel() === i18n.t('culture.feedback.wrong')">
           <p class="feedback-title">{{ feedbackLabel() }}</p>
           <p class="feedback-text">{{ question.explanation }}</p>
           @if (question.sourceUrl) {
             <a class="source-link" [href]="question.sourceUrl" target="_blank" rel="noreferrer">
-              Source publique
+              {{ i18n.t('common.publicSource') }}
             </a>
           }
         </section>
 
         <div class="next-wrap">
-          <button type="button" class="next-button" (click)="nextQuestion()">Suivant</button>
+          <button type="button" class="next-button" (click)="nextQuestion()">
+            {{ i18n.t('common.next') }}
+          </button>
         </div>
       }
     </section>
@@ -73,15 +75,15 @@
 </main>
 
 @if (!isLoading() && currentQuestion()) {
-  <section class="status-dock" aria-label="État de la partie">
+  <section class="status-dock" [attr.aria-label]="i18n.t('culture.stateAria')">
     <div class="status-block">
-      <p class="status-label">Difficulté</p>
+      <p class="status-label">{{ i18n.t('common.difficulty') }}</p>
       <p class="status-value">{{ getDifficultyLabel(difficultyMode()) }}</p>
     </div>
 
     <div class="status-block status-progress">
       <div class="status-row">
-        <p class="status-label">Progression</p>
+        <p class="status-label">{{ i18n.t('common.progress') }}</p>
         <p class="status-value">{{ progressLabel() }}</p>
       </div>
       <div class="progress-track" aria-hidden="true">
@@ -90,7 +92,7 @@
     </div>
 
     <div class="status-block">
-      <p class="status-label">Score</p>
+      <p class="status-label">{{ i18n.t('common.score') }}</p>
       <p class="status-value">{{ score() }} / {{ maxScore() }}</p>
     </div>
   </section>
@@ -101,41 +103,41 @@
   <section class="summary-modal" role="dialog" aria-modal="true" aria-labelledby="summary-title">
     <div class="summary-head">
       <div>
-        <p class="eyebrow">Partie terminée</p>
-        <h2 id="summary-title">Résultat final</h2>
+        <p class="eyebrow">{{ i18n.t('common.completed') }}</p>
+        <h2 id="summary-title">{{ i18n.t('common.finalResult') }}</h2>
       </div>
     </div>
 
     <div class="summary-score">
       <div>
-        <p class="status-label">Bonnes réponses</p>
+        <p class="status-label">{{ i18n.t('common.correctAnswers') }}</p>
         <p class="summary-value">{{ score() }} / {{ maxScore() }}</p>
       </div>
       <div>
-        <p class="status-label">Précision</p>
+        <p class="status-label">{{ i18n.t('common.accuracy') }}</p>
         <p class="summary-value">{{ accuracyPercent() }}%</p>
       </div>
     </div>
 
     <div class="mistakes-list">
       @if (errors().length === 0) {
-        <p class="empty-state">Parfait, aucune erreur sur cette manche.</p>
+        <p class="empty-state">{{ i18n.t('culture.perfect') }}</p>
       } @else {
         @for (error of errors(); track error.question.id) {
           <article class="mistake-card">
             <p class="mistake-question">{{ error.question.prompt }}</p>
-            <p class="mistake-line">Ta réponse: {{ error.selectedAnswer }}</p>
-            <p class="mistake-line">Bonne réponse: {{ error.question.correctAnswer }}</p>
+            <p class="mistake-line">{{ i18n.t('common.yourAnswer') }}: {{ error.selectedAnswer }}</p>
+            <p class="mistake-line">{{ i18n.t('common.correctAnswer') }}: {{ error.question.correctAnswer }}</p>
           </article>
         }
       }
     </div>
 
     <div class="summary-actions">
-      <a class="ghost-link" routerLink="/">Retour à l'accueil</a>
-      <button type="button" class="next-button" (click)="restartGame()">Recommencer</button>
+      <a class="ghost-link" routerLink="/">{{ i18n.t('common.backHome') }}</a>
+      <button type="button" class="next-button" (click)="restartGame()">
+        {{ i18n.t('common.restart') }}
+      </button>
     </div>
   </section>
 }
-
-

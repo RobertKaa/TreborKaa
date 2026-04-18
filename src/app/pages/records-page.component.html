@@ -1,31 +1,35 @@
-﻿<main class="records-shell">
+<main class="records-shell">
   <section class="header-card">
     <div>
-      <p class="eyebrow">Profil</p>
-      <h1>Mes records</h1>
-      <p class="intro">Historique personnel enregistré localement sur ce navigateur.</p>
+      <p class="eyebrow">{{ i18n.t('records.eyebrow') }}</p>
+      <h1>{{ i18n.t('records.title') }}</h1>
+      <p class="intro">{{ i18n.t('records.intro') }}</p>
     </div>
 
     <div class="header-actions">
-      <a class="ghost-link" routerLink="/">Retour à l'accueil</a>
-      <button type="button" class="danger-button" (click)="clearAllRecords()">Effacer</button>
+      <a class="ghost-link" routerLink="/">{{ i18n.t('common.backHome') }}</a>
+      <button type="button" class="danger-button" (click)="clearAllRecords()">
+        {{ i18n.t('records.clear') }}
+      </button>
     </div>
   </section>
 
   <section class="records-card">
     @if (!hasRecords()) {
-      <p class="empty-state">Aucun record pour le moment. Lance une partie pour enregistrer tes scores.</p>
+      <p class="empty-state">{{ i18n.t('records.empty') }}</p>
     } @else {
       <div class="records-grid">
         @for (row of rows(); track row.key) {
           <article class="record-row">
             <p class="record-title">{{ row.label }}</p>
             <p class="record-value">{{ formatRecord(row.key, row.record!) }}</p>
-            <p class="record-meta">{{ row.record?.gamesPlayed }} parties | {{ formatLastPlayed(row.record!.lastPlayedAt) }}</p>
+            <p class="record-meta">
+              {{ formatGamesPlayed(row.record!.gamesPlayed) }} |
+              {{ formatLastPlayed(row.record!.lastPlayedAt) }}
+            </p>
           </article>
         }
       </div>
     }
   </section>
 </main>
-

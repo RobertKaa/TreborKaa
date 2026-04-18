@@ -5,7 +5,7 @@
 .game-shell {
   display: grid;
   gap: 16px;
-  min-height: calc(100dvh - 190px);
+  min-height: calc(100dvh - 180px);
   padding-bottom: 132px;
 }
 
@@ -16,7 +16,7 @@
   border: 1px solid var(--line);
   border-radius: 28px;
   box-shadow: var(--shadow);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px) saturate(120%);
 }
 
 .hero-card,
@@ -29,6 +29,9 @@
   justify-content: space-between;
   gap: 20px;
   align-items: center;
+  background:
+    radial-gradient(circle at 94% 6%, color-mix(in srgb, var(--accent-soft) 70%, transparent), transparent 34%),
+    var(--card);
 }
 
 .hero-actions,
@@ -53,22 +56,31 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 18px;
+  padding: 11px 17px;
   border-radius: 999px;
   text-decoration: none;
   font-weight: 700;
   border: 1px solid var(--line);
+  transition: transform 150ms ease, border-color 150ms ease, filter 150ms ease;
 }
 
 .ghost-link {
   color: var(--ink);
-  background: var(--surface-strong);
+  background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
 }
 
 .switch-link,
 .next-button {
   color: var(--on-accent);
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  border-color: color-mix(in srgb, var(--accent-strong) 72%, transparent);
+}
+
+.ghost-link:hover,
+.switch-link:hover,
+.next-button:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-line);
 }
 
 .eyebrow,
@@ -76,8 +88,9 @@
 .question-label {
   margin: 0 0 10px;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  font-size: 0.68rem;
+  font-family: 'Space Mono', monospace;
   color: var(--accent-dark);
 }
 
@@ -89,10 +102,9 @@ button {
 }
 
 h1 {
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
-  line-height: 0.98;
-  font-weight: 800;
-  letter-spacing: -0.05em;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
 }
 
 .intro,
@@ -103,6 +115,12 @@ h1 {
   line-height: 1.5;
 }
 
+.question-card {
+  background:
+    linear-gradient(170deg, color-mix(in srgb, var(--surface-strong) 84%, transparent), transparent 35%),
+    var(--card);
+}
+
 .status-dock {
   position: fixed;
   left: 50%;
@@ -110,21 +128,22 @@ h1 {
   z-index: 1;
   display: grid;
   grid-template-columns: 0.75fr 1.35fr 0.75fr 0.85fr;
-  gap: 14px;
+  gap: 10px;
   width: min(980px, calc(100vw - 24px));
-  padding: 14px;
+  padding: 10px;
   transform: translateX(-50%);
-  background: var(--surface-strong);
+  background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
   border: 1px solid var(--line);
-  border-radius: 26px;
+  border-radius: 24px;
   box-shadow: var(--shadow);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px) saturate(130%);
 }
 
 .status-block {
-  padding: 18px 20px;
-  border-radius: 22px;
-  background: var(--surface);
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  border: 1px solid var(--line-soft);
 }
 
 .status-row {
@@ -133,22 +152,22 @@ h1 {
 }
 
 .status-value {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 800;
 }
 
 .progress-track {
-  height: 12px;
-  margin-top: 14px;
+  height: 9px;
+  margin-top: 10px;
   border-radius: 999px;
-  background: var(--line-soft);
+  background: color-mix(in srgb, var(--line-soft) 80%, transparent);
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+  background: linear-gradient(90deg, var(--secondary), var(--accent), var(--accent-strong));
 }
 
 .modal-backdrop {
@@ -168,6 +187,9 @@ h1 {
   padding: 26px;
   overflow: auto;
   transform: translate(-50%, -50%);
+  background:
+    radial-gradient(circle at 95% 4%, color-mix(in srgb, var(--accent-soft) 58%, transparent), transparent 40%),
+    var(--card);
 }
 
 .summary-score {
@@ -176,31 +198,32 @@ h1 {
 
 .summary-score > div {
   flex: 1;
-  padding: 18px 20px;
-  border-radius: 20px;
-  background: var(--surface);
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 84%, transparent);
+  border: 1px solid var(--line-soft);
 }
 
 .summary-value {
-  font-size: 2rem;
+  font-size: 1.7rem;
   font-weight: 800;
 }
 
 .mistakes-list {
   display: grid;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 10px;
+  margin-top: 18px;
 }
 
 .mistake-card {
-  padding: 16px 18px;
-  border-radius: 18px;
-  background: var(--surface);
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
   border: 1px solid var(--line-soft);
 }
 
 .summary-actions {
-  margin-top: 24px;
+  margin-top: 20px;
   align-items: center;
 }
 

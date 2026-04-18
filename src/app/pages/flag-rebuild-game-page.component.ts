@@ -1,8 +1,11 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, computed, effect, inject, signal, untracked } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import iro from '@jaames/iro';
+import { GameId } from '../data/game-catalog';
 import { FLAG_REBUILD_PUZZLES } from '../data/flag-rebuild-puzzles';
 import { FlagRebuildPattern, FlagRebuildPuzzle } from '../models/flag-rebuild-puzzle';
+import { GameProgressService } from '../services/game-progress.service';
+import { I18nService } from '../services/i18n.service';
 import { PersonalRecordsService } from '../services/personal-records.service';
 
 type PuzzlePiece = {
@@ -20,6 +23,22 @@ type PuzzleEvaluation = {
   accepted: boolean;
 };
 
+type RebuildProgressSnapshot = {
+  version: 1;
+  gamePuzzleCodes: string[];
+  puzzleIndex: number;
+  score: number;
+  selectedPattern: FlagRebuildPattern;
+  pieces: PuzzlePiece[];
+  errors: Array<{
+    puzzleCode: string;
+    score: number;
+  }>;
+  activeZoneIndex: number;
+  patternOptionsByPuzzle: Record<string, FlagRebuildPattern[]>;
+  isLocked: boolean;
+};
+
 const ALL_PATTERNS: FlagRebuildPattern[] = [
   'horizontal-stripes',
   'vertical-stripes',
@@ -29,15 +48,6 @@ const ALL_PATTERNS: FlagRebuildPattern[] = [
   'nordic-cross'
 ];
 
-const PATTERN_LABELS: Record<FlagRebuildPattern, string> = {
-  'horizontal-stripes': 'Bandes horizontales',
-  'vertical-stripes': 'Bandes verticales',
-  'triangle-left-bands-2': 'Triangle + 2 bandes',
-  'triangle-left-bands-3': 'Triangle + 3 bandes',
-  'left-band-horizontal': 'Bande gauche + bandes',
-  'nordic-cross': 'Croix nordique'
-};
-
 @Component({
   selector: 'app-flag-rebuild-game-page',
   imports: [RouterLink],
@@ -45,10 +55,14 @@ const PATTERN_LABELS: Record<FlagRebuildPattern, string> = {
   styleUrl: './flag-rebuild-game-page.component.css'
 })
 export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
+  private static readonly PROGRESS_GAME_ID: GameId = 'flag-rebuild';
   private static readonly VALUE_SLIDER_SIZE = 18;
   private static readonly VALUE_SLIDER_MARGIN = 16;
   private static readonly WHEEL_EXTRA_HEIGHT = 24;
+  protected readonly i18n = inject(I18nService);
   private readonly personalRecordsService = inject(PersonalRecordsService);
+  private readonly progressService = inject(GameProgressService);
+  private readonly englishRegionNames = this.createEnglishRegionNames();
   @ViewChild('iroWheelHost') private iroWheelHost?: ElementRef<HTMLDivElement>;
   protected readonly allPuzzles = FLAG_REBUILD_PUZZLES;
   protected readonly gamePuzzles = signal<FlagRebuildPuzzle[]>([]);
@@ -67,6 +81,7 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
   private wheelSyncFrameId: number | null = null;
   private nextTimeoutId: number | null = null;
   private hasSavedRecord = false;
+  private skipNextPuzzleInitialization = false;
 
   protected readonly totalPuzzles = computed(() => this.gamePuzzles().length);
   protected readonly currentPuzzle = computed(() => this.gamePuzzles()[this.puzzleIndex()] ?? null);
@@ -99,11 +114,18 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
   protected readonly activeZoneLabel = computed(() => this.getZoneLabel(this.activeZoneIndex()));
 
   constructor() {
-    this.startNewGame();
+    if (!this.restoreProgress()) {
+      this.startNewGame();
+    }
 
     effect(() => {
       const puzzle = this.currentPuzzle();
       if (!puzzle) {
+        return;
+      }
+
+      if (this.skipNextPuzzleInitialization) {
+        this.skipNextPuzzleInitialization = false;
         return;
       }
 
@@ -121,6 +143,28 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
       this.isColorPickerOpen.set(false);
       this.pieces.set(this.buildInitialPieces(puzzle));
     });
+
+    effect(() => {
+      const puzzle = this.currentPuzzle();
+      if (!puzzle || this.isComplete()) {
+        if (this.isComplete()) {
+          this.clearProgress();
+        }
+        return;
+      }
+
+      this.progressService.saveProgress(
+        FlagRebuildGamePageComponent.PROGRESS_GAME_ID,
+        this.buildProgressSnapshot(),
+        {
+          percent: Math.max(0, Math.min(99, this.score() * 10)),
+          labelKey: 'home.resume.streak',
+          labelParams: {
+            score: this.score()
+          }
+        }
+      );
+    });
   }
 
   ngAfterViewInit(): void {
@@ -130,26 +174,34 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
   }
 
   protected getPatternLabel(pattern: FlagRebuildPattern): string {
-    return PATTERN_LABELS[pattern];
+    return this.i18n.t(`rebuild.pattern.${pattern}`);
   }
 
   protected getZoneLabel(index: number): string {
     switch (this.selectedPattern()) {
       case 'vertical-stripes':
-        return ['Gauche', 'Centre', 'Droite'][index] ?? `Zone ${index + 1}`;
+        return [this.i18n.t('rebuild.zone.left'), this.i18n.t('rebuild.zone.center'), this.i18n.t('rebuild.zone.right')][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 });
       case 'horizontal-stripes':
-        return ['Haut', 'Milieu', 'Bas'][index] ?? `Zone ${index + 1}`;
+        return [this.i18n.t('rebuild.zone.top'), this.i18n.t('rebuild.zone.middle'), this.i18n.t('rebuild.zone.bottom')][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 });
       case 'triangle-left-bands-2':
-        return ['Triangle', 'Haut droite', 'Bas droite'][index] ?? `Zone ${index + 1}`;
+        return [this.i18n.t('rebuild.zone.triangle'), this.i18n.t('rebuild.zone.topRight'), this.i18n.t('rebuild.zone.bottomRight')][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 });
       case 'triangle-left-bands-3':
-        return ['Triangle', 'Haut droite', 'Milieu droite', 'Bas droite'][index] ?? `Zone ${index + 1}`;
+        return [this.i18n.t('rebuild.zone.triangle'), this.i18n.t('rebuild.zone.topRight'), this.i18n.t('rebuild.zone.middleRight'), this.i18n.t('rebuild.zone.bottomRight')][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 });
       case 'left-band-horizontal':
-        return ['Bande gauche', 'Haut droite', 'Milieu droite', 'Bas droite'][index] ?? `Zone ${index + 1}`;
+        return [this.i18n.t('rebuild.zone.leftBand'), this.i18n.t('rebuild.zone.topRight'), this.i18n.t('rebuild.zone.middleRight'), this.i18n.t('rebuild.zone.bottomRight')][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 });
       case 'nordic-cross':
-        return ['Fond', 'Croix'][index] ?? `Zone ${index + 1}`;
+        return [this.i18n.t('rebuild.zone.background'), this.i18n.t('rebuild.zone.cross')][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 });
       default:
-        return `Zone ${index + 1}`;
+        return this.i18n.t('rebuild.zone.generic', { index: index + 1 });
     }
+  }
+
+  protected countryName(puzzle: FlagRebuildPuzzle): string {
+    if (this.i18n.isFrench()) {
+      return puzzle.nameFrench;
+    }
+
+    return this.englishRegionNames?.of(puzzle.code.toUpperCase()) ?? puzzle.nameFrench;
   }
 
   protected isBlankColor(color: string | undefined): boolean {
@@ -228,6 +280,7 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
   protected restartGame(): void {
     this.clearTimers();
     this.destroyColorWheelPicker();
+    this.clearProgress();
     this.startNewGame();
   }
 
@@ -393,6 +446,7 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
       maxScore: Math.max(1, this.score())
     });
     this.hasSavedRecord = true;
+    this.clearProgress();
   }
 
   private shuffle<T>(values: T[]): T[] {
@@ -606,5 +660,81 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
       g: (value >> 8) & 255,
       b: value & 255
     };
+  }
+
+  private createEnglishRegionNames(): Intl.DisplayNames | null {
+    try {
+      return new Intl.DisplayNames(['en'], { type: 'region' });
+    } catch {
+      return null;
+    }
+  }
+
+  private buildProgressSnapshot(): RebuildProgressSnapshot {
+    return {
+      version: 1,
+      gamePuzzleCodes: this.gamePuzzles().map((puzzle) => puzzle.code),
+      puzzleIndex: this.puzzleIndex(),
+      score: this.score(),
+      selectedPattern: this.selectedPattern(),
+      pieces: this.pieces(),
+      errors: this.errors().map((error) => ({
+        puzzleCode: error.puzzle.code,
+        score: error.score
+      })),
+      activeZoneIndex: this.activeZoneIndex(),
+      patternOptionsByPuzzle: this.patternOptionsByPuzzle(),
+      isLocked: this.isLocked()
+    };
+  }
+
+  private restoreProgress(): boolean {
+    const snapshot = this.progressService.getPayload<RebuildProgressSnapshot>(
+      FlagRebuildGamePageComponent.PROGRESS_GAME_ID
+    );
+    if (!snapshot || snapshot.version !== 1 || snapshot.gamePuzzleCodes.length === 0) {
+      return false;
+    }
+
+    const byCode = new Map(this.allPuzzles.map((puzzle) => [puzzle.code, puzzle]));
+    const puzzles = snapshot.gamePuzzleCodes
+      .map((code) => byCode.get(code) ?? null)
+      .filter((puzzle): puzzle is FlagRebuildPuzzle => !!puzzle);
+    if (puzzles.length === 0) {
+      return false;
+    }
+
+    this.skipNextPuzzleInitialization = true;
+    this.gamePuzzles.set(puzzles);
+    this.puzzleIndex.set(Math.max(0, Math.min(snapshot.puzzleIndex, puzzles.length - 1)));
+    this.score.set(snapshot.score);
+    this.selectedPattern.set(snapshot.selectedPattern);
+    this.pieces.set(snapshot.pieces);
+    this.errors.set(
+      snapshot.errors
+        .map((error) => {
+          const puzzle = byCode.get(error.puzzleCode);
+          if (!puzzle) {
+            return null;
+          }
+
+          return {
+            puzzle,
+            score: error.score
+          };
+        })
+        .filter((error): error is PuzzleError => !!error)
+    );
+    this.activeZoneIndex.set(snapshot.activeZoneIndex);
+    this.patternOptionsByPuzzle.set(snapshot.patternOptionsByPuzzle);
+    this.isLocked.set(snapshot.isLocked);
+    this.isComplete.set(false);
+    this.isColorPickerOpen.set(false);
+    this.hasSavedRecord = false;
+    return true;
+  }
+
+  private clearProgress(): void {
+    this.progressService.clearProgress(FlagRebuildGamePageComponent.PROGRESS_GAME_ID);
   }
 }

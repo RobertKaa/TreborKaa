@@ -1,9 +1,12 @@
 ﻿import { toSignal } from '@angular/core/rxjs-interop';
 import { Component, OnDestroy, computed, effect, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { GameId } from '../data/game-catalog';
 import { CountrySummary } from '../models/country-summary';
 import { CountriesService } from '../services/countries.service';
 import { FlagQuizService } from '../services/flag-quiz.service';
+import { GameProgressService } from '../services/game-progress.service';
+import { I18nService } from '../services/i18n.service';
 import { PersonalRecordsService } from '../services/personal-records.service';
 
 type GameDifficulty = 'easy' | 'hard';
@@ -28,6 +31,37 @@ type FeedbackState = {
   message: string;
 };
 
+type ChronoQuestionSnapshot = {
+  mode: ChronoQuestionMode;
+  difficulty: GameDifficulty;
+  promptCode: string;
+  optionCodes: string[];
+  correctCode: string;
+};
+
+type ChronoErrorSnapshot = {
+  question: ChronoQuestionSnapshot;
+  selectedCode: string | null;
+  correctCode: string;
+};
+
+type ChronoProgressSnapshot = {
+  version: 1;
+  score: number;
+  streak: number;
+  bestStreak: number;
+  questionNumber: number;
+  correctCount: number;
+  wrongCount: number;
+  answered: boolean;
+  selectedCode: string | null;
+  timeLeft: number;
+  askedCodes: string[];
+  lastMode: ChronoQuestionMode | null;
+  currentQuestion: ChronoQuestionSnapshot | null;
+  errors: ChronoErrorSnapshot[];
+};
+
 const GAME_DURATION_SECONDS = 75;
 const MAX_DURATION_SECONDS = 105;
 const TIMER_REFRESH_MS = 200;
@@ -44,9 +78,12 @@ const VISIBLE_ERRORS_LIMIT = 8;
   styleUrl: './chrono-flags-game-page.component.css'
 })
 export class ChronoFlagsGamePageComponent implements OnDestroy {
+  private static readonly PROGRESS_GAME_ID: GameId = 'flag-chrono';
+  protected readonly i18n = inject(I18nService);
   private readonly countriesService = inject(CountriesService);
   private readonly flagQuizService = inject(FlagQuizService);
   private readonly personalRecordsService = inject(PersonalRecordsService);
+  private readonly gameProgressService = inject(GameProgressService);
 
   private timerIntervalId: number | null = null;
   private advanceTimeoutId: number | null = null;
@@ -98,7 +135,37 @@ export class ChronoFlagsGamePageComponent implements OnDestroy {
       }
 
       this.hasInitialized = true;
-      this.startGame();
+      if (!this.restoreProgress(countries)) {
+        this.startGame();
+      }
+    });
+
+    effect(() => {
+      const countries = this.countriesSignal();
+      const question = this.currentQuestion();
+
+      if (countries.length < 4 || !question || this.isComplete()) {
+        if (this.isComplete()) {
+          this.clearProgress();
+        }
+        return;
+      }
+
+      this.gameProgressService.saveProgress(
+        ChronoFlagsGamePageComponent.PROGRESS_GAME_ID,
+        this.buildProgressSnapshot(),
+        {
+          percent: Math.max(
+            0,
+            Math.min(99, Math.round(((GAME_DURATION_SECONDS - this.timeLeft()) / GAME_DURATION_SECONDS) * 100))
+          ),
+          labelKey: 'home.resume.chrono',
+          labelParams: {
+            questions: this.questionNumber(),
+            time: this.timerLabel()
+          }
+        }
+      );
     });
   }
 
@@ -126,9 +193,18 @@ export class ChronoFlagsGamePageComponent implements OnDestroy {
 
       if (nextStreak % COMBO_TIME_BONUS_EVERY === 0) {
         this.addTime(COMBO_TIME_BONUS_SECONDS);
-        this.showFeedback('correct', `+${gainedScore} points | +${COMBO_TIME_BONUS_SECONDS}s`);
+        this.showFeedback(
+          'correct',
+          this.i18n.t('classic.chrono.feedback.correctBonus', {
+            points: gainedScore,
+            seconds: COMBO_TIME_BONUS_SECONDS
+          })
+        );
       } else {
-        this.showFeedback('correct', `+${gainedScore} points`);
+        this.showFeedback(
+          'correct',
+          this.i18n.t('classic.chrono.feedback.correct', { points: gainedScore })
+        );
       }
     } else {
       this.streak.set(0);
@@ -142,7 +218,13 @@ export class ChronoFlagsGamePageComponent implements OnDestroy {
         }
       ]);
       this.subtractTime(WRONG_PENALTY_SECONDS);
-      this.showFeedback('wrong', `-${WRONG_PENALTY_SECONDS}s | ${correctCountry.nameFrench}`);
+      this.showFeedback(
+        'wrong',
+        this.i18n.t('classic.chrono.feedback.wrong', {
+          seconds: WRONG_PENALTY_SECONDS,
+          country: this.countryName(correctCountry)
+        })
+      );
     }
 
     if (!this.isComplete()) {
@@ -178,49 +260,67 @@ export class ChronoFlagsGamePageComponent implements OnDestroy {
   protected getQuestionTitle(mode: ChronoQuestionMode): string {
     switch (mode) {
       case 'country-to-flag':
-        return 'Trouve le drapeau de ce pays';
+        return this.i18n.t('classic.chrono.question.countryToFlag');
       case 'flag-to-country':
-        return 'À quel pays appartient ce drapeau ?';
+        return this.i18n.t('classic.chrono.question.flagToCountry');
       case 'capital-to-flag':
-        return 'Trouve le drapeau correspondant à cette capitale';
+        return this.i18n.t('classic.chrono.question.capitalToFlag');
     }
   }
 
   protected getQuestionHeadline(question: ChronoQuestion): string {
     switch (question.mode) {
       case 'country-to-flag':
-        return question.promptCountry.nameFrench;
+        return this.countryName(question.promptCountry);
       case 'flag-to-country':
-        return 'Drapeau mystère';
+        return this.i18n.t('classic.chrono.mysteryFlag');
       case 'capital-to-flag':
-        return question.promptCountry.capitalFrench;
+        return this.capitalName(question.promptCountry);
     }
   }
 
   protected getQuestionHint(question: ChronoQuestion): string {
     switch (question.mode) {
       case 'country-to-flag':
-        return `Capitale: ${question.promptCountry.capitalFrench}`;
+        return this.i18n.t('classic.chrono.hint.capital', {
+          capital: this.capitalName(question.promptCountry)
+        });
       case 'flag-to-country':
-        return `Capitale: ${question.promptCountry.capitalFrench}`;
+        return this.i18n.t('classic.chrono.hint.capital', {
+          capital: this.capitalName(question.promptCountry)
+        });
       case 'capital-to-flag':
-        return `Pays attendu: ${question.promptCountry.nameFrench.length} lettres`;
+        return this.i18n.t('classic.chrono.hint.countryLength', {
+          length: this.countryName(question.promptCountry).length
+        });
     }
   }
 
   protected getDifficultyLabel(difficulty: GameDifficulty): string {
-    return difficulty === 'hard' ? 'Difficile' : 'Facile';
+    return difficulty === 'hard' ? this.i18n.t('common.hard') : this.i18n.t('common.easy');
   }
 
   protected getErrorPrompt(error: ChronoError): string {
     switch (error.question.mode) {
       case 'country-to-flag':
-        return `Pays: ${error.question.promptCountry.nameFrench}`;
+        return this.i18n.t('classic.chrono.promptCountry', {
+          country: this.countryName(error.question.promptCountry)
+        });
       case 'flag-to-country':
-        return 'Drapeau mystère';
+        return this.i18n.t('classic.chrono.mysteryFlag');
       case 'capital-to-flag':
-        return `Capitale: ${error.question.promptCountry.capitalFrench}`;
+        return this.i18n.t('classic.chrono.promptCapital', {
+          capital: this.capitalName(error.question.promptCountry)
+        });
     }
+  }
+
+  protected countryName(country: CountrySummary): string {
+    return this.i18n.countryName(country);
+  }
+
+  protected capitalName(country: CountrySummary): string {
+    return this.i18n.capitalName(country);
   }
 
   ngOnDestroy(): void {
@@ -229,6 +329,7 @@ export class ChronoFlagsGamePageComponent implements OnDestroy {
 
   private startGame(): void {
     this.clearTimers();
+    this.clearProgress();
     this.score.set(0);
     this.streak.set(0);
     this.bestStreak.set(0);
@@ -349,8 +450,13 @@ export class ChronoFlagsGamePageComponent implements OnDestroy {
   }
 
   private startTimer(): void {
-    this.timerDeadlineMs = Date.now() + GAME_DURATION_SECONDS * 1000;
-    this.timeLeft.set(GAME_DURATION_SECONDS);
+    this.startTimerWithSeconds(GAME_DURATION_SECONDS);
+  }
+
+  private startTimerWithSeconds(seconds: number): void {
+    const safeSeconds = Math.max(0, Math.min(MAX_DURATION_SECONDS, Math.round(seconds)));
+    this.timerDeadlineMs = Date.now() + safeSeconds * 1000;
+    this.timeLeft.set(safeSeconds);
 
     if (this.timerIntervalId !== null) {
       window.clearInterval(this.timerIntervalId);
@@ -424,6 +530,8 @@ export class ChronoFlagsGamePageComponent implements OnDestroy {
       });
       this.hasSavedRecord = true;
     }
+
+    this.clearProgress();
   }
 
   private clearTimers(): void {
@@ -447,6 +555,124 @@ export class ChronoFlagsGamePageComponent implements OnDestroy {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  private buildProgressSnapshot(): ChronoProgressSnapshot {
+    return {
+      version: 1,
+      score: this.score(),
+      streak: this.streak(),
+      bestStreak: this.bestStreak(),
+      questionNumber: this.questionNumber(),
+      correctCount: this.correctCount(),
+      wrongCount: this.wrongCount(),
+      answered: this.answered(),
+      selectedCode: this.selectedCode(),
+      timeLeft: this.timeLeft(),
+      askedCodes: [...this.askedCodes()],
+      lastMode: this.lastMode(),
+      currentQuestion: this.currentQuestion()
+        ? this.questionToSnapshot(this.currentQuestion()!)
+        : null,
+      errors: this.errors().map((error) => ({
+        question: this.questionToSnapshot(error.question),
+        selectedCode: error.selectedCountry?.code ?? null,
+        correctCode: error.correctCountry.code
+      }))
+    };
+  }
+
+  private restoreProgress(countries: CountrySummary[]): boolean {
+    const snapshot = this.gameProgressService.getPayload<ChronoProgressSnapshot>(
+      ChronoFlagsGamePageComponent.PROGRESS_GAME_ID
+    );
+    if (!snapshot || snapshot.version !== 1) {
+      return false;
+    }
+
+    const byCode = new Map(countries.map((country) => [country.code, country]));
+    const hydratedQuestion = this.snapshotToQuestion(snapshot.currentQuestion, byCode);
+    if (!hydratedQuestion) {
+      return false;
+    }
+
+    this.score.set(snapshot.score);
+    this.streak.set(snapshot.streak);
+    this.bestStreak.set(snapshot.bestStreak);
+    this.questionNumber.set(snapshot.questionNumber);
+    this.correctCount.set(snapshot.correctCount);
+    this.wrongCount.set(snapshot.wrongCount);
+    this.answered.set(false);
+    this.selectedCode.set(null);
+    this.timeLeft.set(snapshot.timeLeft);
+    this.isComplete.set(false);
+    this.feedback.set(null);
+    this.askedCodes.set(snapshot.askedCodes);
+    this.lastMode.set(snapshot.lastMode);
+    this.currentQuestion.set(hydratedQuestion);
+    this.errors.set(
+      snapshot.errors
+        .map((error) => {
+          const question = this.snapshotToQuestion(error.question, byCode);
+          const correctCountry = byCode.get(error.correctCode) ?? null;
+          if (!question || !correctCountry) {
+            return null;
+          }
+
+          return {
+            question,
+            selectedCountry: error.selectedCode ? byCode.get(error.selectedCode) ?? null : null,
+            correctCountry
+          };
+        })
+        .filter((error): error is ChronoError => !!error)
+    );
+    this.hasSavedRecord = false;
+    this.startTimerWithSeconds(snapshot.timeLeft);
+    return true;
+  }
+
+  private questionToSnapshot(question: ChronoQuestion): ChronoQuestionSnapshot {
+    return {
+      mode: question.mode,
+      difficulty: question.difficulty,
+      promptCode: question.promptCountry.code,
+      optionCodes: question.options.map((option) => option.code),
+      correctCode: question.correctCode
+    };
+  }
+
+  private snapshotToQuestion(
+    snapshot: ChronoQuestionSnapshot | null,
+    byCode: Map<string, CountrySummary>
+  ): ChronoQuestion | null {
+    if (!snapshot) {
+      return null;
+    }
+
+    const promptCountry = byCode.get(snapshot.promptCode);
+    if (!promptCountry) {
+      return null;
+    }
+
+    const options = snapshot.optionCodes
+      .map((code) => byCode.get(code) ?? null)
+      .filter((country): country is CountrySummary => !!country);
+    if (options.length < 2) {
+      return null;
+    }
+
+    return {
+      mode: snapshot.mode,
+      difficulty: snapshot.difficulty,
+      promptCountry,
+      options,
+      correctCode: snapshot.correctCode
+    };
+  }
+
+  private clearProgress(): void {
+    this.gameProgressService.clearProgress(ChronoFlagsGamePageComponent.PROGRESS_GAME_ID);
   }
 }
 

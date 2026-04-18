@@ -1,16 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
 
 html,
 body {
   margin: 0;
   min-height: 100%;
   overscroll-behavior-y: contain;
+  scroll-behavior: smooth;
 }
 
 body {
-  font-family: Manrope, 'Segoe UI', sans-serif;
+  font-family: Outfit, 'Segoe UI', sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  background: #fbf6ef;
 }
 
 :root {
@@ -22,7 +24,8 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: Sora, Manrope, 'Segoe UI', sans-serif;
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-weight: 400;
 }
 
 button,
@@ -44,7 +47,105 @@ img {
 }
 
 ::selection {
-  background: rgba(61, 125, 255, 0.25);
+  background: rgba(239, 141, 53, 0.3);
+}
+
+.hero-card,
+.question-card,
+.board-card,
+.workspace-card,
+.difficulty-card,
+.header-card,
+.table-card,
+.records-card,
+.category-card,
+.mode-card,
+.summary-modal {
+  animation: rise-in 560ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mode-card:nth-child(2),
+.mistake-card:nth-child(2) {
+  animation-delay: 40ms;
+}
+
+.mode-card:nth-child(3),
+.mistake-card:nth-child(3) {
+  animation-delay: 80ms;
+}
+
+.mode-card:nth-child(4),
+.mistake-card:nth-child(4) {
+  animation-delay: 120ms;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes float-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .mode-card,
+  .category-card,
+  .record-row,
+  .mistake-card,
+  .status-block {
+    animation: card-reveal 1ms linear both;
+    animation-timeline: view(block);
+    animation-range: entry 5% cover 30%;
+  }
+
+  @keyframes card-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(22px) scale(0.985);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    height: 4px;
+    width: 100%;
+    transform-origin: 0 50%;
+    background: linear-gradient(90deg, #ef8d35, #ef5668 45%, #0c7f6f 90%);
+    animation: scroll-progress linear;
+    animation-timeline: scroll(root);
+  }
+
+  @keyframes scroll-progress {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
 }
 
 @media (pointer: coarse) {
@@ -82,7 +183,6 @@ img {
   }
 
   app-root.mobile-viewport .status-dock {
-    /* Remove gameplay overlay on mobile */
     position: static !important;
     inset: auto !important;
     left: auto !important;

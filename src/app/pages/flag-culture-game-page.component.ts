@@ -1,12 +1,15 @@
-﻿import { toSignal } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { GameId } from '../data/game-catalog';
 import {
   FlagCultureDifficultyMode,
   FlagCultureRoundQuestion
 } from '../models/flag-culture-question';
 import { CountriesService } from '../services/countries.service';
 import { FlagCultureQuizService } from '../services/flag-culture-quiz.service';
+import { GameProgressService } from '../services/game-progress.service';
+import { I18nService } from '../services/i18n.service';
 import { PersonalRecordsService } from '../services/personal-records.service';
 
 type CultureError = {
@@ -21,6 +24,22 @@ type DifficultyModeOption = {
 
 const QUESTION_COUNT = 10;
 
+type CultureErrorSnapshot = {
+  questionId: string;
+  selectedAnswer: string;
+};
+
+type CultureProgressSnapshot = {
+  version: 1;
+  difficultyMode: FlagCultureDifficultyMode;
+  questions: FlagCultureRoundQuestion[];
+  questionIndex: number;
+  score: number;
+  answered: boolean;
+  selectedAnswer: string | null;
+  errors: CultureErrorSnapshot[];
+};
+
 @Component({
   selector: 'app-flag-culture-game-page',
   imports: [RouterLink],
@@ -28,9 +47,12 @@ const QUESTION_COUNT = 10;
   styleUrl: './flag-culture-game-page.component.css'
 })
 export class FlagCultureGamePageComponent {
+  private static readonly PROGRESS_GAME_ID: GameId = 'flag-culture';
+  protected readonly i18n = inject(I18nService);
   private readonly countriesService = inject(CountriesService);
   private readonly cultureQuizService = inject(FlagCultureQuizService);
   private readonly personalRecordsService = inject(PersonalRecordsService);
+  private readonly gameProgressService = inject(GameProgressService);
   private hasInitialized = false;
   private hasSavedRecord = false;
 
@@ -45,12 +67,12 @@ export class FlagCultureGamePageComponent {
   protected readonly errors = signal<CultureError[]>([]);
   protected readonly isComplete = signal(false);
 
-  protected readonly difficultyModes: DifficultyModeOption[] = [
-    { value: 'easy', label: 'Facile' },
-    { value: 'medium', label: 'Moyen' },
-    { value: 'hard', label: 'Difficile' },
-    { value: 'mixed', label: 'Mélange' }
-  ];
+  protected readonly difficultyModes = computed<DifficultyModeOption[]>(() => [
+    { value: 'easy', label: this.i18n.t('common.easy') },
+    { value: 'medium', label: this.i18n.t('common.medium') },
+    { value: 'hard', label: this.i18n.t('common.hard') },
+    { value: 'mixed', label: this.i18n.t('common.mixed') }
+  ]);
   protected readonly currentQuestion = computed(
     () => this.questions()[this.questionIndex()] ?? null
   );
@@ -85,8 +107,8 @@ export class FlagCultureGamePageComponent {
       return '';
     }
     return this.selectedAnswer() === this.currentQuestion()?.correctAnswer
-      ? 'Bonne réponse'
-      : 'Mauvaise réponse';
+      ? this.i18n.t('culture.feedback.correct')
+      : this.i18n.t('culture.feedback.wrong');
   });
 
   constructor() {
@@ -97,7 +119,33 @@ export class FlagCultureGamePageComponent {
       }
 
       this.hasInitialized = true;
-      this.startGame();
+      if (!this.restoreProgress()) {
+        this.startGame();
+      }
+    });
+
+    effect(() => {
+      const question = this.currentQuestion();
+
+      if (!question || this.isComplete()) {
+        if (this.isComplete()) {
+          this.clearProgress();
+        }
+        return;
+      }
+
+      this.gameProgressService.saveProgress(
+        FlagCultureGamePageComponent.PROGRESS_GAME_ID,
+        this.buildProgressSnapshot(),
+        {
+          percent: this.progressPercent(),
+          labelKey: 'home.resume.classic',
+          labelParams: {
+            current: this.questionIndex() + 1,
+            total: this.totalQuestions()
+          }
+        }
+      );
     });
   }
 
@@ -107,6 +155,7 @@ export class FlagCultureGamePageComponent {
     }
 
     this.difficultyMode.set(mode);
+    this.clearProgress();
     this.startGame();
   }
 
@@ -153,6 +202,7 @@ export class FlagCultureGamePageComponent {
   }
 
   protected restartGame(): void {
+    this.clearProgress();
     this.startGame();
   }
 
@@ -180,13 +230,13 @@ export class FlagCultureGamePageComponent {
   protected getDifficultyLabel(mode: FlagCultureDifficultyMode): string {
     switch (mode) {
       case 'easy':
-        return 'Facile';
+        return this.i18n.t('common.easy');
       case 'medium':
-        return 'Moyen';
+        return this.i18n.t('common.medium');
       case 'hard':
-        return 'Difficile';
+        return this.i18n.t('common.hard');
       default:
-        return 'Mélange';
+        return this.i18n.t('common.mixed');
     }
   }
 
@@ -225,6 +275,7 @@ export class FlagCultureGamePageComponent {
       maxScore: Math.max(1, this.maxScore())
     });
     this.hasSavedRecord = true;
+    this.clearProgress();
   }
 
   private resolveRecordKey():
@@ -243,6 +294,59 @@ export class FlagCultureGamePageComponent {
         return 'flag-culture-mixed';
     }
   }
+
+  private buildProgressSnapshot(): CultureProgressSnapshot {
+    return {
+      version: 1,
+      difficultyMode: this.difficultyMode(),
+      questions: this.questions(),
+      questionIndex: this.questionIndex(),
+      score: this.score(),
+      answered: this.answered(),
+      selectedAnswer: this.selectedAnswer(),
+      errors: this.errors().map((error) => ({
+        questionId: error.question.id,
+        selectedAnswer: error.selectedAnswer
+      }))
+    };
+  }
+
+  private restoreProgress(): boolean {
+    const snapshot = this.gameProgressService.getPayload<CultureProgressSnapshot>(
+      FlagCultureGamePageComponent.PROGRESS_GAME_ID
+    );
+    if (!snapshot || snapshot.version !== 1 || snapshot.questions.length === 0) {
+      return false;
+    }
+
+    this.difficultyMode.set(snapshot.difficultyMode);
+    this.questions.set(snapshot.questions);
+    this.questionIndex.set(snapshot.questionIndex);
+    this.score.set(snapshot.score);
+    this.answered.set(snapshot.answered);
+    this.selectedAnswer.set(snapshot.selectedAnswer);
+    this.errors.set(
+      snapshot.errors
+        .map((error) => {
+          const question = snapshot.questions.find((item) => item.id === error.questionId);
+          if (!question) {
+            return null;
+          }
+
+          return {
+            question,
+            selectedAnswer: error.selectedAnswer
+          };
+        })
+        .filter((error): error is CultureError => !!error)
+    );
+    this.isComplete.set(false);
+    this.isLoading.set(false);
+    this.hasSavedRecord = false;
+    return true;
+  }
+
+  private clearProgress(): void {
+    this.gameProgressService.clearProgress(FlagCultureGamePageComponent.PROGRESS_GAME_ID);
+  }
 }
-
-

@@ -1,22 +1,22 @@
 @import './classic-quiz-shared.css';
 
 h2 {
-  font-size: clamp(2.1rem, 5vw, 3.4rem);
+  font-size: clamp(2.1rem, 5vw, 3.5rem);
   margin-bottom: 6px;
 }
 
 .option-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  margin-top: 18px;
+  gap: 14px;
+  margin-top: 16px;
 }
 
 .option-card {
-  padding: 14px;
-  border-radius: 24px;
+  padding: 12px;
+  border-radius: 22px;
   border: 1px solid var(--line);
-  background: var(--surface-raise);
+  background: color-mix(in srgb, var(--surface-raise) 84%, transparent);
   cursor: pointer;
   transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
 }
@@ -26,18 +26,18 @@ h2 {
 }
 
 .option-card:hover:enabled {
-  transform: translateY(-2px);
+  transform: translateY(-2px) rotate(-0.2deg);
   border-color: var(--accent-line);
 }
 
 .option-card.is-correct {
-  border-color: #3d8a5c;
-  box-shadow: inset 0 0 0 2px rgba(61, 138, 92, 0.42);
+  border-color: color-mix(in srgb, var(--success) 74%, transparent);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--success) 34%, transparent);
 }
 
 .option-card.is-wrong {
-  border-color: #c8553d;
-  box-shadow: inset 0 0 0 2px rgba(200, 85, 61, 0.42);
+  border-color: color-mix(in srgb, var(--danger) 78%, transparent);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--danger) 36%, transparent);
 }
 
 .flag-surface {
@@ -46,9 +46,9 @@ h2 {
   justify-content: center;
   min-height: min(20vh, 160px);
   padding: 12px;
-  border-radius: 18px;
+  border-radius: 16px;
+  border: 1px solid var(--line-soft);
   background: var(--flag-backdrop);
-  box-shadow: inset 0 0 0 1px var(--line-soft);
 }
 
 .option-card img {

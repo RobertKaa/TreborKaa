@@ -1,11 +1,11 @@
-﻿import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { GameRecordKey, PersonalRecord } from '../models/personal-record';
+import { I18nService } from '../services/i18n.service';
 import { PersonalRecordsService } from '../services/personal-records.service';
 
 type RecordTile = {
   key: GameRecordKey;
-  label: string;
 };
 
 @Component({
@@ -15,27 +15,29 @@ type RecordTile = {
   styleUrl: './records-page.component.css'
 })
 export class RecordsPageComponent {
+  protected readonly i18n = inject(I18nService);
   private readonly personalRecordsService = inject(PersonalRecordsService);
 
   protected readonly tiles: RecordTile[] = [
-    { key: 'country-to-flag-easy', label: 'Classique P->D (Facile)' },
-    { key: 'country-to-flag-hard', label: 'Classique P->D (Difficile)' },
-    { key: 'flag-to-country-easy', label: 'Classique D->P (Facile)' },
-    { key: 'flag-to-country-hard', label: 'Classique D->P (Difficile)' },
-    { key: 'chrono-flags', label: 'Chrono drapeaux' },
-    { key: 'flag-culture-easy', label: 'Culture drapeaux (Facile)' },
-    { key: 'flag-culture-medium', label: 'Culture drapeaux (Moyen)' },
-    { key: 'flag-culture-hard', label: 'Culture drapeaux (Difficile)' },
-    { key: 'flag-culture-mixed', label: 'Culture drapeaux (Mélange)' },
-    { key: 'find-the-error', label: "Trouver l'erreur" },
-    { key: 'pixel-flag', label: 'Drapeau pixelisé' },
-    { key: 'flag-rebuild', label: 'Reconstruction de drapeau' }
+    { key: 'country-to-flag-easy' },
+    { key: 'country-to-flag-hard' },
+    { key: 'flag-to-country-easy' },
+    { key: 'flag-to-country-hard' },
+    { key: 'chrono-flags' },
+    { key: 'flag-culture-easy' },
+    { key: 'flag-culture-medium' },
+    { key: 'flag-culture-hard' },
+    { key: 'flag-culture-mixed' },
+    { key: 'find-the-error' },
+    { key: 'pixel-flag' },
+    { key: 'flag-rebuild' }
   ];
 
   protected readonly rows = computed(() =>
     this.tiles
       .map((tile) => ({
         ...tile,
+        label: this.i18n.t(`records.tile.${tile.key}`),
         record: this.personalRecordsService.getRecord(tile.key)
       }))
       .filter((row) => row.record !== null)
@@ -54,30 +56,44 @@ export class RecordsPageComponent {
       key === 'flag-to-country-easy' ||
       key === 'flag-to-country-hard'
     ) {
-      return `${record.bestScore} bonnes réponses`;
+      return this.i18n.t('records.value.classic', { score: record.bestScore });
     }
 
     if (key === 'find-the-error' || key === 'flag-rebuild' || key === 'pixel-flag') {
-      return `Série max: ${record.bestScore}`;
+      return this.i18n.t('records.value.streak', { score: record.bestScore });
     }
 
     if (key === 'chrono-flags') {
-      const streak = record.bestStreak ? ` | meilleure série x${record.bestStreak}` : '';
-      return `Score ${record.bestScore} | précision ${record.bestPercent}%${streak}`;
+      const streakSuffix = record.bestStreak
+        ? this.i18n.t('records.value.chronoStreakSuffix', { streak: record.bestStreak })
+        : '';
+      return this.i18n.t('records.value.chrono', {
+        score: record.bestScore,
+        percent: record.bestPercent,
+        streakSuffix
+      });
     }
 
-    return `${record.bestScore} / ${record.bestMaxScore} (${record.bestPercent}%)`;
+    return this.i18n.t('records.value.culture', {
+      score: record.bestScore,
+      max: record.bestMaxScore,
+      percent: record.bestPercent
+    });
+  }
+
+  protected formatGamesPlayed(count: number): string {
+    return this.i18n.t('records.gamesPlayed', { count });
   }
 
   protected formatLastPlayed(isoDate: string): string {
-    return new Date(isoDate).toLocaleString('fr-FR', {
+    const formatted = new Date(isoDate).toLocaleString(this.i18n.locale(), {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
       minute: '2-digit'
     });
+
+    return this.i18n.t('records.lastPlayed', { date: formatted });
   }
 }
-
-

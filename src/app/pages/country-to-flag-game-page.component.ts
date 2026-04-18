@@ -22,7 +22,10 @@ export class CountryToFlagGamePageComponent
     this.setupClassicQuiz({
       buildQuestion: (countries, difficulty, excludeCodes) =>
         this.flagQuizService.buildQuestion(countries, difficulty, excludeCodes),
-      getRecordKey: (difficulty) => (difficulty === 'hard' ? 'country-to-flag-hard' : 'country-to-flag-easy')
+      getRecordKey: (difficulty) => (difficulty === 'hard' ? 'country-to-flag-hard' : 'country-to-flag-easy'),
+      getProgressGameId: (difficulty) =>
+        difficulty === 'hard' ? 'classic-country-to-flag-hard' : 'classic-country-to-flag-easy',
+      progressLabelKey: 'home.resume.classic'
     });
   }
 

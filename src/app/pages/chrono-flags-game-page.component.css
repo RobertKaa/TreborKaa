@@ -5,7 +5,7 @@
 .chrono-shell {
   display: grid;
   gap: 16px;
-  min-height: calc(100dvh - 190px);
+  min-height: calc(100dvh - 180px);
   padding-bottom: 132px;
 }
 
@@ -16,7 +16,7 @@
   border: 1px solid var(--line);
   border-radius: 28px;
   box-shadow: var(--shadow);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px) saturate(120%);
 }
 
 .hero-card,
@@ -29,6 +29,9 @@
   justify-content: space-between;
   align-items: center;
   gap: 20px;
+  background:
+    radial-gradient(circle at 95% 5%, color-mix(in srgb, var(--secondary-soft) 70%, transparent), transparent 35%),
+    var(--card);
 }
 
 .hero-actions,
@@ -52,8 +55,9 @@
 .question-label {
   margin: 0 0 10px;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  font-size: 0.68rem;
+  font-family: 'Space Mono', monospace;
   color: var(--accent-dark);
 }
 
@@ -65,10 +69,8 @@ button {
 }
 
 h1 {
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
-  line-height: 0.98;
-  font-weight: 800;
-  letter-spacing: -0.05em;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 0.92;
 }
 
 h2 {
@@ -88,27 +90,38 @@ h2 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 18px;
+  padding: 11px 17px;
   border-radius: 999px;
   text-decoration: none;
   font-weight: 700;
   border: 1px solid var(--line);
+  transition: transform 150ms ease, border-color 150ms ease;
 }
 
 .ghost-link {
   color: var(--ink);
-  background: var(--surface-strong);
+  background: color-mix(in srgb, var(--surface-strong) 86%, transparent);
 }
 
 .primary-button {
   color: var(--on-accent);
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  border-color: color-mix(in srgb, var(--accent-strong) 72%, transparent);
   cursor: pointer;
+}
+
+.ghost-link:hover,
+.primary-button:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-line);
 }
 
 .board-card {
   display: grid;
-  gap: 16px;
+  gap: 14px;
+  background:
+    linear-gradient(185deg, color-mix(in srgb, var(--surface-strong) 80%, transparent), transparent 30%),
+    var(--card);
 }
 
 .loading-card {
@@ -131,10 +144,12 @@ h2 {
   padding: 8px 12px;
   border-radius: 999px;
   border: 1px solid var(--accent-line);
-  background: var(--accent-soft);
+  background: color-mix(in srgb, var(--accent-soft) 74%, transparent);
   color: var(--accent-dark);
   font-weight: 700;
   font-size: 0.82rem;
+  font-family: 'Space Mono', monospace;
+  text-transform: uppercase;
 }
 
 .prompt-flag {
@@ -143,9 +158,9 @@ h2 {
   justify-content: center;
   min-height: 220px;
   padding: 16px;
-  border-radius: 20px;
+  border-radius: 18px;
+  border: 1px solid var(--line-soft);
   background: var(--flag-backdrop);
-  box-shadow: inset 0 0 0 1px var(--line-soft);
 }
 
 .prompt-flag img {
@@ -160,20 +175,20 @@ h2 {
 .flag-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 12px;
 }
 
 .name-card,
 .flag-card {
-  border-radius: 22px;
+  border-radius: 18px;
   border: 1px solid var(--line);
-  background: var(--surface-raise);
+  background: color-mix(in srgb, var(--surface-raise) 86%, transparent);
   transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
 }
 
 .name-card {
-  min-height: 78px;
-  padding: 16px 18px;
+  min-height: 74px;
+  padding: 15px 16px;
   color: var(--ink);
   font-size: 1rem;
   font-weight: 700;
@@ -181,7 +196,7 @@ h2 {
 }
 
 .flag-card {
-  padding: 12px;
+  padding: 10px;
   cursor: pointer;
 }
 
@@ -198,14 +213,14 @@ h2 {
 
 .name-card.is-correct,
 .flag-card.is-correct {
-  border-color: #3d8a5c;
-  box-shadow: inset 0 0 0 1px rgba(61, 138, 92, 0.25);
+  border-color: color-mix(in srgb, var(--success) 72%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--success) 34%, transparent);
 }
 
 .name-card.is-wrong,
 .flag-card.is-wrong {
-  border-color: #c8553d;
-  box-shadow: inset 0 0 0 1px rgba(200, 85, 61, 0.28);
+  border-color: color-mix(in srgb, var(--danger) 78%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--danger) 34%, transparent);
 }
 
 .flag-surface {
@@ -214,9 +229,9 @@ h2 {
   justify-content: center;
   min-height: min(20vh, 160px);
   padding: 12px;
-  border-radius: 16px;
+  border-radius: 14px;
   background: var(--flag-backdrop);
-  box-shadow: inset 0 0 0 1px var(--line-soft);
+  border: 1px solid var(--line-soft);
 }
 
 .flag-surface img {
@@ -234,67 +249,68 @@ h2 {
   z-index: 1;
   display: grid;
   grid-template-columns: 1.4fr repeat(3, 1fr);
-  gap: 14px;
+  gap: 10px;
   width: min(1020px, calc(100vw - 24px));
-  padding: 14px;
+  padding: 10px;
   transform: translateX(-50%);
-  background: var(--surface-strong);
+  background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
   border: 1px solid var(--line);
-  border-radius: 26px;
+  border-radius: 24px;
   box-shadow: var(--shadow);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px) saturate(130%);
 }
 
 .status-block {
-  padding: 18px 20px;
-  border-radius: 22px;
-  background: var(--surface);
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  border: 1px solid var(--line-soft);
 }
 
 .status-value {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 800;
 }
 
 .progress-track {
-  height: 12px;
-  margin-top: 14px;
+  height: 9px;
+  margin-top: 10px;
   border-radius: 999px;
-  background: var(--line-soft);
+  background: color-mix(in srgb, var(--line-soft) 80%, transparent);
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+  background: linear-gradient(90deg, var(--secondary), var(--accent), var(--accent-strong));
 }
 
 .time-fill {
-  background: linear-gradient(90deg, #4bb78d, #f0b14f, #d85656);
+  background: linear-gradient(90deg, #0c7f6f, #ef8d35, #b53e53);
 }
 
 .feedback-toast {
   position: fixed;
-  top: 92px;
+  top: 90px;
   right: 18px;
   z-index: 3;
   display: inline-flex;
   align-items: center;
   max-width: min(380px, calc(100vw - 24px));
-  padding: 14px 18px;
-  border-radius: 18px;
+  padding: 12px 16px;
+  border-radius: 16px;
   color: var(--on-accent);
   font-weight: 700;
   box-shadow: var(--shadow-pop);
 }
 
 .feedback-toast.is-correct {
-  background: linear-gradient(135deg, #3d8a5c, #56a971);
+  background: linear-gradient(135deg, #1f9c67, #0c7f6f);
 }
 
 .feedback-toast.is-wrong {
-  background: linear-gradient(135deg, #c8553d, #df7a63);
+  background: linear-gradient(135deg, #b53e53, #d45b6f);
 }
 
 .modal-backdrop {
@@ -311,40 +327,44 @@ h2 {
   z-index: 2;
   width: min(860px, calc(100vw - 24px));
   max-height: 80vh;
-  padding: 26px;
+  padding: 24px;
   overflow: auto;
   transform: translate(-50%, -50%);
+  background:
+    radial-gradient(circle at 95% 4%, color-mix(in srgb, var(--secondary-soft) 55%, transparent), transparent 40%),
+    var(--card);
 }
 
 .summary-score {
-  margin-top: 20px;
+  margin-top: 18px;
 }
 
 .summary-score > div {
   flex: 1;
-  padding: 18px 20px;
-  border-radius: 20px;
-  background: var(--surface);
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  border: 1px solid var(--line-soft);
 }
 
 .summary-value {
-  font-size: 2rem;
+  font-size: 1.7rem;
   font-weight: 800;
 }
 
 .mistakes-list {
   display: grid;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 10px;
+  margin-top: 18px;
 }
 
 .mistake-card {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
-  padding: 16px 18px;
-  border-radius: 18px;
-  background: var(--surface);
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
   border: 1px solid var(--line-soft);
   align-items: center;
 }
@@ -358,10 +378,10 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 120px;
+  min-width: 118px;
   min-height: 74px;
   padding: 8px;
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--flag-backdrop);
 }
 

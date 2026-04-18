@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { AchievementsPageComponent } from './pages/achievements-page.component';
 import { CountriesPageComponent } from './pages/countries-page.component';
 import { CountryToFlagGamePageComponent } from './pages/country-to-flag-game-page.component';
 import { ChronoFlagsGamePageComponent } from './pages/chrono-flags-game-page.component';
@@ -22,6 +23,10 @@ export const routes: Routes = [
   {
     path: 'records',
     component: RecordsPageComponent
+  },
+  {
+    path: 'succes',
+    component: AchievementsPageComponent
   },
   {
     path: 'jeu/pays-vers-drapeaux/:difficulty',

@@ -1,26 +1,26 @@
-﻿<main class="pixel-shell">
+<main class="pixel-shell">
   <section class="hero-card">
     <div>
-      <p class="eyebrow">Mode jeu</p>
-      <h1>Le drapeau pixelisé</h1>
-      <p class="intro">Enchaîne les drapeaux. Une question ratée et la partie s'arrête.</p>
+      <p class="eyebrow">{{ i18n.t('classic.pixel.eyebrow') }}</p>
+      <h1>{{ i18n.t('classic.pixel.title') }}</h1>
+      <p class="intro">{{ i18n.t('classic.pixel.intro') }}</p>
     </div>
 
     <div class="hero-actions">
-      <a class="ghost-link" routerLink="/">Retour à l'accueil</a>
+      <a class="ghost-link" routerLink="/">{{ i18n.t('common.backHome') }}</a>
     </div>
   </section>
 
   @if (isLoading()) {
     <section class="board-card loading-card">
-      <p>Chargement des drapeaux...</p>
+      <p>{{ i18n.t('classic.pixel.loading') }}</p>
     </section>
   } @else if (currentCountry(); as country) {
     <section class="board-card">
       <div class="board-copy">
-        <p class="question-label">Quel pays est affiché ?</p>
-        <h2>Drapeau mystère</h2>
-        <div class="attempt-track" aria-label="Suivi des 5 essais">
+        <p class="question-label">{{ i18n.t('classic.pixel.question') }}</p>
+        <h2>{{ i18n.t('classic.pixel.mystery') }}</h2>
+        <div class="attempt-track" [attr.aria-label]="i18n.t('classic.pixel.attemptsAria')">
           @for (marker of attemptMarkers(); track $index) {
             <span class="attempt-dot" [class.wrong]="marker === 'wrong'" [class.correct]="marker === 'correct'">
               @if (marker === 'wrong') {
@@ -31,7 +31,14 @@
             </span>
           }
         </div>
-        <p class="board-hint">Cette tentative vaut {{ pointsForCurrentTry() }} point{{ pointsForCurrentTry() > 1 ? 's' : '' }}.</p>
+        <p class="board-hint">
+          {{
+            i18n.t('classic.pixel.pointsTry', {
+              points: pointsForCurrentTry(),
+              plural: pointsForCurrentTry() > 1 ? 's' : ''
+            })
+          }}
+        </p>
       </div>
 
       @if (resultMessage(); as message) {
@@ -48,30 +55,34 @@
             #answerInput
             type="text"
             class="answer-input"
-            placeholder="Écris le nom du pays"
+            [placeholder]="i18n.t('classic.pixel.inputPlaceholder')"
             [value]="answer()"
             [disabled]="isLocked()"
             (input)="answer.set($any($event.target).value)"
           />
-          <button type="submit" class="primary-button" [disabled]="isLocked() || !answer().trim()">Valider</button>
+          <button type="submit" class="primary-button" [disabled]="isLocked() || !answer().trim()">
+            {{ i18n.t('classic.pixel.submit') }}
+          </button>
         </form>
       } @else {
         <div class="next-wrap">
-          <button #nextButton type="button" class="primary-button" (click)="goToNextRound()">Suivant</button>
+          <button #nextButton type="button" class="primary-button" (click)="goToNextRound()">
+            {{ i18n.t('common.next') }}
+          </button>
         </div>
       }
     </section>
   }
 </main>
 
-<section class="status-dock" aria-label="État du jeu">
+<section class="status-dock" [attr.aria-label]="i18n.t('classic.pixel.statusAria')">
   <div class="status-block">
-    <p class="status-label">Série</p>
+    <p class="status-label">{{ i18n.t('classic.pixel.streak') }}</p>
     <p class="status-value">{{ solvedCount() }}</p>
   </div>
 
   <div class="status-block">
-    <p class="status-label">Score</p>
+    <p class="status-label">{{ i18n.t('common.score') }}</p>
     <p class="status-value">{{ score() }}</p>
   </div>
 </section>
@@ -81,34 +92,36 @@
   <section class="summary-modal" role="dialog" aria-modal="true" aria-labelledby="summary-title">
     <div class="summary-head">
       <div>
-        <p class="eyebrow">Partie terminée</p>
-        <h2 id="summary-title">Résultat final</h2>
+        <p class="eyebrow">{{ i18n.t('common.completed') }}</p>
+        <h2 id="summary-title">{{ i18n.t('common.finalResult') }}</h2>
       </div>
     </div>
 
     <div class="summary-score">
       <div>
-        <p class="status-label">Score final</p>
+        <p class="status-label">{{ i18n.t('classic.pixel.finalScore') }}</p>
         <p class="summary-value">{{ score() }}</p>
       </div>
       <div>
-        <p class="status-label">Série finale</p>
+        <p class="status-label">{{ i18n.t('classic.pixel.finalStreak') }}</p>
         <p class="summary-value">{{ solvedCount() }}</p>
       </div>
     </div>
 
     <div class="mistakes-list">
       @if (errors().length === 0) {
-        <p class="empty-state">Aucune erreur sur cette partie.</p>
+        <p class="empty-state">{{ i18n.t('classic.emptyErrors') }}</p>
       } @else {
         @for (error of errors(); track error.country.code) {
           <article class="mistake-card">
             <div>
-              <p class="mistake-country">{{ error.country.nameFrench }}</p>
-              <p class="mistake-detail">Ta réponse: {{ error.answer || 'Aucune' }}</p>
+              <p class="mistake-country">{{ countryName(error.country) }}</p>
+              <p class="mistake-detail">
+                {{ i18n.t('classic.pixel.answerLine', { answer: error.answer || i18n.t('common.none') }) }}
+              </p>
             </div>
             <div class="mistake-reference">
-              <img [src]="error.country.flagUrl" [alt]="'Drapeau de ' + error.country.nameFrench" />
+              <img [src]="error.country.flagUrl" [alt]="i18n.t('countries.flagOf', { country: countryName(error.country) })" />
             </div>
           </article>
         }
@@ -116,10 +129,8 @@
     </div>
 
     <div class="summary-actions">
-      <a class="ghost-link" routerLink="/">Retour à l'accueil</a>
-      <button type="button" class="primary-button" (click)="restartGame()">Recommencer</button>
+      <a class="ghost-link" routerLink="/">{{ i18n.t('common.backHome') }}</a>
+      <button type="button" class="primary-button" (click)="restartGame()">{{ i18n.t('common.restart') }}</button>
     </div>
   </section>
 }
-
-

@@ -1,58 +1,100 @@
-﻿<main class="countries-shell">
+<main class="countries-shell">
   <section class="header-card">
     <div>
-      <p class="eyebrow">Catalogue</p>
-      <h1>Tous les pays</h1>
+      <p class="eyebrow">{{ i18n.t('countries.eyebrow') }}</p>
+      <h1>{{ i18n.t('countries.title') }}</h1>
       <p class="intro">
-        Liste triable par nom de pays ou nom de capitale.
+        {{ i18n.t('countries.intro') }}
       </p>
     </div>
 
-    <div class="sort-controls" role="group" aria-label="Tri de la liste">
-      <button
-        type="button"
-        [class.active]="sortKey() === 'name'"
-        (click)="setSortKey('name')"
-      >
-        Trier par pays
-      </button>
-      <button
-        type="button"
-        [class.active]="sortKey() === 'capital'"
-        (click)="setSortKey('capital')"
-      >
-        Trier par capitale
-      </button>
+    <div class="header-controls">
+      <div class="search-group">
+        <label class="search-label" for="countries-search">{{ i18n.t('countries.searchLabel') }}</label>
+        <div class="search-row">
+          <input
+            id="countries-search"
+            type="search"
+            class="search-input"
+            [value]="searchTerm()"
+            [placeholder]="i18n.t('countries.searchPlaceholder')"
+            (input)="setSearchTerm($any($event.target).value)"
+          />
+          @if (searchTerm()) {
+            <button type="button" class="clear-button" (click)="clearSearchTerm()">
+              {{ i18n.t('countries.searchClear') }}
+            </button>
+          }
+        </div>
+      </div>
     </div>
   </section>
 
   <section class="table-card">
-    @if (countries$ | async; as countries) {
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Drapeau</th>
-              <th>Pays</th>
-              <th>Capitale</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (country of sortCountries(countries); track country.code) {
+    @if (countries().length > 0) {
+      @if (pagedCountries().length > 0) {
+        <div class="table-wrap">
+          <table>
+            <thead>
               <tr>
-                <td class="flag-cell">
-                  <img [src]="country.flagUrl" [alt]="'Drapeau de ' + country.nameFrench" />
-                </td>
-                <td>{{ country.nameFrench }}</td>
-                <td>{{ country.capitalFrench }}</td>
+                <th>{{ i18n.t('countries.table.flag') }}</th>
+                <th [attr.aria-sort]="ariaSort('name')">
+                  <button
+                    type="button"
+                    class="th-sort-button"
+                    [class.active]="isSortedBy('name')"
+                    (click)="toggleSort('name')"
+                  >
+                    <span>{{ i18n.t('countries.table.country') }}</span>
+                    <span class="sort-indicator">{{ sortIndicator('name') }}</span>
+                  </button>
+                </th>
+                <th [attr.aria-sort]="ariaSort('capital')">
+                  <button
+                    type="button"
+                    class="th-sort-button"
+                    [class.active]="isSortedBy('capital')"
+                    (click)="toggleSort('capital')"
+                  >
+                    <span>{{ i18n.t('countries.table.capital') }}</span>
+                    <span class="sort-indicator">{{ sortIndicator('capital') }}</span>
+                  </button>
+                </th>
               </tr>
-            }
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              @for (country of pagedCountries(); track country.code) {
+                <tr>
+                  <td class="flag-cell">
+                    <img [src]="country.flagUrl" [alt]="i18n.t('countries.flagOf', { country: countryName(country) })" />
+                  </td>
+                  <td>{{ countryName(country) }}</td>
+                  <td>{{ capitalName(country) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <footer class="table-footer" [attr.aria-label]="i18n.t('countries.paginationAria')">
+          <p class="results-count">{{ resultsLabel() }}</p>
+          @if (hasPagination()) {
+            <div class="pagination">
+              <button type="button" (click)="goToPreviousPage()" [disabled]="!hasPreviousPage()">
+                {{ i18n.t('countries.pagePrev') }}
+              </button>
+              <p class="page-label">{{ pageLabel() }}</p>
+              <button type="button" (click)="goToNextPage()" [disabled]="!hasNextPage()">
+                {{ i18n.t('countries.pageNext') }}
+              </button>
+            </div>
+          }
+        </footer>
+      } @else {
+        <p class="loading">{{ i18n.t('countries.noResults') }}</p>
+      }
     } @else {
-      <p class="loading">Chargement des pays...</p>
+      <p class="loading">{{ i18n.t('countries.loading') }}</p>
     }
   </section>
 </main>
-
