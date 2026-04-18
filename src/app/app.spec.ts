@@ -20,7 +20,7 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.brand')?.textContent).toContain('FindTheFlag');
+    expect(compiled.querySelector('.brand')?.textContent).toContain('Vexiio');
   });
 
   it('should render the main navigation', async () => {

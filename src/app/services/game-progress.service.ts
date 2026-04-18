@@ -14,7 +14,7 @@ export type GameProgressEntry = {
 
 type ProgressStore = Partial<Record<GameId, GameProgressEntry>>;
 
-const STORAGE_KEY = 'findtheflag.game-progress.v1';
+const STORAGE_KEY = 'vexiio.game-progress.v1';
 
 @Injectable({ providedIn: 'root' })
 export class GameProgressService {

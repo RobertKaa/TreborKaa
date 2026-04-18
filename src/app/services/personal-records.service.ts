@@ -3,7 +3,7 @@ import { GameRecordKey, GameResultPayload, PersonalRecord } from '../models/pers
 
 type StoredRecords = Partial<Record<GameRecordKey, PersonalRecord>>;
 
-const STORAGE_KEY = 'findtheflag.personal-records.v1';
+const STORAGE_KEY = 'vexiio.personal-records.v1';
 
 @Injectable({ providedIn: 'root' })
 export class PersonalRecordsService {

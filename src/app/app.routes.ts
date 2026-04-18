@@ -4,7 +4,6 @@ import { CountriesPageComponent } from './pages/countries-page.component';
 import { CountryToFlagGamePageComponent } from './pages/country-to-flag-game-page.component';
 import { ChronoFlagsGamePageComponent } from './pages/chrono-flags-game-page.component';
 import { FindTheErrorGamePageComponent } from './pages/find-the-error-game-page.component';
-import { FlagCultureGamePageComponent } from './pages/flag-culture-game-page.component';
 import { FlagRebuildGamePageComponent } from './pages/flag-rebuild-game-page.component';
 import { FlagToCountryGamePageComponent } from './pages/flag-to-country-game-page.component';
 import { HomePageComponent } from './pages/home-page.component';
@@ -54,7 +53,8 @@ export const routes: Routes = [
   },
   {
     path: 'jeu/culture-drapeaux',
-    component: FlagCultureGamePageComponent
+    redirectTo: '',
+    pathMatch: 'full'
   },
   {
     path: '**',

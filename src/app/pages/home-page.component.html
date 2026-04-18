@@ -42,26 +42,34 @@
         <p class="empty-games">{{ i18n.t('home.emptyFavorites') }}</p>
       } @else {
         @for (game of visibleGames(); track game.id) {
-          <article class="game-row" [class.favorite]="game.isFavorite">
+        <article
+          class="game-row"
+          [class.favorite]="game.isFavorite"
+          [class.unavailable]="!game.available"
+        >
             <div>
-              <div class="game-topline">
-                <h3>{{ i18n.t(game.labelKey) }}</h3>
-                <button
-                  type="button"
-                  class="favorite-button"
-                  [attr.aria-label]="favoriteAriaLabel(game)"
-                  [class.active]="game.isFavorite"
-                  (click)="toggleFavorite(game.id)"
-                >
-                  &#9733;
-                </button>
-              </div>
-              <p class="game-desc">{{ i18n.t(game.descriptionKey) }}</p>
-
-              @if (recordLine(game); as bestLine) {
-                <p class="game-record">{{ bestLine }}</p>
-              }
+            <div class="game-topline">
+              <h3>{{ i18n.t(game.labelKey) }}</h3>
+              <button
+                type="button"
+                class="favorite-button"
+                [attr.aria-label]="favoriteAriaLabel(game)"
+                [class.active]="game.isFavorite"
+                [disabled]="!game.available"
+                (click)="toggleFavorite(game.id)"
+              >
+                &#9733;
+              </button>
             </div>
+            <p class="game-desc">{{ i18n.t(game.descriptionKey) }}</p>
+            @if (!game.available) {
+              <p class="coming-soon">{{ i18n.t('home.comingSoon') }}</p>
+            }
+
+            @if (recordLine(game); as bestLine) {
+              <p class="game-record">{{ bestLine }}</p>
+            }
+          </div>
 
             <div class="game-actions">
               @if (game.hasInProgress && game.progressLabel; as progressText) {
@@ -73,12 +81,14 @@
                 </div>
               }
 
+            @if (game.available) {
               <a class="play-link" [routerLink]="game.route">
                 {{ game.hasInProgress ? i18n.t('home.resumeAction') : i18n.t('common.play') }}
               </a>
-            </div>
-          </article>
-        }
+            }
+          </div>
+        </article>
+      }
       }
     </div>
   </section>

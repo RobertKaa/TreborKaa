@@ -1,5 +1,5 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
-import { GameId } from '../data/game-catalog';
+import { GAME_CATALOG, GameId } from '../data/game-catalog';
 import { FavoriteGamesService } from './favorite-games.service';
 import { GameProgressService } from './game-progress.service';
 import { PersonalRecordsService } from './personal-records.service';
@@ -36,7 +36,10 @@ export type AchievementState = AchievementDefinition & {
   displayDescriptionKey: string;
 };
 
-const STORAGE_KEY = 'findtheflag.achievements.v1';
+const STORAGE_KEY = 'vexiio.achievements.v1';
+const ENABLED_RECORD_KEYS = new Set(
+  GAME_CATALOG.filter((game) => game.available).flatMap((game) => game.recordKeys)
+);
 
 const DEFINITIONS: AchievementDefinition[] = [
   {
@@ -149,7 +152,9 @@ export class AchievementsService {
   constructor() {
     effect(() => {
       const records = this.recordsService.snapshot();
-      const entries = Object.values(records).filter((entry) => !!entry);
+      const entries = Object.entries(records)
+        .filter(([key, entry]) => ENABLED_RECORD_KEYS.has(key as keyof typeof records) && !!entry)
+        .map(([, entry]) => entry!);
       const totalGamesPlayed = entries.reduce((sum, entry) => sum + (entry?.gamesPlayed ?? 0), 0);
       const uniqueRecordCount = entries.length;
       const maxStreak = entries.reduce((max, entry) => Math.max(max, entry?.bestStreak ?? 0), 0);
@@ -207,8 +212,8 @@ export class AchievementsService {
       }
 
       const hasHardClassicCombo =
-        !!records['country-to-flag-hard'] &&
-        !!records['flag-to-country-hard'] &&
+        (records['country-to-flag-hard']?.gamesPlayed ?? 0) > 0 &&
+        (records['flag-to-country-hard']?.gamesPlayed ?? 0) > 0 &&
         (records['chrono-flags']?.bestStreak ?? 0) >= 5;
       if (hasHardClassicCombo) {
         this.unlock('mystery-combo');

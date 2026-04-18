@@ -3,7 +3,7 @@ import { GAME_CATALOG, GameId } from '../data/game-catalog';
 
 type FavoriteStore = Partial<Record<GameId, true>>;
 
-const STORAGE_KEY = 'findtheflag.favorites.v1';
+const STORAGE_KEY = 'vexiio.favorites.v1';
 const VALID_IDS = new Set<GameId>(GAME_CATALOG.map((game) => game.id));
 
 @Injectable({ providedIn: 'root' })

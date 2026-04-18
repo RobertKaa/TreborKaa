@@ -133,6 +133,13 @@ h3 {
   border-color: color-mix(in srgb, var(--accent-line-strong) 80%, transparent);
 }
 
+.game-row.unavailable {
+  opacity: 0.62;
+  filter: grayscale(0.5);
+  background: color-mix(in srgb, var(--surface) 74%, transparent);
+  border-style: dashed;
+}
+
 .game-topline {
   display: flex;
   align-items: center;
@@ -158,10 +165,31 @@ h3 {
   background: color-mix(in srgb, #f39c12 18%, transparent);
 }
 
+.favorite-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .game-desc {
   margin-top: 4px;
   line-height: 1.4;
   font-size: 0.92rem;
+}
+
+.coming-soon {
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface-strong) 86%, transparent);
+  color: var(--ink-soft);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .game-record {
