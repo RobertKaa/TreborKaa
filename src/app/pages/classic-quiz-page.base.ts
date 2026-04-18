@@ -1,4 +1,4 @@
-import { computed, effect, inject, signal } from '@angular/core';
+import { computed, effect, inject, signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
@@ -123,7 +123,7 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
         return;
       }
 
-      const restored = this.restoreProgressState(countries, difficulty);
+      const restored = untracked(() => this.restoreProgressState(countries, difficulty));
       if (!restored) {
         this.resetGameState();
         this.currentQuestion.set(this.buildQuestionFn(countries, difficulty, []));
