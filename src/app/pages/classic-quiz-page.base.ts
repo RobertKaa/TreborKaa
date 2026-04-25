@@ -28,6 +28,8 @@ type QuizSetup<TQuestion extends BaseQuestion> = {
   getRecordKey: (difficulty: GameDifficulty) => GameRecordKey;
   getProgressGameId: (difficulty: GameDifficulty) => GameId;
   progressLabelKey: string;
+  isReady?: () => boolean;
+  getTotalQuestions?: (countries: CountrySummary[]) => number;
 };
 
 const MAX_ERRORS = 3;
@@ -68,6 +70,8 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
   private buildQuestionFn: QuizSetup<TQuestion>['buildQuestion'] | null = null;
   private getRecordKeyFn: QuizSetup<TQuestion>['getRecordKey'] | null = null;
   private getProgressGameIdFn: QuizSetup<TQuestion>['getProgressGameId'] | null = null;
+  private isReadyFn: QuizSetup<TQuestion>['isReady'] | null = null;
+  private getTotalQuestionsFn: QuizSetup<TQuestion>['getTotalQuestions'] | null = null;
   private progressLabelKey = 'home.resume.classic';
   private advanceTimeoutId: number | null = null;
   private hasSavedRecord = false;
@@ -92,7 +96,14 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
   protected readonly countries$ = this.countriesService.getCountries();
   protected readonly countriesSignal = toSignal(this.countries$, { initialValue: [] as CountrySummary[] });
   protected readonly currentQuestion = signal<TQuestion | null>(null);
-  protected readonly totalQuestions = computed(() => this.countriesSignal().length);
+  protected readonly totalQuestions = computed(() => {
+    const countries = this.countriesSignal();
+    if (this.getTotalQuestionsFn) {
+      return Math.max(0, this.getTotalQuestionsFn(countries));
+    }
+
+    return countries.length;
+  });
   protected readonly answeredCount = computed(() => this.usedCodes().length + (this.answered() ? 1 : 0));
   protected readonly progressLabel = computed(
     () => `${Math.min(this.questionIndex(), this.totalQuestions())} / ${this.totalQuestions()}`
@@ -109,6 +120,8 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
     this.getRecordKeyFn = setup.getRecordKey;
     this.getProgressGameIdFn = setup.getProgressGameId;
     this.progressLabelKey = setup.progressLabelKey;
+    this.isReadyFn = setup.isReady ?? null;
+    this.getTotalQuestionsFn = setup.getTotalQuestions ?? null;
 
     if (this.hasBoundEffect) {
       return;
@@ -118,8 +131,10 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
     effect(() => {
       const countries = this.countriesSignal();
       const difficulty = this.difficulty();
+      const isReady = this.isReadyFn?.() ?? true;
+      const totalQuestions = this.totalQuestions();
 
-      if (countries.length < 4 || !this.buildQuestionFn) {
+      if (totalQuestions < 4 || !this.buildQuestionFn || !isReady) {
         return;
       }
 
@@ -156,20 +171,14 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
     this.wrongCodes.update((codes) => (codes.includes(code) ? codes : [...codes, code]));
 
     if (question && correctCountry) {
-      const alreadyTracked = this.errors().some(
-        (error) => error.promptCountry.code === question.promptCountry.code
-      );
-
-      if (!alreadyTracked) {
-        this.errors.update((errors) => [
-          ...errors,
-          {
-            promptCountry: question.promptCountry,
-            selectedCountry,
-            correctCountry
-          }
-        ]);
-      }
+      this.errors.update((errors) => [
+        ...errors,
+        {
+          promptCountry: question.promptCountry,
+          selectedCountry,
+          correctCountry
+        }
+      ]);
     }
 
     if (this.wrongAttempts() >= MAX_ERRORS) {
@@ -205,6 +214,10 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
     this.resetGameState();
     this.clearProgressState();
     this.generateQuestion();
+  }
+
+  protected closeSummary(): void {
+    this.isComplete.set(false);
   }
 
   protected getOptionState(code: string): 'default' | 'correct' | 'wrong' {
@@ -259,7 +272,9 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
 
   private generateQuestion(): void {
     const countries = this.countriesSignal();
-    if (countries.length < 4 || !this.buildQuestionFn) {
+    const isReady = this.isReadyFn?.() ?? true;
+    const totalQuestions = this.totalQuestions();
+    if (totalQuestions < 4 || !this.buildQuestionFn || !isReady) {
       return;
     }
 
@@ -324,8 +339,10 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
       const difficulty = this.difficulty();
       const question = this.currentQuestion();
       const progressGameId = this.getProgressGameIdFn?.(difficulty) ?? null;
+      const isReady = this.isReadyFn?.() ?? true;
+      const totalQuestions = this.totalQuestions();
 
-      if (!progressGameId || countries.length < 4 || !question || this.isComplete()) {
+      if (!progressGameId || totalQuestions < 4 || !question || this.isComplete() || !isReady) {
         if (progressGameId && this.isComplete()) {
           this.gameProgressService.clearProgress(progressGameId);
         }

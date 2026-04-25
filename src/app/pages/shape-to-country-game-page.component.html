@@ -2,16 +2,27 @@
   <section class="hero-card">
     <div>
       <p class="eyebrow">{{ i18n.t('classic.eyebrow') }}</p>
-      <h1>{{ i18n.t('classic.flagToCountry.title') }}</h1>
-      <p class="intro">{{ i18n.t('classic.flagToCountry.intro') }}</p>
+      <h1>{{ i18n.t('classic.shapeToCountry.title') }}</h1>
+      <p class="intro">{{ i18n.t('classic.shapeToCountry.intro') }}</p>
     </div>
   </section>
 
   @if (currentQuestion(); as question) {
     <section class="question-card">
-      <p class="question-label">{{ i18n.t('classic.questionFlagToCountry') }}</p>
-      <div class="prompt-flag">
-        <img [src]="question.promptCountry.flagUrl" [alt]="i18n.t('countries.flagOf', { country: countryName(question.promptCountry) })" />
+      <p class="question-label">{{ i18n.t('classic.questionShapeToCountry') }}</p>
+      <div class="prompt-shape">
+        @if (currentShapePath(); as shapePath) {
+          <svg
+            viewBox="0 0 1000 1000"
+            preserveAspectRatio="xMidYMid meet"
+            role="img"
+            [attr.aria-label]="i18n.t('classic.shapeAria')"
+          >
+            <path [attr.d]="shapePath" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        } @else {
+          <p class="question-help">{{ i18n.t('common.loadingGame') }}</p>
+        }
       </div>
       <p class="question-help">{{ i18n.t('classic.capital', { capital: capitalName(question.promptCountry) }) }}</p>
 
@@ -73,9 +84,15 @@
       } @else {
         @for (error of errors(); track $index) {
           <article class="mistake-card">
-            <div class="mistake-flag">
-              <img [src]="error.promptCountry.flagUrl" [alt]="i18n.t('countries.flagOf', { country: countryName(error.promptCountry) })" />
-            </div>
+            @if (shapePath(error.promptCountry); as path) {
+              <div class="mistake-shape">
+                <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                  <path [attr.d]="path" fill-rule="evenodd" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+            } @else {
+              <p class="mistake-country">{{ countryName(error.promptCountry) }}</p>
+            }
             <p class="mistake-line">{{ i18n.t('common.yourAnswer') }}: {{ error.selectedCountry ? countryName(error.selectedCountry) : i18n.t('common.none') }}</p>
             <p class="mistake-line">{{ i18n.t('common.correctAnswer') }}: {{ countryName(error.correctCountry) }}</p>
           </article>

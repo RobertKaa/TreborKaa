@@ -5,7 +5,7 @@
 .pixel-shell {
   display: grid;
   gap: 18px;
-  padding-bottom: 132px;
+  padding-bottom: 24px;
 }
 
 .hero-card,
@@ -82,11 +82,13 @@ h2 {
   font-weight: 800;
   color: color-mix(in srgb, var(--success) 90%, #0b4a2f);
   background: color-mix(in srgb, var(--success) 20%, transparent);
+  animation: answer-correct-pop 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .result-feedback.wrong {
   color: color-mix(in srgb, var(--danger) 92%, #56101e);
   background: color-mix(in srgb, var(--danger) 18%, transparent);
+  animation: answer-wrong-shake 260ms ease-out;
 }
 
 .attempt-track {
@@ -208,28 +210,34 @@ h2 {
 }
 
 .status-dock {
-  position: fixed;
-  left: 50%;
-  bottom: 14px;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 10px;
-  width: min(760px, calc(100vw - 24px));
-  padding: 10px;
-  transform: translateX(-50%);
-  background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
+  position: sticky;
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: min(760px, 100%);
+  padding: 8px;
+  margin: 10px auto 0;
+  background: color-mix(in srgb, var(--surface-raise) 96%, transparent);
   border: 1px solid var(--line);
-  border-radius: 24px;
+  border-radius: 16px;
   box-shadow: var(--shadow);
-  backdrop-filter: blur(12px) saturate(130%);
 }
 
 .status-block {
-  padding: 14px 16px;
-  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 999px;
   background: color-mix(in srgb, var(--surface) 90%, transparent);
   border: 1px solid var(--line-soft);
+}
+
+.status-dock .status-label {
+  margin: 0;
+  font-size: 0.6rem;
 }
 
 .status-value,
@@ -241,6 +249,7 @@ h2 {
 .modal-backdrop {
   position: fixed;
   inset: 0;
+  z-index: 50;
   background: var(--overlay);
   backdrop-filter: blur(4px);
 }
@@ -249,7 +258,7 @@ h2 {
   position: fixed;
   top: 50%;
   left: 50%;
-  z-index: 2;
+  z-index: 51;
   width: min(760px, calc(100vw - 24px));
   max-height: 80vh;
   padding: 24px;
@@ -300,11 +309,22 @@ h2 {
   object-fit: contain;
 }
 
+.summary-actions {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.summary-actions .ghost-link,
+.summary-actions .primary-button {
+  min-width: 150px;
+  min-height: 46px;
+  padding: 12px 20px;
+}
+
 @media (max-width: 900px) {
   .hero-card,
   .summary-head,
   .summary-score,
-  .summary-actions,
   .mistake-card,
   .answer-form {
     flex-direction: column;
@@ -313,8 +333,7 @@ h2 {
 }
 
 @media (max-width: 640px) {
-  .hero-card,
-  .status-dock {
+  .hero-card {
     flex-direction: column;
   }
 
@@ -324,12 +343,28 @@ h2 {
   }
 
   .status-dock {
-    width: calc(100vw - 16px);
-    grid-template-columns: 1fr;
-    padding: 10px;
+    width: 100%;
+    padding: 8px;
   }
 
   .summary-modal {
     padding: 20px;
+  }
+
+  .summary-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .summary-actions .ghost-link,
+  .summary-actions .primary-button {
+    flex: 1 1 calc(50% - 6px);
+  }
+}
+
+@media (max-width: 420px) {
+  .summary-actions .ghost-link,
+  .summary-actions .primary-button {
+    flex-basis: 100%;
   }
 }

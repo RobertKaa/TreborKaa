@@ -23,6 +23,8 @@ export class RecordsPageComponent {
     { key: 'country-to-flag-hard' },
     { key: 'flag-to-country-easy' },
     { key: 'flag-to-country-hard' },
+    { key: 'shape-to-country-easy' },
+    { key: 'shape-to-country-hard' },
     { key: 'chrono-flags' },
     { key: 'flag-culture-easy' },
     { key: 'flag-culture-medium' },
@@ -54,7 +56,9 @@ export class RecordsPageComponent {
       key === 'country-to-flag-easy' ||
       key === 'country-to-flag-hard' ||
       key === 'flag-to-country-easy' ||
-      key === 'flag-to-country-hard'
+      key === 'flag-to-country-hard' ||
+      key === 'shape-to-country-easy' ||
+      key === 'shape-to-country-hard'
     ) {
       return this.i18n.t('records.value.classic', { score: record.bestScore });
     }

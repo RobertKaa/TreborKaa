@@ -1,5 +1,4 @@
 import { Component, OnDestroy, computed, effect, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { GameId } from '../data/game-catalog';
 import { FLAG_REBUILD_PUZZLES } from '../data/flag-rebuild-puzzles';
 import { FlagRebuildPattern, FlagRebuildPuzzle } from '../models/flag-rebuild-puzzle';
@@ -21,7 +20,22 @@ type GameError = {
   correctColor: string;
 };
 
-const EXTRA_COLORS = ['#ff7f50', '#2a9d8f', '#8d99ae', '#8338ec', '#f4a261', '#457b9d'];
+const EXTRA_COLORS = [
+  '#ff004f',
+  '#ff6b00',
+  '#ffc300',
+  '#19b24b',
+  '#00a8e8',
+  '#0057ff',
+  '#6f2cff',
+  '#d100d1',
+  '#8b0000',
+  '#0a0a0a',
+  '#f8f9fa'
+];
+const MIN_WRONG_COLOR_DISTANCE = 120;
+const MIN_DISPLAY_COLOR_DISTANCE = 90;
+const RECENT_WRONG_COLORS_LIMIT = 10;
 
 type ErrorPuzzleSnapshot = {
   puzzleCode: string;
@@ -47,7 +61,6 @@ type FindErrorProgressSnapshot = {
 
 @Component({
   selector: 'app-find-the-error-game-page',
-  imports: [RouterLink],
   templateUrl: './find-the-error-game-page.component.html',
   styleUrl: './find-the-error-game-page.component.css'
 })
@@ -68,6 +81,8 @@ export class FindTheErrorGamePageComponent implements OnDestroy {
   private nextTimeoutId: number | null = null;
   private hasSavedRecord = false;
   private skipNextPuzzleInitialization = false;
+  private readonly recentWrongColors: string[] = [];
+  private readonly lastWrongZoneByPuzzle = new Map<string, number>();
 
   protected readonly totalPuzzles = computed(() => this.gamePuzzles().length);
   protected readonly currentPuzzle = computed(() => this.gamePuzzles()[this.puzzleIndex()] ?? null);
@@ -161,6 +176,10 @@ export class FindTheErrorGamePageComponent implements OnDestroy {
     this.startNewGame();
   }
 
+  protected closeSummary(): void {
+    this.isComplete.set(false);
+  }
+
   protected getMaxScore(): number {
     return Math.max(1, this.score() + this.errors().length);
   }
@@ -184,7 +203,7 @@ export class FindTheErrorGamePageComponent implements OnDestroy {
       puzzle.targetColors,
       puzzle.targetColors.length
     );
-    const wrongZoneIndex = Math.floor(Math.random() * zoneCount);
+    const wrongZoneIndex = this.pickWrongZoneIndex(puzzle.code, zoneCount);
     const correctColor = displayedColors[wrongZoneIndex] ?? '#ffffff';
     const wrongColor = this.pickWrongColor(puzzle, displayedColors, correctColor);
     displayedColors[wrongZoneIndex] = wrongColor;
@@ -203,13 +222,47 @@ export class FindTheErrorGamePageComponent implements OnDestroy {
     displayedColors: string[],
     correctColor: string
   ): string {
-    const candidates = this.shuffle(
-      [...puzzle.palette, ...EXTRA_COLORS].filter(
-        (color) => color !== correctColor && !displayedColors.includes(color)
-      )
+    const normalizedDisplayed = displayedColors
+      .map((color) => this.normalizeHexColor(color))
+      .filter((color): color is string => !!color);
+    const normalizedCorrect = this.normalizeHexColor(correctColor);
+    if (!normalizedCorrect) {
+      return correctColor;
+    }
+
+    const seededCandidates = [
+      ...puzzle.palette,
+      ...EXTRA_COLORS,
+      ...this.buildDerivedCandidates(normalizedCorrect)
+    ]
+      .map((color) => this.normalizeHexColor(color))
+      .filter((color): color is string => !!color);
+
+    const uniqueCandidates = Array.from(new Set(seededCandidates)).filter((color) => color !== normalizedCorrect);
+    const availableCandidates = uniqueCandidates.filter((color) => !normalizedDisplayed.includes(color));
+    const distinctFromCorrect = availableCandidates.filter(
+      (color) => this.rgbDistance(color, normalizedCorrect) >= MIN_WRONG_COLOR_DISTANCE
+    );
+    const distinctFromFlag = distinctFromCorrect.filter((color) =>
+      normalizedDisplayed.every((displayedColor) => this.rgbDistance(color, displayedColor) >= MIN_DISPLAY_COLOR_DISTANCE)
+    );
+    const distinctAndFresh = distinctFromFlag.filter((color) => !this.recentWrongColors.includes(color));
+    const fallbackFresh = distinctFromCorrect.filter((color) => !this.recentWrongColors.includes(color));
+
+    const chosen = this.pickRandomFrom(
+      distinctAndFresh,
+      distinctFromFlag,
+      fallbackFresh,
+      distinctFromCorrect,
+      availableCandidates
     );
 
-    return candidates[0] ?? correctColor;
+    if (!chosen) {
+      return correctColor;
+    }
+
+    this.rememberWrongColor(chosen);
+    return chosen;
   }
 
   private advancePuzzle(): void {
@@ -235,6 +288,8 @@ export class FindTheErrorGamePageComponent implements OnDestroy {
     this.isLocked.set(false);
     this.currentErrorPuzzle.set(null);
     this.hasSavedRecord = false;
+    this.recentWrongColors.length = 0;
+    this.lastWrongZoneByPuzzle.clear();
   }
 
   private getPatternPreviewColors(
@@ -260,6 +315,183 @@ export class FindTheErrorGamePageComponent implements OnDestroy {
       default:
         return Math.max(2, colorCount);
     }
+  }
+
+  private pickWrongZoneIndex(puzzleCode: string, zoneCount: number): number {
+    if (zoneCount <= 1) {
+      this.lastWrongZoneByPuzzle.set(puzzleCode, 0);
+      return 0;
+    }
+
+    const previousIndex = this.lastWrongZoneByPuzzle.get(puzzleCode);
+    const candidateIndexes = Array.from({ length: zoneCount }, (_, index) => index).filter(
+      (index) => index !== previousIndex
+    );
+    const nextIndex = candidateIndexes[Math.floor(Math.random() * candidateIndexes.length)] ?? 0;
+    this.lastWrongZoneByPuzzle.set(puzzleCode, nextIndex);
+    return nextIndex;
+  }
+
+  private buildDerivedCandidates(baseColor: string): string[] {
+    const rgb = this.hexToRgb(baseColor);
+    const hsl = this.hexToHsl(baseColor);
+    if (!rgb || !hsl) {
+      return [];
+    }
+
+    const inverted = this.rgbToHex(255 - rgb.r, 255 - rgb.g, 255 - rgb.b);
+    const complementary = this.hslToHex((hsl.h + 180) % 360, Math.max(72, hsl.s), this.shiftLightness(hsl.l, 12));
+    const triadA = this.hslToHex((hsl.h + 120) % 360, Math.max(70, hsl.s), this.shiftLightness(hsl.l, 10));
+    const triadB = this.hslToHex((hsl.h + 240) % 360, Math.max(70, hsl.s), this.shiftLightness(hsl.l, -10));
+    const highLight = this.hslToHex(hsl.h, Math.max(68, hsl.s), 90);
+    const deepDark = this.hslToHex(hsl.h, Math.max(68, hsl.s), 18);
+
+    return [inverted, complementary, triadA, triadB, highLight, deepDark];
+  }
+
+  private pickRandomFrom(...groups: string[][]): string | null {
+    for (const group of groups) {
+      if (group.length > 0) {
+        const shuffled = this.shuffle(group);
+        return shuffled[0] ?? null;
+      }
+    }
+
+    return null;
+  }
+
+  private rememberWrongColor(color: string): void {
+    this.recentWrongColors.unshift(color);
+    if (this.recentWrongColors.length > RECENT_WRONG_COLORS_LIMIT) {
+      this.recentWrongColors.splice(RECENT_WRONG_COLORS_LIMIT);
+    }
+  }
+
+  private normalizeHexColor(color: string): string | null {
+    const trimmed = color.trim().toLowerCase();
+    const match = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(trimmed);
+    if (!match) {
+      return null;
+    }
+
+    if (match[1].length === 3) {
+      return `#${match[1]
+        .split('')
+        .map((char) => `${char}${char}`)
+        .join('')}`;
+    }
+
+    return `#${match[1]}`;
+  }
+
+  private hexToRgb(color: string): { r: number; g: number; b: number } | null {
+    const normalized = this.normalizeHexColor(color);
+    if (!normalized) {
+      return null;
+    }
+
+    return {
+      r: parseInt(normalized.slice(1, 3), 16),
+      g: parseInt(normalized.slice(3, 5), 16),
+      b: parseInt(normalized.slice(5, 7), 16)
+    };
+  }
+
+  private rgbDistance(left: string, right: string): number {
+    const a = this.hexToRgb(left);
+    const b = this.hexToRgb(right);
+    if (!a || !b) {
+      return 0;
+    }
+
+    const r = a.r - b.r;
+    const g = a.g - b.g;
+    const bl = a.b - b.b;
+    return Math.sqrt(r * r + g * g + bl * bl);
+  }
+
+  private hexToHsl(color: string): { h: number; s: number; l: number } | null {
+    const rgb = this.hexToRgb(color);
+    if (!rgb) {
+      return null;
+    }
+
+    const r = rgb.r / 255;
+    const g = rgb.g / 255;
+    const b = rgb.b / 255;
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const delta = max - min;
+
+    let hue = 0;
+    if (delta !== 0) {
+      if (max === r) {
+        hue = ((g - b) / delta) % 6;
+      } else if (max === g) {
+        hue = (b - r) / delta + 2;
+      } else {
+        hue = (r - g) / delta + 4;
+      }
+    }
+
+    hue = Math.round(((hue * 60) + 360) % 360);
+    const lightness = (max + min) / 2;
+    const saturation = delta === 0 ? 0 : delta / (1 - Math.abs(2 * lightness - 1));
+
+    return {
+      h: hue,
+      s: Math.round(saturation * 100),
+      l: Math.round(lightness * 100)
+    };
+  }
+
+  private hslToHex(hue: number, saturation: number, lightness: number): string {
+    const h = ((hue % 360) + 360) % 360;
+    const s = Math.max(0, Math.min(100, saturation)) / 100;
+    const l = Math.max(0, Math.min(100, lightness)) / 100;
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+    const m = l - c / 2;
+
+    let r = 0;
+    let g = 0;
+    let b = 0;
+
+    if (h < 60) {
+      r = c;
+      g = x;
+    } else if (h < 120) {
+      r = x;
+      g = c;
+    } else if (h < 180) {
+      g = c;
+      b = x;
+    } else if (h < 240) {
+      g = x;
+      b = c;
+    } else if (h < 300) {
+      r = x;
+      b = c;
+    } else {
+      r = c;
+      b = x;
+    }
+
+    return this.rgbToHex(
+      Math.round((r + m) * 255),
+      Math.round((g + m) * 255),
+      Math.round((b + m) * 255)
+    );
+  }
+
+  private rgbToHex(r: number, g: number, b: number): string {
+    const clamp = (value: number): number => Math.max(0, Math.min(255, value));
+    const toHex = (value: number): string => clamp(value).toString(16).padStart(2, '0');
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  }
+
+  private shiftLightness(lightness: number, delta: number): number {
+    return Math.max(8, Math.min(92, lightness + delta));
   }
 
   private scheduleAdvance(): void {

@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, computed, effect, inject, signal, untracked } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import iro from '@jaames/iro';
 import { GameId } from '../data/game-catalog';
 import { FLAG_REBUILD_PUZZLES } from '../data/flag-rebuild-puzzles';
@@ -50,7 +49,6 @@ const ALL_PATTERNS: FlagRebuildPattern[] = [
 
 @Component({
   selector: 'app-flag-rebuild-game-page',
-  imports: [RouterLink],
   templateUrl: './flag-rebuild-game-page.component.html',
   styleUrl: './flag-rebuild-game-page.component.css'
 })
@@ -112,6 +110,7 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
   });
   protected readonly activePiece = computed(() => this.pieces()[this.activeZoneIndex()] ?? null);
   protected readonly activeZoneLabel = computed(() => this.getZoneLabel(this.activeZoneIndex()));
+  protected readonly activeHexColorInput = signal('#FFFFFF');
 
   constructor() {
     if (!this.restoreProgress()) {
@@ -146,8 +145,9 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
 
     effect(() => {
       const puzzle = this.currentPuzzle();
-      if (!puzzle || this.isComplete()) {
-        if (this.isComplete()) {
+      const locked = this.isLocked();
+      if (!puzzle || this.isComplete() || locked) {
+        if (this.isComplete() || locked) {
           this.clearProgress();
         }
         return;
@@ -164,6 +164,16 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
           }
         }
       );
+    });
+
+    effect(() => {
+      const isOpen = this.isColorPickerOpen();
+      const piece = this.activePiece();
+      if (!isOpen || !piece) {
+        return;
+      }
+
+      this.activeHexColorInput.set(piece.color.toUpperCase());
     });
   }
 
@@ -223,6 +233,10 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
 
     this.activeZoneIndex.set(index);
     this.isColorPickerOpen.set(true);
+    const piece = this.pieces()[index];
+    if (piece) {
+      this.activeHexColorInput.set(piece.color.toUpperCase());
+    }
     this.scheduleColorWheelSync();
   }
 
@@ -238,8 +252,32 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
     }
 
     this.updatePieceColor(piece.id, color);
+    this.activeHexColorInput.set(color.toUpperCase());
     if (this.colorWheelPicker) {
       this.colorWheelPicker.color.hexString = color;
+    }
+  }
+
+  protected onHexColorInput(value: string): void {
+    this.activeHexColorInput.set(value.toUpperCase());
+
+    const piece = this.activePiece();
+    if (!piece || this.isLocked()) {
+      return;
+    }
+
+    const normalized = this.normalizeHexColor(value);
+    if (!normalized) {
+      return;
+    }
+
+    if (piece.color.toLowerCase() !== normalized) {
+      this.updatePieceColor(piece.id, normalized);
+    }
+
+    this.activeHexColorInput.set(normalized.toUpperCase());
+    if (this.colorWheelPicker && this.colorWheelPicker.color.hexString.toLowerCase() !== normalized) {
+      this.colorWheelPicker.color.hexString = normalized;
     }
   }
 
@@ -282,6 +320,10 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
     this.destroyColorWheelPicker();
     this.clearProgress();
     this.startNewGame();
+  }
+
+  protected closeSummary(): void {
+    this.restartGame();
   }
 
   protected getMaxScore(): number {
@@ -488,7 +530,7 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
     host.style.height = `${this.getWheelHostHeight(wheelSize)}px`;
 
     if (!this.colorWheelPicker) {
-      host.innerHTML = '';
+      host.replaceChildren();
       this.colorWheelPicker = iro.ColorPicker(host, {
         width: wheelSize,
         color: activePiece.color,
@@ -519,7 +561,9 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
           return;
         }
 
-        this.updatePieceColor(piece.id, color.hexString.toLowerCase());
+        const normalized = this.normalizeHexColor(color.hexString) ?? color.hexString.toLowerCase();
+        this.updatePieceColor(piece.id, normalized);
+        this.activeHexColorInput.set(normalized.toUpperCase());
       };
 
       this.colorWheelPicker.on('color:change', this.colorChangeHandler);
@@ -556,6 +600,29 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
       FlagRebuildGamePageComponent.VALUE_SLIDER_MARGIN +
       FlagRebuildGamePageComponent.WHEEL_EXTRA_HEIGHT
     );
+  }
+
+  private normalizeHexColor(value: string): string | null {
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return null;
+    }
+
+    const prefixed = trimmed.startsWith('#') ? trimmed : `#${trimmed}`;
+    const match = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(prefixed);
+    if (!match) {
+      return null;
+    }
+
+    if (match[1].length === 3) {
+      const expanded = match[1]
+        .split('')
+        .map((char) => `${char}${char}`)
+        .join('');
+      return `#${expanded.toLowerCase()}`;
+    }
+
+    return `#${match[1].toLowerCase()}`;
   }
 
   private computeColorSimilarity(left: string, right: string): number {
@@ -727,7 +794,7 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
     );
     this.activeZoneIndex.set(snapshot.activeZoneIndex);
     this.patternOptionsByPuzzle.set(snapshot.patternOptionsByPuzzle);
-    this.isLocked.set(snapshot.isLocked);
+    this.isLocked.set(false);
     this.isComplete.set(false);
     this.isColorPickerOpen.set(false);
     this.hasSavedRecord = false;

@@ -11,7 +11,7 @@
         <p class="eyebrow">{{ i18n.t('home.gamesKicker') }}</p>
         <h2>{{ i18n.t('home.gamesTitle') }}</h2>
       </div>
-      <p class="games-summary">{{ i18n.t('home.gamesCount', { count: games().length }) }}</p>
+      <p class="games-summary">{{ i18n.t('home.gamesCount', { count: displayedGamesCount() }) }}</p>
     </div>
 
     <div class="tabs-row" role="tablist" [attr.aria-label]="i18n.t('home.gamesTabsAria')">
@@ -38,38 +38,88 @@
     </div>
 
     <div class="games-list">
-      @if (visibleGames().length === 0) {
+      @if (visibleClassicFamilies().length === 0 && visibleGames().length === 0) {
         <p class="empty-games">{{ i18n.t('home.emptyFavorites') }}</p>
       } @else {
-        @for (game of visibleGames(); track game.id) {
-        <article
-          class="game-row"
-          [class.favorite]="game.isFavorite"
-          [class.unavailable]="!game.available"
-        >
+        @for (family of visibleClassicFamilies(); track family.id) {
+          <article class="game-row classic-row" [class.favorite]="isClassicFavorite(family)">
             <div>
-            <div class="game-topline">
-              <h3>{{ i18n.t(game.labelKey) }}</h3>
-              <button
-                type="button"
-                class="favorite-button"
-                [attr.aria-label]="favoriteAriaLabel(game)"
-                [class.active]="game.isFavorite"
-                [disabled]="!game.available"
-                (click)="toggleFavorite(game.id)"
-              >
-                &#9733;
-              </button>
-            </div>
-            <p class="game-desc">{{ i18n.t(game.descriptionKey) }}</p>
-            @if (!game.available) {
-              <p class="coming-soon">{{ i18n.t('home.comingSoon') }}</p>
-            }
+              <div class="game-topline">
+                <h3>{{ i18n.t(family.labelKey) }}</h3>
+                <button
+                  type="button"
+                  class="favorite-button family-favorite-button"
+                  [attr.aria-label]="classicFavoriteAriaLabel(family)"
+                  [class.active]="isClassicFavorite(family)"
+                  (click)="toggleClassicFavorite(family)"
+                >
+                  &#9733;
+                </button>
+              </div>
+              <p class="game-desc">{{ i18n.t(family.descriptionKey) }}</p>
 
-            @if (recordLine(game); as bestLine) {
-              <p class="game-record">{{ bestLine }}</p>
-            }
-          </div>
+              @if (classicRecordLine(family); as bestLine) {
+                <p class="game-record">{{ bestLine }}</p>
+              }
+            </div>
+
+            <div class="game-actions classic-actions">
+              <div class="difficulty-line">
+                <div class="difficulty-entry">
+                  <p class="difficulty-title">{{ i18n.t('common.easy') }}</p>
+                  <a class="play-link difficulty-link" [routerLink]="family.easy.route">
+                    {{ family.easy.hasInProgress ? i18n.t('home.resumeAction') : i18n.t('common.play') }}
+                  </a>
+                  @if (family.easy.hasInProgress && family.easy.progressLabel; as easyProgressText) {
+                    <p class="difficulty-progress-line">{{ easyProgressText }}</p>
+                    <div class="progress-track difficulty-progress-track" aria-hidden="true">
+                      <div class="progress-fill" [style.width.%]="family.easy.progressPercent"></div>
+                    </div>
+                  }
+                </div>
+
+                <div class="difficulty-entry">
+                  <p class="difficulty-title">{{ i18n.t('common.hard') }}</p>
+                  <a class="play-link difficulty-link" [routerLink]="family.hard.route">
+                    {{ family.hard.hasInProgress ? i18n.t('home.resumeAction') : i18n.t('common.play') }}
+                  </a>
+                  @if (family.hard.hasInProgress && family.hard.progressLabel; as hardProgressText) {
+                    <p class="difficulty-progress-line">{{ hardProgressText }}</p>
+                    <div class="progress-track difficulty-progress-track" aria-hidden="true">
+                      <div class="progress-fill" [style.width.%]="family.hard.progressPercent"></div>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </article>
+        }
+
+        @for (game of visibleGames(); track game.id) {
+          <article class="game-row" [class.favorite]="game.isFavorite" [class.unavailable]="!game.available">
+            <div>
+              <div class="game-topline">
+                <h3>{{ i18n.t(game.labelKey) }}</h3>
+                <button
+                  type="button"
+                  class="favorite-button"
+                  [attr.aria-label]="favoriteAriaLabel(game)"
+                  [class.active]="game.isFavorite"
+                  [disabled]="!game.available"
+                  (click)="toggleFavorite(game.id)"
+                >
+                  &#9733;
+                </button>
+              </div>
+              <p class="game-desc">{{ i18n.t(game.descriptionKey) }}</p>
+              @if (!game.available) {
+                <p class="coming-soon">{{ i18n.t('home.comingSoon') }}</p>
+              }
+
+              @if (recordLine(game); as bestLine) {
+                <p class="game-record">{{ bestLine }}</p>
+              }
+            </div>
 
             <div class="game-actions">
               @if (game.hasInProgress && game.progressLabel; as progressText) {
@@ -81,14 +131,14 @@
                 </div>
               }
 
-            @if (game.available) {
-              <a class="play-link" [routerLink]="game.route">
-                {{ game.hasInProgress ? i18n.t('home.resumeAction') : i18n.t('common.play') }}
-              </a>
-            }
-          </div>
-        </article>
-      }
+              @if (game.available) {
+                <a class="play-link" [routerLink]="game.route">
+                  {{ game.hasInProgress ? i18n.t('home.resumeAction') : i18n.t('common.play') }}
+                </a>
+              }
+            </div>
+          </article>
+        }
       }
     </div>
   </section>

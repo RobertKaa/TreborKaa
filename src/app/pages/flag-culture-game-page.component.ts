@@ -1,6 +1,5 @@
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Component, computed, effect, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { GameId } from '../data/game-catalog';
 import {
   FlagCultureDifficultyMode,
@@ -42,7 +41,6 @@ type CultureProgressSnapshot = {
 
 @Component({
   selector: 'app-flag-culture-game-page',
-  imports: [RouterLink],
   templateUrl: './flag-culture-game-page.component.html',
   styleUrl: './flag-culture-game-page.component.css'
 })
@@ -204,6 +202,10 @@ export class FlagCultureGamePageComponent {
   protected restartGame(): void {
     this.clearProgress();
     this.startGame();
+  }
+
+  protected closeSummary(): void {
+    this.isComplete.set(false);
   }
 
   protected getOptionState(answer: string): 'default' | 'correct' | 'wrong' {

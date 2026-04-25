@@ -1,12 +1,10 @@
 import { Component, OnDestroy, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { FlagQuizQuestion } from '../models/flag-quiz-question';
 import { FlagQuizService } from '../services/flag-quiz.service';
 import { ClassicQuizPageBase } from './classic-quiz-page.base';
 
 @Component({
   selector: 'app-country-to-flag-game-page',
-  imports: [RouterLink],
   templateUrl: './country-to-flag-game-page.component.html',
   styleUrl: './country-to-flag-game-page.component.css'
 })

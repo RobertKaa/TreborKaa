@@ -173,7 +173,7 @@ export class App implements OnDestroy {
   }
 
   private buildFallbackFlagDataUri(): string {
-    const unavailable = this.i18n.t('fallback.unavailable');
+    const unavailable = this.escapeForSvgText(this.i18n.t('fallback.unavailable'));
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-label="${unavailable}">
       <defs>
         <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
@@ -187,5 +187,14 @@ export class App implements OnDestroy {
     </svg>`;
 
     return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+  }
+
+  private escapeForSvgText(value: string): string {
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 }

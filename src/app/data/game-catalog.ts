@@ -5,6 +5,8 @@ export type GameId =
   | 'classic-country-to-flag-hard'
   | 'classic-flag-to-country-easy'
   | 'classic-flag-to-country-hard'
+  | 'classic-shape-to-country-easy'
+  | 'classic-shape-to-country-hard'
   | 'flag-chrono'
   | 'flag-culture'
   | 'find-the-error'
@@ -51,6 +53,22 @@ export const GAME_CATALOG: GameCatalogItem[] = [
     descriptionKey: 'home.game.classic-ftc-hard.description',
     route: ['/jeu/drapeaux-vers-pays', 'hard'],
     recordKeys: ['flag-to-country-hard'],
+    available: true
+  },
+  {
+    id: 'classic-shape-to-country-easy',
+    labelKey: 'home.game.classic-stc-easy.label',
+    descriptionKey: 'home.game.classic-stc-easy.description',
+    route: ['/jeu/formes-vers-pays', 'easy'],
+    recordKeys: ['shape-to-country-easy'],
+    available: true
+  },
+  {
+    id: 'classic-shape-to-country-hard',
+    labelKey: 'home.game.classic-stc-hard.label',
+    descriptionKey: 'home.game.classic-stc-hard.description',
+    route: ['/jeu/formes-vers-pays', 'hard'],
+    recordKeys: ['shape-to-country-hard'],
     available: true
   },
   {

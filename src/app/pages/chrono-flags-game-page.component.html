@@ -6,7 +6,6 @@
       <p class="intro">{{ i18n.t('classic.chrono.intro') }}</p>
     </div>
     <div class="hero-actions">
-      <a class="ghost-link" routerLink="/">{{ i18n.t('common.backHome') }}</a>
       <button type="button" class="primary-button" (click)="restartGame()" [disabled]="!isReady()">
         {{ i18n.t('classic.chrono.restart') }}
       </button>
@@ -105,7 +104,7 @@
 }
 
 @if (isComplete()) {
-  <div class="modal-backdrop"></div>
+  <button type="button" class="modal-backdrop" [attr.aria-label]="i18n.t('common.close')" (click)="closeSummary()"></button>
   <section class="summary-modal" role="dialog" aria-modal="true" aria-labelledby="summary-title">
     <div class="summary-head">
       <div>
@@ -149,7 +148,7 @@
     </div>
 
     <div class="summary-actions">
-      <a class="ghost-link" routerLink="/">{{ i18n.t('common.backHome') }}</a>
+      <button type="button" class="ghost-link" (click)="closeSummary()">{{ i18n.t('common.close') }}</button>
       <button type="button" class="primary-button" (click)="restartGame()">{{ i18n.t('common.replay') }}</button>
     </div>
   </section>

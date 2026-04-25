@@ -6,7 +6,7 @@
   display: grid;
   gap: 16px;
   min-height: calc(100dvh - 180px);
-  padding-bottom: 132px;
+  padding-bottom: 24px;
 }
 
 .hero-card,
@@ -121,58 +121,49 @@ h1 {
     var(--card);
 }
 
-.status-dock {
-  position: fixed;
-  left: 50%;
-  bottom: 14px;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 0.75fr 1.35fr 0.75fr 0.85fr;
-  gap: 10px;
-  width: min(980px, calc(100vw - 24px));
-  padding: 10px;
-  transform: translateX(-50%);
-  background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
+.quiz-progress-strip {
+  position: sticky;
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  z-index: 5;
+  width: min(640px, 100%);
+  padding: 9px 12px;
+  margin: 10px auto 0;
+  background: color-mix(in srgb, var(--surface-raise) 96%, transparent);
   border: 1px solid var(--line);
-  border-radius: 24px;
+  border-radius: 999px;
   box-shadow: var(--shadow);
-  backdrop-filter: blur(12px) saturate(130%);
 }
 
-.status-block {
-  padding: 14px 16px;
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--surface) 90%, transparent);
-  border: 1px solid var(--line-soft);
+.quiz-progress-value {
+  margin: 0 0 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-family: 'Space Mono', monospace;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  text-align: center;
 }
 
-.status-row {
-  justify-content: space-between;
-  align-items: baseline;
-}
-
-.status-value {
-  font-size: 1.1rem;
-  font-weight: 800;
-}
-
-.progress-track {
-  height: 9px;
-  margin-top: 10px;
+.quiz-progress-track {
+  height: 8px;
   border-radius: 999px;
   background: color-mix(in srgb, var(--line-soft) 80%, transparent);
   overflow: hidden;
 }
 
-.progress-fill {
+.quiz-progress-fill {
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, var(--secondary), var(--accent), var(--accent-strong));
+  transition: width 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 48%, transparent);
 }
 
 .modal-backdrop {
   position: fixed;
   inset: 0;
+  z-index: 50;
   background: var(--overlay);
   backdrop-filter: blur(4px);
 }
@@ -181,7 +172,7 @@ h1 {
   position: fixed;
   top: 50%;
   left: 50%;
-  z-index: 2;
+  z-index: 51;
   width: min(760px, calc(100vw - 24px));
   max-height: 80vh;
   padding: 26px;
@@ -225,17 +216,21 @@ h1 {
 .summary-actions {
   margin-top: 20px;
   align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.summary-actions .ghost-link,
+.summary-actions .next-button {
+  min-width: 150px;
+  min-height: 46px;
+  padding: 12px 20px;
 }
 
 @media (max-width: 900px) {
-  .status-dock {
-    grid-template-columns: 1fr;
-  }
-
   .hero-card,
   .summary-head,
-  .summary-score,
-  .summary-actions {
+  .summary-score {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -251,9 +246,25 @@ h1 {
     padding: 20px;
   }
 
-  .status-dock {
-    bottom: 10px;
-    width: calc(100vw - 16px);
-    padding: 10px;
+  .quiz-progress-strip {
+    width: 100%;
+    padding: 8px 10px;
+  }
+
+  .summary-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .summary-actions .ghost-link,
+  .summary-actions .next-button {
+    flex: 1 1 calc(50% - 6px);
+  }
+}
+
+@media (max-width: 420px) {
+  .summary-actions .ghost-link,
+  .summary-actions .next-button {
+    flex-basis: 100%;
   }
 }

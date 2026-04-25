@@ -3,6 +3,8 @@ export type GameRecordKey =
   | 'country-to-flag-hard'
   | 'flag-to-country-easy'
   | 'flag-to-country-hard'
+  | 'shape-to-country-easy'
+  | 'shape-to-country-hard'
   | 'flag-rebuild'
   | 'find-the-error'
   | 'pixel-flag'

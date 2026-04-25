@@ -119,20 +119,27 @@
 }
 
 .app-shell {
+  position: relative;
   width: min(1240px, calc(100% - 34px - var(--safe-left) - var(--safe-right)));
   margin: 0 auto;
   padding: calc(20px + var(--safe-top)) 0 calc(64px + var(--safe-bottom));
 }
 
+.topbar-shell {
+  position: relative;
+  z-index: 110;
+  margin-bottom: 14px;
+}
+
 .topbar {
-  position: sticky;
-  top: max(8px, var(--safe-top));
-  z-index: 40;
+  position: relative;
+  z-index: 111;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 24px;
+  width: 100%;
+  margin: 0;
   padding: 12px 14px 12px 18px;
   border-radius: 20px;
   border: 1px solid var(--line);
@@ -168,6 +175,7 @@
 
 .header-menu {
   position: relative;
+  z-index: 112;
 }
 
 .menu-trigger {
@@ -208,7 +216,7 @@
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  z-index: 41;
+  z-index: 112;
   display: grid;
   gap: 5px;
   min-width: 240px;
@@ -236,7 +244,7 @@
 .menu-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 30;
+  z-index: 109;
   border: 0;
   padding: 0;
   margin: 0;
@@ -348,8 +356,6 @@
   }
 
   .topbar {
-    top: max(2px, var(--safe-top));
-    margin-bottom: 16px;
     padding: 10px 10px 10px 12px;
     border-radius: 16px;
   }

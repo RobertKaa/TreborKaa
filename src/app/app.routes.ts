@@ -9,6 +9,7 @@ import { FlagToCountryGamePageComponent } from './pages/flag-to-country-game-pag
 import { HomePageComponent } from './pages/home-page.component';
 import { PixelatedFlagGamePageComponent } from './pages/pixelated-flag-game-page.component';
 import { RecordsPageComponent } from './pages/records-page.component';
+import { ShapeToCountryGamePageComponent } from './pages/shape-to-country-game-page.component';
 
 export const routes: Routes = [
   {
@@ -34,6 +35,10 @@ export const routes: Routes = [
   {
     path: 'jeu/drapeaux-vers-pays/:difficulty',
     component: FlagToCountryGamePageComponent
+  },
+  {
+    path: 'jeu/formes-vers-pays/:difficulty',
+    component: ShapeToCountryGamePageComponent
   },
   {
     path: 'jeu/reconstruction-drapeau',

@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, ViewChild, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { take } from 'rxjs';
 import { GameId } from '../data/game-catalog';
 import { CountrySummary } from '../models/country-summary';
@@ -46,7 +45,7 @@ type PixelProgressSnapshot = {
 
 @Component({
   selector: 'app-pixelated-flag-game-page',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './pixelated-flag-game-page.component.html',
   styleUrl: './pixelated-flag-game-page.component.css'
 })
@@ -144,9 +143,10 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
     effect(() => {
       const country = this.currentCountry();
       const pool = this.countryPool();
+      const isRoundTransient = this.roundResult() !== null || this.isLocked();
 
-      if (pool.length === 0 || !country || this.isComplete()) {
-        if (this.isComplete()) {
+      if (pool.length === 0 || !country || this.isComplete() || isRoundTransient) {
+        if (this.isComplete() || isRoundTransient) {
           this.clearProgress();
         }
         return;
@@ -223,6 +223,10 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
   protected restartGame(): void {
     this.clearProgress();
     this.loadGame();
+  }
+
+  protected closeSummary(): void {
+    this.restartGame();
   }
 
   protected goToNextRound(): void {
@@ -524,6 +528,10 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
     if (!snapshot || snapshot.version !== 1) {
       return false;
     }
+    if (snapshot.isLocked || snapshot.roundResult !== null) {
+      this.clearProgress();
+      return false;
+    }
 
     const byCode = new Map(countries.map((country) => [country.code, country]));
     const pool = snapshot.countryPoolCodes
@@ -557,8 +565,8 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
         })
         .filter((error): error is PixelatedError => !!error)
     );
-    this.isLocked.set(snapshot.isLocked);
-    this.roundResult.set(snapshot.roundResult);
+    this.isLocked.set(false);
+    this.roundResult.set(null);
     this.isComplete.set(false);
     this.hasSavedRecord = false;
 

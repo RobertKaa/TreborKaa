@@ -21,8 +21,12 @@ export class FavoriteGamesService {
   }
 
   toggle(gameId: GameId): void {
+    this.set(gameId, !this.isFavorite(gameId));
+  }
+
+  set(gameId: GameId, isFavorite: boolean): void {
     this.favorites.update((current) => {
-      if (current[gameId]) {
+      if (!isFavorite) {
         const next = { ...current };
         delete next[gameId];
         return next;

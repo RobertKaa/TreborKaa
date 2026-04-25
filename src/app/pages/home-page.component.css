@@ -129,6 +129,10 @@ h3 {
   align-items: center;
 }
 
+.classic-row {
+  align-items: stretch;
+}
+
 .game-row.favorite {
   border-color: color-mix(in srgb, var(--accent-line-strong) 80%, transparent);
 }
@@ -148,6 +152,7 @@ h3 {
 }
 
 .favorite-button {
+  min-width: 32px;
   width: 32px;
   height: 32px;
   border-radius: 10px;
@@ -157,6 +162,16 @@ h3 {
   cursor: pointer;
   font-size: 1rem;
   line-height: 1;
+}
+
+.family-favorite-button {
+  width: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .favorite-button.active {
@@ -206,6 +221,54 @@ h3 {
   min-width: 200px;
 }
 
+.classic-actions {
+  align-content: center;
+  min-width: 360px;
+}
+
+.difficulty-line {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.difficulty-entry {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-width: 172px;
+  padding: 6px 2px;
+}
+
+.difficulty-title {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: 'Space Mono', monospace;
+  color: var(--ink-soft);
+}
+
+.difficulty-link {
+  min-height: 36px;
+  min-width: 120px;
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+
+.difficulty-progress-line {
+  font-size: 0.72rem;
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+}
+
+.difficulty-progress-track {
+  height: 6px;
+  width: min(180px, 100%);
+}
+
 .resume-block {
   width: min(240px, 100%);
 }
@@ -234,6 +297,7 @@ h3 {
   align-items: center;
   justify-content: center;
   min-height: 38px;
+  min-width: 120px;
   padding: 8px 14px;
   border-radius: 10px;
   color: var(--on-accent);
@@ -261,6 +325,18 @@ h3 {
     justify-items: start;
     min-width: 0;
     width: 100%;
+  }
+
+  .classic-actions {
+    min-width: 0;
+  }
+
+  .difficulty-line {
+    width: 100%;
+  }
+
+  .difficulty-entry {
+    min-width: 170px;
   }
 
   .resume-block {
