@@ -96,3 +96,7 @@ Implementation:
   - Home mobile: CTA `Jouer/Reprendre` des cartes de jeux passes en largeur adaptative (`min-width: 0`, colonnes fluides) pour eliminer les depassements horizontaux.
   - Home mobile (`mobile-viewport`): mode classique passe en empilement vertical `Facile` puis `Difficile` avec boutons pleine largeur pour supprimer tout chevauchement.
   - Home mobile: ajout de `box-sizing: border-box` sur les CTA de lancement pour garantir qu'aucun bouton ne depasse de la card avec le padding.
+  - Reconstruction de drapeau: modale couleur priorisee au-dessus du dock de progression (`z-index` de card releve).
+  - Reconstruction de drapeau: suppression des textes `Zone` et `Apercu en direct` dans la modale couleur.
+  - Reconstruction de drapeau: zone `apercu + input hexa` compacter en ligne, avec champ hexa plus court place a droite de l'apercu.
+  - Reconstruction de drapeau beta: copie autonome placee sous le jeu principal, scoring continu par proximite couleur et jauge de maitrise separee des records.

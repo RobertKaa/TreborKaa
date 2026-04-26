@@ -193,9 +193,7 @@
                   ×
                 </button>
               </div>
-              <p class="picker-zone">{{ i18n.t('classic.rebuild.zone', { zone: activeZoneLabel() }) }}</p>
-              <div class="picker-live-preview">
-                <p class="picker-subtitle">{{ i18n.t('classic.rebuild.livePreview') }}</p>
+              <div class="picker-preview-row">
                 <div class="picker-preview-flag" [attr.data-pattern]="selectedPattern()">
                   @switch (selectedPattern()) {
                     @case ('vertical-stripes') {
@@ -244,20 +242,20 @@
                     }
                   }
                 </div>
-              </div>
-              <div class="picker-hex-field">
-                <label class="picker-hex-label" for="rebuild-color-hex">{{ i18n.t('classic.rebuild.hexInputLabel') }}</label>
-                <input
-                  id="rebuild-color-hex"
-                  class="picker-hex-input"
-                  type="text"
-                  inputmode="text"
-                  autocapitalize="off"
-                  spellcheck="false"
-                  [value]="activeHexColorInput()"
-                  [attr.placeholder]="i18n.t('classic.rebuild.hexInputPlaceholder')"
-                  (input)="onHexColorInput($any($event.target).value)"
-                />
+                <div class="picker-hex-field">
+                  <label class="picker-hex-label" for="rebuild-color-hex">{{ i18n.t('classic.rebuild.hexInputLabel') }}</label>
+                  <input
+                    id="rebuild-color-hex"
+                    class="picker-hex-input"
+                    type="text"
+                    inputmode="text"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    [value]="activeHexColorInput()"
+                    [attr.placeholder]="i18n.t('classic.rebuild.hexInputPlaceholder')"
+                    (input)="onHexColorInput($any($event.target).value)"
+                  />
+                </div>
               </div>
               <div class="color-wheel-shell">
                 <div class="color-wheel-host" #iroWheelHost [attr.aria-label]="i18n.t('classic.rebuild.colorWheelAria')"></div>
@@ -283,6 +281,8 @@
       </div>
     </section>
   }
+
+  <app-flag-rebuild-beta-game />
 </main>
 
 <section class="status-dock" [attr.aria-label]="i18n.t('classic.rebuild.statusAria')">

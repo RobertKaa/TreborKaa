@@ -7,6 +7,7 @@ import { FlagRebuildPattern, FlagRebuildPuzzle } from '../models/flag-rebuild-pu
 import { GameProgressService } from '../services/game-progress.service';
 import { I18nService } from '../services/i18n.service';
 import { PersonalRecordsService } from '../services/personal-records.service';
+import { FlagRebuildBetaGameComponent } from './flag-rebuild-beta-game.component';
 
 type PuzzlePiece = {
   id: string;
@@ -50,7 +51,7 @@ const ALL_PATTERNS: FlagRebuildPattern[] = [
 
 @Component({
   selector: 'app-flag-rebuild-game-page',
-  imports: [RouterLink],
+  imports: [RouterLink, FlagRebuildBetaGameComponent],
   templateUrl: './flag-rebuild-game-page.component.html',
   styleUrl: './flag-rebuild-game-page.component.scss'
 })
