@@ -30,6 +30,21 @@ type PatternChoice = {
   pattern: FlagRebuildPattern;
 };
 
+type PixelZoneMask = {
+  puzzleCode: string;
+  width: number;
+  height: number;
+  zoneIndexes: Uint8Array;
+};
+
+type RgbColor = {
+  r: number;
+  g: number;
+  b: number;
+};
+
+type StripeAxis = 'x' | 'y';
+
 const FLAG_CANVAS_WIDTH = 360;
 const FLAG_CANVAS_HEIGHT = 240;
 
@@ -60,6 +75,8 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   protected readonly totalScore = signal(0);
   protected readonly isScoring = signal(false);
   private readonly realFlagCache = new Map<string, ImageData | null>();
+  private readonly pixelMaskCache = new Map<string, PixelZoneMask | null>();
+  private readonly pixelMaskRequests = new Map<string, Promise<PixelZoneMask | null>>();
 
   protected readonly activePiece = computed(() => this.pieces()[this.selectedZoneIndex()] ?? null);
   protected readonly previewColors = computed(() => this.pieces().map((piece) => piece.color));
@@ -82,6 +99,11 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   );
 
   constructor() {
+    effect(() => {
+      const puzzle = this.currentPuzzle();
+      void this.preparePixelMask(puzzle);
+    });
+
     effect(() => {
       this.selectedPattern();
       this.previewColorsForPattern();
@@ -109,6 +131,10 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   protected getZoneLabel(index: number): string {
     switch (this.selectedPattern()) {
       case 'vertical-stripes':
+        if (this.previewColorsForPattern().length > 3) {
+          return this.i18n.t('rebuild.zone.stripe', { index: index + 1 });
+        }
+
         return (
           [
             this.i18n.t('rebuild.zone.left'),
@@ -117,6 +143,10 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
           ][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 })
         );
       case 'horizontal-stripes':
+        if (this.previewColorsForPattern().length > 3) {
+          return this.i18n.t('rebuild.zone.stripe', { index: index + 1 });
+        }
+
         return (
           [
             this.i18n.t('rebuild.zone.top'),
@@ -231,8 +261,12 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     const bounds = canvas.getBoundingClientRect();
     const x = (event.clientX - bounds.left) / Math.max(1, bounds.width);
     const y = (event.clientY - bounds.top) / Math.max(1, bounds.height);
+    const pixelMask = this.getTargetPatternPixelMask();
+
     this.selectZone(
-      this.findZoneAtPoint(this.selectedPattern(), x, y, this.previewColorsForPattern().length),
+      pixelMask
+        ? this.findPixelMaskZoneAtPoint(pixelMask, x, y)
+        : this.findZoneAtPoint(this.selectedPattern(), x, y, this.previewColorsForPattern().length),
     );
   }
 
@@ -353,6 +387,14 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
 
     canvas.width = FLAG_CANVAS_WIDTH;
     canvas.height = FLAG_CANVAS_HEIGHT;
+    const pixelMask = this.getTargetPatternPixelMask();
+
+    if (pixelMask) {
+      this.drawPixelMaskPattern(context, pixelMask, this.previewColorsForPattern());
+      this.drawPixelMaskSelectedZone(context, pixelMask, this.selectedZoneIndex());
+      return;
+    }
+
     this.drawPattern(
       context,
       this.selectedPattern(),
@@ -375,6 +417,13 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     selectedPattern: FlagRebuildPattern,
     userColors: string[],
   ): Promise<number | null> {
+    if (selectedPattern === puzzle.targetPattern) {
+      const pixelMask = await this.loadPixelMask(puzzle);
+      if (pixelMask) {
+        return this.computePixelMaskScore(pixelMask, puzzle.targetColors, userColors);
+      }
+    }
+
     const reference = await this.loadRealFlagImageData(puzzle.flagUrl);
     const userImage = this.renderPatternImageData(selectedPattern, userColors);
 
@@ -404,6 +453,205 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     }
 
     return Math.round((totalProximity / Math.max(1, sampledPixels)) * 100);
+  }
+
+  private async preparePixelMask(puzzle: FlagRebuildPuzzle): Promise<void> {
+    const pixelMask = await this.loadPixelMask(puzzle);
+    if (this.currentPuzzle().code !== puzzle.code || !pixelMask) {
+      return;
+    }
+
+    this.renderPlayerCanvas();
+  }
+
+  private async loadPixelMask(puzzle: FlagRebuildPuzzle): Promise<PixelZoneMask | null> {
+    if (this.pixelMaskCache.has(puzzle.code)) {
+      return this.pixelMaskCache.get(puzzle.code) ?? null;
+    }
+
+    const activeRequest = this.pixelMaskRequests.get(puzzle.code);
+    if (activeRequest) {
+      return activeRequest;
+    }
+
+    const request = this.createPixelMask(puzzle);
+    this.pixelMaskRequests.set(puzzle.code, request);
+    const pixelMask = await request;
+    this.pixelMaskRequests.delete(puzzle.code);
+    this.pixelMaskCache.set(puzzle.code, pixelMask);
+    return pixelMask;
+  }
+
+  private async createPixelMask(puzzle: FlagRebuildPuzzle): Promise<PixelZoneMask | null> {
+    const reference = await this.loadRealFlagImageData(puzzle.flagUrl);
+    if (!reference) {
+      return null;
+    }
+
+    const orderedStripeZoneIndexes =
+      puzzle.targetPattern === 'horizontal-stripes'
+        ? this.createOrderedStripeZoneIndexes(reference, puzzle.targetColors, 'y')
+        : puzzle.targetPattern === 'vertical-stripes'
+          ? this.createOrderedStripeZoneIndexes(reference, puzzle.targetColors, 'x')
+          : null;
+    const zoneIndexes = new Uint8Array(reference.width * reference.height);
+
+    for (let pixelIndex = 0; pixelIndex < zoneIndexes.length; pixelIndex += 1) {
+      const dataIndex = pixelIndex * 4;
+      zoneIndexes[pixelIndex] = orderedStripeZoneIndexes
+        ? orderedStripeZoneIndexes[
+            puzzle.targetPattern === 'horizontal-stripes'
+              ? Math.floor(pixelIndex / reference.width)
+              : pixelIndex % reference.width
+          ]
+        : this.findClosestTargetColorIndex(
+            reference.data[dataIndex],
+            reference.data[dataIndex + 1],
+            reference.data[dataIndex + 2],
+            puzzle.targetColors,
+          );
+    }
+
+    return {
+      puzzleCode: puzzle.code,
+      width: reference.width,
+      height: reference.height,
+      zoneIndexes,
+    };
+  }
+
+  private createOrderedStripeZoneIndexes(
+    reference: ImageData,
+    targetColors: string[],
+    axis: StripeAxis,
+  ): Uint8Array | null {
+    const targetRgbColors = targetColors.map((color) => this.hexToRgb(color));
+    if (targetRgbColors.some((color) => !color)) {
+      return null;
+    }
+
+    const samples = this.computeAxisAverageColors(reference, axis);
+    const boundaries = this.findBestOrderedStripeBoundaries(samples, targetRgbColors as RgbColor[]);
+    if (!boundaries) {
+      return null;
+    }
+
+    const zoneIndexes = new Uint8Array(samples.length);
+    let zoneIndex = 0;
+
+    for (let index = 0; index < samples.length; index += 1) {
+      while (zoneIndex < targetColors.length - 1 && index >= boundaries[zoneIndex + 1]) {
+        zoneIndex += 1;
+      }
+
+      zoneIndexes[index] = zoneIndex;
+    }
+
+    return zoneIndexes;
+  }
+
+  private computeAxisAverageColors(reference: ImageData, axis: StripeAxis): RgbColor[] {
+    const sampleCount = axis === 'y' ? reference.height : reference.width;
+    const span = axis === 'y' ? reference.width : reference.height;
+
+    return Array.from({ length: sampleCount }, (_, sampleIndex) => {
+      let red = 0;
+      let green = 0;
+      let blue = 0;
+
+      for (let spanIndex = 0; spanIndex < span; spanIndex += 1) {
+        const x = axis === 'y' ? spanIndex : sampleIndex;
+        const y = axis === 'y' ? sampleIndex : spanIndex;
+        const dataIndex = (y * reference.width + x) * 4;
+        red += reference.data[dataIndex];
+        green += reference.data[dataIndex + 1];
+        blue += reference.data[dataIndex + 2];
+      }
+
+      return {
+        r: red / span,
+        g: green / span,
+        b: blue / span,
+      };
+    });
+  }
+
+  private findBestOrderedStripeBoundaries(
+    samples: RgbColor[],
+    targetColors: RgbColor[],
+  ): number[] | null {
+    const sampleCount = samples.length;
+    const zoneCount = targetColors.length;
+    if (sampleCount < zoneCount || zoneCount === 0) {
+      return null;
+    }
+
+    const costPrefixes = targetColors.map((targetColor) => {
+      const prefix = new Float64Array(sampleCount + 1);
+      samples.forEach((sample, index) => {
+        prefix[index + 1] =
+          prefix[index] +
+          this.rgbDistance(
+            sample.r,
+            sample.g,
+            sample.b,
+            targetColor.r,
+            targetColor.g,
+            targetColor.b,
+          );
+      });
+      return prefix;
+    });
+    const scores = Array.from({ length: zoneCount }, () =>
+      new Float64Array(sampleCount + 1).fill(Number.POSITIVE_INFINITY),
+    );
+    const splits = Array.from({ length: zoneCount }, () =>
+      new Int16Array(sampleCount + 1).fill(-1),
+    );
+
+    for (let end = 1; end <= sampleCount - (zoneCount - 1); end += 1) {
+      scores[0][end] = costPrefixes[0][end] - costPrefixes[0][0];
+    }
+
+    for (let zoneIndex = 1; zoneIndex < zoneCount; zoneIndex += 1) {
+      const minEnd = zoneIndex + 1;
+      const maxEnd = sampleCount - (zoneCount - zoneIndex - 1);
+
+      for (let end = minEnd; end <= maxEnd; end += 1) {
+        for (let start = zoneIndex; start < end; start += 1) {
+          const score =
+            scores[zoneIndex - 1][start] +
+            costPrefixes[zoneIndex][end] -
+            costPrefixes[zoneIndex][start];
+
+          if (score < scores[zoneIndex][end]) {
+            scores[zoneIndex][end] = score;
+            splits[zoneIndex][end] = start;
+          }
+        }
+      }
+    }
+
+    if (!Number.isFinite(scores[zoneCount - 1][sampleCount])) {
+      return null;
+    }
+
+    const boundaries = new Array<number>(zoneCount + 1);
+    boundaries[0] = 0;
+    boundaries[zoneCount] = sampleCount;
+    let end = sampleCount;
+
+    for (let zoneIndex = zoneCount - 1; zoneIndex > 0; zoneIndex -= 1) {
+      const start = splits[zoneIndex][end];
+      if (start < 0) {
+        return null;
+      }
+
+      boundaries[zoneIndex] = start;
+      end = start;
+    }
+
+    return boundaries;
   }
 
   private renderPatternImageData(pattern: FlagRebuildPattern, colors: string[]): ImageData | null {
@@ -454,6 +702,72 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
 
     this.realFlagCache.set(flagUrl, imageData);
     return imageData;
+  }
+
+  private drawPixelMaskPattern(
+    context: CanvasRenderingContext2D,
+    pixelMask: PixelZoneMask,
+    colors: string[],
+  ): void {
+    context.clearRect(0, 0, pixelMask.width, pixelMask.height);
+    const imageData = context.createImageData(pixelMask.width, pixelMask.height);
+    const fallbackColor = { r: 247, g: 243, b: 234 };
+    const rgbColors = colors.map((color) => this.hexToRgb(color) ?? fallbackColor);
+
+    for (let pixelIndex = 0; pixelIndex < pixelMask.zoneIndexes.length; pixelIndex += 1) {
+      const color = rgbColors[pixelMask.zoneIndexes[pixelIndex]] ?? fallbackColor;
+      const dataIndex = pixelIndex * 4;
+      imageData.data[dataIndex] = color.r;
+      imageData.data[dataIndex + 1] = color.g;
+      imageData.data[dataIndex + 2] = color.b;
+      imageData.data[dataIndex + 3] = 255;
+    }
+
+    context.putImageData(imageData, 0, 0);
+  }
+
+  private drawPixelMaskSelectedZone(
+    context: CanvasRenderingContext2D,
+    pixelMask: PixelZoneMask,
+    zoneIndex: number,
+  ): void {
+    context.save();
+    context.fillStyle = 'rgba(255, 255, 255, 0.86)';
+
+    for (let y = 0; y < pixelMask.height; y += 1) {
+      for (let x = 0; x < pixelMask.width; x += 1) {
+        if (!this.isPixelMaskEdge(pixelMask, x, y, zoneIndex)) {
+          continue;
+        }
+
+        context.fillRect(x, y, 1, 1);
+      }
+    }
+
+    context.restore();
+  }
+
+  private isPixelMaskEdge(
+    pixelMask: PixelZoneMask,
+    x: number,
+    y: number,
+    zoneIndex: number,
+  ): boolean {
+    const pixelIndex = y * pixelMask.width + x;
+    if (pixelMask.zoneIndexes[pixelIndex] !== zoneIndex) {
+      return false;
+    }
+
+    return (
+      x === 0 ||
+      y === 0 ||
+      x === pixelMask.width - 1 ||
+      y === pixelMask.height - 1 ||
+      pixelMask.zoneIndexes[pixelIndex - 1] !== zoneIndex ||
+      pixelMask.zoneIndexes[pixelIndex + 1] !== zoneIndex ||
+      pixelMask.zoneIndexes[pixelIndex - pixelMask.width] !== zoneIndex ||
+      pixelMask.zoneIndexes[pixelIndex + pixelMask.width] !== zoneIndex
+    );
   }
 
   private drawPattern(
@@ -593,6 +907,42 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     context.restore();
   }
 
+  private getTargetPatternPixelMask(): PixelZoneMask | null {
+    const puzzle = this.currentPuzzle();
+    if (this.selectedPattern() !== puzzle.targetPattern) {
+      return null;
+    }
+
+    return this.pixelMaskCache.get(puzzle.code) ?? null;
+  }
+
+  private findPixelMaskZoneAtPoint(pixelMask: PixelZoneMask, x: number, y: number): number {
+    const pixelX = Math.max(0, Math.min(pixelMask.width - 1, Math.floor(x * pixelMask.width)));
+    const pixelY = Math.max(0, Math.min(pixelMask.height - 1, Math.floor(y * pixelMask.height)));
+    return pixelMask.zoneIndexes[pixelY * pixelMask.width + pixelX] ?? 0;
+  }
+
+  private computePixelMaskScore(
+    pixelMask: PixelZoneMask,
+    targetColors: string[],
+    userColors: string[],
+  ): number {
+    const zoneProximities = targetColors.map((targetColor, index) =>
+      this.computeColorProximity(userColors[index] ?? '#ffffff', targetColor),
+    );
+    let totalProximity = 0;
+
+    for (let index = 0; index < pixelMask.zoneIndexes.length; index += 1) {
+      totalProximity += zoneProximities[pixelMask.zoneIndexes[index]] ?? 0;
+    }
+
+    const pixelWeightedScore = totalProximity / Math.max(1, pixelMask.zoneIndexes.length);
+    const zoneAverageScore =
+      zoneProximities.reduce((sum, score) => sum + score, 0) / Math.max(1, zoneProximities.length);
+
+    return Math.round((pixelWeightedScore * 0.85 + zoneAverageScore * 0.15) * 100);
+  }
+
   private findZoneAtPoint(
     pattern: FlagRebuildPattern,
     x: number,
@@ -622,6 +972,31 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       case 'nordic-cross':
         return (x >= 0.3 && x <= 0.46) || (y >= 0.415 && y <= 0.585) ? 1 : 0;
     }
+  }
+
+  private findClosestTargetColorIndex(
+    red: number,
+    green: number,
+    blue: number,
+    targetColors: string[],
+  ): number {
+    let closestIndex = 0;
+    let closestDistance = Number.POSITIVE_INFINITY;
+
+    targetColors.forEach((targetColor, index) => {
+      const rgb = this.hexToRgb(targetColor);
+      if (!rgb) {
+        return;
+      }
+
+      const distance = this.rgbDistance(red, green, blue, rgb.r, rgb.g, rgb.b);
+      if (distance < closestDistance) {
+        closestIndex = index;
+        closestDistance = distance;
+      }
+    });
+
+    return closestIndex;
   }
 
   private rgbDistance(

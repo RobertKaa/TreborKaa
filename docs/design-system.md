@@ -119,3 +119,5 @@ Implementation:
   - Reconstruction de drapeau beta: prototype canvas avec reference du vrai drapeau et score image calcule par comparaison pixel quand l'image distante est lisible.
   - Reconstruction de drapeau beta: choix de structure transforme en cartes visuelles basees sur de vrais drapeaux, avec le drapeau cible melange aux alternatives.
   - Reconstruction de drapeau beta: cartes de structure passees en apercus blueprint sans couleur pour ne donner que le type de forme.
+  - Reconstruction de drapeau beta: canevas de construction aligne sur un masque pixel genere depuis le vrai drapeau lorsque la bonne forme est choisie, afin que les croix et proportions fines puissent atteindre 100%.
+  - Reconstruction de drapeau beta: detection des vraies limites de bandes depuis l'image source pour conserver les couleurs repetees comme zones separees (ex: Thailande).
