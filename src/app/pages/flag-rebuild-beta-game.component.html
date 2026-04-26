@@ -22,16 +22,57 @@
         {{ i18n.t('classic.rebuild.beta.points', { points: totalScore() }) }}
       </p>
     </div>
+  </div>
 
-    <div class="pattern-picker" [attr.aria-label]="i18n.t('classic.rebuild.beta.patternAria')">
-      @for (pattern of currentPuzzle().patternOptions; track pattern) {
+  <div class="visual-choice-panel">
+    <p class="question-label">{{ i18n.t('classic.rebuild.beta.visualChoice') }}</p>
+    <div class="pattern-choice-grid" [attr.aria-label]="i18n.t('classic.rebuild.beta.patternAria')">
+      @for (choice of patternChoices(); track choice.pattern) {
         <button
           type="button"
-          class="pattern-chip"
-          [class.selected]="selectedPattern() === pattern"
-          (click)="selectPattern(pattern)"
+          class="pattern-choice-card"
+          [class.selected]="selectedPattern() === choice.pattern"
+          (click)="selectPattern(choice.pattern)"
         >
-          {{ getPatternLabel(pattern) }}
+          <svg class="shape-blueprint" viewBox="0 0 100 66" aria-hidden="true">
+            <rect class="blueprint-frame" x="4" y="5" width="92" height="56" rx="6" />
+            @switch (choice.pattern) {
+              @case ('horizontal-stripes') {
+                <rect class="blueprint-zone" x="8" y="9" width="84" height="14" rx="2" />
+                <rect class="blueprint-zone" x="8" y="26" width="84" height="14" rx="2" />
+                <rect class="blueprint-zone" x="8" y="43" width="84" height="14" rx="2" />
+              }
+              @case ('vertical-stripes') {
+                <rect class="blueprint-zone" x="8" y="9" width="25" height="48" rx="2" />
+                <rect class="blueprint-zone" x="37.5" y="9" width="25" height="48" rx="2" />
+                <rect class="blueprint-zone" x="67" y="9" width="25" height="48" rx="2" />
+              }
+              @case ('triangle-left-bands-2') {
+                <rect class="blueprint-zone" x="45" y="9" width="47" height="23" rx="2" />
+                <rect class="blueprint-zone" x="45" y="34" width="47" height="23" rx="2" />
+                <path class="blueprint-zone" d="M8 9 L42 33 L8 57 Z" />
+              }
+              @case ('triangle-left-bands-3') {
+                <rect class="blueprint-zone" x="45" y="9" width="47" height="14" rx="2" />
+                <rect class="blueprint-zone" x="45" y="26" width="47" height="14" rx="2" />
+                <rect class="blueprint-zone" x="45" y="43" width="47" height="14" rx="2" />
+                <path class="blueprint-zone" d="M8 9 L42 33 L8 57 Z" />
+              }
+              @case ('left-band-horizontal') {
+                <rect class="blueprint-zone" x="8" y="9" width="21" height="48" rx="2" />
+                <rect class="blueprint-zone" x="33" y="9" width="59" height="14" rx="2" />
+                <rect class="blueprint-zone" x="33" y="26" width="59" height="14" rx="2" />
+                <rect class="blueprint-zone" x="33" y="43" width="59" height="14" rx="2" />
+              }
+              @case ('nordic-cross') {
+                <path
+                  class="blueprint-zone"
+                  d="M33 9 H47 V27 H92 V39 H47 V57 H33 V39 H8 V27 H33 Z"
+                />
+              }
+            }
+          </svg>
+          <span>{{ getPatternLabel(choice.pattern) }}</span>
         </button>
       }
     </div>
@@ -39,24 +80,15 @@
 
   <div class="beta-board-grid">
     <div class="beta-board-card">
-      <div class="flag-compare-grid">
-        <figure class="real-flag-card">
-          <img
-            [src]="currentPuzzle().flagUrl"
-            [alt]="i18n.t('countries.flagOf', { country: countryName(currentPuzzle()) })"
-          />
-          <figcaption>{{ i18n.t('classic.rebuild.beta.realReference') }}</figcaption>
-        </figure>
-        <div class="beta-flag-board">
-          <canvas
-            #playerCanvas
-            class="flag-canvas"
-            width="360"
-            height="240"
-            [attr.aria-label]="i18n.t('classic.rebuild.beta.canvasAria')"
-            (click)="selectZoneFromCanvas($event)"
-          ></canvas>
-        </div>
+      <div class="beta-flag-board">
+        <canvas
+          #playerCanvas
+          class="flag-canvas"
+          width="360"
+          height="240"
+          [attr.aria-label]="i18n.t('classic.rebuild.beta.canvasAria')"
+          (click)="selectZoneFromCanvas($event)"
+        ></canvas>
       </div>
     </div>
 

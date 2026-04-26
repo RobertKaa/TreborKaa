@@ -26,6 +26,10 @@ type BetaResult = {
   labelKey: string;
 };
 
+type PatternChoice = {
+  pattern: FlagRebuildPattern;
+};
+
 const FLAG_CANVAS_WIDTH = 360;
 const FLAG_CANVAS_HEIGHT = 240;
 
@@ -41,10 +45,16 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   @ViewChild('playerCanvas') private playerCanvas?: ElementRef<HTMLCanvasElement>;
   protected readonly currentPuzzle = signal<FlagRebuildPuzzle>(this.pickPuzzle());
   protected readonly selectedPattern = signal<FlagRebuildPattern>(
-    this.currentPuzzle().targetPattern,
+    this.pickInitialPattern(this.currentPuzzle()),
   );
   protected readonly selectedZoneIndex = signal(0);
-  protected readonly pieces = signal<BetaPiece[]>(this.buildInitialPieces(this.currentPuzzle()));
+  protected readonly pieces = signal<BetaPiece[]>(
+    this.fitPiecesToPattern(
+      this.selectedPattern(),
+      this.buildInitialPieces(this.currentPuzzle()),
+      this.currentPuzzle(),
+    ),
+  );
   protected readonly result = signal<BetaResult | null>(null);
   protected readonly round = signal(1);
   protected readonly totalScore = signal(0);
@@ -63,6 +73,9 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   });
   protected readonly paletteOptions = computed(() =>
     this.buildPaletteOptions(this.currentPuzzle()),
+  );
+  protected readonly patternChoices = computed(() =>
+    this.buildPatternChoices(this.currentPuzzle()),
   );
   protected readonly masteryPercent = computed(() =>
     Math.min(100, Math.round((this.totalScore() / Math.max(1, this.round() * 100)) * 100)),
@@ -199,10 +212,11 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   protected nextRound(): void {
     const nextPuzzle = this.pickPuzzle(this.currentPuzzle().code);
     this.currentPuzzle.set(nextPuzzle);
-    this.selectedPattern.set(
-      this.shuffle([...nextPuzzle.patternOptions])[0] ?? nextPuzzle.targetPattern,
+    const nextPattern = this.pickInitialPattern(nextPuzzle);
+    this.selectedPattern.set(nextPattern);
+    this.pieces.set(
+      this.fitPiecesToPattern(nextPattern, this.buildInitialPieces(nextPuzzle), nextPuzzle),
     );
-    this.pieces.set(this.buildInitialPieces(nextPuzzle));
     this.selectedZoneIndex.set(0);
     this.result.set(null);
     this.round.update((round) => round + 1);
@@ -293,6 +307,16 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
 
   private buildPaletteOptions(puzzle: FlagRebuildPuzzle): string[] {
     return Array.from(new Set([...puzzle.palette, '#111111', '#ffffff', '#f7f3ea']));
+  }
+
+  private buildPatternChoices(puzzle: FlagRebuildPuzzle): PatternChoice[] {
+    return puzzle.patternOptions.map((pattern) => ({
+      pattern,
+    }));
+  }
+
+  private pickInitialPattern(puzzle: FlagRebuildPuzzle): FlagRebuildPattern {
+    return this.shuffle([...puzzle.patternOptions])[0] ?? puzzle.targetPattern;
   }
 
   private getPatternPreviewColors(
