@@ -13,7 +13,7 @@
       <div class="prompt-shape">
         @if (currentShapePath(); as shapePath) {
           <svg
-            viewBox="0 0 1000 1000"
+            [attr.viewBox]="currentShapeViewBox()"
             preserveAspectRatio="xMidYMid meet"
             role="img"
             [attr.aria-label]="i18n.t('classic.shapeAria')"
@@ -24,7 +24,9 @@
           <p class="question-help">{{ i18n.t('common.loadingGame') }}</p>
         }
       </div>
-      <p class="question-help">{{ i18n.t('classic.capital', { capital: capitalName(question.promptCountry) }) }}</p>
+      @if (difficulty() === 'easy') {
+        <p class="question-help">{{ i18n.t('classic.capital', { capital: capitalName(question.promptCountry) }) }}</p>
+      }
 
       <div class="name-grid">
         @for (option of question.options; track option.code) {
@@ -86,7 +88,7 @@
           <article class="mistake-card">
             @if (shapePath(error.promptCountry); as path) {
               <div class="mistake-shape">
-                <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                <svg [attr.viewBox]="shapeViewBox(error.promptCountry)" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
                   <path [attr.d]="path" fill-rule="evenodd" clip-rule="evenodd"></path>
                 </svg>
               </div>
@@ -101,7 +103,7 @@
     </div>
 
     <div class="summary-actions">
-      <button type="button" class="ghost-link" (click)="closeSummary()">{{ i18n.t('common.close') }}</button>
+      <button type="button" class="ghost-link" routerLink="/">{{ i18n.t('common.home') }}</button>
       <button type="button" class="next-button" (click)="restartGame()">{{ i18n.t('common.restart') }}</button>
     </div>
   </section>

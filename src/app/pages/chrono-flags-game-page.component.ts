@@ -1,5 +1,6 @@
 ﻿import { toSignal } from '@angular/core/rxjs-interop';
 import { Component, OnDestroy, computed, effect, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { GameId } from '../data/game-catalog';
 import { CountrySummary } from '../models/country-summary';
 import { CountriesService } from '../services/countries.service';
@@ -72,6 +73,7 @@ const VISIBLE_ERRORS_LIMIT = 8;
 
 @Component({
   selector: 'app-chrono-flags-game-page',
+  imports: [RouterLink],
   templateUrl: './chrono-flags-game-page.component.html',
   styleUrl: './chrono-flags-game-page.component.css'
 })
@@ -240,7 +242,7 @@ export class ChronoFlagsGamePageComponent implements OnDestroy {
   }
 
   protected closeSummary(): void {
-    this.isComplete.set(false);
+    this.restartGame();
   }
 
   protected getOptionState(code: string): 'default' | 'correct' | 'wrong' {

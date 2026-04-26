@@ -125,7 +125,12 @@ h1 {
   position: sticky;
   bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   z-index: 5;
-  width: min(640px, 100%);
+  box-sizing: border-box;
+  width: min(
+    640px,
+    calc(100vw - 16px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px))
+  );
+  max-width: 100%;
   padding: 9px 12px;
   margin: 10px auto 0;
   background: color-mix(in srgb, var(--surface-raise) 96%, transparent);
@@ -214,7 +219,7 @@ h1 {
 }
 
 .summary-actions {
-  margin-top: 20px;
+  margin-top: 10px;
   align-items: center;
   justify-content: flex-end;
   flex-wrap: wrap;
@@ -247,8 +252,10 @@ h1 {
   }
 
   .quiz-progress-strip {
-    width: 100%;
+    width: calc(100vw - 12px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px));
+    max-width: 100%;
     padding: 8px 10px;
+    border-radius: 16px;
   }
 
   .summary-actions {

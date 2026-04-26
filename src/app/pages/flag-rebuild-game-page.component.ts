@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, computed, effect, inject, signal, untracked } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import iro from '@jaames/iro';
 import { GameId } from '../data/game-catalog';
 import { FLAG_REBUILD_PUZZLES } from '../data/flag-rebuild-puzzles';
@@ -49,6 +50,7 @@ const ALL_PATTERNS: FlagRebuildPattern[] = [
 
 @Component({
   selector: 'app-flag-rebuild-game-page',
+  imports: [RouterLink],
   templateUrl: './flag-rebuild-game-page.component.html',
   styleUrl: './flag-rebuild-game-page.component.css'
 })

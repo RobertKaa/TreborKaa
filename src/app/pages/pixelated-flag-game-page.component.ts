@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, ViewChild, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { take } from 'rxjs';
 import { GameId } from '../data/game-catalog';
 import { CountrySummary } from '../models/country-summary';
@@ -45,7 +46,7 @@ type PixelProgressSnapshot = {
 
 @Component({
   selector: 'app-pixelated-flag-game-page',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './pixelated-flag-game-page.component.html',
   styleUrl: './pixelated-flag-game-page.component.css'
 })

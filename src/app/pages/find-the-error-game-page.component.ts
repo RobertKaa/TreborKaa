@@ -1,4 +1,5 @@
 import { Component, OnDestroy, computed, effect, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { GameId } from '../data/game-catalog';
 import { FLAG_REBUILD_PUZZLES } from '../data/flag-rebuild-puzzles';
 import { FlagRebuildPattern, FlagRebuildPuzzle } from '../models/flag-rebuild-puzzle';
@@ -61,6 +62,7 @@ type FindErrorProgressSnapshot = {
 
 @Component({
   selector: 'app-find-the-error-game-page',
+  imports: [RouterLink],
   templateUrl: './find-the-error-game-page.component.html',
   styleUrl: './find-the-error-game-page.component.css'
 })
@@ -177,7 +179,7 @@ export class FindTheErrorGamePageComponent implements OnDestroy {
   }
 
   protected closeSummary(): void {
-    this.isComplete.set(false);
+    this.restartGame();
   }
 
   protected getMaxScore(): number {

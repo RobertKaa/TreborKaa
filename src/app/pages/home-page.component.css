@@ -296,6 +296,7 @@ h3 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
   min-height: 38px;
   min-width: 120px;
   padding: 8px 14px;
@@ -309,6 +310,44 @@ h3 {
 
 .play-link:visited {
   color: var(--on-accent);
+}
+
+:host-context(app-root.mobile-viewport) .game-actions {
+  width: 100%;
+  min-width: 0;
+  justify-items: stretch;
+}
+
+:host-context(app-root.mobile-viewport) .classic-actions {
+  width: 100%;
+  min-width: 0;
+}
+
+:host-context(app-root.mobile-viewport) .difficulty-line {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  width: 100%;
+  overflow: visible;
+  padding-bottom: 0;
+}
+
+:host-context(app-root.mobile-viewport) .difficulty-entry {
+  min-width: 0;
+  width: 100%;
+  padding: 0;
+}
+
+:host-context(app-root.mobile-viewport) .play-link,
+:host-context(app-root.mobile-viewport) .difficulty-link {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  justify-content: center;
+}
+
+:host-context(app-root.mobile-viewport) .difficulty-progress-track {
+  width: 100%;
 }
 
 @media (max-width: 760px) {
@@ -358,5 +397,10 @@ h3 {
 
   .tab-button {
     min-width: 0;
+  }
+
+  .play-link,
+  .difficulty-link {
+    padding: 8px 10px;
   }
 }

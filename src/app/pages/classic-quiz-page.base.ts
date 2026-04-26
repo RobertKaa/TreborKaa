@@ -29,7 +29,7 @@ type QuizSetup<TQuestion extends BaseQuestion> = {
   getProgressGameId: (difficulty: GameDifficulty) => GameId;
   progressLabelKey: string;
   isReady?: () => boolean;
-  getTotalQuestions?: (countries: CountrySummary[]) => number;
+  getTotalQuestions?: (countries: CountrySummary[], difficulty: GameDifficulty) => number;
 };
 
 const MAX_ERRORS = 3;
@@ -98,8 +98,9 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
   protected readonly currentQuestion = signal<TQuestion | null>(null);
   protected readonly totalQuestions = computed(() => {
     const countries = this.countriesSignal();
+    const difficulty = this.difficulty();
     if (this.getTotalQuestionsFn) {
-      return Math.max(0, this.getTotalQuestionsFn(countries));
+      return Math.max(0, this.getTotalQuestionsFn(countries, difficulty));
     }
 
     return countries.length;
@@ -217,7 +218,7 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
   }
 
   protected closeSummary(): void {
-    this.isComplete.set(false);
+    this.restartGame();
   }
 
   protected getOptionState(code: string): 'default' | 'correct' | 'wrong' {
