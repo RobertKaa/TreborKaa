@@ -121,3 +121,7 @@ Implementation:
   - Reconstruction de drapeau beta: cartes de structure passees en apercus blueprint sans couleur pour ne donner que le type de forme.
   - Reconstruction de drapeau beta: canevas de construction aligne sur un masque pixel genere depuis le vrai drapeau lorsque la bonne forme est choisie, afin que les croix et proportions fines puissent atteindre 100%.
   - Reconstruction de drapeau beta: detection des vraies limites de bandes depuis l'image source pour conserver les couleurs repetees comme zones separees (ex: Thailande).
+  - Reconstruction de drapeau beta: masques ordonnes et nouveaux types jouables pour triangles + bandes, disque central, bandes + disque, croix diagonale et rayons diagonaux.
+  - Reconstruction de drapeau beta: choix de forme passe a quatre options aleatoires tirees de tous les types beta, avec le bon type reintegre puis melange; palette beta melangee avec leurres plus distincts.
+  - Reconstruction de drapeau beta: rendu du canvas unifie par masque pixel pour les bons et mauvais types afin de garder les memes contours de selection.
+  - Reconstruction de drapeau beta: guides de zones renforces dans le canvas pour rendre les contours jouables plus lisibles avant coloriage.

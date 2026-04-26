@@ -4,20 +4,27 @@ import { FlagRebuildGamePageComponent } from './flag-rebuild-game-page.component
 describe('FlagRebuildGamePageComponent', () => {
   let fixture: ComponentFixture<FlagRebuildGamePageComponent>;
   let component: FlagRebuildGamePageComponent;
+  const createMockImageData = (width: number, height: number): ImageData =>
+    ({
+      width,
+      height,
+      data: new Uint8ClampedArray(width * height * 4),
+    }) as ImageData;
 
   beforeEach(async () => {
     localStorage.clear();
     Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
       configurable: true,
       value: () => ({
+        arc: () => undefined,
         beginPath: () => undefined,
         clearRect: () => undefined,
         closePath: () => undefined,
-        createImageData: (width: number, height: number) => new ImageData(width, height),
+        createImageData: createMockImageData,
         drawImage: () => undefined,
         fill: () => undefined,
         fillRect: () => undefined,
-        getImageData: () => new ImageData(360, 240),
+        getImageData: () => createMockImageData(360, 240),
         lineTo: () => undefined,
         moveTo: () => undefined,
         putImageData: () => undefined,

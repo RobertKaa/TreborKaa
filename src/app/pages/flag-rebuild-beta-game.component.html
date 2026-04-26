@@ -70,6 +70,23 @@
                   d="M33 9 H47 V27 H92 V39 H47 V57 H33 V39 H8 V27 H33 Z"
                 />
               }
+              @case ('center-disc') {
+                <circle class="blueprint-zone" cx="50" cy="33" r="14" />
+              }
+              @case ('horizontal-stripes-center-disc') {
+                <rect class="blueprint-zone" x="8" y="9" width="84" height="14" rx="2" />
+                <rect class="blueprint-zone" x="8" y="26" width="84" height="14" rx="2" />
+                <rect class="blueprint-zone" x="8" y="43" width="84" height="14" rx="2" />
+                <circle class="blueprint-zone" cx="50" cy="33" r="10" />
+              }
+              @case ('saltire') {
+                <path class="blueprint-zone" d="M8 9 L92 57 M92 9 L8 57" />
+              }
+              @case ('diagonal-rays') {
+                <path class="blueprint-zone" d="M8 57 L31 9" />
+                <path class="blueprint-zone" d="M8 57 L55 9" />
+                <path class="blueprint-zone" d="M8 57 L79 9" />
+              }
             }
           </svg>
           <span>{{ getPatternLabel(choice.pattern) }}</span>

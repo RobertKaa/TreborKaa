@@ -44,9 +44,208 @@ type RgbColor = {
 };
 
 type StripeAxis = 'x' | 'y';
+type RatioPoint = readonly [number, number];
 
 const FLAG_CANVAS_WIDTH = 360;
 const FLAG_CANVAS_HEIGHT = 240;
+const DIAGONAL_RAY_POLYGONS: RatioPoint[][] = [
+  [
+    [0, 0],
+    [0.24, 0],
+    [0, 1],
+  ],
+  [
+    [0.24, 0],
+    [0.49, 0],
+    [0, 1],
+  ],
+  [
+    [0.49, 0],
+    [0.76, 0],
+    [0, 1],
+  ],
+  [
+    [0.76, 0],
+    [1, 0],
+    [0, 1],
+  ],
+  [
+    [1, 0],
+    [1, 1],
+    [0, 1],
+  ],
+];
+const BETA_PATTERN_CHOICE_COUNT = 4;
+const BETA_FLAG_REBUILD_PATTERNS: FlagRebuildPattern[] = [
+  'horizontal-stripes',
+  'vertical-stripes',
+  'triangle-left-bands-2',
+  'triangle-left-bands-3',
+  'left-band-horizontal',
+  'nordic-cross',
+  'center-disc',
+  'horizontal-stripes-center-disc',
+  'saltire',
+  'diagonal-rays',
+];
+const BETA_SHARED_DECOY_COLORS = [
+  '#111111',
+  '#ffffff',
+  '#f7f3ea',
+  '#174a7c',
+  '#2f8f5b',
+  '#c23b22',
+  '#f0b429',
+  '#6f3fb5',
+];
+const BETA_EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
+  {
+    code: 'id',
+    nameFrench: 'Indonésie',
+    targetPattern: 'horizontal-stripes',
+    patternOptions: ['horizontal-stripes', 'vertical-stripes', 'center-disc'],
+    targetColors: ['#ff0000', '#ffffff'],
+    palette: ['#e63737', '#f5f5f5', '#ff0000', '#ffffff'],
+    flagUrl: 'https://flagcdn.com/w320/id.png',
+  },
+  {
+    code: 'lv',
+    nameFrench: 'Lettonie',
+    targetPattern: 'horizontal-stripes',
+    patternOptions: ['horizontal-stripes', 'vertical-stripes', 'left-band-horizontal'],
+    targetColors: ['#9e3039', '#ffffff', '#9e3039'],
+    palette: ['#b64a53', '#f5f5f5', '#9e3039', '#ffffff'],
+    flagUrl: 'https://flagcdn.com/w320/lv.png',
+  },
+  {
+    code: 'es',
+    nameFrench: 'Espagne',
+    targetPattern: 'horizontal-stripes',
+    patternOptions: ['horizontal-stripes', 'vertical-stripes', 'left-band-horizontal'],
+    targetColors: ['#aa151b', '#f1bf00', '#aa151b'],
+    palette: ['#c7353a', '#ffd33d', '#aa151b', '#f1bf00'],
+    flagUrl: 'https://flagcdn.com/w320/es.png',
+  },
+  {
+    code: 'co',
+    nameFrench: 'Colombie',
+    targetPattern: 'horizontal-stripes',
+    patternOptions: ['horizontal-stripes', 'vertical-stripes', 'left-band-horizontal'],
+    targetColors: ['#fcd116', '#003893', '#ce1126'],
+    palette: ['#ffe04b', '#2b58ac', '#df3a4d', '#fcd116', '#003893', '#ce1126'],
+    flagUrl: 'https://flagcdn.com/w320/co.png',
+  },
+  {
+    code: 'cr',
+    nameFrench: 'Costa Rica',
+    targetPattern: 'horizontal-stripes',
+    patternOptions: ['horizontal-stripes', 'vertical-stripes', 'left-band-horizontal'],
+    targetColors: ['#002b7f', '#ffffff', '#ce1126', '#ffffff', '#002b7f'],
+    palette: ['#264c9f', '#f5f5f5', '#de3448', '#002b7f', '#ffffff', '#ce1126'],
+    flagUrl: 'https://flagcdn.com/w320/cr.png',
+  },
+  {
+    code: 'jp',
+    nameFrench: 'Japon',
+    targetPattern: 'center-disc',
+    patternOptions: ['center-disc', 'horizontal-stripes', 'vertical-stripes'],
+    targetColors: ['#ffffff', '#bc002d'],
+    palette: ['#f5f5f5', '#d12f52', '#ffffff', '#bc002d'],
+    flagUrl: 'https://flagcdn.com/w320/jp.png',
+  },
+  {
+    code: 'bd',
+    nameFrench: 'Bangladesh',
+    targetPattern: 'center-disc',
+    patternOptions: ['center-disc', 'horizontal-stripes-center-disc', 'vertical-stripes'],
+    targetColors: ['#006a4e', '#f42a41'],
+    palette: ['#258564', '#ff4b61', '#006a4e', '#f42a41'],
+    flagUrl: 'https://flagcdn.com/w320/bd.png',
+  },
+  {
+    code: 'pw',
+    nameFrench: 'Palaos',
+    targetPattern: 'center-disc',
+    patternOptions: ['center-disc', 'horizontal-stripes-center-disc', 'horizontal-stripes'],
+    targetColors: ['#0099ff', '#ffde00'],
+    palette: ['#2eb0ff', '#ffe04b', '#0099ff', '#ffde00'],
+    flagUrl: 'https://flagcdn.com/w320/pw.png',
+  },
+  {
+    code: 'la',
+    nameFrench: 'Laos',
+    targetPattern: 'horizontal-stripes-center-disc',
+    patternOptions: ['horizontal-stripes-center-disc', 'horizontal-stripes', 'center-disc'],
+    targetColors: ['#ce1126', '#002868', '#ce1126', '#ffffff'],
+    palette: ['#df3d4f', '#244b8b', '#f5f5f5', '#ce1126', '#002868', '#ffffff'],
+    flagUrl: 'https://flagcdn.com/w320/la.png',
+  },
+  {
+    code: 'jm',
+    nameFrench: 'Jamaïque',
+    targetPattern: 'saltire',
+    patternOptions: ['saltire', 'diagonal-rays', 'nordic-cross'],
+    targetColors: ['#009b3a', '#fed100', '#000000'],
+    palette: ['#24b85a', '#ffe04b', '#2a2a2a', '#009b3a', '#fed100', '#000000'],
+    flagUrl: 'https://flagcdn.com/w320/jm.png',
+  },
+  {
+    code: 'sc',
+    nameFrench: 'Seychelles',
+    targetPattern: 'diagonal-rays',
+    patternOptions: ['diagonal-rays', 'horizontal-stripes', 'triangle-left-bands-3'],
+    targetColors: ['#003f87', '#fcd856', '#d62828', '#ffffff', '#007a3d'],
+    palette: [
+      '#255fa0',
+      '#ffe16b',
+      '#e64a4a',
+      '#f5f5f5',
+      '#24945b',
+      '#003f87',
+      '#fcd856',
+      '#d62828',
+      '#ffffff',
+      '#007a3d',
+    ],
+    flagUrl: 'https://flagcdn.com/w320/sc.png',
+  },
+  {
+    code: 'ps',
+    nameFrench: 'Palestine',
+    targetPattern: 'triangle-left-bands-3',
+    patternOptions: ['triangle-left-bands-3', 'horizontal-stripes', 'left-band-horizontal'],
+    targetColors: ['#e4312b', '#000000', '#ffffff', '#149954'],
+    palette: [
+      '#f0524c',
+      '#2a2a2a',
+      '#f5f5f5',
+      '#34ad70',
+      '#e4312b',
+      '#000000',
+      '#ffffff',
+      '#149954',
+    ],
+    flagUrl: 'https://flagcdn.com/w320/ps.png',
+  },
+  {
+    code: 'sd',
+    nameFrench: 'Soudan',
+    targetPattern: 'triangle-left-bands-3',
+    patternOptions: ['triangle-left-bands-3', 'horizontal-stripes', 'left-band-horizontal'],
+    targetColors: ['#007229', '#d21034', '#ffffff', '#000000'],
+    palette: [
+      '#24914c',
+      '#e23d5c',
+      '#f5f5f5',
+      '#2a2a2a',
+      '#007229',
+      '#d21034',
+      '#ffffff',
+      '#000000',
+    ],
+    flagUrl: 'https://flagcdn.com/w320/sd.png',
+  },
+];
 
 @Component({
   selector: 'app-flag-rebuild-beta-game',
@@ -56,11 +255,17 @@ const FLAG_CANVAS_HEIGHT = 240;
 export class FlagRebuildBetaGameComponent implements AfterViewInit {
   protected readonly i18n = inject(I18nService);
   private readonly englishRegionNames = this.createEnglishRegionNames();
-  private readonly allPuzzles = FLAG_REBUILD_PUZZLES;
+  private readonly allPuzzles = [...FLAG_REBUILD_PUZZLES, ...BETA_EXTRA_FLAG_REBUILD_PUZZLES];
   @ViewChild('playerCanvas') private playerCanvas?: ElementRef<HTMLCanvasElement>;
   protected readonly currentPuzzle = signal<FlagRebuildPuzzle>(this.pickPuzzle());
+  protected readonly patternChoices = signal<PatternChoice[]>(
+    this.buildPatternChoices(this.currentPuzzle()),
+  );
+  protected readonly paletteOptions = signal<string[]>(
+    this.buildPaletteOptions(this.currentPuzzle()),
+  );
   protected readonly selectedPattern = signal<FlagRebuildPattern>(
-    this.pickInitialPattern(this.currentPuzzle()),
+    this.pickInitialPattern(this.patternChoices()),
   );
   protected readonly selectedZoneIndex = signal(0);
   protected readonly pieces = signal<BetaPiece[]>(
@@ -77,6 +282,7 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   private readonly realFlagCache = new Map<string, ImageData | null>();
   private readonly pixelMaskCache = new Map<string, PixelZoneMask | null>();
   private readonly pixelMaskRequests = new Map<string, Promise<PixelZoneMask | null>>();
+  private readonly patternMaskCache = new Map<string, PixelZoneMask>();
 
   protected readonly activePiece = computed(() => this.pieces()[this.selectedZoneIndex()] ?? null);
   protected readonly previewColors = computed(() => this.pieces().map((piece) => piece.color));
@@ -88,12 +294,6 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       puzzle.targetColors.length,
     );
   });
-  protected readonly paletteOptions = computed(() =>
-    this.buildPaletteOptions(this.currentPuzzle()),
-  );
-  protected readonly patternChoices = computed(() =>
-    this.buildPatternChoices(this.currentPuzzle()),
-  );
   protected readonly masteryPercent = computed(() =>
     Math.min(100, Math.round((this.totalScore() / Math.max(1, this.round() * 100)) * 100)),
   );
@@ -185,6 +385,29 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
           [this.i18n.t('rebuild.zone.background'), this.i18n.t('rebuild.zone.cross')][index] ??
           this.i18n.t('rebuild.zone.generic', { index: index + 1 })
         );
+      case 'center-disc':
+        return (
+          [this.i18n.t('rebuild.zone.background'), this.i18n.t('rebuild.zone.disc')][index] ??
+          this.i18n.t('rebuild.zone.generic', { index: index + 1 })
+        );
+      case 'horizontal-stripes-center-disc': {
+        const discIndex = this.previewColorsForPattern().length - 1;
+        if (index === discIndex) {
+          return this.i18n.t('rebuild.zone.disc');
+        }
+
+        return this.i18n.t('rebuild.zone.stripe', { index: index + 1 });
+      }
+      case 'saltire':
+        return (
+          [
+            this.i18n.t('rebuild.zone.background'),
+            this.i18n.t('rebuild.zone.saltire'),
+            this.i18n.t('rebuild.zone.sideFields'),
+          ][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 })
+        );
+      case 'diagonal-rays':
+        return this.i18n.t('rebuild.zone.stripe', { index: index + 1 });
       default:
         return this.i18n.t('rebuild.zone.generic', { index: index + 1 });
     }
@@ -241,8 +464,11 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
 
   protected nextRound(): void {
     const nextPuzzle = this.pickPuzzle(this.currentPuzzle().code);
+    const nextPatternChoices = this.buildPatternChoices(nextPuzzle);
+    const nextPattern = this.pickInitialPattern(nextPatternChoices);
     this.currentPuzzle.set(nextPuzzle);
-    const nextPattern = this.pickInitialPattern(nextPuzzle);
+    this.patternChoices.set(nextPatternChoices);
+    this.paletteOptions.set(this.buildPaletteOptions(nextPuzzle));
     this.selectedPattern.set(nextPattern);
     this.pieces.set(
       this.fitPiecesToPattern(nextPattern, this.buildInitialPieces(nextPuzzle), nextPuzzle),
@@ -261,13 +487,9 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     const bounds = canvas.getBoundingClientRect();
     const x = (event.clientX - bounds.left) / Math.max(1, bounds.width);
     const y = (event.clientY - bounds.top) / Math.max(1, bounds.height);
-    const pixelMask = this.getTargetPatternPixelMask();
+    const pixelMask = this.getActivePatternPixelMask();
 
-    this.selectZone(
-      pixelMask
-        ? this.findPixelMaskZoneAtPoint(pixelMask, x, y)
-        : this.findZoneAtPoint(this.selectedPattern(), x, y, this.previewColorsForPattern().length),
-    );
+    this.selectZone(this.findPixelMaskZoneAtPoint(pixelMask, x, y));
   }
 
   private async evaluatePuzzle(
@@ -340,17 +562,55 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   }
 
   private buildPaletteOptions(puzzle: FlagRebuildPuzzle): string[] {
-    return Array.from(new Set([...puzzle.palette, '#111111', '#ffffff', '#f7f3ea']));
+    const targetColors = Array.from(new Set(puzzle.targetColors));
+    const relatedPalette = puzzle.palette.filter(
+      (color) =>
+        !targetColors.some((targetColor) => this.areColorsTooClose(color, targetColor, 16)),
+    );
+    const distantFlagColors = this.shuffle(
+      this.allPuzzles
+        .filter((candidate) => candidate.code !== puzzle.code)
+        .flatMap((candidate) => candidate.targetColors)
+        .filter((color) =>
+          targetColors.every((targetColor) => !this.areColorsTooClose(color, targetColor, 24)),
+        ),
+    ).slice(0, Math.max(4, targetColors.length + 1));
+    const generatedDecoys = targetColors
+      .flatMap((color) => [this.rotateColor(color, 58), this.rotateColor(color, -42)])
+      .filter((color): color is string => !!color)
+      .filter((color) =>
+        targetColors.every((targetColor) => !this.areColorsTooClose(color, targetColor, 28)),
+      );
+
+    const decoys = Array.from(
+      new Set([
+        ...this.shuffle(relatedPalette).slice(0, 2),
+        ...distantFlagColors,
+        ...generatedDecoys,
+        ...BETA_SHARED_DECOY_COLORS.filter((color) =>
+          targetColors.every((targetColor) => color !== targetColor),
+        ),
+      ]),
+    );
+
+    return this.shuffle([
+      ...targetColors,
+      ...this.shuffle(decoys).slice(0, Math.max(4, 8 - targetColors.length)),
+    ]);
   }
 
   private buildPatternChoices(puzzle: FlagRebuildPuzzle): PatternChoice[] {
-    return puzzle.patternOptions.map((pattern) => ({
+    const decoys = this.shuffle(
+      BETA_FLAG_REBUILD_PATTERNS.filter((pattern) => pattern !== puzzle.targetPattern),
+    ).slice(0, BETA_PATTERN_CHOICE_COUNT - 1);
+
+    return this.shuffle([puzzle.targetPattern, ...decoys]).map((pattern) => ({
       pattern,
     }));
   }
 
-  private pickInitialPattern(puzzle: FlagRebuildPuzzle): FlagRebuildPattern {
-    return this.shuffle([...puzzle.patternOptions])[0] ?? puzzle.targetPattern;
+  private pickInitialPattern(patternChoices: PatternChoice[]): FlagRebuildPattern {
+    return this.shuffle(patternChoices.map((choice) => choice.pattern))[0] ?? 'horizontal-stripes';
   }
 
   private getPatternPreviewColors(
@@ -372,7 +632,13 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       case 'left-band-horizontal':
         return Math.max(3, colorCount);
       case 'nordic-cross':
+      case 'center-disc':
         return 2;
+      case 'horizontal-stripes-center-disc':
+      case 'saltire':
+        return colorCount;
+      case 'diagonal-rays':
+        return DIAGONAL_RAY_POLYGONS.length;
       default:
         return Math.max(2, colorCount);
     }
@@ -387,29 +653,10 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
 
     canvas.width = FLAG_CANVAS_WIDTH;
     canvas.height = FLAG_CANVAS_HEIGHT;
-    const pixelMask = this.getTargetPatternPixelMask();
-
-    if (pixelMask) {
-      this.drawPixelMaskPattern(context, pixelMask, this.previewColorsForPattern());
-      this.drawPixelMaskSelectedZone(context, pixelMask, this.selectedZoneIndex());
-      return;
-    }
-
-    this.drawPattern(
-      context,
-      this.selectedPattern(),
-      this.previewColorsForPattern(),
-      FLAG_CANVAS_WIDTH,
-      FLAG_CANVAS_HEIGHT,
-    );
-    this.drawSelectedZone(
-      context,
-      this.selectedPattern(),
-      this.selectedZoneIndex(),
-      this.previewColorsForPattern().length,
-      FLAG_CANVAS_WIDTH,
-      FLAG_CANVAS_HEIGHT,
-    );
+    const pixelMask = this.getActivePatternPixelMask();
+    this.drawPixelMaskPattern(context, pixelMask, this.previewColorsForPattern());
+    this.drawPixelMaskZoneGuides(context, pixelMask);
+    this.drawPixelMaskSelectedZone(context, pixelMask, this.selectedZoneIndex());
   }
 
   private async computeRealFlagImageScore(
@@ -488,22 +735,13 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       return null;
     }
 
-    const orderedStripeZoneIndexes =
-      puzzle.targetPattern === 'horizontal-stripes'
-        ? this.createOrderedStripeZoneIndexes(reference, puzzle.targetColors, 'y')
-        : puzzle.targetPattern === 'vertical-stripes'
-          ? this.createOrderedStripeZoneIndexes(reference, puzzle.targetColors, 'x')
-          : null;
+    const orderedPatternZoneIndexes = this.createOrderedPatternZoneIndexes(reference, puzzle);
     const zoneIndexes = new Uint8Array(reference.width * reference.height);
 
     for (let pixelIndex = 0; pixelIndex < zoneIndexes.length; pixelIndex += 1) {
       const dataIndex = pixelIndex * 4;
-      zoneIndexes[pixelIndex] = orderedStripeZoneIndexes
-        ? orderedStripeZoneIndexes[
-            puzzle.targetPattern === 'horizontal-stripes'
-              ? Math.floor(pixelIndex / reference.width)
-              : pixelIndex % reference.width
-          ]
+      zoneIndexes[pixelIndex] = orderedPatternZoneIndexes
+        ? orderedPatternZoneIndexes[pixelIndex]
         : this.findClosestTargetColorIndex(
             reference.data[dataIndex],
             reference.data[dataIndex + 1],
@@ -520,17 +758,131 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     };
   }
 
+  private createOrderedPatternZoneIndexes(
+    reference: ImageData,
+    puzzle: FlagRebuildPuzzle,
+  ): Uint8Array | null {
+    switch (puzzle.targetPattern) {
+      case 'horizontal-stripes':
+        return this.expandAxisZoneIndexes(
+          reference,
+          this.createOrderedStripeZoneIndexes(reference, puzzle.targetColors, 'y'),
+          'y',
+        );
+      case 'vertical-stripes':
+        return this.expandAxisZoneIndexes(
+          reference,
+          this.createOrderedStripeZoneIndexes(reference, puzzle.targetColors, 'x'),
+          'x',
+        );
+      case 'triangle-left-bands-2':
+      case 'triangle-left-bands-3':
+        return this.createTriangleBandZoneIndexes(reference, puzzle.targetColors);
+      case 'horizontal-stripes-center-disc':
+        return this.createStripeDiscZoneIndexes(reference, puzzle.targetColors);
+      default:
+        return null;
+    }
+  }
+
+  private expandAxisZoneIndexes(
+    reference: ImageData,
+    axisZoneIndexes: Uint8Array | null,
+    axis: StripeAxis,
+  ): Uint8Array | null {
+    if (!axisZoneIndexes) {
+      return null;
+    }
+
+    const zoneIndexes = new Uint8Array(reference.width * reference.height);
+    for (let pixelIndex = 0; pixelIndex < zoneIndexes.length; pixelIndex += 1) {
+      zoneIndexes[pixelIndex] =
+        axis === 'y'
+          ? axisZoneIndexes[Math.floor(pixelIndex / reference.width)]
+          : axisZoneIndexes[pixelIndex % reference.width];
+    }
+
+    return zoneIndexes;
+  }
+
+  private createTriangleBandZoneIndexes(
+    reference: ImageData,
+    targetColors: string[],
+  ): Uint8Array | null {
+    const bandZoneIndexes = this.createOrderedStripeZoneIndexes(
+      reference,
+      targetColors.slice(1),
+      'y',
+      0.64,
+      1,
+    );
+    if (!bandZoneIndexes) {
+      return null;
+    }
+
+    const zoneIndexes = new Uint8Array(reference.width * reference.height);
+    for (let pixelIndex = 0; pixelIndex < zoneIndexes.length; pixelIndex += 1) {
+      const dataIndex = pixelIndex * 4;
+      const closestIndex = this.findClosestTargetColorIndex(
+        reference.data[dataIndex],
+        reference.data[dataIndex + 1],
+        reference.data[dataIndex + 2],
+        targetColors,
+      );
+      zoneIndexes[pixelIndex] =
+        closestIndex === 0 ? 0 : 1 + bandZoneIndexes[Math.floor(pixelIndex / reference.width)];
+    }
+
+    return zoneIndexes;
+  }
+
+  private createStripeDiscZoneIndexes(
+    reference: ImageData,
+    targetColors: string[],
+  ): Uint8Array | null {
+    const discIndex = targetColors.length - 1;
+    const bandZoneIndexes = this.createOrderedStripeZoneIndexes(
+      reference,
+      targetColors.slice(0, discIndex),
+      'y',
+      0,
+      0.22,
+    );
+    if (!bandZoneIndexes) {
+      return null;
+    }
+
+    const zoneIndexes = new Uint8Array(reference.width * reference.height);
+    for (let pixelIndex = 0; pixelIndex < zoneIndexes.length; pixelIndex += 1) {
+      const dataIndex = pixelIndex * 4;
+      const closestIndex = this.findClosestTargetColorIndex(
+        reference.data[dataIndex],
+        reference.data[dataIndex + 1],
+        reference.data[dataIndex + 2],
+        targetColors,
+      );
+      zoneIndexes[pixelIndex] =
+        closestIndex === discIndex
+          ? discIndex
+          : bandZoneIndexes[Math.floor(pixelIndex / reference.width)];
+    }
+
+    return zoneIndexes;
+  }
+
   private createOrderedStripeZoneIndexes(
     reference: ImageData,
     targetColors: string[],
     axis: StripeAxis,
+    crossAxisStart = 0,
+    crossAxisEnd = 1,
   ): Uint8Array | null {
     const targetRgbColors = targetColors.map((color) => this.hexToRgb(color));
     if (targetRgbColors.some((color) => !color)) {
       return null;
     }
 
-    const samples = this.computeAxisAverageColors(reference, axis);
+    const samples = this.computeAxisAverageColors(reference, axis, crossAxisStart, crossAxisEnd);
     const boundaries = this.findBestOrderedStripeBoundaries(samples, targetRgbColors as RgbColor[]);
     if (!boundaries) {
       return null;
@@ -550,16 +902,24 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     return zoneIndexes;
   }
 
-  private computeAxisAverageColors(reference: ImageData, axis: StripeAxis): RgbColor[] {
+  private computeAxisAverageColors(
+    reference: ImageData,
+    axis: StripeAxis,
+    crossAxisStart = 0,
+    crossAxisEnd = 1,
+  ): RgbColor[] {
     const sampleCount = axis === 'y' ? reference.height : reference.width;
-    const span = axis === 'y' ? reference.width : reference.height;
+    const spanSize = axis === 'y' ? reference.width : reference.height;
+    const spanStart = Math.max(0, Math.min(spanSize - 1, Math.floor(spanSize * crossAxisStart)));
+    const spanEnd = Math.max(spanStart + 1, Math.min(spanSize, Math.ceil(spanSize * crossAxisEnd)));
+    const span = spanEnd - spanStart;
 
     return Array.from({ length: sampleCount }, (_, sampleIndex) => {
       let red = 0;
       let green = 0;
       let blue = 0;
 
-      for (let spanIndex = 0; spanIndex < span; spanIndex += 1) {
+      for (let spanIndex = spanStart; spanIndex < spanEnd; spanIndex += 1) {
         const x = axis === 'y' ? spanIndex : sampleIndex;
         const y = axis === 'y' ? sampleIndex : spanIndex;
         const dataIndex = (y * reference.width + x) * 4;
@@ -726,13 +1086,45 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     context.putImageData(imageData, 0, 0);
   }
 
+  private drawPixelMaskZoneGuides(
+    context: CanvasRenderingContext2D,
+    pixelMask: PixelZoneMask,
+  ): void {
+    context.save();
+    context.fillStyle = 'rgba(45, 31, 52, 0.28)';
+
+    for (let y = 0; y < pixelMask.height; y += 1) {
+      for (let x = 0; x < pixelMask.width; x += 1) {
+        if (!this.isPixelMaskBoundary(pixelMask, x, y)) {
+          continue;
+        }
+
+        context.fillRect(x, y, 1, 1);
+      }
+    }
+
+    context.restore();
+  }
+
   private drawPixelMaskSelectedZone(
     context: CanvasRenderingContext2D,
     pixelMask: PixelZoneMask,
     zoneIndex: number,
   ): void {
     context.save();
-    context.fillStyle = 'rgba(255, 255, 255, 0.86)';
+    context.fillStyle = 'rgba(21, 126, 251, 0.34)';
+
+    for (let y = 0; y < pixelMask.height; y += 1) {
+      for (let x = 0; x < pixelMask.width; x += 1) {
+        if (!this.isPixelMaskEdge(pixelMask, x, y, zoneIndex)) {
+          continue;
+        }
+
+        context.fillRect(Math.max(0, x - 1), Math.max(0, y - 1), 3, 3);
+      }
+    }
+
+    context.fillStyle = 'rgba(255, 255, 255, 0.96)';
 
     for (let y = 0; y < pixelMask.height; y += 1) {
       for (let x = 0; x < pixelMask.width; x += 1) {
@@ -745,6 +1137,22 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     }
 
     context.restore();
+  }
+
+  private isPixelMaskBoundary(pixelMask: PixelZoneMask, x: number, y: number): boolean {
+    const pixelIndex = y * pixelMask.width + x;
+    const zoneIndex = pixelMask.zoneIndexes[pixelIndex];
+
+    return (
+      x === 0 ||
+      y === 0 ||
+      x === pixelMask.width - 1 ||
+      y === pixelMask.height - 1 ||
+      pixelMask.zoneIndexes[pixelIndex - 1] !== zoneIndex ||
+      pixelMask.zoneIndexes[pixelIndex + 1] !== zoneIndex ||
+      pixelMask.zoneIndexes[pixelIndex - pixelMask.width] !== zoneIndex ||
+      pixelMask.zoneIndexes[pixelIndex + pixelMask.width] !== zoneIndex
+    );
   }
 
   private isPixelMaskEdge(
@@ -828,6 +1236,65 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
         context.fillRect(width * 0.3, 0, width * 0.16, height);
         context.fillRect(0, height * 0.415, width, height * 0.17);
         break;
+      case 'center-disc':
+        context.fillStyle = colors[0] ?? '#f7f3ea';
+        context.fillRect(0, 0, width, height);
+        context.fillStyle = colors[1] ?? '#f7f3ea';
+        context.beginPath();
+        context.arc(width * 0.5, height * 0.5, height * 0.24, 0, Math.PI * 2);
+        context.fill();
+        break;
+      case 'horizontal-stripes-center-disc': {
+        const discIndex = colors.length - 1;
+        const stripeColors = colors.slice(0, discIndex);
+        stripeColors.forEach((color, index) => {
+          context.fillStyle = color;
+          context.fillRect(
+            0,
+            (index * height) / stripeColors.length,
+            width,
+            height / stripeColors.length,
+          );
+        });
+        context.fillStyle = colors[discIndex] ?? '#f7f3ea';
+        context.beginPath();
+        context.arc(width * 0.5, height * 0.5, height * 0.19, 0, Math.PI * 2);
+        context.fill();
+        break;
+      }
+      case 'saltire':
+        context.fillStyle = colors[0] ?? '#f7f3ea';
+        context.fillRect(0, 0, width, height);
+        context.fillStyle = colors[2] ?? '#f7f3ea';
+        context.beginPath();
+        context.moveTo(0, 0);
+        context.lineTo(width * 0.42, height * 0.5);
+        context.lineTo(0, height);
+        context.closePath();
+        context.fill();
+        context.beginPath();
+        context.moveTo(width, 0);
+        context.lineTo(width * 0.58, height * 0.5);
+        context.lineTo(width, height);
+        context.closePath();
+        context.fill();
+        context.strokeStyle = colors[1] ?? '#f7f3ea';
+        context.lineWidth = height * 0.14;
+        context.beginPath();
+        context.moveTo(0, 0);
+        context.lineTo(width, height);
+        context.moveTo(width, 0);
+        context.lineTo(0, height);
+        context.stroke();
+        break;
+      case 'diagonal-rays': {
+        DIAGONAL_RAY_POLYGONS.forEach((points, index) => {
+          context.fillStyle = colors[index] ?? '#f7f3ea';
+          this.traceRatioPolygon(context, points, width, height);
+          context.fill();
+        });
+        break;
+      }
     }
   }
 
@@ -902,9 +1369,73 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
           context.strokeRect(3, 3, width - 6, height - 6);
         }
         break;
+      case 'center-disc':
+        if (zoneIndex === 1) {
+          context.beginPath();
+          context.arc(width * 0.5, height * 0.5, height * 0.24, 0, Math.PI * 2);
+          context.stroke();
+        } else {
+          context.strokeRect(3, 3, width - 6, height - 6);
+        }
+        break;
+      case 'horizontal-stripes-center-disc':
+        if (zoneIndex === zoneCount - 1) {
+          context.beginPath();
+          context.arc(width * 0.5, height * 0.5, height * 0.19, 0, Math.PI * 2);
+          context.stroke();
+        } else {
+          const stripes = zoneCount - 1;
+          context.strokeRect(
+            3,
+            (zoneIndex * height) / stripes + 3,
+            width - 6,
+            height / stripes - 6,
+          );
+        }
+        break;
+      case 'saltire':
+        if (zoneIndex === 1) {
+          context.beginPath();
+          context.moveTo(4, 4);
+          context.lineTo(width - 4, height - 4);
+          context.moveTo(width - 4, 4);
+          context.lineTo(4, height - 4);
+          context.stroke();
+        } else if (zoneIndex === 2) {
+          context.strokeRect(3, 3, width - 6, height - 6);
+        } else {
+          context.strokeRect(width * 0.2, 3, width * 0.6, height - 6);
+        }
+        break;
+      case 'diagonal-rays':
+        this.traceRatioPolygon(
+          context,
+          DIAGONAL_RAY_POLYGONS[Math.min(zoneIndex, DIAGONAL_RAY_POLYGONS.length - 1)],
+          width,
+          height,
+        );
+        context.stroke();
+        break;
     }
 
     context.restore();
+  }
+
+  private traceRatioPolygon(
+    context: CanvasRenderingContext2D,
+    points: RatioPoint[],
+    width: number,
+    height: number,
+  ): void {
+    context.beginPath();
+    points.forEach(([x, y], pointIndex) => {
+      if (pointIndex === 0) {
+        context.moveTo(x * width, y * height);
+      } else {
+        context.lineTo(x * width, y * height);
+      }
+    });
+    context.closePath();
   }
 
   private getTargetPatternPixelMask(): PixelZoneMask | null {
@@ -914,6 +1445,35 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     }
 
     return this.pixelMaskCache.get(puzzle.code) ?? null;
+  }
+
+  private getActivePatternPixelMask(): PixelZoneMask {
+    return this.getTargetPatternPixelMask() ?? this.getPatternZoneMask(this.selectedPattern());
+  }
+
+  private getPatternZoneMask(pattern: FlagRebuildPattern): PixelZoneMask {
+    const zoneCount = this.previewColorsForPattern().length;
+    const cacheKey = `${pattern}-${zoneCount}`;
+    const cachedMask = this.patternMaskCache.get(cacheKey);
+    if (cachedMask) {
+      return cachedMask;
+    }
+
+    const zoneIndexes = new Uint8Array(FLAG_CANVAS_WIDTH * FLAG_CANVAS_HEIGHT);
+    for (let pixelIndex = 0; pixelIndex < zoneIndexes.length; pixelIndex += 1) {
+      const x = (pixelIndex % FLAG_CANVAS_WIDTH) / FLAG_CANVAS_WIDTH;
+      const y = Math.floor(pixelIndex / FLAG_CANVAS_WIDTH) / FLAG_CANVAS_HEIGHT;
+      zoneIndexes[pixelIndex] = this.findZoneAtPoint(pattern, x, y, zoneCount);
+    }
+
+    const pixelMask = {
+      puzzleCode: cacheKey,
+      width: FLAG_CANVAS_WIDTH,
+      height: FLAG_CANVAS_HEIGHT,
+      zoneIndexes,
+    };
+    this.patternMaskCache.set(cacheKey, pixelMask);
+    return pixelMask;
   }
 
   private findPixelMaskZoneAtPoint(pixelMask: PixelZoneMask, x: number, y: number): number {
@@ -971,7 +1531,32 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
         return 1 + Math.min(zoneCount - 2, Math.floor(y * (zoneCount - 1)));
       case 'nordic-cross':
         return (x >= 0.3 && x <= 0.46) || (y >= 0.415 && y <= 0.585) ? 1 : 0;
+      case 'center-disc':
+        return ((x - 0.5) / 0.16) ** 2 + ((y - 0.5) / 0.24) ** 2 <= 1 ? 1 : 0;
+      case 'horizontal-stripes-center-disc':
+        if (((x - 0.5) / 0.127) ** 2 + ((y - 0.5) / 0.19) ** 2 <= 1) {
+          return zoneCount - 1;
+        }
+
+        return Math.min(zoneCount - 2, Math.floor(y * (zoneCount - 1)));
+      case 'saltire':
+        if (Math.abs(y - x * 0.67) < 0.08 || Math.abs(y - (1 - x) * 0.67) < 0.08) {
+          return 1;
+        }
+
+        return x < 0.2 || x > 0.8 ? 2 : 0;
+      case 'diagonal-rays':
+        return this.findDiagonalRayZoneAtPoint(x, y, zoneCount);
     }
+  }
+
+  private findDiagonalRayZoneAtPoint(x: number, y: number, zoneCount: number): number {
+    const availableZones = Math.min(zoneCount, DIAGONAL_RAY_POLYGONS.length);
+    const topProjection = x / Math.max(0.001, 1 - y);
+    const thresholds = [0.24, 0.49, 0.76, 1];
+    const matchingIndex = thresholds.findIndex((threshold) => topProjection <= threshold);
+
+    return Math.min(availableZones - 1, matchingIndex >= 0 ? matchingIndex : availableZones - 1);
   }
 
   private findClosestTargetColorIndex(
@@ -1031,6 +1616,23 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     return copy;
   }
 
+  private areColorsTooClose(left: string, right: string, minDistance: number): boolean {
+    return this.computePerceptualDistance(left.toLowerCase(), right.toLowerCase()) < minDistance;
+  }
+
+  private rotateColor(color: string, offset: number): string | null {
+    const rgb = this.hexToRgb(color);
+    if (!rgb) {
+      return null;
+    }
+
+    return this.rgbToHex({
+      r: (rgb.r + offset + 256) % 256,
+      g: (rgb.g + offset * 2 + 512) % 256,
+      b: (rgb.b - offset + 256) % 256,
+    });
+  }
+
   private computeColorProximity(left: string, right: string): number {
     const distance = this.computePerceptualDistance(left.toLowerCase(), right.toLowerCase());
 
@@ -1055,6 +1657,12 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     const dA = labA.a - labB.a;
     const dB = labA.b - labB.b;
     return Math.sqrt(dL * dL + dA * dA + dB * dB);
+  }
+
+  private rgbToHex(color: RgbColor): string {
+    return `#${[color.r, color.g, color.b]
+      .map((channel) => Math.round(channel).toString(16).padStart(2, '0'))
+      .join('')}`;
   }
 
   private rgbToLab(color: { r: number; g: number; b: number }): {

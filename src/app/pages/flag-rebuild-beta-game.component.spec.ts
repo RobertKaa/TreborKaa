@@ -4,20 +4,27 @@ import { FlagRebuildBetaGameComponent } from './flag-rebuild-beta-game.component
 describe('FlagRebuildBetaGameComponent', () => {
   let fixture: ComponentFixture<FlagRebuildBetaGameComponent>;
   let component: FlagRebuildBetaGameComponent;
+  const createMockImageData = (width: number, height: number): ImageData =>
+    ({
+      width,
+      height,
+      data: new Uint8ClampedArray(width * height * 4),
+    }) as ImageData;
 
   beforeEach(async () => {
     localStorage.clear();
     Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
       configurable: true,
       value: () => ({
+        arc: () => undefined,
         beginPath: () => undefined,
         clearRect: () => undefined,
         closePath: () => undefined,
-        createImageData: (width: number, height: number) => new ImageData(width, height),
+        createImageData: createMockImageData,
         drawImage: () => undefined,
         fill: () => undefined,
         fillRect: () => undefined,
-        getImageData: () => new ImageData(360, 240),
+        getImageData: () => createMockImageData(360, 240),
         lineTo: () => undefined,
         moveTo: () => undefined,
         putImageData: () => undefined,
@@ -97,6 +104,51 @@ describe('FlagRebuildBetaGameComponent', () => {
     });
   });
 
+  it('offers four shuffled shape choices with the correct shape included', () => {
+    const puzzle = (component as any).currentPuzzle();
+    const choices = (component as any).buildPatternChoices(puzzle);
+
+    expect(choices.length).toBe(4);
+    expect(choices.some((choice: any) => choice.pattern === puzzle.targetPattern)).toBe(true);
+    expect(new Set(choices.map((choice: any) => choice.pattern)).size).toBe(choices.length);
+  });
+
+  it('keeps exact colors in a mixed beta palette', () => {
+    const puzzle = (component as any).currentPuzzle();
+    const palette = (component as any).buildPaletteOptions(puzzle);
+
+    puzzle.targetColors.forEach((color: string) => {
+      expect(palette).toContain(color);
+    });
+    expect(palette.length).toBeGreaterThan(new Set(puzzle.targetColors).size);
+  });
+
+  it('keeps diagonal rays as five selectable zones', () => {
+    expect((component as any).getPatternZoneCount('diagonal-rays', 2)).toBe(5);
+
+    expect((component as any).findZoneAtPoint('diagonal-rays', 0.1, 0.05, 5)).toBe(0);
+    expect((component as any).findZoneAtPoint('diagonal-rays', 0.36, 0.05, 5)).toBe(1);
+    expect((component as any).findZoneAtPoint('diagonal-rays', 0.62, 0.05, 5)).toBe(2);
+    expect((component as any).findZoneAtPoint('diagonal-rays', 0.88, 0.05, 5)).toBe(3);
+    expect((component as any).findZoneAtPoint('diagonal-rays', 0.95, 0.7, 5)).toBe(4);
+  });
+
+  it('builds the same pixel mask renderer for wrong shape choices', () => {
+    (component as any).selectedPattern.set('triangle-left-bands-3');
+    (component as any).pieces.set([
+      { id: 'zone-1', color: '#111111' },
+      { id: 'zone-2', color: '#222222' },
+      { id: 'zone-3', color: '#333333' },
+      { id: 'zone-4', color: '#444444' },
+    ]);
+
+    const mask = (component as any).getActivePatternPixelMask();
+
+    expect(mask.width).toBe(360);
+    expect(mask.height).toBe(240);
+    expect(new Set(Array.from(mask.zoneIndexes)).size).toBe(4);
+  });
+
   it('can score a real-pixel mask perfectly with exact zone colors', () => {
     const pixelMask = {
       puzzleCode: 'test',
@@ -158,5 +210,43 @@ describe('FlagRebuildBetaGameComponent', () => {
     );
 
     expect(Array.from(zoneIndexes)).toEqual(stripeByRow);
+  });
+
+  it('keeps repeated triangle-band colors as separate real-pixel zones', () => {
+    const imageData = {
+      width: 8,
+      height: 6,
+      data: new Uint8ClampedArray(8 * 6 * 4),
+    } as ImageData;
+    const colors = {
+      triangle: [0x00, 0x00, 0x00],
+      cyan: [0x00, 0xab, 0xc9],
+      yellow: [0xfa, 0xe0, 0x42],
+    };
+
+    for (let y = 0; y < imageData.height; y += 1) {
+      for (let x = 0; x < imageData.width; x += 1) {
+        const isTriangle = x <= 3 - Math.abs(y - 2.5);
+        const stripeColor = y < 2 ? colors.cyan : y < 4 ? colors.yellow : colors.cyan;
+        const color = isTriangle ? colors.triangle : stripeColor;
+        const dataIndex = (y * imageData.width + x) * 4;
+        imageData.data[dataIndex] = color[0];
+        imageData.data[dataIndex + 1] = color[1];
+        imageData.data[dataIndex + 2] = color[2];
+        imageData.data[dataIndex + 3] = 255;
+      }
+    }
+
+    const zoneIndexes = (component as any).createTriangleBandZoneIndexes(imageData, [
+      '#000000',
+      '#00abc9',
+      '#fae042',
+      '#00abc9',
+    ]);
+
+    expect(zoneIndexes[7]).toBe(1);
+    expect(zoneIndexes[2 * imageData.width + 7]).toBe(2);
+    expect(zoneIndexes[5 * imageData.width + 7]).toBe(3);
+    expect(zoneIndexes[2 * imageData.width]).toBe(0);
   });
 });
