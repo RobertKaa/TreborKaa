@@ -7,9 +7,32 @@ describe('FlagRebuildGamePageComponent', () => {
 
   beforeEach(async () => {
     localStorage.clear();
+    Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
+      configurable: true,
+      value: () => ({
+        beginPath: () => undefined,
+        clearRect: () => undefined,
+        closePath: () => undefined,
+        drawImage: () => undefined,
+        fill: () => undefined,
+        fillRect: () => undefined,
+        getImageData: () => new ImageData(360, 240),
+        lineTo: () => undefined,
+        moveTo: () => undefined,
+        restore: () => undefined,
+        save: () => undefined,
+        stroke: () => undefined,
+        strokeRect: () => undefined,
+        set fillStyle(_value: string) {},
+        set lineWidth(_value: number) {},
+        set shadowBlur(_value: number) {},
+        set shadowColor(_value: string) {},
+        set strokeStyle(_value: string) {},
+      }),
+    });
 
     await TestBed.configureTestingModule({
-      imports: [FlagRebuildGamePageComponent]
+      imports: [FlagRebuildGamePageComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FlagRebuildGamePageComponent);
@@ -22,8 +45,8 @@ describe('FlagRebuildGamePageComponent', () => {
     (component as any).errors.set([
       {
         puzzle: (component as any).allPuzzles[0],
-        score: 42
-      }
+        score: 42,
+      },
     ]);
     (component as any).isComplete.set(true);
 
@@ -38,7 +61,7 @@ describe('FlagRebuildGamePageComponent', () => {
     (component as any).isLocked.set(false);
     (component as any).pieces.set([
       { id: 'zone-1', color: '#ffffff' },
-      { id: 'zone-2', color: '#000000' }
+      { id: 'zone-2', color: '#000000' },
     ]);
     (component as any).activeZoneIndex.set(0);
 
@@ -58,4 +81,3 @@ describe('FlagRebuildGamePageComponent', () => {
     expect((component as any).pieces()[0].color).toBe('#112233');
   });
 });
-

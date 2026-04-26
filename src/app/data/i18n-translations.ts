@@ -81,13 +81,17 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'home.classicShapeToCountry': 'Formes -> Pays',
     'home.classicShapeToCountry.description': 'Associe la silhouette du pays a la bonne reponse.',
     'home.game.classic-ctf-easy.label': 'Classique Pays -> Drapeaux (Facile)',
-    'home.game.classic-ctf-easy.description': 'Le mode classique pays vers drapeaux en difficulte facile.',
+    'home.game.classic-ctf-easy.description':
+      'Le mode classique pays vers drapeaux en difficulte facile.',
     'home.game.classic-ctf-hard.label': 'Classique Pays -> Drapeaux (Difficile)',
-    'home.game.classic-ctf-hard.description': 'Le mode classique pays vers drapeaux en difficulte difficile.',
+    'home.game.classic-ctf-hard.description':
+      'Le mode classique pays vers drapeaux en difficulte difficile.',
     'home.game.classic-ftc-easy.label': 'Classique Drapeaux -> Pays (Facile)',
-    'home.game.classic-ftc-easy.description': 'Le mode classique drapeaux vers pays en difficulte facile.',
+    'home.game.classic-ftc-easy.description':
+      'Le mode classique drapeaux vers pays en difficulte facile.',
     'home.game.classic-ftc-hard.label': 'Classique Drapeaux -> Pays (Difficile)',
-    'home.game.classic-ftc-hard.description': 'Le mode classique drapeaux vers pays en difficulte difficile.',
+    'home.game.classic-ftc-hard.description':
+      'Le mode classique drapeaux vers pays en difficulte difficile.',
     'home.game.classic-stc-easy.label': 'Classique Formes -> Pays (Facile)',
     'home.game.classic-stc-easy.description':
       'Le mode classique formes de pays vers pays en difficulte facile.',
@@ -99,17 +103,14 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'home.stripNext': 'Defiler la liste des jeux vers la droite',
     'home.comingSoon': 'Bientot disponible',
     'home.game.flag-chrono.label': 'Chrono drapeaux',
-    'home.game.flag-chrono.description':
-      'Enchaine les bonnes reponses avant la fin du temps.',
+    'home.game.flag-chrono.description': 'Enchaine les bonnes reponses avant la fin du temps.',
     'home.game.flag-culture.label': 'Culture drapeaux',
     'home.game.flag-culture.description':
       "Questions sur l'histoire, les evolutions et anecdotes des drapeaux.",
     'home.game.find-the-error.label': "Trouver l'erreur",
-    'home.game.find-the-error.description':
-      'Clique sur la mauvaise zone du drapeau modifie.',
+    'home.game.find-the-error.description': 'Clique sur la mauvaise zone du drapeau modifie.',
     'home.game.pixel-flag.label': 'Le drapeau pixelise',
-    'home.game.pixel-flag.description':
-      "Devine le pays a partir d'un drapeau de plus en plus net.",
+    'home.game.pixel-flag.description': "Devine le pays a partir d'un drapeau de plus en plus net.",
     'home.game.flag-rebuild.label': 'Reconstruction de drapeau',
     'home.game.flag-rebuild.description':
       'Choisis la bonne forme puis recolorie chaque zone du drapeau.',
@@ -144,8 +145,7 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'records.title': 'Mes records',
     'records.intro': 'Historique personnel enregistre localement sur ce navigateur.',
     'records.clear': 'Effacer',
-    'records.empty':
-      'Aucun record pour le moment. Lance une partie pour enregistrer tes scores.',
+    'records.empty': 'Aucun record pour le moment. Lance une partie pour enregistrer tes scores.',
     'records.gamesPlayed': '{count} parties',
     'records.lastPlayed': 'Derniere partie: {date}',
     'records.value.classic': '{score} bonnes reponses',
@@ -170,8 +170,7 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'classic.countryToFlag.title': 'Pays vers drapeaux',
     'classic.countryToFlag.intro': 'Choisis le bon drapeau pour le pays affiche.',
     'classic.flagToCountry.title': 'Drapeau vers pays',
-    'classic.flagToCountry.intro':
-      'Choisis le bon pays correspondant au drapeau affiche.',
+    'classic.flagToCountry.intro': 'Choisis le bon pays correspondant au drapeau affiche.',
     'classic.shapeToCountry.title': 'Forme vers pays',
     'classic.shapeToCountry.intro': 'Choisis le bon pays correspondant a la silhouette affichee.',
     'classic.eyebrow': 'Mode de jeu',
@@ -185,8 +184,7 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'classic.emptyErrors': 'Aucune erreur sur cette partie.',
     'classic.rebuild.eyebrow': 'Nouveau mode',
     'classic.rebuild.title': 'Reconstruction de drapeau',
-    'classic.rebuild.intro':
-      'Choisis le bon format puis regle les couleurs des zones principales.',
+    'classic.rebuild.intro': 'Choisis le bon format puis regle les couleurs des zones principales.',
     'classic.rebuild.question': 'Reconstruis le drapeau de',
     'classic.rebuild.colorPicker': 'Selecteur de couleur',
     'classic.rebuild.closePicker': 'Fermer le selecteur',
@@ -209,7 +207,7 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'classic.rebuild.beta.eyebrow': 'Beta labo',
     'classic.rebuild.beta.title': 'Atelier de reconstruction',
     'classic.rebuild.beta.intro':
-      'Compose le drapeau zone par zone puis marque des points selon la proximite reelle des couleurs.',
+      'Compose le drapeau zone par zone, puis compare ton rendu canvas au vrai drapeau.',
     'classic.rebuild.beta.mastery': 'Maitrise beta',
     'classic.rebuild.beta.target': 'Mission',
     'classic.rebuild.beta.round': 'Manche {round}',
@@ -218,9 +216,13 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'classic.rebuild.beta.activeZone': 'Zone active',
     'classic.rebuild.beta.paletteAria': 'Palette de couleurs beta',
     'classic.rebuild.beta.scoreAction': 'Scanner le drapeau',
+    'classic.rebuild.beta.scanning': 'Scan en cours...',
     'classic.rebuild.beta.retry': 'Retenter',
     'classic.rebuild.beta.colorScore': 'Couleurs',
+    'classic.rebuild.beta.realImageScore': 'Image reelle',
     'classic.rebuild.beta.patternScore': 'Structure',
+    'classic.rebuild.beta.realReference': 'Vrai drapeau',
+    'classic.rebuild.beta.canvasAria': 'Drapeau beta reconstruit sur canvas',
     'classic.rebuild.beta.rank.perfect': 'Scan legendaire',
     'classic.rebuild.beta.rank.close': 'Tres proche',
     'classic.rebuild.beta.rank.warm': 'Bonne piste',
@@ -247,8 +249,7 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'rebuild.zone.generic': 'Zone {index}',
     'classic.findError.eyebrow': 'Mode jeu',
     'classic.findError.title': "Trouver l'erreur",
-    'classic.findError.intro':
-      'Un seul element est faux. Clique sur la mauvaise zone du drapeau.',
+    'classic.findError.intro': 'Un seul element est faux. Clique sur la mauvaise zone du drapeau.',
     'classic.findError.question': 'Quel element est incorrect ?',
     'classic.findError.hint': "Il n'y a qu'une seule erreur visible.",
     'classic.findError.statusAria': 'Etat du jeu',
@@ -256,14 +257,12 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'classic.findError.colorExpected': 'Bonne couleur: {color}',
     'classic.pixel.eyebrow': 'Mode jeu',
     'classic.pixel.title': 'Le drapeau pixelise',
-    'classic.pixel.intro':
-      "Enchaine les drapeaux. Une question ratee et la partie s'arrete.",
+    'classic.pixel.intro': "Enchaine les drapeaux. Une question ratee et la partie s'arrete.",
     'classic.pixel.loading': 'Chargement des drapeaux...',
     'classic.pixel.question': 'Quel pays est affiche ?',
     'classic.pixel.mystery': 'Drapeau mystere',
     'classic.pixel.attemptsAria': 'Suivi des 5 essais',
-    'classic.pixel.pointsTry':
-      'Cette tentative vaut {points} point{plural}.',
+    'classic.pixel.pointsTry': 'Cette tentative vaut {points} point{plural}.',
     'classic.pixel.inputPlaceholder': 'Ecris le nom du pays',
     'classic.pixel.submit': 'Valider',
     'classic.pixel.statusAria': 'Etat du jeu',
@@ -275,8 +274,7 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'classic.pixel.wrong': "Mauvaise reponse : '{country}'",
     'classic.chrono.eyebrow': 'Mode jeu',
     'classic.chrono.title': 'Chrono drapeaux',
-    'classic.chrono.intro':
-      'Enchaine un maximum de bonnes reponses avant la fin du temps.',
+    'classic.chrono.intro': 'Enchaine un maximum de bonnes reponses avant la fin du temps.',
     'classic.chrono.restart': 'Relancer',
     'classic.chrono.stateAria': 'Etat du mode chrono',
     'classic.chrono.time': 'Temps',
@@ -292,8 +290,7 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'classic.chrono.mysteryFlag': 'Drapeau mystere',
     'classic.chrono.question.countryToFlag': 'Trouve le drapeau de ce pays',
     'classic.chrono.question.flagToCountry': 'A quel pays appartient ce drapeau ?',
-    'classic.chrono.question.capitalToFlag':
-      'Trouve le drapeau correspondant a cette capitale',
+    'classic.chrono.question.capitalToFlag': 'Trouve le drapeau correspondant a cette capitale',
     'classic.chrono.hint.capital': 'Capitale: {capital}',
     'classic.chrono.hint.countryLength': 'Pays attendu: {length} lettres',
     'classic.chrono.feedback.correct': '+{points} points',
@@ -301,8 +298,7 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'classic.chrono.feedback.wrong': '-{seconds}s | {country}',
     'culture.eyebrow': 'Mode quiz',
     'culture.title': 'Culture drapeaux',
-    'culture.intro':
-      "Questions sur l'histoire, les symboles et les particularites des drapeaux.",
+    'culture.intro': "Questions sur l'histoire, les symboles et les particularites des drapeaux.",
     'culture.question': 'Question culture',
     'culture.loading': 'Preparation des questions...',
     'culture.stateAria': 'Etat de la partie',
@@ -336,7 +332,7 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'achievement.mystery-combo.title': 'Combo cache',
     'achievement.mystery-combo.description': 'Succes mystere debloque.',
     'achievement.mystery.locked.title': 'Succes mystere',
-    'achievement.mystery.locked.description': '???'
+    'achievement.mystery.locked.description': '???',
   },
   en: {
     'language.label': 'Language',
@@ -414,7 +410,8 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'home.classicCountryToFlag': 'Country -> Flag',
     'home.classicCountryToFlag.description': 'Find the flag that matches the displayed country.',
     'home.classicFlagToCountry': 'Flag -> Country',
-    'home.classicFlagToCountry.description': 'Identify the country that matches the displayed flag.',
+    'home.classicFlagToCountry.description':
+      'Identify the country that matches the displayed flag.',
     'home.classicShapeToCountry': 'Shape -> Country',
     'home.classicShapeToCountry.description': 'Match the country silhouette to the right answer.',
     'home.game.classic-ctf-easy.label': 'Classic Country -> Flag (Easy)',
@@ -438,8 +435,7 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'home.game.flag-chrono.label': 'Flag sprint',
     'home.game.flag-chrono.description': 'Chain correct answers before time runs out.',
     'home.game.flag-culture.label': 'Flag culture',
-    'home.game.flag-culture.description':
-      'Questions about flag history, changes, and anecdotes.',
+    'home.game.flag-culture.description': 'Questions about flag history, changes, and anecdotes.',
     'home.game.find-the-error.label': 'Find the error',
     'home.game.find-the-error.description': 'Click the wrong area on the edited flag.',
     'home.game.pixel-flag.label': 'Pixelated flag',
@@ -516,8 +512,7 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'classic.emptyErrors': 'No mistakes in this game.',
     'classic.rebuild.eyebrow': 'New mode',
     'classic.rebuild.title': 'Flag rebuild',
-    'classic.rebuild.intro':
-      'Pick the right pattern then set colors for each main zone.',
+    'classic.rebuild.intro': 'Pick the right pattern then set colors for each main zone.',
     'classic.rebuild.question': 'Rebuild the flag of',
     'classic.rebuild.colorPicker': 'Color picker',
     'classic.rebuild.closePicker': 'Close color picker',
@@ -540,7 +535,7 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'classic.rebuild.beta.eyebrow': 'Beta lab',
     'classic.rebuild.beta.title': 'Rebuild workshop',
     'classic.rebuild.beta.intro':
-      'Build the flag zone by zone and score points from the real color proximity.',
+      'Build the flag zone by zone, then compare your canvas render with the real flag.',
     'classic.rebuild.beta.mastery': 'Beta mastery',
     'classic.rebuild.beta.target': 'Mission',
     'classic.rebuild.beta.round': 'Round {round}',
@@ -549,9 +544,13 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'classic.rebuild.beta.activeZone': 'Active zone',
     'classic.rebuild.beta.paletteAria': 'Beta color palette',
     'classic.rebuild.beta.scoreAction': 'Scan flag',
+    'classic.rebuild.beta.scanning': 'Scanning...',
     'classic.rebuild.beta.retry': 'Retry',
     'classic.rebuild.beta.colorScore': 'Colors',
+    'classic.rebuild.beta.realImageScore': 'Real image',
     'classic.rebuild.beta.patternScore': 'Structure',
+    'classic.rebuild.beta.realReference': 'Real flag',
+    'classic.rebuild.beta.canvasAria': 'Beta flag rebuilt on canvas',
     'classic.rebuild.beta.rank.perfect': 'Legendary scan',
     'classic.rebuild.beta.rank.close': 'Very close',
     'classic.rebuild.beta.rank.warm': 'Good trail',
@@ -578,8 +577,7 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'rebuild.zone.generic': 'Zone {index}',
     'classic.findError.eyebrow': 'Game mode',
     'classic.findError.title': 'Find the error',
-    'classic.findError.intro':
-      'Only one element is wrong. Click the wrong flag area.',
+    'classic.findError.intro': 'Only one element is wrong. Click the wrong flag area.',
     'classic.findError.question': 'Which element is incorrect?',
     'classic.findError.hint': 'There is exactly one visible mistake.',
     'classic.findError.statusAria': 'Game status',
@@ -587,8 +585,7 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'classic.findError.colorExpected': 'Expected color: {color}',
     'classic.pixel.eyebrow': 'Game mode',
     'classic.pixel.title': 'Pixelated flag',
-    'classic.pixel.intro':
-      'Chain flags. One failed question and the run is over.',
+    'classic.pixel.intro': 'Chain flags. One failed question and the run is over.',
     'classic.pixel.loading': 'Loading flags...',
     'classic.pixel.question': 'Which country is displayed?',
     'classic.pixel.mystery': 'Mystery flag',
@@ -605,8 +602,7 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'classic.pixel.wrong': "Wrong answer: '{country}'",
     'classic.chrono.eyebrow': 'Game mode',
     'classic.chrono.title': 'Flag sprint',
-    'classic.chrono.intro':
-      'Chain as many correct answers as possible before time runs out.',
+    'classic.chrono.intro': 'Chain as many correct answers as possible before time runs out.',
     'classic.chrono.restart': 'Restart',
     'classic.chrono.stateAria': 'Sprint mode status',
     'classic.chrono.time': 'Time',
@@ -630,8 +626,7 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'classic.chrono.feedback.wrong': '-{seconds}s | {country}',
     'culture.eyebrow': 'Quiz mode',
     'culture.title': 'Flag culture',
-    'culture.intro':
-      'Questions about flag history, symbols, and design specifics.',
+    'culture.intro': 'Questions about flag history, symbols, and design specifics.',
     'culture.question': 'Culture question',
     'culture.loading': 'Preparing questions...',
     'culture.stateAria': 'Game status',
@@ -665,6 +660,6 @@ export const I18N_TRANSLATIONS: Record<AppLanguage, Record<string, string>> = {
     'achievement.mystery-combo.title': 'Hidden Combo',
     'achievement.mystery-combo.description': 'Mystery achievement unlocked.',
     'achievement.mystery.locked.title': 'Mystery Achievement',
-    'achievement.mystery.locked.description': 'Secret condition.'
-  }
+    'achievement.mystery.locked.description': 'Secret condition.',
+  },
 };

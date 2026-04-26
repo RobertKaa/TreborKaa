@@ -39,161 +39,24 @@
 
   <div class="beta-board-grid">
     <div class="beta-board-card">
-      <div class="beta-flag-board" [attr.data-pattern]="selectedPattern()">
-        @switch (selectedPattern()) {
-          @case ('vertical-stripes') {
-            <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-              @for (color of previewColorsForPattern(); track $index; let total = $count) {
-                <rect
-                  class="flag-zone"
-                  [class.selected]="selectedZoneIndex() === $index"
-                  [attr.x]="($index * 100) / total"
-                  y="0"
-                  [attr.width]="100 / total"
-                  height="100"
-                  [attr.fill]="color"
-                  [attr.stroke]="isBlankColor(color) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
-                  stroke-width="0.6"
-                  vector-effect="non-scaling-stroke"
-                  (click)="selectZone($index)"
-                />
-              }
-            </svg>
-          }
-          @case ('horizontal-stripes') {
-            <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-              @for (color of previewColorsForPattern(); track $index; let total = $count) {
-                <rect
-                  class="flag-zone"
-                  [class.selected]="selectedZoneIndex() === $index"
-                  x="0"
-                  [attr.y]="($index * 100) / total"
-                  width="100"
-                  [attr.height]="100 / total"
-                  [attr.fill]="color"
-                  [attr.stroke]="isBlankColor(color) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
-                  stroke-width="0.6"
-                  vector-effect="non-scaling-stroke"
-                  (click)="selectZone($index)"
-                />
-              }
-            </svg>
-          }
-          @case ('triangle-left-bands-2') {
-            <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-              @for (color of previewColorsForPattern().slice(1); track $index; let total = $count) {
-                <rect
-                  class="flag-zone"
-                  [class.selected]="selectedZoneIndex() === $index + 1"
-                  x="0"
-                  [attr.y]="($index * 100) / total"
-                  width="100"
-                  [attr.height]="100 / total"
-                  [attr.fill]="color"
-                  [attr.stroke]="isBlankColor(color) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
-                  stroke-width="0.6"
-                  vector-effect="non-scaling-stroke"
-                  (click)="selectZone($index + 1)"
-                />
-              }
-              <polygon
-                class="flag-zone"
-                [class.selected]="selectedZoneIndex() === 0"
-                points="0,0 48,50 0,100"
-                [attr.fill]="previewColorsForPattern()[0]"
-                [attr.stroke]="isBlankColor(previewColorsForPattern()[0]) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
-                stroke-width="0.6"
-                vector-effect="non-scaling-stroke"
-                (click)="selectZone(0)"
-              />
-            </svg>
-          }
-          @case ('triangle-left-bands-3') {
-            <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-              @for (color of previewColorsForPattern().slice(1); track $index; let total = $count) {
-                <rect
-                  class="flag-zone"
-                  [class.selected]="selectedZoneIndex() === $index + 1"
-                  x="0"
-                  [attr.y]="($index * 100) / total"
-                  width="100"
-                  [attr.height]="100 / total"
-                  [attr.fill]="color"
-                  [attr.stroke]="isBlankColor(color) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
-                  stroke-width="0.6"
-                  vector-effect="non-scaling-stroke"
-                  (click)="selectZone($index + 1)"
-                />
-              }
-              <polygon
-                class="flag-zone"
-                [class.selected]="selectedZoneIndex() === 0"
-                points="0,0 48,50 0,100"
-                [attr.fill]="previewColorsForPattern()[0]"
-                [attr.stroke]="isBlankColor(previewColorsForPattern()[0]) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
-                stroke-width="0.6"
-                vector-effect="non-scaling-stroke"
-                (click)="selectZone(0)"
-              />
-            </svg>
-          }
-          @case ('left-band-horizontal') {
-            <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-              <rect
-                class="flag-zone"
-                [class.selected]="selectedZoneIndex() === 0"
-                x="0"
-                y="0"
-                width="28"
-                height="100"
-                [attr.fill]="previewColorsForPattern()[0]"
-                [attr.stroke]="isBlankColor(previewColorsForPattern()[0]) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
-                stroke-width="0.6"
-                vector-effect="non-scaling-stroke"
-                (click)="selectZone(0)"
-              />
-              @for (color of previewColorsForPattern().slice(1); track $index; let total = $count) {
-                <rect
-                  class="flag-zone"
-                  [class.selected]="selectedZoneIndex() === $index + 1"
-                  x="28"
-                  [attr.y]="($index * 100) / total"
-                  width="72"
-                  [attr.height]="100 / total"
-                  [attr.fill]="color"
-                  [attr.stroke]="isBlankColor(color) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
-                  stroke-width="0.6"
-                  vector-effect="non-scaling-stroke"
-                  (click)="selectZone($index + 1)"
-                />
-              }
-            </svg>
-          }
-          @case ('nordic-cross') {
-            <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-              <rect
-                class="flag-zone"
-                [class.selected]="selectedZoneIndex() === 0"
-                x="0"
-                y="0"
-                width="100"
-                height="100"
-                [attr.fill]="previewColorsForPattern()[0]"
-                (click)="selectZone(0)"
-              />
-              <path
-                class="flag-zone"
-                [class.selected]="selectedZoneIndex() === 1"
-                d="M30 0 H46 V41.5 H100 V58.5 H46 V100 H30 V58.5 H0 V41.5 H30 Z"
-                [attr.fill]="previewColorsForPattern()[1]"
-                [attr.stroke]="isBlankColor(previewColorsForPattern()[1]) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
-                stroke-width="0.6"
-                vector-effect="non-scaling-stroke"
-                (click)="selectZone(1)"
-              />
-            </svg>
-          }
-        }
+      <div class="flag-compare-grid">
+        <figure class="real-flag-card">
+          <img
+            [src]="currentPuzzle().flagUrl"
+            [alt]="i18n.t('countries.flagOf', { country: countryName(currentPuzzle()) })"
+          />
+          <figcaption>{{ i18n.t('classic.rebuild.beta.realReference') }}</figcaption>
+        </figure>
+        <div class="beta-flag-board">
+          <canvas
+            #playerCanvas
+            class="flag-canvas"
+            width="360"
+            height="240"
+            [attr.aria-label]="i18n.t('classic.rebuild.beta.canvasAria')"
+            (click)="selectZoneFromCanvas($event)"
+          ></canvas>
+        </div>
       </div>
     </div>
 
@@ -222,8 +85,8 @@
           <p class="result-score">{{ betaResult.score }}%</p>
           <div class="result-bars">
             <div>
-              <span>{{ i18n.t('classic.rebuild.beta.colorScore') }}</span>
-              <strong>{{ betaResult.colorScore }}%</strong>
+              <span>{{ i18n.t('classic.rebuild.beta.realImageScore') }}</span>
+              <strong>{{ betaResult.imageScore ?? betaResult.colorScore }}%</strong>
             </div>
             <div>
               <span>{{ i18n.t('classic.rebuild.beta.patternScore') }}</span>
@@ -240,10 +103,25 @@
 
       <div class="beta-actions">
         @if (result()) {
-          <button type="button" class="ghost-button" (click)="retryRound()">{{ i18n.t('classic.rebuild.beta.retry') }}</button>
-          <button type="button" class="primary-button" (click)="nextRound()">{{ i18n.t('common.next') }}</button>
+          <button type="button" class="ghost-button" (click)="retryRound()">
+            {{ i18n.t('classic.rebuild.beta.retry') }}
+          </button>
+          <button type="button" class="primary-button" (click)="nextRound()">
+            {{ i18n.t('common.next') }}
+          </button>
         } @else {
-          <button type="button" class="primary-button" (click)="submitRound()">{{ i18n.t('classic.rebuild.beta.scoreAction') }}</button>
+          <button
+            type="button"
+            class="primary-button"
+            [disabled]="isScoring()"
+            (click)="submitRound()"
+          >
+            {{
+              isScoring()
+                ? i18n.t('classic.rebuild.beta.scanning')
+                : i18n.t('classic.rebuild.beta.scoreAction')
+            }}
+          </button>
         }
       </div>
     </aside>
