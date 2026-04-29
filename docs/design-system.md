@@ -125,3 +125,5 @@ Implementation:
   - Reconstruction de drapeau beta: choix de forme passe a quatre options aleatoires tirees de tous les types beta, avec le bon type reintegre puis melange; palette beta melangee avec leurres plus distincts.
   - Reconstruction de drapeau beta: rendu du canvas unifie par masque pixel pour les bons et mauvais types afin de garder les memes contours de selection.
   - Reconstruction de drapeau beta: guides de zones renforces dans le canvas pour rendre les contours jouables plus lisibles avant coloriage.
+  - Reconstruction de drapeau: affichage temporairement centre sur la beta seule; le jeu historique reste dans le composant mais n'est plus rendu dans la page.
+  - Reconstruction de drapeau beta: choix de forme mobile compacte en rail horizontal et palette rapprochee de l'ancien selecteur avec couleur active + valeurs hex visibles.

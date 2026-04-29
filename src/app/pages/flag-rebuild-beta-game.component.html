@@ -110,22 +110,30 @@
     </div>
 
     <aside class="beta-controls">
-      <div>
+      <div class="active-color-card">
         <p class="question-label">{{ i18n.t('classic.rebuild.beta.activeZone') }}</p>
-        <p class="active-zone">{{ getZoneLabel(selectedZoneIndex()) }}</p>
+        <div class="active-color-row">
+          <span class="active-color-preview" [style.background]="activePiece().color"></span>
+          <div>
+            <p class="active-zone">{{ getZoneLabel(selectedZoneIndex()) }}</p>
+          </div>
+        </div>
       </div>
 
-      <div class="palette-grid" [attr.aria-label]="i18n.t('classic.rebuild.beta.paletteAria')">
-        @for (color of paletteOptions(); track color) {
-          <button
-            type="button"
-            class="palette-swatch"
-            [class.selected]="activePiece().color === color"
-            [style.background]="color"
-            [attr.aria-label]="color"
-            (click)="selectColor(color)"
-          ></button>
-        }
+      <div class="palette-panel">
+        <p class="question-label">{{ i18n.t('classic.rebuild.beta.quickColors') }}</p>
+        <div class="palette-grid" [attr.aria-label]="i18n.t('classic.rebuild.beta.paletteAria')">
+          @for (color of paletteOptions(); track color) {
+            <button
+              type="button"
+              class="palette-swatch"
+              [class.selected]="activePiece().color === color"
+              [style.background]="color"
+              [attr.aria-label]="color"
+              (click)="selectColor(color)"
+            ></button>
+          }
+        </div>
       </div>
 
       @if (result(); as betaResult) {

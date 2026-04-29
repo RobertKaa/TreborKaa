@@ -1,5 +1,15 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, computed, effect, inject, signal, untracked } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  ViewChild,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+} from '@angular/core';
 import iro from '@jaames/iro';
 import { GameId } from '../data/game-catalog';
 import { FLAG_REBUILD_PUZZLES } from '../data/flag-rebuild-puzzles';
@@ -46,14 +56,14 @@ const ALL_PATTERNS: FlagRebuildPattern[] = [
   'triangle-left-bands-2',
   'triangle-left-bands-3',
   'left-band-horizontal',
-  'nordic-cross'
+  'nordic-cross',
 ];
 
 @Component({
   selector: 'app-flag-rebuild-game-page',
-  imports: [RouterLink, FlagRebuildBetaGameComponent],
+  imports: [FlagRebuildBetaGameComponent],
   templateUrl: './flag-rebuild-game-page.component.html',
-  styleUrl: './flag-rebuild-game-page.component.scss'
+  styleUrl: './flag-rebuild-game-page.component.scss',
 })
 export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
   private static readonly PROGRESS_GAME_ID: GameId = 'flag-rebuild';
@@ -100,7 +110,7 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
     return this.getPatternPreviewColors(
       this.selectedPattern(),
       this.previewColors(),
-      puzzle.targetColors.length
+      puzzle.targetColors.length,
     );
   });
   protected readonly displayedPatternOptions = computed(() => {
@@ -136,7 +146,7 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
         untracked(() => this.patternOptionsByPuzzle()[code]) ?? this.buildPatternOptions(puzzle);
       this.patternOptionsByPuzzle.update((options) => ({
         ...options,
-        [code]: patternOptions
+        [code]: patternOptions,
       }));
       this.destroyColorWheelPicker();
       this.isLocked.set(false);
@@ -163,9 +173,9 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
           percent: Math.max(0, Math.min(99, this.score() * 10)),
           labelKey: 'home.resume.streak',
           labelParams: {
-            score: this.score()
-          }
-        }
+            score: this.score(),
+          },
+        },
       );
     });
 
@@ -193,17 +203,52 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
   protected getZoneLabel(index: number): string {
     switch (this.selectedPattern()) {
       case 'vertical-stripes':
-        return [this.i18n.t('rebuild.zone.left'), this.i18n.t('rebuild.zone.center'), this.i18n.t('rebuild.zone.right')][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 });
+        return (
+          [
+            this.i18n.t('rebuild.zone.left'),
+            this.i18n.t('rebuild.zone.center'),
+            this.i18n.t('rebuild.zone.right'),
+          ][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 })
+        );
       case 'horizontal-stripes':
-        return [this.i18n.t('rebuild.zone.top'), this.i18n.t('rebuild.zone.middle'), this.i18n.t('rebuild.zone.bottom')][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 });
+        return (
+          [
+            this.i18n.t('rebuild.zone.top'),
+            this.i18n.t('rebuild.zone.middle'),
+            this.i18n.t('rebuild.zone.bottom'),
+          ][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 })
+        );
       case 'triangle-left-bands-2':
-        return [this.i18n.t('rebuild.zone.triangle'), this.i18n.t('rebuild.zone.topRight'), this.i18n.t('rebuild.zone.bottomRight')][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 });
+        return (
+          [
+            this.i18n.t('rebuild.zone.triangle'),
+            this.i18n.t('rebuild.zone.topRight'),
+            this.i18n.t('rebuild.zone.bottomRight'),
+          ][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 })
+        );
       case 'triangle-left-bands-3':
-        return [this.i18n.t('rebuild.zone.triangle'), this.i18n.t('rebuild.zone.topRight'), this.i18n.t('rebuild.zone.middleRight'), this.i18n.t('rebuild.zone.bottomRight')][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 });
+        return (
+          [
+            this.i18n.t('rebuild.zone.triangle'),
+            this.i18n.t('rebuild.zone.topRight'),
+            this.i18n.t('rebuild.zone.middleRight'),
+            this.i18n.t('rebuild.zone.bottomRight'),
+          ][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 })
+        );
       case 'left-band-horizontal':
-        return [this.i18n.t('rebuild.zone.leftBand'), this.i18n.t('rebuild.zone.topRight'), this.i18n.t('rebuild.zone.middleRight'), this.i18n.t('rebuild.zone.bottomRight')][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 });
+        return (
+          [
+            this.i18n.t('rebuild.zone.leftBand'),
+            this.i18n.t('rebuild.zone.topRight'),
+            this.i18n.t('rebuild.zone.middleRight'),
+            this.i18n.t('rebuild.zone.bottomRight'),
+          ][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 })
+        );
       case 'nordic-cross':
-        return [this.i18n.t('rebuild.zone.background'), this.i18n.t('rebuild.zone.cross')][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 });
+        return (
+          [this.i18n.t('rebuild.zone.background'), this.i18n.t('rebuild.zone.cross')][index] ??
+          this.i18n.t('rebuild.zone.generic', { index: index + 1 })
+        );
       default:
         return this.i18n.t('rebuild.zone.generic', { index: index + 1 });
     }
@@ -279,7 +324,10 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
     }
 
     this.activeHexColorInput.set(normalized.toUpperCase());
-    if (this.colorWheelPicker && this.colorWheelPicker.color.hexString.toLowerCase() !== normalized) {
+    if (
+      this.colorWheelPicker &&
+      this.colorWheelPicker.color.hexString.toLowerCase() !== normalized
+    ) {
       this.colorWheelPicker.color.hexString = normalized;
     }
   }
@@ -290,7 +338,7 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
     }
 
     this.pieces.update((pieces) =>
-      pieces.map((piece) => (piece.id === pieceId ? { ...piece, color } : piece))
+      pieces.map((piece) => (piece.id === pieceId ? { ...piece, color } : piece)),
     );
   }
 
@@ -305,7 +353,7 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
       puzzle.targetPattern,
       this.selectedPattern(),
       puzzle.targetColors,
-      this.previewColors()
+      this.previewColors(),
     );
 
     if (!evaluation.accepted) {
@@ -355,14 +403,14 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
   private buildInitialPieces(puzzle: FlagRebuildPuzzle): PuzzlePiece[] {
     return puzzle.targetColors.map((_, index) => ({
       id: `${puzzle.code}-${index}`,
-      color: '#ffffff'
+      color: '#ffffff',
     }));
   }
 
   private buildPatternOptions(puzzle: FlagRebuildPuzzle): FlagRebuildPattern[] {
     const colorCount = puzzle.targetColors.length;
     const matchingPatterns = ALL_PATTERNS.filter((pattern) =>
-      this.supportsColorCount(pattern, colorCount)
+      this.supportsColorCount(pattern, colorCount),
     );
     const withTarget = matchingPatterns.includes(puzzle.targetPattern)
       ? matchingPatterns
@@ -374,7 +422,7 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
   private getPatternPreviewColors(
     pattern: FlagRebuildPattern,
     sourceColors: string[],
-    colorCount: number
+    colorCount: number,
   ): string[] {
     const zoneCount = this.getPatternZoneCount(pattern, colorCount);
 
@@ -429,11 +477,14 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
     targetPattern: FlagRebuildPattern,
     selectedPattern: FlagRebuildPattern,
     targetColors: string[],
-    userColors: string[]
+    userColors: string[],
   ): PuzzleEvaluation {
     const patternMatch = selectedPattern === targetPattern;
     const similarities = targetColors.map((targetColor, index) =>
-      this.computeColorSimilarity((userColors[index] ?? '#ffffff').toLowerCase(), targetColor.toLowerCase())
+      this.computeColorSimilarity(
+        (userColors[index] ?? '#ffffff').toLowerCase(),
+        targetColor.toLowerCase(),
+      ),
     );
     const averageSimilarity =
       similarities.reduce((sum, value) => sum + value, 0) / Math.max(1, similarities.length);
@@ -488,7 +539,7 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
 
     this.personalRecordsService.saveResult('flag-rebuild', {
       score: this.score(),
-      maxScore: Math.max(1, this.score())
+      maxScore: Math.max(1, this.score()),
     });
     this.hasSavedRecord = true;
     this.clearProgress();
@@ -546,16 +597,16 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
         sliderMargin: FlagRebuildGamePageComponent.VALUE_SLIDER_MARGIN,
         layout: [
           {
-            component: iro.ui.Wheel
+            component: iro.ui.Wheel,
           },
           {
             component: iro.ui.Slider,
             options: {
               sliderType: 'value',
-              sliderShape: 'bar'
-            }
-          }
-        ]
+              sliderShape: 'bar',
+            },
+          },
+        ],
       });
 
       this.colorChangeHandler = (color: { hexString: string }) => {
@@ -678,7 +729,11 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
     return Math.sqrt(dL * dL + dA * dA + dB * dB);
   }
 
-  private rgbToLab(color: { r: number; g: number; b: number }): { l: number; a: number; b: number } {
+  private rgbToLab(color: { r: number; g: number; b: number }): {
+    l: number;
+    a: number;
+    b: number;
+  } {
     const r = this.pivotRgb(color.r / 255);
     const g = this.pivotRgb(color.g / 255);
     const b = this.pivotRgb(color.b / 255);
@@ -694,7 +749,7 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
     return {
       l: 116 * fy - 16,
       a: 500 * (fx - fy),
-      b: 200 * (fy - fz)
+      b: 200 * (fy - fz),
     };
   }
 
@@ -728,7 +783,7 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
     return {
       r: (value >> 16) & 255,
       g: (value >> 8) & 255,
-      b: value & 255
+      b: value & 255,
     };
   }
 
@@ -750,17 +805,17 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
       pieces: this.pieces(),
       errors: this.errors().map((error) => ({
         puzzleCode: error.puzzle.code,
-        score: error.score
+        score: error.score,
       })),
       activeZoneIndex: this.activeZoneIndex(),
       patternOptionsByPuzzle: this.patternOptionsByPuzzle(),
-      isLocked: this.isLocked()
+      isLocked: this.isLocked(),
     };
   }
 
   private restoreProgress(): boolean {
     const snapshot = this.progressService.getPayload<RebuildProgressSnapshot>(
-      FlagRebuildGamePageComponent.PROGRESS_GAME_ID
+      FlagRebuildGamePageComponent.PROGRESS_GAME_ID,
     );
     if (!snapshot || snapshot.version !== 1 || snapshot.gamePuzzleCodes.length === 0) {
       return false;
@@ -790,10 +845,10 @@ export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
 
           return {
             puzzle,
-            score: error.score
+            score: error.score,
           };
         })
-        .filter((error): error is PuzzleError => !!error)
+        .filter((error): error is PuzzleError => !!error),
     );
     this.activeZoneIndex.set(snapshot.activeZoneIndex);
     this.patternOptionsByPuzzle.set(snapshot.patternOptionsByPuzzle);
