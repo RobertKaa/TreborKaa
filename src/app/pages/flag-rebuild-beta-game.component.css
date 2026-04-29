@@ -302,6 +302,10 @@ h3 {
   background: var(--surface-raise);
 }
 
+.result-verdict {
+  display: flex;
+}
+
 .result-rank {
   color: var(--accent-dark);
   font-weight: 800;

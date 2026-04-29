@@ -19,7 +19,8 @@
       <h3>{{ countryName(currentPuzzle()) }}</h3>
       <p class="mission-stat">
         {{ i18n.t('classic.rebuild.beta.round', { round: round() }) }} |
-        {{ i18n.t('classic.rebuild.beta.points', { points: totalScore() }) }}
+        {{ i18n.t('classic.rebuild.beta.points', { points: totalScore() }) }} |
+        {{ i18n.t('classic.rebuild.beta.streak', { streak: currentStreak() }) }}
       </p>
     </div>
   </div>
@@ -152,8 +153,18 @@
 
       @if (result(); as betaResult) {
         <div class="result-card">
-          <p class="result-rank">{{ i18n.t(betaResult.labelKey) }}</p>
-          <p class="result-score">{{ betaResult.score }}%</p>
+          <div class="result-verdict">
+            <div>
+              <p class="result-rank">{{ i18n.t(betaResult.labelKey) }}</p>
+              <p class="result-score">{{ betaResult.score }}%</p>
+              <p class="zone-progress">{{ resultMomentumLabel() }}</p>
+            </div>
+            <img
+              width="92"
+              [src]="currentPuzzle().flagUrl"
+              [alt]="i18n.t('countries.flagOf', { country: countryName(currentPuzzle()) })"
+            />
+          </div>
           <div class="result-bars">
             <div>
               <span>{{ i18n.t('classic.rebuild.beta.realImageScore') }}</span>
@@ -162,6 +173,10 @@
             <div>
               <span>{{ i18n.t('classic.rebuild.beta.patternScore') }}</span>
               <strong>{{ betaResult.patternScore }}%</strong>
+            </div>
+            <div>
+              <span>{{ i18n.t('classic.rebuild.beta.bestStreak') }}</span>
+              <strong>{{ bestStreak() }}</strong>
             </div>
           </div>
           <div class="zone-score-list">

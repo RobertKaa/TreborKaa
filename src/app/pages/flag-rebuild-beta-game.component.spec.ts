@@ -125,6 +125,7 @@ describe('FlagRebuildBetaGameComponent', () => {
 
   it('does not stack the same round score across repeated scans', async () => {
     const puzzle = (component as any).currentPuzzle();
+    (component as any).selectedPattern.set(puzzle.targetPattern);
     (component as any).pieces.set(
       puzzle.targetColors.map((color: string, index: number) => ({
         id: `filled-${index}`,
@@ -151,6 +152,36 @@ describe('FlagRebuildBetaGameComponent', () => {
 
     expect((component as any).totalScore()).toBe(0);
     expect((component as any).completedRounds()).toBe(0);
+  });
+
+  it('tracks streaks and rolls them back on retry', async () => {
+    const puzzle = (component as any).currentPuzzle();
+    (component as any).selectedPattern.set(puzzle.targetPattern);
+    (component as any).pieces.set(
+      puzzle.targetColors.map((color: string, index: number) => ({
+        id: `filled-${index}`,
+        color,
+      })),
+    );
+    (component as any).evaluatePuzzle = () =>
+      Promise.resolve({
+        score: 88,
+        colorScore: 88,
+        imageScore: 88,
+        patternScore: 100,
+        zoneScores: [88],
+        labelKey: 'classic.rebuild.beta.rank.close',
+      });
+
+    await (component as any).submitRound();
+
+    expect((component as any).currentStreak()).toBe(1);
+    expect((component as any).bestStreak()).toBe(1);
+
+    (component as any).retryRound();
+
+    expect((component as any).currentStreak()).toBe(0);
+    expect((component as any).bestStreak()).toBe(0);
   });
 
   it('moves to the next empty zone after selecting a color', () => {

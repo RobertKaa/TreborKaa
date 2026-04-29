@@ -128,3 +128,4 @@ Implementation:
   - Reconstruction de drapeau: affichage temporairement centre sur la beta seule; le jeu historique reste dans le composant mais n'est plus rendu dans la page.
   - Reconstruction de drapeau beta: choix de forme mobile compacte en rail horizontal et palette rapprochee de l'ancien selecteur avec couleur active + valeurs hex visibles.
   - Reconstruction de drapeau beta: manche protegee contre le multi-score, jauge de maitrise basee sur les manches scannees et progression de remplissage avec avance automatique de zone.
+  - Reconstruction de drapeau beta: verdict enrichi avec vrai drapeau, serie courante, meilleure serie et rollback de serie quand une manche est retentee.

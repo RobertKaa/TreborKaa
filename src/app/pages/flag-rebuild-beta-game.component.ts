@@ -77,6 +77,7 @@ const DIAGONAL_RAY_POLYGONS: RatioPoint[][] = [
   ],
 ];
 const BETA_PATTERN_CHOICE_COUNT = 4;
+const BETA_STREAK_SCORE_THRESHOLD = 76;
 const BETA_FLAG_REBUILD_PATTERNS: FlagRebuildPattern[] = [
   'horizontal-stripes',
   'vertical-stripes',
@@ -282,6 +283,10 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   protected readonly completedRounds = signal(0);
   protected readonly currentRoundScore = signal(0);
   protected readonly hasScoredCurrentRound = signal(false);
+  protected readonly currentStreak = signal(0);
+  protected readonly bestStreak = signal(0);
+  private readonly streakBeforeCurrentRound = signal(0);
+  private readonly bestStreakBeforeCurrentRound = signal(0);
   protected readonly isScoring = signal(false);
   private readonly realFlagCache = new Map<string, ImageData | null>();
   private readonly pixelMaskCache = new Map<string, PixelZoneMask | null>();
@@ -311,6 +316,16 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       Math.round((this.totalScore() / Math.max(1, this.completedRounds() * 100)) * 100),
     ),
   );
+  protected readonly resultMomentumLabel = computed(() => {
+    const result = this.result();
+    if (!result) {
+      return '';
+    }
+
+    return result.score >= BETA_STREAK_SCORE_THRESHOLD
+      ? this.i18n.t('classic.rebuild.beta.streakGain', { streak: this.currentStreak() })
+      : this.i18n.t('classic.rebuild.beta.streakBreak');
+  });
 
   constructor() {
     effect(() => {
@@ -464,6 +479,13 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
 
     const previousScore = this.currentRoundScore();
     const hadScore = this.hasScoredCurrentRound();
+    if (!hadScore) {
+      this.streakBeforeCurrentRound.set(this.currentStreak());
+      this.bestStreakBeforeCurrentRound.set(this.bestStreak());
+    } else {
+      this.currentStreak.set(this.streakBeforeCurrentRound());
+      this.bestStreak.set(this.bestStreakBeforeCurrentRound());
+    }
     this.isScoring.set(true);
 
     try {
@@ -480,6 +502,7 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       if (!hadScore) {
         this.completedRounds.update((rounds) => rounds + 1);
       }
+      this.applyStreakResult(result.score);
     } finally {
       this.isScoring.set(false);
     }
@@ -504,6 +527,8 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     this.result.set(null);
     this.currentRoundScore.set(0);
     this.hasScoredCurrentRound.set(false);
+    this.streakBeforeCurrentRound.set(this.currentStreak());
+    this.bestStreakBeforeCurrentRound.set(this.bestStreak());
     this.round.update((round) => round + 1);
   }
 
@@ -527,9 +552,24 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       this.completedRounds.update((rounds) => Math.max(0, rounds - 1));
       this.currentRoundScore.set(0);
       this.hasScoredCurrentRound.set(false);
+      this.currentStreak.set(this.streakBeforeCurrentRound());
+      this.bestStreak.set(this.bestStreakBeforeCurrentRound());
     }
 
     this.result.set(null);
+  }
+
+  private applyStreakResult(score: number): void {
+    if (score < BETA_STREAK_SCORE_THRESHOLD) {
+      this.currentStreak.set(0);
+      return;
+    }
+
+    this.currentStreak.update((streak) => {
+      const nextStreak = streak + 1;
+      this.bestStreak.update((best) => Math.max(best, nextStreak));
+      return nextStreak;
+    });
   }
 
   private advanceToNextOpenZone(currentIndex: number): void {
