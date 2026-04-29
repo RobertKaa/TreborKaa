@@ -1,0 +1,88 @@
+@use './classic-quiz-shared';
+
+.prompt-shape {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(190px, 34dvh, 300px);
+  margin: 16px 0 12px;
+  padding: clamp(12px, 1.6vw, 18px);
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  border-radius: 18px;
+  background:
+    radial-gradient(
+      circle at 30% 20%,
+      color-mix(in srgb, var(--secondary-soft) 35%, transparent),
+      transparent 55%
+    ),
+    color-mix(in srgb, var(--surface-raise) 84%, transparent);
+}
+
+.prompt-shape svg {
+  display: block;
+  width: min(100%, 560px);
+  height: auto;
+  max-height: min(42dvh, 320px);
+}
+
+.prompt-shape path,
+.mistake-shape path {
+  fill: color-mix(in srgb, var(--accent) 36%, var(--surface-strong));
+  stroke: color-mix(in srgb, var(--accent-strong) 45%, var(--line));
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.name-grid {
+  margin-top: 16px;
+}
+
+.name-card {
+  min-height: 74px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.name-card:disabled {
+  color: var(--ink);
+}
+
+.mistake-shape {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 104px;
+  margin-bottom: 10px;
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-raise) 82%, transparent);
+}
+
+.mistake-shape svg {
+  display: block;
+  width: min(100%, 170px);
+  height: auto;
+  max-height: 86px;
+}
+
+.mistake-country {
+  margin-bottom: 6px;
+}
+
+@media (max-width: 640px) {
+  .prompt-shape {
+    min-height: 188px;
+    padding: 12px;
+  }
+
+  .prompt-shape svg {
+    width: min(100%, 520px);
+    max-height: min(40dvh, 300px);
+  }
+}

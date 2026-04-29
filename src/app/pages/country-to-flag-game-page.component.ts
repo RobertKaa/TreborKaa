@@ -8,7 +8,7 @@ import { ClassicQuizPageBase } from './classic-quiz-page.base';
   selector: 'app-country-to-flag-game-page',
   imports: [RouterLink],
   templateUrl: './country-to-flag-game-page.component.html',
-  styleUrl: './country-to-flag-game-page.component.css'
+  styleUrl: './country-to-flag-game-page.component.scss'
 })
 export class CountryToFlagGamePageComponent
   extends ClassicQuizPageBase<FlagQuizQuestion>

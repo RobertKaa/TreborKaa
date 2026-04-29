@@ -62,7 +62,7 @@ const CLASSIC_GAME_IDS = new Set<GameId>(
   selector: 'app-home-page',
   imports: [RouterLink],
   templateUrl: './home-page.component.html',
-  styleUrl: './home-page.component.css'
+  styleUrl: './home-page.component.scss'
 })
 export class HomePageComponent {
   protected readonly i18n = inject(I18nService);

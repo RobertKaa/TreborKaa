@@ -1,6 +1,7 @@
 import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AppLanguage } from './data/i18n-translations';
+import { BrowserStorageService } from './services/browser-storage.service';
 import { I18nService } from './services/i18n.service';
 
 @Component({
@@ -9,14 +10,15 @@ import { I18nService } from './services/i18n.service';
     '[class.theme-dark]': 'isDarkTheme()',
     '[class.mobile-viewport]': 'isMobileViewport()',
     '[class.mobile-landscape]': 'isMobileLandscape()',
-    '[class.mobile-keyboard-open]': 'keyboardOffset() > 0'
+    '[class.mobile-keyboard-open]': 'keyboardOffset() > 0',
   },
   imports: [RouterOutlet, RouterLink],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.scss',
 })
 export class App implements OnDestroy {
   protected readonly i18n = inject(I18nService);
+  private readonly storage = inject(BrowserStorageService);
   private readonly canUseWindow = typeof window !== 'undefined';
   private readonly viewportRef = this.canUseWindow ? window.visualViewport : null;
   private readonly prefersDark =
@@ -31,7 +33,7 @@ export class App implements OnDestroy {
 
   protected readonly isDarkTheme = signal(this.readInitialTheme());
   protected readonly themeLabel = computed(() =>
-    this.isDarkTheme() ? this.i18n.t('theme.light') : this.i18n.t('theme.dark')
+    this.isDarkTheme() ? this.i18n.t('theme.light') : this.i18n.t('theme.dark'),
   );
   protected readonly isMobileViewport = signal(false);
   protected readonly isMobileLandscape = signal(false);
@@ -100,7 +102,7 @@ export class App implements OnDestroy {
       return false;
     }
 
-    const stored = window.localStorage.getItem('ftf-theme');
+    const stored = this.storage.getString('ftf-theme');
     if (stored === 'dark') {
       return true;
     }
@@ -117,7 +119,7 @@ export class App implements OnDestroy {
       return;
     }
 
-    window.localStorage.setItem('ftf-theme', this.isDarkTheme() ? 'dark' : 'light');
+    this.storage.setString('ftf-theme', this.isDarkTheme() ? 'dark' : 'light');
   }
 
   private attachWindowListeners(): void {

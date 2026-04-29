@@ -1,0 +1,93 @@
+:host {
+  display: block;
+}
+
+.hero-card {
+  background:
+    radial-gradient(
+      circle at 94% 8%,
+      color-mix(in srgb, var(--danger) 16%, transparent),
+      transparent 36%
+    ),
+    var(--card);
+}
+
+h2 {
+  margin-bottom: 10px;
+  font-size: clamp(2rem, 4.8vw, 3rem);
+}
+
+.board-card {
+  display: grid;
+  gap: 18px;
+  background:
+    linear-gradient(
+      190deg,
+      color-mix(in srgb, var(--surface-strong) 80%, transparent),
+      transparent 30%
+    ),
+    var(--card);
+}
+
+.flag-board {
+  position: relative;
+  width: min(100%, 540px);
+  height: min(40vh, 300px);
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  border-radius: 22px;
+  background: var(--flag-backdrop);
+  box-shadow: inset 0 0 0 1px var(--line-soft);
+}
+
+.shape-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.svg-zone {
+  cursor: pointer;
+  transition:
+    opacity 120ms ease,
+    filter 120ms ease;
+}
+
+.svg-zone:hover {
+  filter: brightness(0.96);
+}
+
+.svg-zone:active {
+  opacity: 0.92;
+}
+
+.summary-head,
+.summary-score,
+.summary-actions,
+.mistake-card {
+  gap: 20px;
+}
+
+.mistake-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mistake-reference {
+  min-width: 140px;
+  min-height: 84px;
+  padding: 10px;
+  border-radius: 14px;
+}
+
+@media (max-width: 640px) {
+  .hero-card,
+  .hero-actions {
+    flex-direction: column;
+  }
+
+  .flag-board {
+    height: 220px;
+  }
+}

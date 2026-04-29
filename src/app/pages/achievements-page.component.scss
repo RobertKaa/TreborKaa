@@ -16,7 +16,11 @@
   backdrop-filter: blur(9px) saturate(120%);
   padding: 20px;
   background:
-    radial-gradient(circle at 95% 0%, color-mix(in srgb, var(--accent-soft) 40%, transparent), transparent 36%),
+    radial-gradient(
+      circle at 95% 0%,
+      color-mix(in srgb, var(--accent-soft) 40%, transparent),
+      transparent 36%
+    ),
     var(--card);
 }
 

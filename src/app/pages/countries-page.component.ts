@@ -12,7 +12,7 @@ const PAGE_SIZE = 24;
 @Component({
   selector: 'app-countries-page',
   templateUrl: './countries-page.component.html',
-  styleUrl: './countries-page.component.css'
+  styleUrl: './countries-page.component.scss'
 })
 export class CountriesPageComponent {
   protected readonly i18n = inject(I18nService);

@@ -1,0 +1,48 @@
+@use './classic-quiz-shared';
+
+h2 {
+  margin-bottom: 6px;
+  font-size: clamp(2.1rem, 5vw, 3.5rem);
+}
+
+.option-grid {
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.option-card {
+  padding: 12px;
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--surface-raise) 84%, transparent);
+}
+
+.option-card:hover:enabled {
+  transform: translateY(-2px) rotate(-0.2deg);
+}
+
+.flag-surface {
+  min-height: min(20vh, 160px);
+  padding: 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: 16px;
+}
+
+.option-card img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 220px);
+  max-height: 120px;
+  object-fit: contain;
+}
+
+.mistake-country {
+  margin-bottom: 6px;
+}
+
+@media (max-width: 640px) {
+  .flag-surface {
+    min-height: 96px;
+    padding: 10px;
+  }
+}

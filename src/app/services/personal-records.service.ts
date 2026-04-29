@@ -1,5 +1,6 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { GameRecordKey, GameResultPayload, PersonalRecord } from '../models/personal-record';
+import { BrowserStorageService } from './browser-storage.service';
 
 type StoredRecords = Partial<Record<GameRecordKey, PersonalRecord>>;
 
@@ -7,6 +8,7 @@ const STORAGE_KEY = 'vexiio.personal-records.v1';
 
 @Injectable({ providedIn: 'root' })
 export class PersonalRecordsService {
+  private readonly storage = inject(BrowserStorageService);
   private readonly records = signal<StoredRecords>(this.loadFromStorage());
   readonly snapshot = computed(() => this.records());
 
@@ -20,7 +22,7 @@ export class PersonalRecordsService {
     const computedPercent = Math.round((safeScore / safeMax) * 100);
     const percent = Math.max(
       0,
-      Math.min(100, Math.round(payload.percentOverride ?? computedPercent))
+      Math.min(100, Math.round(payload.percentOverride ?? computedPercent)),
     );
     const nowIso = new Date().toISOString();
     const existing = this.records()[key];
@@ -35,12 +37,12 @@ export class PersonalRecordsService {
       bestPercent: isBetter ? percent : (existing?.bestPercent ?? percent),
       gamesPlayed: (existing?.gamesPlayed ?? 0) + 1,
       lastPlayedAt: nowIso,
-      bestStreak: Math.max(existing?.bestStreak ?? 0, payload.streak ?? 0)
+      bestStreak: Math.max(existing?.bestStreak ?? 0, payload.streak ?? 0),
     };
 
     this.records.update((records) => ({
       ...records,
-      [key]: nextRecord
+      [key]: nextRecord,
     }));
     this.persist();
 
@@ -49,32 +51,15 @@ export class PersonalRecordsService {
 
   clearAll(): void {
     this.records.set({});
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      // Ignore storage errors.
-    }
+    this.storage.remove(STORAGE_KEY);
   }
 
   private loadFromStorage(): StoredRecords {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) {
-        return {};
-      }
-
-      const parsed = JSON.parse(raw) as StoredRecords;
-      return typeof parsed === 'object' && parsed !== null ? parsed : {};
-    } catch {
-      return {};
-    }
+    const parsed = this.storage.getJson<StoredRecords>(STORAGE_KEY, {});
+    return typeof parsed === 'object' && parsed !== null ? parsed : {};
   }
 
   private persist(): void {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.records()));
-    } catch {
-      // Ignore storage errors.
-    }
+    this.storage.setJson(STORAGE_KEY, this.records());
   }
 }

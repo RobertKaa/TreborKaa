@@ -1,11 +1,13 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { CountrySummary } from '../models/country-summary';
 import { AppLanguage, I18N_TRANSLATIONS } from '../data/i18n-translations';
+import { BrowserStorageService } from './browser-storage.service';
 
 const LANGUAGE_STORAGE_KEY = 'ftf-language';
 
 @Injectable({ providedIn: 'root' })
 export class I18nService {
+  private readonly storage = inject(BrowserStorageService);
   private readonly canUseWindow = typeof window !== 'undefined';
   private readonly language = signal<AppLanguage>(this.resolveInitialLanguage());
   readonly currentLanguage = this.language.asReadonly();
@@ -58,7 +60,7 @@ export class I18nService {
       return 'fr';
     }
 
-    const persisted = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    const persisted = this.storage.getString(LANGUAGE_STORAGE_KEY);
     if (persisted === 'fr' || persisted === 'en') {
       return persisted;
     }
@@ -72,7 +74,7 @@ export class I18nService {
       return;
     }
 
-    window.localStorage.setItem(LANGUAGE_STORAGE_KEY, this.language());
+    this.storage.setString(LANGUAGE_STORAGE_KEY, this.language());
   }
 
   private syncDocumentLanguage(): void {

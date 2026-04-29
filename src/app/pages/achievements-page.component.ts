@@ -5,7 +5,7 @@ import { I18nService } from '../services/i18n.service';
 @Component({
   selector: 'app-achievements-page',
   templateUrl: './achievements-page.component.html',
-  styleUrl: './achievements-page.component.css'
+  styleUrl: './achievements-page.component.scss'
 })
 export class AchievementsPageComponent {
   protected readonly i18n = inject(I18nService);

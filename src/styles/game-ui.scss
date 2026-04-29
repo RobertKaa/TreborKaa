@@ -1,0 +1,375 @@
+:root {
+  --game-card-radius: 28px;
+  --game-card-padding: 20px 24px;
+  --game-card-padding-large: 22px 24px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:where(h1, h2, h3, p, button) {
+  margin: 0;
+}
+
+:where(.game-shell, .chrono-shell, .culture-shell, .pixel-shell, .error-shell, .rebuild-shell) {
+  display: grid;
+  padding-bottom: 24px;
+}
+
+:where(.game-shell, .chrono-shell, .culture-shell) {
+  gap: 16px;
+  min-height: calc(100dvh - 180px);
+}
+
+:where(.pixel-shell, .error-shell, .rebuild-shell) {
+  gap: 18px;
+}
+
+:where(.hero-card, .question-card, .board-card, .workspace-card, .difficulty-card, .summary-modal) {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--game-card-radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px) saturate(120%);
+}
+
+:where(.hero-card, .question-card, .board-card, .difficulty-card) {
+  padding: var(--game-card-padding);
+}
+
+:where(.error-shell, .pixel-shell, .rebuild-shell)
+  :where(.hero-card, .board-card, .workspace-card) {
+  padding: var(--game-card-padding-large);
+}
+
+:where(.game-shell, .chrono-shell, .culture-shell, .pixel-shell, .error-shell, .rebuild-shell)
+  > .hero-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+:where(.summary-head, .summary-score, .summary-actions) {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+:where(.hero-actions, .next-wrap, .submit-row, .pattern-picker) {
+  display: flex;
+}
+
+:where(.hero-actions, .pattern-picker) {
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.next-wrap,
+.submit-row {
+  justify-content: flex-end;
+}
+
+.submit-row {
+  margin-top: 18px;
+}
+
+:where(.eyebrow, .question-label, .status-label, .difficulty-label, .panel-title) {
+  margin: 0 0 10px;
+  color: var(--accent-dark);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+:where(
+  .intro,
+  .question-help,
+  .question-hint,
+  .board-hint,
+  .empty-state,
+  .mistake-line,
+  .mistake-detail
+) {
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.hero-card h1,
+:where(.chrono-shell, .culture-shell, .pixel-shell, .error-shell, .rebuild-shell) h1 {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 0.92;
+}
+
+:where(.ghost-link, .primary-button, .next-button, .difficulty-button, .pattern-chip) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--surface-strong) 86%, transparent);
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease,
+    filter 150ms ease;
+}
+
+:where(.primary-button, .next-button, .difficulty-button.active, .pattern-chip.selected) {
+  color: var(--on-accent);
+  border-color: color-mix(in srgb, var(--accent-strong) 72%, transparent);
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+}
+
+:where(.ghost-link, .primary-button, .next-button, .difficulty-button, .pattern-chip):hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-line);
+}
+
+:where(.name-grid, .flag-grid, .option-grid) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+:where(.name-card, .flag-card, .option-card) {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface-raise) 86%, transparent);
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+:where(.name-card, .flag-card, .option-card):disabled {
+  opacity: 1;
+}
+
+:where(.name-card, .flag-card, .option-card):hover:enabled {
+  transform: translateY(-2px);
+  border-color: var(--accent-line);
+}
+
+:where(.name-card, .flag-card, .option-card).is-correct {
+  border-color: color-mix(in srgb, var(--success) 74%, transparent);
+  background:
+    linear-gradient(
+      150deg,
+      color-mix(in srgb, var(--success) 24%, transparent),
+      color-mix(in srgb, var(--surface-raise) 92%, transparent)
+    ),
+    color-mix(in srgb, var(--surface-raise) 86%, transparent);
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb, var(--success) 34%, transparent),
+    0 0 0 3px color-mix(in srgb, var(--success) 20%, transparent),
+    0 14px 30px color-mix(in srgb, var(--success) 28%, transparent);
+  animation:
+    answer-correct-pop 360ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    answer-correct-glow 860ms ease-out;
+}
+
+:where(.name-card, .flag-card, .option-card).is-correct::after {
+  content: '\2713';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--success);
+  box-shadow: 0 8px 14px color-mix(in srgb, var(--success) 44%, transparent);
+  font-size: 0.9rem;
+  font-weight: 900;
+  animation: answer-correct-badge 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+:where(.name-card, .flag-card, .option-card).is-wrong {
+  border-color: color-mix(in srgb, var(--danger) 78%, transparent);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--danger) 36%, transparent);
+  animation: answer-wrong-shake 260ms ease-out;
+}
+
+.flag-surface,
+.prompt-flag,
+.mistake-flag,
+.mistake-reference {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--flag-backdrop);
+}
+
+:where(.flag-surface, .prompt-flag, .mistake-flag, .mistake-reference) img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.status-dock {
+  position: sticky;
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: min(760px, 100%);
+  padding: 8px;
+  margin: 10px auto 0;
+  background: color-mix(in srgb, var(--surface-raise) 96%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+.status-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+}
+
+.status-dock .status-label {
+  margin: 0;
+  font-size: 0.6rem;
+}
+
+:where(.status-value, .summary-value, .mistake-country, .mistake-question) {
+  font-weight: 800;
+}
+
+.progress-track {
+  width: 132px;
+  height: 6px;
+  margin-top: 0;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--line-soft) 80%, transparent);
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--secondary), var(--accent), var(--accent-strong));
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 45%, transparent);
+  transition: width 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: var(--overlay);
+  backdrop-filter: blur(4px);
+}
+
+.summary-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 51;
+  width: min(760px, calc(100vw - 24px));
+  max-height: 80vh;
+  padding: 24px;
+  overflow: auto;
+  transform: translate(-50%, -50%);
+}
+
+.summary-score {
+  margin-top: 18px;
+}
+
+.summary-score > div {
+  flex: 1;
+  padding: 14px 16px;
+  border: 1px solid var(--line-soft);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+}
+
+.summary-value {
+  font-size: 1.7rem;
+}
+
+.mistakes-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.mistake-card {
+  padding: 14px 16px;
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+}
+
+.summary-actions {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.summary-actions :where(.ghost-link, .primary-button, .next-button) {
+  min-width: 150px;
+  min-height: 46px;
+  padding: 12px 20px;
+}
+
+@media (max-width: 900px) {
+  :where(.hero-card, .summary-head, .summary-score, .mistake-card, .answer-form) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  :where(.name-grid, .flag-grid, .option-grid) {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  :where(.hero-card, .question-card, .board-card, .workspace-card, .difficulty-card) {
+    padding: 18px;
+  }
+
+  .status-dock {
+    width: 100%;
+    padding: 8px;
+  }
+
+  .summary-modal {
+    padding: 20px;
+  }
+
+  .summary-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .summary-actions :where(.ghost-link, .primary-button, .next-button) {
+    flex: 1 1 calc(50% - 6px);
+  }
+}
+
+@media (max-width: 420px) {
+  .summary-actions :where(.ghost-link, .primary-button, .next-button) {
+    flex-basis: 100%;
+  }
+}

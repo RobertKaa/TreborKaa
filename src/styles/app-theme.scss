@@ -1,0 +1,118 @@
+app-root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --paper: var(--ds-surface-bg-light);
+  --ink: var(--ds-text-primary-light);
+  --ink-soft: var(--ds-text-muted-light);
+  --line: rgba(31, 27, 46, 0.16);
+  --line-soft: rgba(31, 27, 46, 0.08);
+  --line-strong: rgba(31, 27, 46, 0.25);
+  --card: color-mix(in srgb, var(--ds-surface-card-light) 88%, transparent);
+  --surface-strong: color-mix(in srgb, var(--ds-surface-card-light) 92%, transparent);
+  --surface: color-mix(in srgb, var(--ds-surface-card-light) 80%, transparent);
+  --surface-raise: var(--ds-surface-raised-light);
+  --accent: var(--ds-color-amber-500);
+  --accent-strong: var(--ds-color-amber-600);
+  --accent-dark: #9c4617;
+  --accent-soft: rgba(239, 141, 53, 0.2);
+  --accent-line: rgba(239, 141, 53, 0.4);
+  --accent-line-strong: rgba(239, 141, 53, 0.56);
+  --secondary: var(--ds-color-teal-600);
+  --secondary-soft: rgba(12, 127, 111, 0.2);
+  --success: var(--ds-color-success-600);
+  --danger: var(--ds-color-danger-600);
+  --on-accent: #fffaf5;
+  --shadow: var(--ds-shadow-card-light);
+  --shadow-pop: var(--ds-shadow-pop-light);
+  --overlay: rgba(22, 16, 30, 0.52);
+  --flag-backdrop: radial-gradient(circle at 12% 10%, #fffdf8, #f5eee4 68%);
+  --grain: radial-gradient(circle at 1px 1px, rgba(31, 27, 46, 0.06) 1px, transparent 0);
+  display: block;
+  min-height: calc(var(--app-vh, 1vh) * 100);
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 5% -10%, rgba(239, 141, 53, 0.24), transparent 40%),
+    radial-gradient(circle at 92% 6%, rgba(12, 127, 111, 0.19), transparent 33%),
+    radial-gradient(circle at 75% 96%, rgba(181, 62, 83, 0.16), transparent 40%),
+    linear-gradient(185deg, #fef9f2 0%, var(--paper) 100%);
+  transition:
+    background 320ms ease,
+    color 240ms ease;
+}
+
+app-root::before,
+app-root::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+app-root::before {
+  z-index: -2;
+  background-image: var(--grain);
+  background-size: 3px 3px;
+  mix-blend-mode: multiply;
+  opacity: 0.45;
+}
+
+app-root::after {
+  z-index: -1;
+  background: linear-gradient(
+    110deg,
+    transparent 0 35%,
+    rgba(255, 255, 255, 0.25) 44%,
+    transparent 56%
+  );
+  opacity: 0.6;
+  animation: app-sheen 11s ease-in-out infinite;
+}
+
+app-root.theme-dark {
+  --paper: var(--ds-surface-bg-dark);
+  --ink: var(--ds-text-primary-dark);
+  --ink-soft: var(--ds-text-muted-dark);
+  --line: rgba(236, 241, 248, 0.16);
+  --line-soft: rgba(236, 241, 248, 0.1);
+  --line-strong: rgba(236, 241, 248, 0.26);
+  --card: color-mix(in srgb, var(--ds-surface-card-dark) 90%, transparent);
+  --surface-strong: color-mix(in srgb, var(--ds-surface-card-dark) 94%, transparent);
+  --surface: color-mix(in srgb, var(--ds-surface-card-dark) 82%, transparent);
+  --surface-raise: var(--ds-surface-raised-dark);
+  --accent: #ffb06a;
+  --accent-strong: #ef8d35;
+  --accent-dark: #ffd7ad;
+  --accent-soft: rgba(255, 176, 106, 0.16);
+  --accent-line: rgba(255, 176, 106, 0.34);
+  --accent-line-strong: rgba(255, 176, 106, 0.5);
+  --secondary: #4aaea0;
+  --secondary-soft: rgba(74, 174, 160, 0.16);
+  --success: #72d39e;
+  --danger: #f0899d;
+  --on-accent: #271103;
+  --shadow: var(--ds-shadow-card-dark);
+  --shadow-pop: var(--ds-shadow-pop-dark);
+  --overlay: rgba(6, 12, 20, 0.68);
+  --flag-backdrop: radial-gradient(circle at 12% 10%, #233143, #172332 68%);
+  --grain: radial-gradient(circle at 1px 1px, rgba(236, 241, 248, 0.07) 1px, transparent 0);
+  background:
+    radial-gradient(circle at 5% -10%, rgba(255, 176, 106, 0.16), transparent 44%),
+    radial-gradient(circle at 92% 6%, rgba(74, 174, 160, 0.14), transparent 37%),
+    radial-gradient(circle at 75% 96%, rgba(240, 137, 157, 0.12), transparent 42%),
+    linear-gradient(185deg, var(--paper) 0%, var(--paper) 100%);
+}
+
+@keyframes app-sheen {
+  0%,
+  100% {
+    transform: translateX(-16%);
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: translateX(20%);
+    opacity: 0.8;
+  }
+}

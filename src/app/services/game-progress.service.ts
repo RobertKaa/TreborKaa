@@ -1,5 +1,6 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { GameId } from '../data/game-catalog';
+import { BrowserStorageService } from './browser-storage.service';
 
 type ProgressLabelParams = Record<string, string | number>;
 
@@ -18,6 +19,7 @@ const STORAGE_KEY = 'vexiio.game-progress.v1';
 
 @Injectable({ providedIn: 'root' })
 export class GameProgressService {
+  private readonly storage = inject(BrowserStorageService);
   private readonly store = signal<ProgressStore>(this.loadFromStorage());
   readonly snapshot = computed(() => this.store());
   readonly count = computed(() => Object.keys(this.store()).length);
@@ -42,7 +44,7 @@ export class GameProgressService {
       percent: number;
       labelKey: string;
       labelParams?: ProgressLabelParams;
-    }
+    },
   ): void {
     const nextEntry: GameProgressEntry = {
       gameId,
@@ -50,12 +52,12 @@ export class GameProgressService {
       percent: Math.max(0, Math.min(100, Math.round(view.percent))),
       labelKey: view.labelKey,
       labelParams: view.labelParams,
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     this.store.update((current) => ({
       ...current,
-      [gameId]: nextEntry
+      [gameId]: nextEntry,
     }));
     this.persist();
   }
@@ -74,28 +76,15 @@ export class GameProgressService {
   }
 
   private loadFromStorage(): ProgressStore {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) {
-        return {};
-      }
-
-      const parsed = JSON.parse(raw) as ProgressStore;
-      if (!parsed || typeof parsed !== 'object') {
-        return {};
-      }
-
-      return parsed;
-    } catch {
+    const parsed = this.storage.getJson<ProgressStore>(STORAGE_KEY, {});
+    if (!parsed || typeof parsed !== 'object') {
       return {};
     }
+
+    return parsed;
   }
 
   private persist(): void {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.store()));
-    } catch {
-      // Ignore storage errors.
-    }
+    this.storage.setJson(STORAGE_KEY, this.store());
   }
 }

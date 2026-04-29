@@ -75,7 +75,7 @@ const VISIBLE_ERRORS_LIMIT = 8;
   selector: 'app-chrono-flags-game-page',
   imports: [RouterLink],
   templateUrl: './chrono-flags-game-page.component.html',
-  styleUrl: './chrono-flags-game-page.component.css'
+  styleUrl: './chrono-flags-game-page.component.scss'
 })
 export class ChronoFlagsGamePageComponent implements OnDestroy {
   private static readonly PROGRESS_GAME_ID: GameId = 'flag-chrono';

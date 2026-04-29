@@ -1,0 +1,152 @@
+:host {
+  display: block;
+}
+
+.hero-card {
+  background:
+    radial-gradient(
+      circle at 94% 8%,
+      color-mix(in srgb, var(--secondary-soft) 70%, transparent),
+      transparent 36%
+    ),
+    var(--card);
+}
+
+h2 {
+  margin-bottom: 10px;
+  font-size: clamp(2rem, 4.8vw, 3rem);
+}
+
+.board-card {
+  display: grid;
+  gap: 18px;
+  background:
+    linear-gradient(
+      190deg,
+      color-mix(in srgb, var(--surface-strong) 78%, transparent),
+      transparent 30%
+    ),
+    var(--card);
+}
+
+.loading-card {
+  justify-items: center;
+  padding: 40px 24px;
+}
+
+.result-feedback {
+  margin: -4px 0 2px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  color: color-mix(in srgb, var(--success) 90%, #0b4a2f);
+  background: color-mix(in srgb, var(--success) 20%, transparent);
+  font-weight: 800;
+  animation: answer-correct-pop 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.result-feedback.wrong {
+  color: color-mix(in srgb, var(--danger) 92%, #56101e);
+  background: color-mix(in srgb, var(--danger) 18%, transparent);
+  animation: answer-wrong-shake 260ms ease-out;
+}
+
+.attempt-track {
+  display: flex;
+  gap: 8px;
+  margin: 4px 0 2px;
+}
+
+.attempt-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-raise) 88%, transparent);
+}
+
+.attempt-dot.wrong {
+  border-color: color-mix(in srgb, var(--danger) 54%, transparent);
+  background: var(--danger);
+}
+
+.attempt-dot.correct {
+  border-color: color-mix(in srgb, var(--success) 56%, transparent);
+  background: var(--success);
+}
+
+.attempt-icon {
+  color: #fff;
+  font-size: 0.86rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.canvas-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  border: 1px solid var(--line-soft);
+  border-radius: 22px;
+  background: var(--flag-backdrop);
+}
+
+.pixel-canvas {
+  display: block;
+  width: min(100%, 540px);
+  height: auto;
+  border: 1px solid var(--line-soft);
+  border-radius: 16px;
+  background: transparent;
+}
+
+.answer-form {
+  display: flex;
+  gap: 12px;
+}
+
+.answer-input {
+  flex: 1;
+  min-height: 52px;
+  padding: 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--surface-raise) 84%, transparent);
+  font: inherit;
+}
+
+.summary-head,
+.summary-score,
+.summary-actions,
+.mistake-card {
+  gap: 20px;
+}
+
+.mistake-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mistake-reference {
+  min-width: 140px;
+  min-height: 84px;
+  padding: 10px;
+  border-radius: 14px;
+}
+
+@media (max-width: 900px) {
+  .answer-form {
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-card {
+    flex-direction: column;
+  }
+}

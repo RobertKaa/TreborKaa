@@ -52,7 +52,7 @@ const ALL_PATTERNS: FlagRebuildPattern[] = [
   selector: 'app-flag-rebuild-game-page',
   imports: [RouterLink],
   templateUrl: './flag-rebuild-game-page.component.html',
-  styleUrl: './flag-rebuild-game-page.component.css'
+  styleUrl: './flag-rebuild-game-page.component.scss'
 })
 export class FlagRebuildGamePageComponent implements AfterViewInit, OnDestroy {
   private static readonly PROGRESS_GAME_ID: GameId = 'flag-rebuild';

@@ -12,7 +12,7 @@ type RecordTile = {
   selector: 'app-records-page',
   imports: [RouterLink],
   templateUrl: './records-page.component.html',
-  styleUrl: './records-page.component.css'
+  styleUrl: './records-page.component.scss'
 })
 export class RecordsPageComponent {
   protected readonly i18n = inject(I18nService);

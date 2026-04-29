@@ -48,7 +48,7 @@ type PixelProgressSnapshot = {
   selector: 'app-pixelated-flag-game-page',
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './pixelated-flag-game-page.component.html',
-  styleUrl: './pixelated-flag-game-page.component.css'
+  styleUrl: './pixelated-flag-game-page.component.scss'
 })
 export class PixelatedFlagGamePageComponent implements AfterViewInit {
   private static readonly PROGRESS_GAME_ID: GameId = 'pixel-flag';

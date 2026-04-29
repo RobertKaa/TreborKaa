@@ -1,5 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
-@import './styles/design-system.css';
+@use './styles/design-system';
+@use './styles/app-theme';
+@use './styles/game-ui';
 
 html,
 body {
@@ -124,10 +125,14 @@ img {
     box-shadow: 0 0 0 rgba(47, 153, 98, 0);
   }
   45% {
-    box-shadow: 0 0 0 8px rgba(47, 153, 98, 0.08), 0 0 26px rgba(47, 153, 98, 0.38);
+    box-shadow:
+      0 0 0 8px rgba(47, 153, 98, 0.08),
+      0 0 26px rgba(47, 153, 98, 0.38);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(47, 153, 98, 0), 0 0 0 rgba(47, 153, 98, 0);
+    box-shadow:
+      0 0 0 0 rgba(47, 153, 98, 0),
+      0 0 0 rgba(47, 153, 98, 0);
   }
 }
 
@@ -242,7 +247,9 @@ img {
 
   .status-dock {
     bottom: calc(10px + env(safe-area-inset-bottom, 0px) + var(--keyboard-offset, 0px)) !important;
-    width: calc(100vw - 16px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) !important;
+    width: calc(
+      100vw - 16px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)
+    ) !important;
     max-height: 42vh;
     overflow: auto;
   }
@@ -272,7 +279,9 @@ img {
     top: calc(16px + env(safe-area-inset-top, 0px)) !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
-    max-height: calc(100dvh - 32px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) !important;
+    max-height: calc(
+      100dvh - 32px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)
+    ) !important;
   }
 
   app-root.mobile-viewport .game-shell,
@@ -287,15 +296,15 @@ img {
 
 @media (max-width: 640px) {
   :is(
-      .ghost-link,
-      .switch-link,
-      .next-button,
-      .primary-button,
-      .difficulty-button,
-      .pattern-chip,
-      .piece-actions button,
-      .sort-controls button
-    ) {
+    .ghost-link,
+    .switch-link,
+    .next-button,
+    .primary-button,
+    .difficulty-button,
+    .pattern-chip,
+    .piece-actions button,
+    .sort-controls button
+  ) {
     min-height: 38px !important;
     padding: 8px 12px !important;
     font-size: 0.92rem;

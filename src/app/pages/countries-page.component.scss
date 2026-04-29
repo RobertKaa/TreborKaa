@@ -24,7 +24,11 @@
   gap: 20px;
   align-items: flex-start;
   background:
-    radial-gradient(circle at 94% 8%, color-mix(in srgb, var(--accent-soft) 70%, transparent), transparent 34%),
+    radial-gradient(
+      circle at 94% 8%,
+      color-mix(in srgb, var(--accent-soft) 70%, transparent),
+      transparent 34%
+    ),
     var(--card);
 }
 
@@ -105,7 +109,11 @@ h1 {
 
 .table-card {
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--surface-strong) 70%, transparent), transparent 24%),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--surface-strong) 70%, transparent),
+      transparent 24%
+    ),
     var(--card);
 }
 

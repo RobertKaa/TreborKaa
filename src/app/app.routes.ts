@@ -1,68 +1,81 @@
 import { Routes } from '@angular/router';
-import { AchievementsPageComponent } from './pages/achievements-page.component';
-import { CountriesPageComponent } from './pages/countries-page.component';
-import { CountryToFlagGamePageComponent } from './pages/country-to-flag-game-page.component';
-import { ChronoFlagsGamePageComponent } from './pages/chrono-flags-game-page.component';
-import { FindTheErrorGamePageComponent } from './pages/find-the-error-game-page.component';
-import { FlagRebuildGamePageComponent } from './pages/flag-rebuild-game-page.component';
-import { FlagToCountryGamePageComponent } from './pages/flag-to-country-game-page.component';
-import { HomePageComponent } from './pages/home-page.component';
-import { PixelatedFlagGamePageComponent } from './pages/pixelated-flag-game-page.component';
-import { RecordsPageComponent } from './pages/records-page.component';
-import { ShapeToCountryGamePageComponent } from './pages/shape-to-country-game-page.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: HomePageComponent
+    loadComponent: () => import('./pages/home-page.component').then((m) => m.HomePageComponent),
   },
   {
     path: 'pays',
-    component: CountriesPageComponent
+    loadComponent: () =>
+      import('./pages/countries-page.component').then((m) => m.CountriesPageComponent),
   },
   {
     path: 'records',
-    component: RecordsPageComponent
+    loadComponent: () =>
+      import('./pages/records-page.component').then((m) => m.RecordsPageComponent),
   },
   {
     path: 'succes',
-    component: AchievementsPageComponent
+    loadComponent: () =>
+      import('./pages/achievements-page.component').then((m) => m.AchievementsPageComponent),
   },
   {
     path: 'jeu/pays-vers-drapeaux/:difficulty',
-    component: CountryToFlagGamePageComponent
+    loadComponent: () =>
+      import('./pages/country-to-flag-game-page.component').then(
+        (m) => m.CountryToFlagGamePageComponent,
+      ),
   },
   {
     path: 'jeu/drapeaux-vers-pays/:difficulty',
-    component: FlagToCountryGamePageComponent
+    loadComponent: () =>
+      import('./pages/flag-to-country-game-page.component').then(
+        (m) => m.FlagToCountryGamePageComponent,
+      ),
   },
   {
     path: 'jeu/formes-vers-pays/:difficulty',
-    component: ShapeToCountryGamePageComponent
+    loadComponent: () =>
+      import('./pages/shape-to-country-game-page.component').then(
+        (m) => m.ShapeToCountryGamePageComponent,
+      ),
   },
   {
     path: 'jeu/reconstruction-drapeau',
-    component: FlagRebuildGamePageComponent
+    loadComponent: () =>
+      import('./pages/flag-rebuild-game-page.component').then(
+        (m) => m.FlagRebuildGamePageComponent,
+      ),
   },
   {
     path: 'jeu/trouver-erreur',
-    component: FindTheErrorGamePageComponent
+    loadComponent: () =>
+      import('./pages/find-the-error-game-page.component').then(
+        (m) => m.FindTheErrorGamePageComponent,
+      ),
   },
   {
     path: 'jeu/drapeau-pixelise',
-    component: PixelatedFlagGamePageComponent
+    loadComponent: () =>
+      import('./pages/pixelated-flag-game-page.component').then(
+        (m) => m.PixelatedFlagGamePageComponent,
+      ),
   },
   {
     path: 'jeu/chrono-drapeaux',
-    component: ChronoFlagsGamePageComponent
+    loadComponent: () =>
+      import('./pages/chrono-flags-game-page.component').then(
+        (m) => m.ChronoFlagsGamePageComponent,
+      ),
   },
   {
     path: 'jeu/culture-drapeaux',
     redirectTo: '',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: '**',
-    redirectTo: ''
-  }
+    redirectTo: '',
+  },
 ];

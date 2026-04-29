@@ -64,7 +64,7 @@ type FindErrorProgressSnapshot = {
   selector: 'app-find-the-error-game-page',
   imports: [RouterLink],
   templateUrl: './find-the-error-game-page.component.html',
-  styleUrl: './find-the-error-game-page.component.css'
+  styleUrl: './find-the-error-game-page.component.scss'
 })
 export class FindTheErrorGamePageComponent implements OnDestroy {
   private static readonly PROGRESS_GAME_ID: GameId = 'find-the-error';

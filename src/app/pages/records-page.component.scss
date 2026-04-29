@@ -24,7 +24,11 @@
   gap: 18px;
   padding: 22px 24px;
   background:
-    radial-gradient(circle at 94% 8%, color-mix(in srgb, var(--secondary-soft) 72%, transparent), transparent 35%),
+    radial-gradient(
+      circle at 94% 8%,
+      color-mix(in srgb, var(--secondary-soft) 72%, transparent),
+      transparent 35%
+    ),
     var(--card);
 }
 
@@ -75,7 +79,9 @@ h1 {
   border: 1px solid var(--line);
   text-decoration: none;
   font-weight: 700;
-  transition: transform 150ms ease, border-color 150ms ease;
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease;
 }
 
 .ghost-link {
@@ -91,7 +97,11 @@ h1 {
 
 .danger-button {
   color: #fff;
-  background: linear-gradient(135deg, var(--danger), color-mix(in srgb, var(--danger) 74%, #491720));
+  background: linear-gradient(
+    135deg,
+    var(--danger),
+    color-mix(in srgb, var(--danger) 74%, #491720)
+  );
   cursor: pointer;
 }
 

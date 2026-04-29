@@ -44,7 +44,7 @@ type CultureProgressSnapshot = {
   selector: 'app-flag-culture-game-page',
   imports: [RouterLink],
   templateUrl: './flag-culture-game-page.component.html',
-  styleUrl: './flag-culture-game-page.component.css'
+  styleUrl: './flag-culture-game-page.component.scss'
 })
 export class FlagCultureGamePageComponent {
   private static readonly PROGRESS_GAME_ID: GameId = 'flag-culture';

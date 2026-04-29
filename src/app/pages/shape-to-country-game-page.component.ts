@@ -113,7 +113,7 @@ const EASY_EXTRA_EXCLUDED_CODES = new Set([
   selector: 'app-shape-to-country-game-page',
   imports: [RouterLink],
   templateUrl: './shape-to-country-game-page.component.html',
-  styleUrl: './shape-to-country-game-page.component.css'
+  styleUrl: './shape-to-country-game-page.component.scss'
 })
 export class ShapeToCountryGamePageComponent
   extends ClassicQuizPageBase<CountryNameQuizQuestion>
