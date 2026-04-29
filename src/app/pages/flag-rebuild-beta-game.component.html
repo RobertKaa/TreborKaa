@@ -116,7 +116,21 @@
           <span class="active-color-preview" [style.background]="activePiece().color"></span>
           <div>
             <p class="active-zone">{{ getZoneLabel(selectedZoneIndex()) }}</p>
+            <p class="zone-progress">
+              {{
+                i18n.t('classic.rebuild.beta.zoneProgress', {
+                  filled: filledZoneCount(),
+                  total: zoneCount(),
+                })
+              }}
+            </p>
           </div>
+        </div>
+        <div class="completion-track" aria-hidden="true">
+          <div
+            class="completion-fill"
+            [style.width.%]="(filledZoneCount() / zoneCount()) * 100"
+          ></div>
         </div>
       </div>
 
@@ -170,13 +184,15 @@
           <button
             type="button"
             class="primary-button"
-            [disabled]="isScoring()"
+            [disabled]="!isReadyToScan()"
             (click)="submitRound()"
           >
             {{
               isScoring()
                 ? i18n.t('classic.rebuild.beta.scanning')
-                : i18n.t('classic.rebuild.beta.scoreAction')
+                : isReadyToScan()
+                  ? i18n.t('classic.rebuild.beta.scoreAction')
+                  : i18n.t('classic.rebuild.beta.fillZonesAction')
             }}
           </button>
         }

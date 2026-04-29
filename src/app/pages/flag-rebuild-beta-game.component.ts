@@ -48,6 +48,7 @@ type RatioPoint = readonly [number, number];
 
 const FLAG_CANVAS_WIDTH = 360;
 const FLAG_CANVAS_HEIGHT = 240;
+const BETA_EMPTY_COLOR = '#f7f3ea';
 const DIAGONAL_RAY_POLYGONS: RatioPoint[][] = [
   [
     [0, 0],
@@ -278,6 +279,9 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   protected readonly result = signal<BetaResult | null>(null);
   protected readonly round = signal(1);
   protected readonly totalScore = signal(0);
+  protected readonly completedRounds = signal(0);
+  protected readonly currentRoundScore = signal(0);
+  protected readonly hasScoredCurrentRound = signal(false);
   protected readonly isScoring = signal(false);
   private readonly realFlagCache = new Map<string, ImageData | null>();
   private readonly pixelMaskCache = new Map<string, PixelZoneMask | null>();
@@ -294,8 +298,18 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       puzzle.targetColors.length,
     );
   });
+  protected readonly zoneCount = computed(() => this.previewColorsForPattern().length);
+  protected readonly filledZoneCount = computed(
+    () => this.previewColorsForPattern().filter((color) => !this.isEmptyColor(color)).length,
+  );
+  protected readonly isReadyToScan = computed(
+    () => this.filledZoneCount() === this.zoneCount() && !this.isScoring(),
+  );
   protected readonly masteryPercent = computed(() =>
-    Math.min(100, Math.round((this.totalScore() / Math.max(1, this.round() * 100)) * 100)),
+    Math.min(
+      100,
+      Math.round((this.totalScore() / Math.max(1, this.completedRounds() * 100)) * 100),
+    ),
   );
 
   constructor() {
@@ -414,19 +428,19 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   }
 
   protected isBlankColor(color: string | undefined): boolean {
-    return color?.toLowerCase() === '#f7f3ea' || color?.toLowerCase() === '#ffffff';
+    return this.isEmptyColor(color) || color?.toLowerCase() === '#ffffff';
   }
 
   protected selectPattern(pattern: FlagRebuildPattern): void {
     this.selectedPattern.set(pattern);
     this.selectedZoneIndex.set(0);
-    this.result.set(null);
+    this.clearCurrentRoundResult();
     this.pieces.set(this.fitPiecesToPattern(pattern, this.pieces(), this.currentPuzzle()));
   }
 
   protected selectZone(index: number): void {
     this.selectedZoneIndex.set(index);
-    this.result.set(null);
+    this.clearCurrentRoundResult();
   }
 
   protected selectColor(color: string): void {
@@ -435,31 +449,44 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       return;
     }
 
-    this.result.set(null);
+    const activeIndex = this.selectedZoneIndex();
+    this.clearCurrentRoundResult();
     this.pieces.update((pieces) =>
       pieces.map((piece) => (piece.id === activePiece.id ? { ...piece, color } : piece)),
     );
+    this.advanceToNextOpenZone(activeIndex);
   }
 
   protected async submitRound(): Promise<void> {
-    if (this.isScoring()) {
+    if (!this.isReadyToScan()) {
       return;
     }
 
+    const previousScore = this.currentRoundScore();
+    const hadScore = this.hasScoredCurrentRound();
     this.isScoring.set(true);
-    const result = await this.evaluatePuzzle(
-      this.currentPuzzle(),
-      this.selectedPattern(),
-      this.previewColors(),
-    );
 
-    this.result.set(result);
-    this.totalScore.update((score) => score + result.score);
-    this.isScoring.set(false);
+    try {
+      const result = await this.evaluatePuzzle(
+        this.currentPuzzle(),
+        this.selectedPattern(),
+        this.previewColors(),
+      );
+
+      this.result.set(result);
+      this.currentRoundScore.set(result.score);
+      this.hasScoredCurrentRound.set(true);
+      this.totalScore.update((score) => score - previousScore + result.score);
+      if (!hadScore) {
+        this.completedRounds.update((rounds) => rounds + 1);
+      }
+    } finally {
+      this.isScoring.set(false);
+    }
   }
 
   protected retryRound(): void {
-    this.result.set(null);
+    this.clearCurrentRoundResult();
   }
 
   protected nextRound(): void {
@@ -475,6 +502,8 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     );
     this.selectedZoneIndex.set(0);
     this.result.set(null);
+    this.currentRoundScore.set(0);
+    this.hasScoredCurrentRound.set(false);
     this.round.update((round) => round + 1);
   }
 
@@ -490,6 +519,39 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     const pixelMask = this.getActivePatternPixelMask();
 
     this.selectZone(this.findPixelMaskZoneAtPoint(pixelMask, x, y));
+  }
+
+  private clearCurrentRoundResult(): void {
+    if (this.hasScoredCurrentRound()) {
+      this.totalScore.update((score) => Math.max(0, score - this.currentRoundScore()));
+      this.completedRounds.update((rounds) => Math.max(0, rounds - 1));
+      this.currentRoundScore.set(0);
+      this.hasScoredCurrentRound.set(false);
+    }
+
+    this.result.set(null);
+  }
+
+  private advanceToNextOpenZone(currentIndex: number): void {
+    const colors = this.previewColorsForPattern();
+    const zoneCount = colors.length;
+    if (zoneCount <= 1) {
+      return;
+    }
+
+    for (let offset = 1; offset <= zoneCount; offset += 1) {
+      const nextIndex = (currentIndex + offset) % zoneCount;
+      if (this.isEmptyColor(colors[nextIndex])) {
+        this.selectedZoneIndex.set(nextIndex);
+        return;
+      }
+    }
+
+    this.selectedZoneIndex.set((currentIndex + 1) % zoneCount);
+  }
+
+  private isEmptyColor(color: string | undefined): boolean {
+    return color?.toLowerCase() === BETA_EMPTY_COLOR;
   }
 
   private async evaluatePuzzle(
@@ -540,7 +602,7 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   private buildInitialPieces(puzzle: FlagRebuildPuzzle): BetaPiece[] {
     return puzzle.targetColors.map((_, index) => ({
       id: `${puzzle.code}-beta-${index}`,
-      color: '#f7f3ea',
+      color: BETA_EMPTY_COLOR,
     }));
   }
 
@@ -555,7 +617,7 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       return (
         pieces[index] ?? {
           id: `${puzzle.code}-beta-${index}`,
-          color: '#f7f3ea',
+          color: BETA_EMPTY_COLOR,
         }
       );
     });
@@ -620,7 +682,7 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   ): string[] {
     const zoneCount = this.getPatternZoneCount(pattern, colorCount);
 
-    return Array.from({ length: zoneCount }, (_, index) => sourceColors[index] ?? '#f7f3ea');
+    return Array.from({ length: zoneCount }, (_, index) => sourceColors[index] ?? BETA_EMPTY_COLOR);
   }
 
   private getPatternZoneCount(pattern: FlagRebuildPattern, colorCount: number): number {

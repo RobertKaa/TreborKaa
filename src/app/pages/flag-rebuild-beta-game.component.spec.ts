@@ -123,6 +123,51 @@ describe('FlagRebuildBetaGameComponent', () => {
     expect(palette.length).toBeGreaterThan(new Set(puzzle.targetColors).size);
   });
 
+  it('does not stack the same round score across repeated scans', async () => {
+    const puzzle = (component as any).currentPuzzle();
+    (component as any).pieces.set(
+      puzzle.targetColors.map((color: string, index: number) => ({
+        id: `filled-${index}`,
+        color,
+      })),
+    );
+    (component as any).evaluatePuzzle = () =>
+      Promise.resolve({
+        score: 80,
+        colorScore: 80,
+        imageScore: 80,
+        patternScore: 100,
+        zoneScores: [80],
+        labelKey: 'classic.rebuild.beta.rank.close',
+      });
+
+    await (component as any).submitRound();
+    await (component as any).submitRound();
+
+    expect((component as any).totalScore()).toBe(80);
+    expect((component as any).completedRounds()).toBe(1);
+
+    (component as any).retryRound();
+
+    expect((component as any).totalScore()).toBe(0);
+    expect((component as any).completedRounds()).toBe(0);
+  });
+
+  it('moves to the next empty zone after selecting a color', () => {
+    (component as any).pieces.set([
+      { id: 'zone-1', color: '#f7f3ea' },
+      { id: 'zone-2', color: '#f7f3ea' },
+      { id: 'zone-3', color: '#f7f3ea' },
+    ]);
+    (component as any).selectedPattern.set('horizontal-stripes');
+    (component as any).selectedZoneIndex.set(0);
+
+    (component as any).selectColor('#111111');
+
+    expect((component as any).pieces()[0].color).toBe('#111111');
+    expect((component as any).selectedZoneIndex()).toBe(1);
+  });
+
   it('keeps diagonal rays as five selectable zones', () => {
     expect((component as any).getPatternZoneCount('diagonal-rays', 2)).toBe(5);
 

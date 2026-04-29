@@ -236,7 +236,6 @@ h3 {
 }
 
 .active-zone {
-  margin-bottom: 2px;
   font-size: 1.15rem;
   font-weight: 800;
 }
@@ -254,6 +253,23 @@ h3 {
   border: 2px solid var(--line);
   border-radius: 12px;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.48);
+}
+
+.zone-progress {
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+}
+
+.completion-track {
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--line-soft);
+}
+
+.completion-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--secondary), var(--accent));
 }
 
 .palette-grid {
