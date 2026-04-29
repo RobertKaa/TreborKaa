@@ -8,7 +8,8 @@ export type FlagRebuildPattern =
   | 'center-disc'
   | 'horizontal-stripes-center-disc'
   | 'saltire'
-  | 'diagonal-rays';
+  | 'diagonal-rays'
+  | 'canton-horizontal-bands';
 
 export type FlagRebuildPuzzle = {
   code: string;

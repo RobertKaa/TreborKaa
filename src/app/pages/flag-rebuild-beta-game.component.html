@@ -133,6 +133,11 @@
                 <path class="blueprint-zone" d="M8 57 L55 9" />
                 <path class="blueprint-zone" d="M8 57 L79 9" />
               }
+              @case ('canton-horizontal-bands') {
+                <rect class="blueprint-zone" x="8" y="9" width="84" height="23" rx="2" />
+                <rect class="blueprint-zone" x="8" y="34" width="84" height="23" rx="2" />
+                <rect class="blueprint-zone" x="8" y="9" width="28" height="23" rx="2" />
+              }
             }
           </svg>
           <span>{{ getPatternLabel(choice.pattern) }}</span>

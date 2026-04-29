@@ -113,6 +113,26 @@ describe('FlagRebuildBetaGameComponent', () => {
     expect(new Set(choices.map((choice: any) => choice.pattern)).size).toBe(choices.length);
   });
 
+  it('keeps shape choices visually diverse across pattern families', () => {
+    const puzzle = {
+      code: 'cl',
+      nameFrench: 'Chili',
+      targetPattern: 'canton-horizontal-bands',
+      patternOptions: ['canton-horizontal-bands', 'horizontal-stripes', 'left-band-horizontal'],
+      targetColors: ['#0039a6', '#ffffff', '#d52b1e'],
+      palette: [],
+      flagUrl: 'https://flagcdn.com/w320/cl.png',
+    };
+    const choices = (component as any).buildPatternChoices(puzzle);
+    const families = new Set(
+      choices.map((choice: any) => (component as any).getPatternFamily(choice.pattern)),
+    );
+
+    expect(choices.length).toBe(4);
+    expect(choices.some((choice: any) => choice.pattern === 'canton-horizontal-bands')).toBe(true);
+    expect(families.size).toBeGreaterThanOrEqual(3);
+  });
+
   it('keeps exact colors in a mixed beta palette', () => {
     const puzzle = (component as any).currentPuzzle();
     const palette = (component as any).buildPaletteOptions(puzzle);
@@ -225,6 +245,13 @@ describe('FlagRebuildBetaGameComponent', () => {
     expect((component as any).findZoneAtPoint('diagonal-rays', 0.62, 0.05, 5)).toBe(2);
     expect((component as any).findZoneAtPoint('diagonal-rays', 0.88, 0.05, 5)).toBe(3);
     expect((component as any).findZoneAtPoint('diagonal-rays', 0.95, 0.7, 5)).toBe(4);
+  });
+
+  it('supports canton plus horizontal bands as a selectable shape', () => {
+    expect((component as any).getPatternZoneCount('canton-horizontal-bands', 3)).toBe(3);
+    expect((component as any).findZoneAtPoint('canton-horizontal-bands', 0.1, 0.1, 3)).toBe(0);
+    expect((component as any).findZoneAtPoint('canton-horizontal-bands', 0.6, 0.1, 3)).toBe(1);
+    expect((component as any).findZoneAtPoint('canton-horizontal-bands', 0.6, 0.8, 3)).toBe(2);
   });
 
   it('builds the same pixel mask renderer for wrong shape choices', () => {
@@ -357,5 +384,19 @@ describe('FlagRebuildBetaGameComponent', () => {
     expect(zoneIndexes[2 * imageData.width + 7]).toBe(2);
     expect(zoneIndexes[5 * imageData.width + 7]).toBe(3);
     expect(zoneIndexes[2 * imageData.width]).toBe(0);
+  });
+
+  it('builds geometric real-pixel zones for canton plus horizontal bands', () => {
+    const imageData = {
+      width: 6,
+      height: 4,
+      data: new Uint8ClampedArray(6 * 4 * 4),
+    } as ImageData;
+
+    const zoneIndexes = (component as any).createCantonHorizontalBandZoneIndexes(imageData);
+
+    expect(zoneIndexes[0]).toBe(0);
+    expect(zoneIndexes[4]).toBe(1);
+    expect(zoneIndexes[3 * imageData.width + 4]).toBe(2);
   });
 });

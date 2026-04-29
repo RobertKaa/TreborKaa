@@ -47,10 +47,20 @@ type RgbColor = {
 
 type StripeAxis = 'x' | 'y';
 type RatioPoint = readonly [number, number];
+type PatternFamily =
+  | 'bands'
+  | 'cantons'
+  | 'crosses'
+  | 'diagonals'
+  | 'discs'
+  | 'stripes'
+  | 'triangles';
 
 const FLAG_CANVAS_WIDTH = 360;
 const FLAG_CANVAS_HEIGHT = 240;
 const BETA_EMPTY_COLOR = '#f7f3ea';
+const CANTON_WIDTH_RATIO = 1 / 3;
+const CANTON_HEIGHT_RATIO = 0.5;
 const ZONE_GUIDE_HALO_SIZE = 3;
 const ZONE_GUIDE_CORE_SIZE = 1;
 const ZONE_ACTIVE_HALO_SIZE = 5;
@@ -95,7 +105,21 @@ const BETA_FLAG_REBUILD_PATTERNS: FlagRebuildPattern[] = [
   'horizontal-stripes-center-disc',
   'saltire',
   'diagonal-rays',
+  'canton-horizontal-bands',
 ];
+const BETA_PATTERN_FAMILIES: Record<FlagRebuildPattern, PatternFamily> = {
+  'horizontal-stripes': 'stripes',
+  'vertical-stripes': 'stripes',
+  'triangle-left-bands-2': 'triangles',
+  'triangle-left-bands-3': 'triangles',
+  'left-band-horizontal': 'bands',
+  'nordic-cross': 'crosses',
+  'center-disc': 'discs',
+  'horizontal-stripes-center-disc': 'discs',
+  saltire: 'diagonals',
+  'diagonal-rays': 'diagonals',
+  'canton-horizontal-bands': 'cantons',
+};
 const BETA_SHARED_DECOY_COLORS = [
   '#111111',
   '#ffffff',
@@ -252,6 +276,15 @@ const BETA_EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
       '#000000',
     ],
     flagUrl: 'https://flagcdn.com/w320/sd.png',
+  },
+  {
+    code: 'cl',
+    nameFrench: 'Chili',
+    targetPattern: 'canton-horizontal-bands',
+    patternOptions: ['canton-horizontal-bands', 'horizontal-stripes', 'left-band-horizontal'],
+    targetColors: ['#0039a6', '#ffffff', '#d52b1e'],
+    palette: ['#2d62bd', '#f5f5f5', '#e34a3e', '#0039a6', '#ffffff', '#d52b1e'],
+    flagUrl: 'https://flagcdn.com/w320/cl.png',
   },
 ];
 
@@ -456,6 +489,14 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
         );
       case 'diagonal-rays':
         return this.i18n.t('rebuild.zone.stripe', { index: index + 1 });
+      case 'canton-horizontal-bands':
+        return (
+          [
+            this.i18n.t('rebuild.zone.canton'),
+            this.i18n.t('rebuild.zone.topRight'),
+            this.i18n.t('rebuild.zone.bottom'),
+          ][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 })
+        );
       default:
         return this.i18n.t('rebuild.zone.generic', { index: index + 1 });
     }
@@ -731,13 +772,51 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   }
 
   private buildPatternChoices(puzzle: FlagRebuildPuzzle): PatternChoice[] {
-    const decoys = this.shuffle(
-      BETA_FLAG_REBUILD_PATTERNS.filter((pattern) => pattern !== puzzle.targetPattern),
-    ).slice(0, BETA_PATTERN_CHOICE_COUNT - 1);
+    const decoys = this.pickPatternDecoys(puzzle);
 
     return this.shuffle([puzzle.targetPattern, ...decoys]).map((pattern) => ({
       pattern,
     }));
+  }
+
+  private pickPatternDecoys(puzzle: FlagRebuildPuzzle): FlagRebuildPattern[] {
+    const selected = [puzzle.targetPattern];
+    const candidates = [
+      ...this.shuffle(puzzle.patternOptions.filter((pattern) => pattern !== puzzle.targetPattern)),
+      ...this.shuffle(
+        BETA_FLAG_REBUILD_PATTERNS.filter((pattern) => pattern !== puzzle.targetPattern),
+      ),
+    ];
+
+    candidates.forEach((candidate) => {
+      if (selected.length >= BETA_PATTERN_CHOICE_COUNT || selected.includes(candidate)) {
+        return;
+      }
+
+      const candidateFamily = this.getPatternFamily(candidate);
+      const targetFamily = this.getPatternFamily(puzzle.targetPattern);
+      const familyCount = selected.filter(
+        (pattern) => this.getPatternFamily(pattern) === candidateFamily,
+      ).length;
+      const maxSameFamily = candidateFamily === targetFamily ? 2 : 1;
+      if (familyCount >= maxSameFamily) {
+        return;
+      }
+
+      selected.push(candidate);
+    });
+
+    candidates.forEach((candidate) => {
+      if (selected.length < BETA_PATTERN_CHOICE_COUNT && !selected.includes(candidate)) {
+        selected.push(candidate);
+      }
+    });
+
+    return selected.slice(1);
+  }
+
+  private getPatternFamily(pattern: FlagRebuildPattern): PatternFamily {
+    return BETA_PATTERN_FAMILIES[pattern];
   }
 
   private pickInitialPattern(patternChoices: PatternChoice[]): FlagRebuildPattern {
@@ -770,6 +849,8 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
         return colorCount;
       case 'diagonal-rays':
         return DIAGONAL_RAY_POLYGONS.length;
+      case 'canton-horizontal-bands':
+        return 3;
       default:
         return Math.max(2, colorCount);
     }
@@ -911,6 +992,8 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
         return this.createTriangleBandZoneIndexes(reference, puzzle.targetColors);
       case 'horizontal-stripes-center-disc':
         return this.createStripeDiscZoneIndexes(reference, puzzle.targetColors);
+      case 'canton-horizontal-bands':
+        return this.createCantonHorizontalBandZoneIndexes(reference);
       default:
         return null;
     }
@@ -996,6 +1079,18 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
         closestIndex === discIndex
           ? discIndex
           : bandZoneIndexes[Math.floor(pixelIndex / reference.width)];
+    }
+
+    return zoneIndexes;
+  }
+
+  private createCantonHorizontalBandZoneIndexes(reference: ImageData): Uint8Array {
+    const zoneIndexes = new Uint8Array(reference.width * reference.height);
+
+    for (let pixelIndex = 0; pixelIndex < zoneIndexes.length; pixelIndex += 1) {
+      const x = (pixelIndex % reference.width) / reference.width;
+      const y = Math.floor(pixelIndex / reference.width) / reference.height;
+      zoneIndexes[pixelIndex] = this.findCantonHorizontalBandZoneAtPoint(x, y);
     }
 
     return zoneIndexes;
@@ -1474,6 +1569,14 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
         });
         break;
       }
+      case 'canton-horizontal-bands':
+        context.fillStyle = colors[1] ?? '#f7f3ea';
+        context.fillRect(0, 0, width, height * CANTON_HEIGHT_RATIO);
+        context.fillStyle = colors[2] ?? '#f7f3ea';
+        context.fillRect(0, height * CANTON_HEIGHT_RATIO, width, height * CANTON_HEIGHT_RATIO);
+        context.fillStyle = colors[0] ?? '#f7f3ea';
+        context.fillRect(0, 0, width * CANTON_WIDTH_RATIO, height * CANTON_HEIGHT_RATIO);
+        break;
     }
   }
 
@@ -1594,6 +1697,25 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
           height,
         );
         context.stroke();
+        break;
+      case 'canton-horizontal-bands':
+        if (zoneIndex === 0) {
+          context.strokeRect(
+            3,
+            3,
+            width * CANTON_WIDTH_RATIO - 6,
+            height * CANTON_HEIGHT_RATIO - 6,
+          );
+        } else if (zoneIndex === 1) {
+          context.strokeRect(
+            width * CANTON_WIDTH_RATIO + 3,
+            3,
+            width * (1 - CANTON_WIDTH_RATIO) - 6,
+            height * CANTON_HEIGHT_RATIO - 6,
+          );
+        } else {
+          context.strokeRect(3, height * CANTON_HEIGHT_RATIO + 3, width - 6, height * 0.5 - 6);
+        }
         break;
     }
 
@@ -1726,7 +1848,17 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
         return x < 0.2 || x > 0.8 ? 2 : 0;
       case 'diagonal-rays':
         return this.findDiagonalRayZoneAtPoint(x, y, zoneCount);
+      case 'canton-horizontal-bands':
+        return this.findCantonHorizontalBandZoneAtPoint(x, y);
     }
+  }
+
+  private findCantonHorizontalBandZoneAtPoint(x: number, y: number): number {
+    if (y < CANTON_HEIGHT_RATIO) {
+      return x < CANTON_WIDTH_RATIO ? 0 : 1;
+    }
+
+    return 2;
   }
 
   private findDiagonalRayZoneAtPoint(x: number, y: number, zoneCount: number): number {
