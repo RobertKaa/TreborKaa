@@ -126,6 +126,7 @@ describe('FlagRebuildBetaGameComponent', () => {
   it('does not stack the same round score across repeated scans', async () => {
     const puzzle = (component as any).currentPuzzle();
     (component as any).selectedPattern.set(puzzle.targetPattern);
+    (component as any).hasChosenPattern.set(true);
     (component as any).pieces.set(
       puzzle.targetColors.map((color: string, index: number) => ({
         id: `filled-${index}`,
@@ -157,6 +158,7 @@ describe('FlagRebuildBetaGameComponent', () => {
   it('tracks streaks and rolls them back on retry', async () => {
     const puzzle = (component as any).currentPuzzle();
     (component as any).selectedPattern.set(puzzle.targetPattern);
+    (component as any).hasChosenPattern.set(true);
     (component as any).pieces.set(
       puzzle.targetColors.map((color: string, index: number) => ({
         id: `filled-${index}`,
@@ -185,6 +187,7 @@ describe('FlagRebuildBetaGameComponent', () => {
   });
 
   it('moves to the next empty zone after selecting a color', () => {
+    (component as any).hasChosenPattern.set(true);
     (component as any).pieces.set([
       { id: 'zone-1', color: '#f7f3ea' },
       { id: 'zone-2', color: '#f7f3ea' },
@@ -197,6 +200,21 @@ describe('FlagRebuildBetaGameComponent', () => {
 
     expect((component as any).pieces()[0].color).toBe('#111111');
     expect((component as any).selectedZoneIndex()).toBe(1);
+  });
+
+  it('keeps the round focused on shape choice before painting', () => {
+    expect((component as any).activeFlowStep()).toBe('shape');
+    expect((component as any).isReadyToScan()).toBe(false);
+
+    const initialPieces = (component as any).pieces();
+    (component as any).selectColor('#111111');
+
+    expect((component as any).pieces()).toEqual(initialPieces);
+
+    (component as any).selectPattern((component as any).currentPuzzle().targetPattern);
+
+    expect((component as any).hasChosenPattern()).toBe(true);
+    expect((component as any).activeFlowStep()).toBe('paint');
   });
 
   it('keeps diagonal rays as five selectable zones', () => {

@@ -25,6 +25,51 @@
     </div>
   </div>
 
+  <div class="flow-panel" [attr.aria-label]="i18n.t('classic.rebuild.beta.flowAria')">
+    <div
+      class="flow-step"
+      [class.active]="activeFlowStep() === 'shape'"
+      [class.done]="hasChosenPattern()"
+    >
+      <span>1</span>
+      <div>
+        <strong>{{ i18n.t('classic.rebuild.beta.flowShape') }}</strong>
+        <small>{{ i18n.t('classic.rebuild.beta.flowShapeHint') }}</small>
+      </div>
+    </div>
+    <div
+      class="flow-step"
+      [class.active]="activeFlowStep() === 'paint'"
+      [class.done]="filledZoneCount() === zoneCount() && hasChosenPattern()"
+    >
+      <span>2</span>
+      <div>
+        <strong>{{ i18n.t('classic.rebuild.beta.flowPaint') }}</strong>
+        <small>
+          {{
+            i18n.t('classic.rebuild.beta.flowPaintHint', {
+              filled: filledZoneCount(),
+              total: zoneCount(),
+            })
+          }}
+        </small>
+      </div>
+    </div>
+    <div class="flow-step" [class.active]="activeFlowStep() === 'scan'" [class.done]="!!result()">
+      <span>3</span>
+      <div>
+        <strong>{{ i18n.t('classic.rebuild.beta.flowScan') }}</strong>
+        <small>
+          {{
+            result()
+              ? i18n.t('classic.rebuild.beta.flowResultHint')
+              : i18n.t('classic.rebuild.beta.flowScanHint')
+          }}
+        </small>
+      </div>
+    </div>
+  </div>
+
   <div class="visual-choice-panel">
     <p class="question-label">{{ i18n.t('classic.rebuild.beta.visualChoice') }}</p>
     <div class="pattern-choice-grid" [attr.aria-label]="i18n.t('classic.rebuild.beta.patternAria')">
@@ -32,7 +77,7 @@
         <button
           type="button"
           class="pattern-choice-card"
-          [class.selected]="selectedPattern() === choice.pattern"
+          [class.selected]="hasChosenPattern() && selectedPattern() === choice.pattern"
           (click)="selectPattern(choice.pattern)"
         >
           <svg class="shape-blueprint" viewBox="0 0 100 66" aria-hidden="true">
@@ -205,9 +250,11 @@
             {{
               isScoring()
                 ? i18n.t('classic.rebuild.beta.scanning')
-                : isReadyToScan()
-                  ? i18n.t('classic.rebuild.beta.scoreAction')
-                  : i18n.t('classic.rebuild.beta.fillZonesAction')
+                : !hasChosenPattern()
+                  ? i18n.t('classic.rebuild.beta.chooseShapeAction')
+                  : isReadyToScan()
+                    ? i18n.t('classic.rebuild.beta.scoreAction')
+                    : i18n.t('classic.rebuild.beta.fillZonesAction')
             }}
           </button>
         }

@@ -30,6 +30,8 @@ type PatternChoice = {
   pattern: FlagRebuildPattern;
 };
 
+type BetaFlowStep = 'shape' | 'paint' | 'scan';
+
 type PixelZoneMask = {
   puzzleCode: string;
   width: number;
@@ -269,6 +271,7 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   protected readonly selectedPattern = signal<FlagRebuildPattern>(
     this.pickInitialPattern(this.patternChoices()),
   );
+  protected readonly hasChosenPattern = signal(false);
   protected readonly selectedZoneIndex = signal(0);
   protected readonly pieces = signal<BetaPiece[]>(
     this.fitPiecesToPattern(
@@ -308,7 +311,8 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     () => this.previewColorsForPattern().filter((color) => !this.isEmptyColor(color)).length,
   );
   protected readonly isReadyToScan = computed(
-    () => this.filledZoneCount() === this.zoneCount() && !this.isScoring(),
+    () =>
+      this.hasChosenPattern() && this.filledZoneCount() === this.zoneCount() && !this.isScoring(),
   );
   protected readonly masteryPercent = computed(() =>
     Math.min(
@@ -325,6 +329,17 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     return result.score >= BETA_STREAK_SCORE_THRESHOLD
       ? this.i18n.t('classic.rebuild.beta.streakGain', { streak: this.currentStreak() })
       : this.i18n.t('classic.rebuild.beta.streakBreak');
+  });
+  protected readonly activeFlowStep = computed<BetaFlowStep>(() => {
+    if (this.result()) {
+      return 'scan';
+    }
+
+    if (!this.hasChosenPattern()) {
+      return 'shape';
+    }
+
+    return this.isReadyToScan() ? 'scan' : 'paint';
   });
 
   constructor() {
@@ -448,17 +463,26 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
 
   protected selectPattern(pattern: FlagRebuildPattern): void {
     this.selectedPattern.set(pattern);
+    this.hasChosenPattern.set(true);
     this.selectedZoneIndex.set(0);
     this.clearCurrentRoundResult();
     this.pieces.set(this.fitPiecesToPattern(pattern, this.pieces(), this.currentPuzzle()));
   }
 
   protected selectZone(index: number): void {
+    if (!this.hasChosenPattern()) {
+      return;
+    }
+
     this.selectedZoneIndex.set(index);
     this.clearCurrentRoundResult();
   }
 
   protected selectColor(color: string): void {
+    if (!this.hasChosenPattern()) {
+      return;
+    }
+
     const activePiece = this.activePiece();
     if (!activePiece) {
       return;
@@ -520,6 +544,7 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     this.patternChoices.set(nextPatternChoices);
     this.paletteOptions.set(this.buildPaletteOptions(nextPuzzle));
     this.selectedPattern.set(nextPattern);
+    this.hasChosenPattern.set(false);
     this.pieces.set(
       this.fitPiecesToPattern(nextPattern, this.buildInitialPieces(nextPuzzle), nextPuzzle),
     );

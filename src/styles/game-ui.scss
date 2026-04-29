@@ -273,6 +273,37 @@
   transition: width 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+.flow-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.flow-step {
+  flex: 1 1 150px;
+  padding: 8px;
+  border: 1px solid var(--line-soft);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.flow-step span {
+  margin-right: 6px;
+  font-family: 'Space Mono', monospace;
+  font-weight: 800;
+}
+
+.flow-step small {
+  display: block;
+  color: var(--ink-soft);
+  font-size: 0.76rem;
+  line-height: 1.25;
+}
+
+.flow-step.active {
+  border-color: var(--accent-line-strong);
+}
+
 .modal-backdrop {
   position: fixed;
   inset: 0;
