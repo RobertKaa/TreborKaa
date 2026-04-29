@@ -272,6 +272,21 @@ describe('FlagRebuildBetaGameComponent', () => {
     expect((component as any).findPixelMaskZoneAtPoint(pixelMask, 0.75, 0.75)).toBe(0);
   });
 
+  it('keeps guide pixels clamped inside the canvas', () => {
+    const calls: number[][] = [];
+    const context = {
+      fillRect: (...args: number[]) => calls.push(args),
+    };
+
+    (component as any).fillGuidePixel(context, 0, 0, 5, 10, 10);
+    (component as any).fillGuidePixel(context, 9, 9, 5, 10, 10);
+
+    expect(calls).toEqual([
+      [0, 0, 5, 5],
+      [7, 7, 3, 3],
+    ]);
+  });
+
   it('keeps repeated stripe colors as separate real-pixel zones', () => {
     const imageData = {
       width: 4,

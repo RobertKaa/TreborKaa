@@ -51,6 +51,10 @@ type RatioPoint = readonly [number, number];
 const FLAG_CANVAS_WIDTH = 360;
 const FLAG_CANVAS_HEIGHT = 240;
 const BETA_EMPTY_COLOR = '#f7f3ea';
+const ZONE_GUIDE_HALO_SIZE = 3;
+const ZONE_GUIDE_CORE_SIZE = 1;
+const ZONE_ACTIVE_HALO_SIZE = 5;
+const ZONE_ACTIVE_CORE_SIZE = 2;
 const DIAGONAL_RAY_POLYGONS: RatioPoint[][] = [
   [
     [0, 0],
@@ -1218,7 +1222,7 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     pixelMask: PixelZoneMask,
   ): void {
     context.save();
-    context.fillStyle = 'rgba(45, 31, 52, 0.28)';
+    context.fillStyle = 'rgba(31, 27, 46, 0.32)';
 
     for (let y = 0; y < pixelMask.height; y += 1) {
       for (let x = 0; x < pixelMask.width; x += 1) {
@@ -1226,10 +1230,20 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
           continue;
         }
 
-        context.fillRect(x, y, 1, 1);
+        this.fillGuidePixel(context, x, y, ZONE_GUIDE_HALO_SIZE, pixelMask.width, pixelMask.height);
       }
     }
 
+    context.fillStyle = 'rgba(255, 255, 255, 0.72)';
+    for (let y = 0; y < pixelMask.height; y += 1) {
+      for (let x = 0; x < pixelMask.width; x += 1) {
+        if (!this.isPixelMaskBoundary(pixelMask, x, y)) {
+          continue;
+        }
+
+        this.fillGuidePixel(context, x, y, ZONE_GUIDE_CORE_SIZE, pixelMask.width, pixelMask.height);
+      }
+    }
     context.restore();
   }
 
@@ -1239,7 +1253,7 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     zoneIndex: number,
   ): void {
     context.save();
-    context.fillStyle = 'rgba(21, 126, 251, 0.34)';
+    context.fillStyle = 'rgba(31, 27, 46, 0.46)';
 
     for (let y = 0; y < pixelMask.height; y += 1) {
       for (let x = 0; x < pixelMask.width; x += 1) {
@@ -1247,11 +1261,18 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
           continue;
         }
 
-        context.fillRect(Math.max(0, x - 1), Math.max(0, y - 1), 3, 3);
+        this.fillGuidePixel(
+          context,
+          x,
+          y,
+          ZONE_ACTIVE_HALO_SIZE,
+          pixelMask.width,
+          pixelMask.height,
+        );
       }
     }
 
-    context.fillStyle = 'rgba(255, 255, 255, 0.96)';
+    context.fillStyle = 'rgba(255, 255, 255, 0.98)';
 
     for (let y = 0; y < pixelMask.height; y += 1) {
       for (let x = 0; x < pixelMask.width; x += 1) {
@@ -1259,11 +1280,42 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
           continue;
         }
 
-        context.fillRect(x, y, 1, 1);
+        this.fillGuidePixel(
+          context,
+          x,
+          y,
+          ZONE_ACTIVE_CORE_SIZE,
+          pixelMask.width,
+          pixelMask.height,
+        );
       }
     }
 
+    context.fillStyle = 'rgba(239, 141, 53, 0.82)';
+    for (let y = 0; y < pixelMask.height; y += 1) {
+      for (let x = 0; x < pixelMask.width; x += 1) {
+        if (!this.isPixelMaskEdge(pixelMask, x, y, zoneIndex)) {
+          continue;
+        }
+
+        this.fillGuidePixel(context, x, y, ZONE_GUIDE_CORE_SIZE, pixelMask.width, pixelMask.height);
+      }
+    }
     context.restore();
+  }
+
+  private fillGuidePixel(
+    context: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    size: number,
+    width: number,
+    height: number,
+  ): void {
+    const offset = Math.floor(size / 2);
+    const left = Math.max(0, x - offset);
+    const top = Math.max(0, y - offset);
+    context.fillRect(left, top, Math.min(size, width - left), Math.min(size, height - top));
   }
 
   private isPixelMaskBoundary(pixelMask: PixelZoneMask, x: number, y: number): boolean {

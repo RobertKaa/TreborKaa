@@ -130,3 +130,4 @@ Implementation:
   - Reconstruction de drapeau beta: manche protegee contre le multi-score, jauge de maitrise basee sur les manches scannees et progression de remplissage avec avance automatique de zone.
   - Reconstruction de drapeau beta: verdict enrichi avec vrai drapeau, serie courante, meilleure serie et rollback de serie quand une manche est retentee.
   - Reconstruction de drapeau beta: ajout d'une signaletique de manche en 3 etapes (`Forme`, `Couleurs`, `Scan`) pour clarifier la premiere action et le statut courant.
+  - Reconstruction de drapeau beta: guides de zones canvas renforces en double couche et zone active accentuee, avec dessin borne dans la surface du drapeau.
