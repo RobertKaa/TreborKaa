@@ -4,7 +4,14 @@ export type FlagRebuildPattern =
   | 'triangle-left-bands-2'
   | 'triangle-left-bands-3'
   | 'left-band-horizontal'
-  | 'nordic-cross';
+  | 'nordic-cross'
+  | 'center-disc'
+  | 'horizontal-stripes-center-disc'
+  | 'center-star'
+  | 'horizontal-stripes-center-star'
+  | 'saltire'
+  | 'diagonal-rays'
+  | 'canton-horizontal-bands';
 
 export type FlagRebuildPuzzle = {
   code: string;

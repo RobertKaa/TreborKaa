@@ -1,345 +1,339 @@
-﻿<main class="rebuild-shell">
-  <section class="hero-card">
+<section
+  class="beta-shell"
+  [class.round-scored]="!!result()"
+  [class.is-scoring]="isScoring()"
+  aria-labelledby="rebuild-beta-title"
+>
+  <div class="beta-head">
     <div>
-      <p class="eyebrow">{{ i18n.t('classic.rebuild.eyebrow') }}</p>
-      <h1>{{ i18n.t('classic.rebuild.title') }}</h1>
-      <p class="intro">
-        {{ i18n.t('classic.rebuild.intro') }}
-      </p>
+      <p class="eyebrow">{{ i18n.t('classic.rebuild.beta.eyebrow') }}</p>
+      <h2 id="rebuild-beta-title">{{ i18n.t('classic.rebuild.beta.title') }}</h2>
+      <p class="beta-intro">{{ i18n.t('classic.rebuild.beta.intro') }}</p>
     </div>
-  </section>
+    <div class="beta-meter" [attr.aria-label]="i18n.t('classic.rebuild.beta.mastery')">
+      <span>
+        {{
+          i18n.t('classic.rebuild.beta.progressCount', {
+            completed: completedRounds(),
+            total: runTotal,
+          })
+        }}
+      </span>
+      <div class="beta-meter-track" aria-hidden="true">
+        <div class="beta-meter-fill" [style.width.%]="masteryPercent()"></div>
+      </div>
+    </div>
+  </div>
 
-  @if (currentPuzzle(); as puzzle) {
-    <section class="workspace-card">
-      <div class="workspace-main">
-        <p class="question-label">{{ i18n.t('classic.rebuild.question') }}</p>
-        <h2>{{ countryName(puzzle) }}</h2>
+  <div class="beta-board-grid">
+    <div class="beta-setup-card">
+      <div class="mission-panel">
+        <div class="mission-copy">
+          <p class="question-label">{{ i18n.t('classic.rebuild.beta.target') }}</p>
+          <h3>{{ countryName(currentPuzzle()) }}</h3>
+          <p class="mission-stat">
+            {{ i18n.t('classic.rebuild.beta.roundOf', { round: round(), total: runTotal }) }} |
+            {{ i18n.t('classic.rebuild.beta.points', { points: totalScore() }) }} |
+            {{ i18n.t('classic.rebuild.beta.streak', { streak: currentStreak() }) }}
+          </p>
+        </div>
+      </div>
 
-        <div class="pattern-picker">
-          @for (pattern of displayedPatternOptions(); track pattern) {
+      <div class="visual-choice-panel">
+        <p class="question-label">{{ i18n.t('classic.rebuild.beta.visualChoice') }}</p>
+        <div
+          class="pattern-choice-grid"
+          [attr.aria-label]="i18n.t('classic.rebuild.beta.patternAria')"
+        >
+          @for (choice of patternChoices(); track choice.pattern) {
             <button
               type="button"
-              class="pattern-chip"
-              [class.selected]="selectedPattern() === pattern"
-              [disabled]="isLocked()"
-              (click)="selectPattern(pattern)"
+              class="pattern-choice-card"
+              [class.selected]="hasChosenPattern() && selectedPattern() === choice.pattern"
+              [disabled]="!!result()"
+              [attr.aria-label]="getPatternLabel(choice.pattern)"
+              (click)="selectPattern(choice.pattern)"
             >
-              {{ getPatternLabel(pattern) }}
+              <svg class="shape-blueprint" viewBox="0 0 100 66" aria-hidden="true">
+                <rect class="blueprint-frame" x="4" y="5" width="92" height="56" rx="6" />
+                @switch (choice.pattern) {
+                  @case ('horizontal-stripes') {
+                    <rect class="blueprint-zone" x="8" y="9" width="84" height="14" rx="2" />
+                    <rect class="blueprint-zone" x="8" y="26" width="84" height="14" rx="2" />
+                    <rect class="blueprint-zone" x="8" y="43" width="84" height="14" rx="2" />
+                  }
+                  @case ('vertical-stripes') {
+                    <rect class="blueprint-zone" x="8" y="9" width="25" height="48" rx="2" />
+                    <rect class="blueprint-zone" x="37.5" y="9" width="25" height="48" rx="2" />
+                    <rect class="blueprint-zone" x="67" y="9" width="25" height="48" rx="2" />
+                  }
+                  @case ('triangle-left-bands-2') {
+                    <rect class="blueprint-zone" x="45" y="9" width="47" height="23" rx="2" />
+                    <rect class="blueprint-zone" x="45" y="34" width="47" height="23" rx="2" />
+                    <path class="blueprint-zone" d="M8 9 L42 33 L8 57 Z" />
+                  }
+                  @case ('triangle-left-bands-3') {
+                    <rect class="blueprint-zone" x="45" y="9" width="47" height="14" rx="2" />
+                    <rect class="blueprint-zone" x="45" y="26" width="47" height="14" rx="2" />
+                    <rect class="blueprint-zone" x="45" y="43" width="47" height="14" rx="2" />
+                    <path class="blueprint-zone" d="M8 9 L42 33 L8 57 Z" />
+                  }
+                  @case ('left-band-horizontal') {
+                    <rect class="blueprint-zone" x="8" y="9" width="21" height="48" rx="2" />
+                    <rect class="blueprint-zone" x="33" y="9" width="59" height="14" rx="2" />
+                    <rect class="blueprint-zone" x="33" y="26" width="59" height="14" rx="2" />
+                    <rect class="blueprint-zone" x="33" y="43" width="59" height="14" rx="2" />
+                  }
+                  @case ('nordic-cross') {
+                    <path
+                      class="blueprint-zone"
+                      d="M33 9 H47 V27 H92 V39 H47 V57 H33 V39 H8 V27 H33 Z"
+                    />
+                  }
+                  @case ('center-disc') {
+                    <circle class="blueprint-zone" cx="50" cy="33" r="14" />
+                  }
+                  @case ('horizontal-stripes-center-disc') {
+                    <rect class="blueprint-zone" x="8" y="9" width="84" height="14" rx="2" />
+                    <rect class="blueprint-zone" x="8" y="26" width="84" height="14" rx="2" />
+                    <rect class="blueprint-zone" x="8" y="43" width="84" height="14" rx="2" />
+                    <circle class="blueprint-zone" cx="50" cy="33" r="10" />
+                  }
+                  @case ('center-star') {
+                    <path
+                      class="blueprint-zone"
+                      d="M50 17 L54 28 L66 28 L56 35 L60 47 L50 40 L40 47 L44 35 L34 28 L46 28 Z"
+                    />
+                  }
+                  @case ('horizontal-stripes-center-star') {
+                    <rect class="blueprint-zone" x="8" y="9" width="84" height="14" rx="2" />
+                    <rect class="blueprint-zone" x="8" y="26" width="84" height="14" rx="2" />
+                    <rect class="blueprint-zone" x="8" y="43" width="84" height="14" rx="2" />
+                    <path
+                      class="blueprint-zone"
+                      d="M50 19 L53 29 L64 29 L55 35 L58 46 L50 40 L42 46 L45 35 L36 29 L47 29 Z"
+                    />
+                  }
+                  @case ('saltire') {
+                    <path class="blueprint-zone" d="M8 9 L92 57 M92 9 L8 57" />
+                  }
+                  @case ('diagonal-rays') {
+                    <path class="blueprint-zone" d="M8 57 L31 9" />
+                    <path class="blueprint-zone" d="M8 57 L55 9" />
+                    <path class="blueprint-zone" d="M8 57 L79 9" />
+                  }
+                  @case ('canton-horizontal-bands') {
+                    <rect class="blueprint-zone" x="8" y="9" width="84" height="23" rx="2" />
+                    <rect class="blueprint-zone" x="8" y="34" width="84" height="23" rx="2" />
+                    <rect class="blueprint-zone" x="8" y="9" width="28" height="23" rx="2" />
+                  }
+                }
+              </svg>
             </button>
           }
         </div>
+      </div>
+    </div>
 
-      <div class="flag-board" [attr.data-pattern]="selectedPattern()">
-          @switch (selectedPattern()) {
-            @case ('vertical-stripes') {
-              <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                @for (color of previewColorsForPattern(); track $index; let total = $count) {
-                  <rect
-                    class="flag-zone"
-                    [attr.x]="($index * 100) / total"
-                    y="0"
-                    [attr.width]="100 / total"
-                    height="100"
-                    [attr.fill]="color"
-                    [attr.stroke]="isBlankColor(color) ? 'rgba(28, 43, 45, 0.16)' : 'none'"
-                    stroke-width="0.6"
-                    vector-effect="non-scaling-stroke"
-                    (click)="openColorPicker($index)"
-                  />
-                }
-              </svg>
-            }
-            @case ('horizontal-stripes') {
-              <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                @for (color of previewColorsForPattern(); track $index; let total = $count) {
-                  <rect
-                    class="flag-zone"
-                    x="0"
-                    [attr.y]="($index * 100) / total"
-                    width="100"
-                    [attr.height]="100 / total"
-                    [attr.fill]="color"
-                    [attr.stroke]="isBlankColor(color) ? 'rgba(28, 43, 45, 0.16)' : 'none'"
-                    stroke-width="0.6"
-                    vector-effect="non-scaling-stroke"
-                    (click)="openColorPicker($index)"
-                  />
-                }
-              </svg>
-            }
-            @case ('triangle-left-bands-2') {
-              <div class="pattern-triangle">
-                <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                  @for (color of previewColorsForPattern().slice(1); track $index; let total = $count) {
-                    <rect
-                      class="flag-zone"
-                      x="0"
-                      [attr.y]="($index * 100) / total"
-                      width="100"
-                      [attr.height]="100 / total"
-                      [attr.fill]="color"
-                      [attr.stroke]="isBlankColor(color) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
-                      stroke-width="0.6"
-                      vector-effect="non-scaling-stroke"
-                      (click)="openColorPicker($index + 1)"
-                    />
-                  }
-                  <polygon
-                    class="flag-zone"
-                    points="0,0 48,50 0,100"
-                    [attr.fill]="previewColorsForPattern()[0]"
-                    [attr.stroke]="isBlankColor(previewColorsForPattern()[0]) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
-                    stroke-width="0.6"
-                    stroke-linejoin="round"
-                    vector-effect="non-scaling-stroke"
-                    (click)="openColorPicker(0)"
-                  />
-                </svg>
-              </div>
-            }
-            @case ('triangle-left-bands-3') {
-              <div class="pattern-triangle">
-                <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                  @for (color of previewColorsForPattern().slice(1); track $index; let total = $count) {
-                    <rect
-                      class="flag-zone"
-                      x="0"
-                      [attr.y]="($index * 100) / total"
-                      width="100"
-                      [attr.height]="100 / total"
-                      [attr.fill]="color"
-                      [attr.stroke]="isBlankColor(color) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
-                      stroke-width="0.6"
-                      vector-effect="non-scaling-stroke"
-                      (click)="openColorPicker($index + 1)"
-                    />
-                  }
-                  <polygon
-                    class="flag-zone"
-                    points="0,0 48,50 0,100"
-                    [attr.fill]="previewColorsForPattern()[0]"
-                    [attr.stroke]="isBlankColor(previewColorsForPattern()[0]) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
-                    stroke-width="0.6"
-                    stroke-linejoin="round"
-                    vector-effect="non-scaling-stroke"
-                    (click)="openColorPicker(0)"
-                  />
-                </svg>
-              </div>
-            }
-            @case ('left-band-horizontal') {
-              <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                <rect
-                  class="flag-zone"
-                  x="0"
-                  y="0"
-                  width="28"
-                  height="100"
-                  [attr.fill]="previewColorsForPattern()[0]"
-                  [attr.stroke]="isBlankColor(previewColorsForPattern()[0]) ? 'rgba(28, 43, 45, 0.16)' : 'none'"
-                  stroke-width="0.6"
-                  vector-effect="non-scaling-stroke"
-                  (click)="openColorPicker(0)"
-                />
-                @for (color of previewColorsForPattern().slice(1); track $index; let total = $count) {
-                  <rect
-                    class="flag-zone"
-                    x="28"
-                    [attr.y]="($index * 100) / total"
-                    width="72"
-                    [attr.height]="100 / total"
-                    [attr.fill]="color"
-                    [attr.stroke]="isBlankColor(color) ? 'rgba(28, 43, 45, 0.16)' : 'none'"
-                    stroke-width="0.6"
-                    vector-effect="non-scaling-stroke"
-                    (click)="openColorPicker($index + 1)"
-                  />
-                }
-              </svg>
-            }
-            @case ('nordic-cross') {
-              <div class="pattern-cross">
-                <svg class="shape-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                  <rect
-                    class="flag-zone"
-                    x="0"
-                    y="0"
-                    width="100"
-                    height="100"
-                    [attr.fill]="previewColorsForPattern()[0]"
-                    (click)="openColorPicker(0)"
-                  />
-                  <path
-                    class="flag-zone"
-                    d="M30 0 H46 V41.5 H100 V58.5 H46 V100 H30 V58.5 H0 V41.5 H30 Z"
-                    [attr.fill]="previewColorsForPattern()[1]"
-                    [attr.stroke]="isBlankColor(previewColorsForPattern()[1]) ? 'rgba(28, 43, 45, 0.18)' : 'none'"
-                    stroke-width="0.6"
-                    vector-effect="non-scaling-stroke"
-                    (click)="openColorPicker(1)"
-                  />
-                </svg>
-              </div>
-            }
+    <div class="beta-board-card">
+      <div class="beta-flag-board">
+        <canvas
+          #playerCanvas
+          class="flag-canvas"
+          width="360"
+          height="240"
+          [attr.aria-label]="i18n.t('classic.rebuild.beta.canvasAria')"
+          (click)="selectZoneFromCanvas($event)"
+        ></canvas>
+      </div>
+    </div>
+
+    <aside class="beta-controls">
+      <div class="active-color-card">
+        <p class="question-label">{{ i18n.t('classic.rebuild.beta.activeZone') }}</p>
+        <div class="active-color-row">
+          <span class="active-color-preview" [style.background]="activePiece().color"></span>
+          <div>
+            <p class="active-zone">{{ getZoneLabel(selectedZoneIndex()) }}</p>
+            <p class="zone-progress">
+              {{
+                i18n.t('classic.rebuild.beta.zoneProgress', {
+                  filled: filledZoneCount(),
+                  total: zoneCount(),
+                })
+              }}
+            </p>
+          </div>
+        </div>
+        <div class="completion-track" aria-hidden="true">
+          <div
+            class="completion-fill"
+            [style.width.%]="(filledZoneCount() / zoneCount()) * 100"
+          ></div>
+        </div>
+        <p class="score-preview">
+          {{
+            result()
+              ? i18n.t('classic.rebuild.beta.pointsWon', { points: result()?.points ?? 0 })
+              : isScoring()
+                ? i18n.t('classic.rebuild.beta.scoring')
+                : i18n.t('classic.rebuild.beta.liveResult')
+          }}
+        </p>
+      </div>
+
+      <div class="palette-panel">
+        <p class="question-label">{{ i18n.t('classic.rebuild.beta.quickColors') }}</p>
+        <div class="palette-grid" [attr.aria-label]="i18n.t('classic.rebuild.beta.paletteAria')">
+          @for (color of paletteOptions(); track color) {
+            <button
+              type="button"
+              class="palette-swatch"
+              [class.selected]="activePiece().color === color"
+              [style.background]="color"
+              [disabled]="!hasChosenPattern() || !!result()"
+              [attr.aria-label]="
+                i18n.t('classic.rebuild.beta.colorOptionAria', { index: $index + 1 })
+              "
+              (click)="selectColor(color)"
+            >
+              <span class="palette-code">{{ color }}</span>
+            </button>
           }
         </div>
+      </div>
 
-        @if (isColorPickerOpen() && activePiece(); as piece) {
-          <div class="color-picker-overlay" (click)="closeColorPicker()">
-            <section class="color-picker-popover" (click)="$event.stopPropagation()">
-              <div class="color-picker-head">
-                <p class="panel-title">{{ i18n.t('classic.rebuild.colorPicker') }}</p>
-                <button type="button" class="picker-close" [attr.aria-label]="i18n.t('classic.rebuild.closePicker')" (click)="closeColorPicker()">
-                  ×
-                </button>
-              </div>
-              <p class="picker-zone">{{ i18n.t('classic.rebuild.zone', { zone: activeZoneLabel() }) }}</p>
-              <div class="picker-live-preview">
-                <p class="picker-subtitle">{{ i18n.t('classic.rebuild.livePreview') }}</p>
-                <div class="picker-preview-flag" [attr.data-pattern]="selectedPattern()">
-                  @switch (selectedPattern()) {
-                    @case ('vertical-stripes') {
-                      <svg class="picker-preview-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                        @for (color of previewColorsForPattern(); track $index; let total = $count) {
-                          <rect [attr.x]="($index * 100) / total" y="0" [attr.width]="100 / total" height="100" [attr.fill]="color" />
-                        }
-                      </svg>
-                    }
-                    @case ('horizontal-stripes') {
-                      <svg class="picker-preview-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                        @for (color of previewColorsForPattern(); track $index; let total = $count) {
-                          <rect x="0" [attr.y]="($index * 100) / total" width="100" [attr.height]="100 / total" [attr.fill]="color" />
-                        }
-                      </svg>
-                    }
-                    @case ('triangle-left-bands-2') {
-                      <svg class="picker-preview-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                        @for (color of previewColorsForPattern().slice(1); track $index; let total = $count) {
-                          <rect x="0" [attr.y]="($index * 100) / total" width="100" [attr.height]="100 / total" [attr.fill]="color" />
-                        }
-                        <polygon points="0,0 48,50 0,100" [attr.fill]="previewColorsForPattern()[0]" />
-                      </svg>
-                    }
-                    @case ('triangle-left-bands-3') {
-                      <svg class="picker-preview-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                        @for (color of previewColorsForPattern().slice(1); track $index; let total = $count) {
-                          <rect x="0" [attr.y]="($index * 100) / total" width="100" [attr.height]="100 / total" [attr.fill]="color" />
-                        }
-                        <polygon points="0,0 48,50 0,100" [attr.fill]="previewColorsForPattern()[0]" />
-                      </svg>
-                    }
-                    @case ('left-band-horizontal') {
-                      <svg class="picker-preview-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                        <rect x="0" y="0" width="28" height="100" [attr.fill]="previewColorsForPattern()[0]" />
-                        @for (color of previewColorsForPattern().slice(1); track $index; let total = $count) {
-                          <rect x="28" [attr.y]="($index * 100) / total" width="72" [attr.height]="100 / total" [attr.fill]="color" />
-                        }
-                      </svg>
-                    }
-                    @case ('nordic-cross') {
-                      <svg class="picker-preview-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                        <rect x="0" y="0" width="100" height="100" [attr.fill]="previewColorsForPattern()[0]" />
-                        <path d="M30 0 H46 V41.5 H100 V58.5 H46 V100 H30 V58.5 H0 V41.5 H30 Z" [attr.fill]="previewColorsForPattern()[1]" />
-                      </svg>
-                    }
-                  }
-                </div>
-              </div>
-              <div class="picker-hex-field">
-                <label class="picker-hex-label" for="rebuild-color-hex">{{ i18n.t('classic.rebuild.hexInputLabel') }}</label>
-                <input
-                  id="rebuild-color-hex"
-                  class="picker-hex-input"
-                  type="text"
-                  inputmode="text"
-                  autocapitalize="off"
-                  spellcheck="false"
-                  [value]="activeHexColorInput()"
-                  [attr.placeholder]="i18n.t('classic.rebuild.hexInputPlaceholder')"
-                  (input)="onHexColorInput($any($event.target).value)"
-                />
-              </div>
-              <div class="color-wheel-shell">
-                <div class="color-wheel-host" #iroWheelHost [attr.aria-label]="i18n.t('classic.rebuild.colorWheelAria')"></div>
-              </div>
-              <div class="picker-presets" [attr.aria-label]="i18n.t('classic.rebuild.quickColorsAria')">
-                <button type="button" class="preset-button preset-black" (click)="selectPresetColor('#000000')">
-                  {{ i18n.t('classic.rebuild.black') }}
-                </button>
-                <button type="button" class="preset-button preset-white" (click)="selectPresetColor('#ffffff')">
-                  {{ i18n.t('classic.rebuild.white') }}
-                </button>
-              </div>
-              <div class="picker-actions">
-                <button type="button" class="primary-button" (click)="closeColorPicker()">{{ i18n.t('classic.rebuild.confirmColor') }}</button>
-              </div>
-            </section>
+      <div class="beta-actions">
+        <button
+          type="button"
+          class="primary-button"
+          [disabled]="!isReadyToValidate()"
+          (click)="submitRound()"
+        >
+          {{
+            isScoring()
+              ? i18n.t('classic.rebuild.beta.scoring')
+              : !hasChosenPattern()
+                ? i18n.t('classic.rebuild.beta.chooseShapeAction')
+                : filledZoneCount() === zoneCount()
+                  ? i18n.t('classic.rebuild.beta.scoreAction')
+                  : i18n.t('classic.rebuild.beta.fillZonesAction')
+          }}
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  @if (result(); as betaResult) {
+    <div class="modal-backdrop game-modal-backdrop" aria-hidden="true"></div>
+    <div
+      class="game-modal result-modal"
+      [class.result-modal-final]="isRunComplete()"
+      [attr.data-result-tone]="resultTone()"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-labelledby]="'rebuild-beta-result-title'"
+    >
+      @if (isRunComplete()) {
+        <div class="summary-head result-verdict">
+          <div>
+            <p class="eyebrow">{{ i18n.t('classic.rebuild.beta.finalEyebrow') }}</p>
+            <p class="summary-value result-score" id="rebuild-beta-result-title">
+              {{ i18n.t('classic.rebuild.beta.finalTitle') }}
+            </p>
+            <p class="result-points">
+              {{ i18n.t('classic.rebuild.beta.totalPoints', { points: totalScore() }) }}
+            </p>
           </div>
-        }
-
-        <div class="submit-row">
-        <button type="button" class="primary-button" [disabled]="isLocked()" (click)="submitPuzzle()">{{ i18n.t('classic.rebuild.submit') }}</button>
+          <div class="result-record-badge" [class.is-new]="isNewRunRecord()">
+            {{
+              isNewRunRecord()
+                ? i18n.t('classic.rebuild.beta.newRecord')
+                : i18n.t('classic.rebuild.beta.record', {
+                    points: runRecord()?.bestScore ?? totalScore(),
+                  })
+            }}
+          </div>
+        </div>
+        <div class="result-recap-grid">
+          <div>
+            <span>{{
+              i18n.t('classic.rebuild.beta.completedFlags', { count: completedRounds() })
+            }}</span>
+            <strong>{{
+              i18n.t('classic.rebuild.beta.progressCount', {
+                completed: completedRounds(),
+                total: runTotal,
+              })
+            }}</strong>
+          </div>
+          <div>
+            <span>{{ i18n.t('classic.rebuild.beta.bestStreak') }}</span>
+            <strong>{{ bestStreak() }}</strong>
+          </div>
+          <div>
+            <span>{{ i18n.t('classic.rebuild.beta.totalPointsLabel') }}</span>
+            <strong>{{ totalScore() }}</strong>
+          </div>
+        </div>
+      } @else {
+        <div class="summary-head result-verdict">
+          <div>
+            <p class="eyebrow" id="rebuild-beta-result-title">
+              {{ i18n.t(betaResult.labelKey) }}
+            </p>
+            <p class="summary-value result-score">
+              {{
+                i18n.t('classic.rebuild.beta.progressCount', {
+                  completed: completedRounds(),
+                  total: runTotal,
+                })
+              }}
+            </p>
+            <p class="result-points">
+              {{ i18n.t('classic.rebuild.beta.pointsWon', { points: betaResult.points }) }}
+            </p>
+            <p class="zone-progress">{{ resultMomentumLabel() }}</p>
+          </div>
+          <img
+            width="128"
+            [src]="currentPuzzle().flagUrl"
+            [alt]="i18n.t('countries.flagOf', { country: countryName(currentPuzzle()) })"
+          />
+        </div>
+        <div class="result-point-tags" aria-hidden="true">
+          @for (tag of resultPointTags(); track tag.labelKey) {
+            <span [attr.data-tone]="tag.tone"> {{ i18n.t(tag.labelKey) }} +{{ tag.points }} </span>
+          }
+        </div>
+      }
+      <div
+        class="result-run-progress"
+        [attr.aria-label]="
+          i18n.t('classic.rebuild.beta.progressCount', {
+            completed: completedRounds(),
+            total: runTotal,
+          })
+        "
+      >
+        <div class="beta-meter-track" aria-hidden="true">
+          <div class="beta-meter-fill" [style.width.%]="masteryPercent()"></div>
+        </div>
+        <div class="result-run-dots" aria-hidden="true">
+          @for (slot of runSlots; track slot) {
+            <span
+              class="result-run-dot"
+              [class.done]="slot < completedRounds()"
+              [class.active]="slot === completedRounds() && !isRunComplete()"
+            ></span>
+          }
         </div>
       </div>
-    </section>
+      <div class="summary-actions beta-actions">
+        <button type="button" class="primary-button" (click)="nextRound()">
+          {{ resultCtaLabel() }}
+        </button>
+      </div>
+    </div>
   }
-</main>
-
-<section class="status-dock" [attr.aria-label]="i18n.t('classic.rebuild.statusAria')">
-  <div class="status-block">
-    <p class="status-label">{{ i18n.t('classic.rebuild.questionCount') }}</p>
-    <p class="status-value">{{ progressLabel() }}</p>
-    <div class="progress-track" aria-hidden="true">
-      <div class="progress-fill" [style.width.%]="progressPercent()"></div>
-    </div>
-  </div>
-
-  <div class="status-block">
-    <p class="status-label">{{ i18n.t('classic.rebuild.streak') }}</p>
-    <p class="status-value">{{ score() }}</p>
-  </div>
 </section>
-
-@if (isComplete()) {
-  <button type="button" class="modal-backdrop" [attr.aria-label]="i18n.t('common.close')" (click)="closeSummary()"></button>
-  <section class="summary-modal" role="dialog" aria-modal="true" aria-labelledby="summary-title">
-    <div class="summary-head">
-      <div>
-        <p class="eyebrow">{{ i18n.t('common.completed') }}</p>
-        <h2 id="summary-title">{{ i18n.t('common.finalResult') }}</h2>
-      </div>
-    </div>
-
-    <div class="summary-score">
-      <div>
-        <p class="status-label">{{ i18n.t('classic.rebuild.finalStreak') }}</p>
-        <p class="summary-value">{{ score() }}</p>
-      </div>
-      <div>
-        <p class="status-label">{{ i18n.t('classic.rebuild.fatalError') }}</p>
-        <p class="summary-value">{{ errors().length }}</p>
-      </div>
-    </div>
-
-    <div class="mistakes-list">
-      @if (errors().length === 0) {
-        <p class="empty-state">{{ i18n.t('classic.rebuild.emptyErrors') }}</p>
-      } @else {
-        @for (error of errors(); track error.puzzle.code) {
-          <article class="mistake-card">
-            <p class="mistake-country">{{ countryName(error.puzzle) }} - {{ error.score }}%</p>
-            <div class="mistake-reference">
-              <img [src]="error.puzzle.flagUrl" [alt]="i18n.t('countries.flagOf', { country: countryName(error.puzzle) })" />
-            </div>
-          </article>
-        }
-      }
-    </div>
-
-    <div class="summary-actions">
-      <button type="button" class="ghost-link" routerLink="/">{{ i18n.t('common.home') }}</button>
-      <button type="button" class="primary-button" (click)="restartGame()">{{ i18n.t('common.restart') }}</button>
-    </div>
-  </section>
-}
-

@@ -12,7 +12,7 @@ type RecordTile = {
   selector: 'app-records-page',
   imports: [RouterLink],
   templateUrl: './records-page.component.html',
-  styleUrl: './records-page.component.scss'
+  styleUrl: './records-page.component.scss',
 })
 export class RecordsPageComponent {
   protected readonly i18n = inject(I18nService);
@@ -32,7 +32,7 @@ export class RecordsPageComponent {
     { key: 'flag-culture-mixed' },
     { key: 'find-the-error' },
     { key: 'pixel-flag' },
-    { key: 'flag-rebuild' }
+    { key: 'flag-rebuild' },
   ];
 
   protected readonly rows = computed(() =>
@@ -40,9 +40,9 @@ export class RecordsPageComponent {
       .map((tile) => ({
         ...tile,
         label: this.i18n.t(`records.tile.${tile.key}`),
-        record: this.personalRecordsService.getRecord(tile.key)
+        record: this.personalRecordsService.getRecord(tile.key),
       }))
-      .filter((row) => row.record !== null)
+      .filter((row) => row.record !== null),
   );
 
   protected readonly hasRecords = computed(() => this.rows().length > 0);
@@ -63,8 +63,12 @@ export class RecordsPageComponent {
       return this.i18n.t('records.value.classic', { score: record.bestScore });
     }
 
-    if (key === 'find-the-error' || key === 'flag-rebuild' || key === 'pixel-flag') {
+    if (key === 'find-the-error' || key === 'pixel-flag') {
       return this.i18n.t('records.value.streak', { score: record.bestScore });
+    }
+
+    if (key === 'flag-rebuild') {
+      return this.i18n.t('records.value.points', { score: record.bestScore });
     }
 
     if (key === 'chrono-flags') {
@@ -74,14 +78,14 @@ export class RecordsPageComponent {
       return this.i18n.t('records.value.chrono', {
         score: record.bestScore,
         percent: record.bestPercent,
-        streakSuffix
+        streakSuffix,
       });
     }
 
     return this.i18n.t('records.value.culture', {
       score: record.bestScore,
       max: record.bestMaxScore,
-      percent: record.bestPercent
+      percent: record.bestPercent,
     });
   }
 
@@ -95,7 +99,7 @@ export class RecordsPageComponent {
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
 
     return this.i18n.t('records.lastPlayed', { date: formatted });
