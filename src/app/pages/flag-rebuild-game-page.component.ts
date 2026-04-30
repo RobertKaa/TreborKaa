@@ -453,7 +453,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
 @Component({
   selector: 'app-flag-rebuild-game-page',
   templateUrl: './flag-rebuild-game-page.component.html',
-  styleUrl: './flag-rebuild-game-page.component.css',
+  styleUrl: './flag-rebuild-game-page.component.scss',
 })
 export class FlagRebuildGamePageComponent implements AfterViewInit {
   private static readonly PROGRESS_GAME_ID: GameId = 'flag-rebuild';
