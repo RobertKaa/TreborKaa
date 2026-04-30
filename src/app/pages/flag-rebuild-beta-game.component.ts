@@ -326,12 +326,8 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   protected readonly round = signal(1);
   protected readonly totalScore = signal(0);
   protected readonly completedRounds = signal(0);
-  protected readonly currentRoundScore = signal(0);
-  protected readonly hasScoredCurrentRound = signal(false);
   protected readonly currentStreak = signal(0);
   protected readonly bestStreak = signal(0);
-  private readonly streakBeforeCurrentRound = signal(0);
-  private readonly bestStreakBeforeCurrentRound = signal(0);
   protected readonly isScoring = signal(false);
   private readonly realFlagCache = new Map<string, ImageData | null>();
   private readonly pixelMaskCache = new Map<string, PixelZoneMask | null>();
@@ -352,7 +348,7 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   protected readonly filledZoneCount = computed(
     () => this.previewColorsForPattern().filter((color) => !this.isEmptyColor(color)).length,
   );
-  protected readonly isReadyToScan = computed(
+  protected readonly isReadyToValidate = computed(
     () =>
       this.hasChosenPattern() &&
       this.filledZoneCount() === this.zoneCount() &&
@@ -519,24 +515,26 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   }
 
   protected selectPattern(pattern: FlagRebuildPattern): void {
+    if (this.result()) {
+      return;
+    }
+
     this.selectedPattern.set(pattern);
     this.hasChosenPattern.set(true);
     this.selectedZoneIndex.set(0);
-    this.clearCurrentRoundResult();
     this.pieces.set(this.fitPiecesToPattern(pattern, this.pieces(), this.currentPuzzle()));
   }
 
   protected selectZone(index: number): void {
-    if (!this.hasChosenPattern()) {
+    if (!this.hasChosenPattern() || this.result()) {
       return;
     }
 
     this.selectedZoneIndex.set(index);
-    this.clearCurrentRoundResult();
   }
 
   protected selectColor(color: string): void {
-    if (!this.hasChosenPattern()) {
+    if (!this.hasChosenPattern() || this.result()) {
       return;
     }
 
@@ -546,28 +544,17 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     }
 
     const activeIndex = this.selectedZoneIndex();
-    this.clearCurrentRoundResult();
     this.pieces.update((pieces) =>
       pieces.map((piece) => (piece.id === activePiece.id ? { ...piece, color } : piece)),
     );
     this.advanceToNextOpenZone(activeIndex);
-    void this.submitRound();
   }
 
   protected async submitRound(): Promise<void> {
-    if (!this.isReadyToScan()) {
+    if (!this.isReadyToValidate()) {
       return;
     }
 
-    const previousScore = this.currentRoundScore();
-    const hadScore = this.hasScoredCurrentRound();
-    if (!hadScore) {
-      this.streakBeforeCurrentRound.set(this.currentStreak());
-      this.bestStreakBeforeCurrentRound.set(this.bestStreak());
-    } else {
-      this.currentStreak.set(this.streakBeforeCurrentRound());
-      this.bestStreak.set(this.bestStreakBeforeCurrentRound());
-    }
     this.isScoring.set(true);
 
     try {
@@ -580,20 +567,12 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       );
 
       this.result.set(result);
-      this.currentRoundScore.set(result.points);
-      this.hasScoredCurrentRound.set(true);
-      this.totalScore.update((score) => score - previousScore + result.points);
-      if (!hadScore) {
-        this.completedRounds.update((rounds) => rounds + 1);
-      }
+      this.totalScore.update((score) => score + result.points);
+      this.completedRounds.update((rounds) => rounds + 1);
       this.applyStreakResult(result.score);
     } finally {
       this.isScoring.set(false);
     }
-  }
-
-  protected retryRound(): void {
-    this.clearCurrentRoundResult();
   }
 
   protected nextRound(): void {
@@ -610,10 +589,6 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     );
     this.selectedZoneIndex.set(0);
     this.result.set(null);
-    this.currentRoundScore.set(0);
-    this.hasScoredCurrentRound.set(false);
-    this.streakBeforeCurrentRound.set(this.currentStreak());
-    this.bestStreakBeforeCurrentRound.set(this.bestStreak());
     this.round.update((round) => round + 1);
   }
 
@@ -629,19 +604,6 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     const pixelMask = this.getActivePatternPixelMask();
 
     this.selectZone(this.findPixelMaskZoneAtPoint(pixelMask, x, y));
-  }
-
-  private clearCurrentRoundResult(): void {
-    if (this.hasScoredCurrentRound()) {
-      this.totalScore.update((score) => Math.max(0, score - this.currentRoundScore()));
-      this.completedRounds.update((rounds) => Math.max(0, rounds - 1));
-      this.currentRoundScore.set(0);
-      this.hasScoredCurrentRound.set(false);
-      this.currentStreak.set(this.streakBeforeCurrentRound());
-      this.bestStreak.set(this.bestStreakBeforeCurrentRound());
-    }
-
-    this.result.set(null);
   }
 
   private applyStreakResult(score: number): void {

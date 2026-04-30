@@ -138,3 +138,5 @@ Implementation:
   - Reconstruction de drapeau beta: suppression du panneau d'etapes et du scan manuel; le resultat est calcule automatiquement quand toutes les zones sont remplies.
   - Reconstruction de drapeau beta: palette transformee en choix numerotes avec code couleur visible, animations courtes et points bonus de serie/precision.
   - Reconstruction de drapeau beta: mission et choix de forme integres dans la grille de jeu pour reduire la hauteur de page; controles mobiles rendus sticky pour limiter les allers-retours au scroll.
+  - Reconstruction de drapeau beta: validation redevient explicite via bouton `Valider`, resultat affiche en modale, manche verrouillee apres validation, suppression de `Retenter`, cartes de forme sans libelle et palette sans numerotation.
+  - Modales jeux: ajout d'une surface generique `game-modal`/`game-modal-backdrop`; la modale de resultat reconstruction beta utilise cette structure commune pour rester coherente avec les autres fins de partie.

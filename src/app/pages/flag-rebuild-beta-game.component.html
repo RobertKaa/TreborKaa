@@ -43,6 +43,8 @@
               type="button"
               class="pattern-choice-card"
               [class.selected]="hasChosenPattern() && selectedPattern() === choice.pattern"
+              [disabled]="!!result()"
+              [attr.aria-label]="getPatternLabel(choice.pattern)"
               (click)="selectPattern(choice.pattern)"
             >
               <svg class="shape-blueprint" viewBox="0 0 100 66" aria-hidden="true">
@@ -105,7 +107,6 @@
                   }
                 }
               </svg>
-              <span>{{ getPatternLabel(choice.pattern) }}</span>
             </button>
           }
         </div>
@@ -168,80 +169,100 @@
               class="palette-swatch"
               [class.selected]="activePiece().color === color"
               [style.background]="color"
-              [disabled]="!hasChosenPattern()"
+              [disabled]="!hasChosenPattern() || !!result()"
               [attr.aria-label]="
                 i18n.t('classic.rebuild.beta.colorOptionAria', { index: $index + 1 })
               "
               (click)="selectColor(color)"
             >
-              <span class="palette-token">{{ $index + 1 }}</span>
               <span class="palette-code">{{ color }}</span>
             </button>
           }
         </div>
       </div>
 
-      @if (result(); as betaResult) {
-        <div class="result-card">
-          <div class="result-verdict">
-            <div>
-              <p class="result-rank">{{ i18n.t(betaResult.labelKey) }}</p>
-              <p class="result-score">{{ betaResult.score }}%</p>
-              <p class="result-points">
-                {{ i18n.t('classic.rebuild.beta.pointsWon', { points: betaResult.points }) }}
-              </p>
-              <p class="zone-progress">{{ resultMomentumLabel() }}</p>
-            </div>
-            <img
-              width="92"
-              [src]="currentPuzzle().flagUrl"
-              [alt]="i18n.t('countries.flagOf', { country: countryName(currentPuzzle()) })"
-            />
-          </div>
-          <p class="zone-progress">{{ i18n.t(resultTipLabel()) }}</p>
-          @if (resultBadges().length) {
-            <div class="zone-score-list">
-              @for (badge of resultBadges(); track badge) {
-                <span>{{ i18n.t(badge) }}</span>
-              }
-            </div>
-          }
-          <div class="result-bars">
-            <div>
-              <span>{{ i18n.t('classic.rebuild.beta.realImageScore') }}</span>
-              <strong>{{ betaResult.imageScore ?? betaResult.colorScore }}%</strong>
-            </div>
-            <div>
-              <span>{{ i18n.t('classic.rebuild.beta.patternScore') }}</span>
-              <strong>{{ betaResult.patternScore }}%</strong>
-            </div>
-            <div>
-              <span>{{ i18n.t('classic.rebuild.beta.zoneAverageScore') }}</span>
-              <strong>{{ resultZoneAverage() }}%</strong>
-            </div>
-            <div>
-              <span>{{ i18n.t('classic.rebuild.beta.bestStreak') }}</span>
-              <strong>{{ bestStreak() }}</strong>
-            </div>
-          </div>
-          <div class="zone-score-list">
-            @for (score of betaResult.zoneScores; track $index) {
-              <span>{{ getZoneLabel($index) }} {{ score }}%</span>
-            }
-          </div>
-        </div>
-      }
-
       <div class="beta-actions">
-        @if (result()) {
-          <button type="button" class="ghost-button" (click)="retryRound()">
-            {{ i18n.t('classic.rebuild.beta.retry') }}
-          </button>
-          <button type="button" class="primary-button" (click)="nextRound()">
-            {{ i18n.t('common.next') }}
-          </button>
-        }
+        <button
+          type="button"
+          class="primary-button"
+          [disabled]="!isReadyToValidate()"
+          (click)="submitRound()"
+        >
+          {{
+            isScoring()
+              ? i18n.t('classic.rebuild.beta.scoring')
+              : !hasChosenPattern()
+                ? i18n.t('classic.rebuild.beta.chooseShapeAction')
+                : filledZoneCount() === zoneCount()
+                  ? i18n.t('classic.rebuild.beta.scoreAction')
+                  : i18n.t('classic.rebuild.beta.fillZonesAction')
+          }}
+        </button>
       </div>
     </aside>
   </div>
+
+  @if (result(); as betaResult) {
+    <div class="modal-backdrop game-modal-backdrop" aria-hidden="true"></div>
+    <div
+      class="game-modal result-modal"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-labelledby]="'rebuild-beta-result-title'"
+    >
+      <div class="summary-head result-verdict">
+        <div>
+          <p class="eyebrow" id="rebuild-beta-result-title">
+            {{ i18n.t(betaResult.labelKey) }}
+          </p>
+          <p class="summary-value result-score">{{ betaResult.score }}%</p>
+          <p class="result-points">
+            {{ i18n.t('classic.rebuild.beta.pointsWon', { points: betaResult.points }) }}
+          </p>
+          <p class="zone-progress">{{ resultMomentumLabel() }}</p>
+        </div>
+        <img
+          width="128"
+          [src]="currentPuzzle().flagUrl"
+          [alt]="i18n.t('countries.flagOf', { country: countryName(currentPuzzle()) })"
+        />
+      </div>
+      <p class="zone-progress">{{ i18n.t(resultTipLabel()) }}</p>
+      @if (resultBadges().length) {
+        <div class="zone-score-list">
+          @for (badge of resultBadges(); track badge) {
+            <span>{{ i18n.t(badge) }}</span>
+          }
+        </div>
+      }
+      <div class="summary-score result-bars">
+        <div>
+          <p class="status-label">{{ i18n.t('classic.rebuild.beta.realImageScore') }}</p>
+          <p class="summary-value">{{ betaResult.imageScore ?? betaResult.colorScore }}%</p>
+        </div>
+        <div>
+          <p class="status-label">{{ i18n.t('classic.rebuild.beta.patternScore') }}</p>
+          <p class="summary-value">{{ betaResult.patternScore }}%</p>
+        </div>
+        <div>
+          <p class="status-label">{{ i18n.t('classic.rebuild.beta.zoneAverageScore') }}</p>
+          <p class="summary-value">{{ resultZoneAverage() }}%</p>
+        </div>
+        <div>
+          <p class="status-label">{{ i18n.t('classic.rebuild.beta.bestStreak') }}</p>
+          <p class="summary-value">{{ bestStreak() }}</p>
+        </div>
+      </div>
+      <div class="zone-score-list">
+        @for (score of betaResult.zoneScores; track $index) {
+          <span>{{ getZoneLabel($index) }} {{ score }}%</span>
+        }
+      </div>
+      <div class="summary-actions beta-actions">
+        <button type="button" class="primary-button" (click)="nextRound()">
+          {{ i18n.t('common.next') }}
+        </button>
+      </div>
+    </div>
+  }
 </section>

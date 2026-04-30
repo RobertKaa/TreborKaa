@@ -169,7 +169,7 @@ describe('FlagRebuildBetaGameComponent', () => {
     });
   });
 
-  it('does not stack the same round points across repeated scoring', async () => {
+  it('does not stack the same round points after validation', async () => {
     const puzzle = (component as any).currentPuzzle();
     (component as any).selectedPattern.set(puzzle.targetPattern);
     (component as any).hasChosenPattern.set(true);
@@ -194,14 +194,9 @@ describe('FlagRebuildBetaGameComponent', () => {
 
     expect((component as any).totalScore()).toBe(85);
     expect((component as any).completedRounds()).toBe(1);
-
-    (component as any).retryRound();
-
-    expect((component as any).totalScore()).toBe(0);
-    expect((component as any).completedRounds()).toBe(0);
   });
 
-  it('tracks streaks and rolls them back on retry', async () => {
+  it('locks the round after validation', async () => {
     const puzzle = (component as any).currentPuzzle();
     (component as any).selectedPattern.set(puzzle.targetPattern);
     (component as any).hasChosenPattern.set(true);
@@ -226,10 +221,12 @@ describe('FlagRebuildBetaGameComponent', () => {
     expect((component as any).currentStreak()).toBe(1);
     expect((component as any).bestStreak()).toBe(1);
 
-    (component as any).retryRound();
+    const lockedPieces = (component as any).pieces();
+    (component as any).selectColor('#111111');
+    (component as any).selectPattern('vertical-stripes');
 
-    expect((component as any).currentStreak()).toBe(0);
-    expect((component as any).bestStreak()).toBe(0);
+    expect((component as any).pieces()).toEqual(lockedPieces);
+    expect((component as any).selectedPattern()).toBe(puzzle.targetPattern);
   });
 
   it('adds gamified bonus points for streak and precision', () => {
@@ -296,7 +293,7 @@ describe('FlagRebuildBetaGameComponent', () => {
   });
 
   it('keeps the round focused on shape choice before painting', () => {
-    expect((component as any).isReadyToScan()).toBe(false);
+    expect((component as any).isReadyToValidate()).toBe(false);
 
     const initialPieces = (component as any).pieces();
     (component as any).selectColor('#111111');
@@ -306,10 +303,10 @@ describe('FlagRebuildBetaGameComponent', () => {
     (component as any).selectPattern((component as any).currentPuzzle().targetPattern);
 
     expect((component as any).hasChosenPattern()).toBe(true);
-    expect((component as any).isReadyToScan()).toBe(false);
+    expect((component as any).isReadyToValidate()).toBe(false);
   });
 
-  it('scores automatically after the last zone is filled', async () => {
+  it('keeps validation manual after the last zone is filled', async () => {
     (component as any).currentPuzzle.set({
       code: 'xx',
       nameFrench: 'Test',
@@ -340,8 +337,43 @@ describe('FlagRebuildBetaGameComponent', () => {
     (component as any).selectColor('#111111');
     await Promise.resolve();
 
+    expect((component as any).result()).toBeNull();
+    expect((component as any).totalScore()).toBe(0);
+    expect((component as any).isReadyToValidate()).toBe(true);
+
+    await (component as any).submitRound();
+
     expect((component as any).result()?.score).toBe(76);
     expect((component as any).totalScore()).toBe(81);
+  });
+
+  it('renders the result in a modal without retry action', async () => {
+    const puzzle = (component as any).currentPuzzle();
+    (component as any).selectedPattern.set(puzzle.targetPattern);
+    (component as any).hasChosenPattern.set(true);
+    (component as any).pieces.set(
+      puzzle.targetColors.map((color: string, index: number) => ({
+        id: `filled-${index}`,
+        color,
+      })),
+    );
+    (component as any).evaluatePuzzle = () =>
+      Promise.resolve({
+        score: 80,
+        colorScore: 80,
+        imageScore: 80,
+        patternScore: 100,
+        zoneScores: [80],
+        labelKey: 'classic.rebuild.beta.rank.close',
+      });
+
+    await (component as any).submitRound();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.result-modal')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.result-modal.result-card')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.result-modal .summary-score')).not.toBeNull();
+    expect(fixture.nativeElement.textContent).not.toContain('Retenter');
   });
 
   it('does not render the removed step tracker', () => {
@@ -353,6 +385,11 @@ describe('FlagRebuildBetaGameComponent', () => {
 
     expect(boardGrid.querySelector('.beta-setup-card .mission-panel')).not.toBeNull();
     expect(boardGrid.querySelector('.beta-setup-card .visual-choice-panel')).not.toBeNull();
+  });
+
+  it('keeps shape and color choices visually compact', () => {
+    expect(fixture.nativeElement.querySelector('.pattern-choice-card span')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.palette-token')).toBeNull();
   });
 
   it('keeps diagonal rays as five selectable zones', () => {

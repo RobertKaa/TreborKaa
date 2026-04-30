@@ -28,7 +28,15 @@
   gap: 18px;
 }
 
-:where(.hero-card, .question-card, .board-card, .workspace-card, .difficulty-card, .summary-modal) {
+:where(
+  .hero-card,
+  .question-card,
+  .board-card,
+  .workspace-card,
+  .difficulty-card,
+  .summary-modal,
+  .game-modal
+) {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: var(--game-card-radius);
@@ -281,7 +289,7 @@
   backdrop-filter: blur(4px);
 }
 
-.summary-modal {
+:where(.summary-modal, .game-modal) {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -359,31 +367,27 @@ app-flag-rebuild-beta-game .beta-setup-card .mission-panel {
 
 app-flag-rebuild-beta-game .pattern-choice-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 7px;
 }
 
 app-flag-rebuild-beta-game .beta-setup-card .pattern-choice-card {
-  grid-template-columns: 74px minmax(0, 1fr);
-  align-items: center;
-  gap: 7px;
-  padding: 6px;
+  padding: 7px;
   border-radius: 14px;
 }
 
 app-flag-rebuild-beta-game .beta-setup-card .shape-blueprint {
-  aspect-ratio: 2.4 / 1;
+  aspect-ratio: 1.45 / 1;
   border-radius: 9px;
-}
-
-app-flag-rebuild-beta-game .beta-setup-card .pattern-choice-card span {
-  text-align: left;
-  font-size: 0.8rem;
 }
 
 app-flag-rebuild-beta-game .pattern-choice-card.selected {
   box-shadow: 0 10px 26px color-mix(in srgb, var(--accent) 16%, transparent);
   transform: translateY(-1px);
+}
+
+app-flag-rebuild-beta-game .pattern-choice-card:disabled {
+  cursor: default;
 }
 
 app-flag-rebuild-beta-game .completion-fill {
@@ -409,29 +413,17 @@ app-flag-rebuild-beta-game .palette-swatch.selected {
   transform: scale(1.03);
 }
 
-app-flag-rebuild-beta-game :where(.palette-token, .palette-code) {
+app-flag-rebuild-beta-game .palette-code {
   position: absolute;
   padding: 2px 5px;
+  right: 5px;
+  bottom: 5px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.72);
   color: #172033;
   font-family: 'Space Mono', monospace;
   font-size: 0.64rem;
   font-weight: 800;
-}
-
-app-flag-rebuild-beta-game .palette-token {
-  top: 5px;
-  left: 5px;
-}
-
-app-flag-rebuild-beta-game .palette-code {
-  right: 5px;
-  bottom: 5px;
-}
-
-app-flag-rebuild-beta-game .result-card {
-  animation: rebuild-result-pop 220ms ease both;
 }
 
 app-flag-rebuild-beta-game .round-scored .beta-flag-board {
@@ -443,16 +435,36 @@ app-flag-rebuild-beta-game .result-points {
   font-weight: 800;
 }
 
-@keyframes rebuild-result-pop {
-  from {
-    opacity: 0;
-    transform: translateY(6px) scale(0.98);
-  }
+app-flag-rebuild-beta-game .result-modal {
+  display: grid;
+  gap: 16px;
+  width: min(620px, calc(100vw - 24px));
+  max-height: 86vh;
+}
 
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+app-flag-rebuild-beta-game .result-modal .result-verdict {
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+app-flag-rebuild-beta-game .result-modal img {
+  width: 128px;
+  max-width: 38%;
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+}
+
+app-flag-rebuild-beta-game .result-modal .summary-score {
+  width: 100%;
+}
+
+app-flag-rebuild-beta-game .result-modal .summary-score > div {
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--line-soft);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
 }
 
 @keyframes rebuild-board-pulse {
@@ -496,7 +508,7 @@ app-flag-rebuild-beta-game .result-points {
     padding: 8px;
   }
 
-  .summary-modal {
+  :where(.summary-modal, .game-modal) {
     padding: 20px;
   }
 
@@ -554,7 +566,7 @@ app-flag-rebuild-beta-game .result-points {
   }
 
   app-flag-rebuild-beta-game .pattern-choice-card {
-    flex-basis: 104px;
+    flex-basis: 112px;
     gap: 4px;
     padding: 5px;
     border-radius: 12px;
@@ -570,14 +582,6 @@ app-flag-rebuild-beta-game .result-points {
     font-size: 0.68rem;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  app-flag-rebuild-beta-game .beta-setup-card .pattern-choice-card {
-    grid-template-columns: none;
-  }
-
-  app-flag-rebuild-beta-game .beta-setup-card .pattern-choice-card span {
-    text-align: center;
   }
 
   app-flag-rebuild-beta-game .beta-flag-board {
@@ -633,6 +637,10 @@ app-flag-rebuild-beta-game .result-points {
 
   app-flag-rebuild-beta-game .beta-actions :where(.primary-button, .ghost-button) {
     flex: 1 1 120px;
+  }
+
+  app-flag-rebuild-beta-game .result-modal {
+    gap: 12px;
   }
 }
 
