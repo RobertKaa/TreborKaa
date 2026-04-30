@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { PersonalRecordsService } from '../services/personal-records.service';
 import { FlagRebuildBetaGameComponent } from './flag-rebuild-beta-game.component';
 
 describe('FlagRebuildBetaGameComponent', () => {
@@ -416,9 +417,46 @@ describe('FlagRebuildBetaGameComponent', () => {
     expect(fixture.nativeElement.querySelector('.result-modal.result-card')).toBeNull();
     expect(fixture.nativeElement.querySelector('.result-modal .summary-score')).toBeNull();
     expect(fixture.nativeElement.querySelector('.result-modal .zone-score-list')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.result-point-tags')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('.result-run-progress')).not.toBeNull();
     expect(fixture.nativeElement.textContent).not.toContain('Retenter');
     expect(fixture.nativeElement.textContent).not.toContain('80%');
+  });
+
+  it('shows the final recap and saves the beta run record', async () => {
+    const recordsService = TestBed.inject(PersonalRecordsService);
+    const puzzle = (component as any).currentPuzzle();
+    (component as any).completedRounds.set(14);
+    (component as any).round.set(15);
+    (component as any).totalScore.set(1200);
+    (component as any).selectedPattern.set(puzzle.targetPattern);
+    (component as any).hasChosenPattern.set(true);
+    (component as any).pieces.set(
+      puzzle.targetColors.map((color: string, index: number) => ({
+        id: `filled-${index}`,
+        color,
+      })),
+    );
+    (component as any).evaluatePuzzle = () =>
+      Promise.resolve({
+        score: 92,
+        colorScore: 92,
+        imageScore: 92,
+        patternScore: 100,
+        zoneScores: [92, 94],
+        labelKey: 'classic.rebuild.beta.rank.perfect',
+      });
+
+    await (component as any).submitRound();
+    fixture.detectChanges();
+
+    expect((component as any).isRunComplete()).toBe(true);
+    expect(recordsService.getRecord('flag-rebuild-beta')?.bestScore).toBe(
+      (component as any).totalScore(),
+    );
+    expect(fixture.nativeElement.querySelector('.result-modal-final')).not.toBeNull();
+    expect(fixture.nativeElement.textContent).toContain('Run complete');
+    expect(fixture.nativeElement.textContent).toContain('Play again');
   });
 
   it('does not render the removed step tracker', () => {

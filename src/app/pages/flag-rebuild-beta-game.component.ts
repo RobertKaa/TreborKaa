@@ -10,7 +10,9 @@ import {
 } from '@angular/core';
 import { FLAG_REBUILD_PUZZLES } from '../data/flag-rebuild-puzzles';
 import { FlagRebuildPattern, FlagRebuildPuzzle } from '../models/flag-rebuild-puzzle';
+import { PersonalRecord } from '../models/personal-record';
 import { I18nService } from '../services/i18n.service';
+import { PersonalRecordsService } from '../services/personal-records.service';
 
 type BetaPiece = {
   id: string;
@@ -20,11 +22,21 @@ type BetaPiece = {
 type BetaResult = {
   score: number;
   points: number;
+  basePoints: number;
+  streakBonus: number;
+  precisionBonus: number;
+  perfectBonus: number;
   colorScore: number;
   imageScore: number | null;
   patternScore: number;
   zoneScores: number[];
   labelKey: string;
+};
+
+type ResultPointTag = {
+  labelKey: string;
+  points: number;
+  tone: 'base' | 'streak' | 'precision' | 'perfect';
 };
 
 type PatternChoice = {
@@ -422,6 +434,7 @@ const BETA_EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
 })
 export class FlagRebuildBetaGameComponent implements AfterViewInit {
   protected readonly i18n = inject(I18nService);
+  private readonly personalRecordsService = inject(PersonalRecordsService);
   private readonly englishRegionNames = this.createEnglishRegionNames();
   private readonly allPuzzles = [...FLAG_REBUILD_PUZZLES, ...BETA_EXTRA_FLAG_REBUILD_PUZZLES];
   private readonly runPuzzles = signal<FlagRebuildPuzzle[]>(this.buildRunPuzzles());
@@ -456,6 +469,9 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   protected readonly currentStreak = signal(0);
   protected readonly bestStreak = signal(0);
   protected readonly isScoring = signal(false);
+  protected readonly runRecord = signal<PersonalRecord | null>(null);
+  protected readonly isNewRunRecord = signal(false);
+  private hasSavedRunRecord = false;
   private readonly realFlagCache = new Map<string, ImageData | null>();
   private readonly pixelMaskCache = new Map<string, PixelZoneMask | null>();
   private readonly pixelMaskRequests = new Map<string, Promise<PixelZoneMask | null>>();
@@ -511,6 +527,22 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     }
 
     return this.computeAverageScore(result.zoneScores);
+  });
+  protected readonly resultPointTags = computed(() => {
+    const result = this.result();
+    return result ? this.buildResultPointTags(result) : [];
+  });
+  protected readonly resultTone = computed(() => {
+    const score = this.result()?.score ?? 0;
+    if (score >= 92) {
+      return 'perfect';
+    }
+
+    if (score >= BETA_STREAK_SCORE_THRESHOLD) {
+      return 'close';
+    }
+
+    return 'warm';
   });
   protected readonly resultCtaLabel = computed(() =>
     this.isRunComplete()
@@ -713,6 +745,7 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       this.totalScore.update((score) => score + result.points);
       this.completedRounds.update((rounds) => rounds + 1);
       this.applyStreakResult(result.score);
+      this.persistRunRecordIfComplete();
     } finally {
       this.isScoring.set(false);
     }
@@ -800,6 +833,10 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
 
     return {
       score,
+      basePoints: score,
+      streakBonus: 0,
+      precisionBonus: 0,
+      perfectBonus: 0,
       colorScore,
       imageScore,
       patternScore,
@@ -822,8 +859,58 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
 
     return {
       ...result,
+      basePoints: result.score,
+      streakBonus,
+      precisionBonus,
+      perfectBonus,
       points: result.score + streakBonus + precisionBonus + perfectBonus,
     };
+  }
+
+  private buildResultPointTags(result: BetaResult): ResultPointTag[] {
+    const tags: ResultPointTag[] = [
+      {
+        labelKey: 'classic.rebuild.beta.basePoints',
+        points: result.basePoints,
+        tone: 'base',
+      },
+      {
+        labelKey: 'classic.rebuild.beta.streakBonus',
+        points: result.streakBonus,
+        tone: 'streak',
+      },
+      {
+        labelKey: 'classic.rebuild.beta.precisionBonus',
+        points: result.precisionBonus,
+        tone: 'precision',
+      },
+      {
+        labelKey: 'classic.rebuild.beta.perfectBonus',
+        points: result.perfectBonus,
+        tone: 'perfect',
+      },
+    ];
+
+    return tags.filter((tag) => tag.points > 0);
+  }
+
+  private persistRunRecordIfComplete(): void {
+    if (!this.isRunComplete() || this.hasSavedRunRecord) {
+      return;
+    }
+
+    const previousRecord = this.personalRecordsService.getRecord('flag-rebuild-beta');
+    const score = this.totalScore();
+    const record = this.personalRecordsService.saveResult('flag-rebuild-beta', {
+      score,
+      maxScore: Math.max(1, score),
+      percentOverride: 100,
+      streak: this.bestStreak(),
+    });
+
+    this.runRecord.set(record);
+    this.isNewRunRecord.set(!previousRecord || score > previousRecord.bestScore);
+    this.hasSavedRunRecord = true;
   }
 
   private getResultLabelKey(score: number): string {
@@ -896,6 +983,9 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     this.completedRounds.set(0);
     this.currentStreak.set(0);
     this.bestStreak.set(0);
+    this.runRecord.set(null);
+    this.isNewRunRecord.set(false);
+    this.hasSavedRunRecord = false;
     this.round.set(1);
     this.setCurrentPuzzle(runPuzzles[0] ?? this.allPuzzles[0]);
   }

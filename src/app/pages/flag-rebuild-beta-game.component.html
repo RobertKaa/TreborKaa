@@ -228,34 +228,85 @@
     <div class="modal-backdrop game-modal-backdrop" aria-hidden="true"></div>
     <div
       class="game-modal result-modal"
+      [class.result-modal-final]="isRunComplete()"
+      [attr.data-result-tone]="resultTone()"
       role="dialog"
       aria-modal="true"
       [attr.aria-labelledby]="'rebuild-beta-result-title'"
     >
-      <div class="summary-head result-verdict">
-        <div>
-          <p class="eyebrow" id="rebuild-beta-result-title">
-            {{ i18n.t(betaResult.labelKey) }}
-          </p>
-          <p class="summary-value result-score">
+      @if (isRunComplete()) {
+        <div class="summary-head result-verdict">
+          <div>
+            <p class="eyebrow">{{ i18n.t('classic.rebuild.beta.finalEyebrow') }}</p>
+            <p class="summary-value result-score" id="rebuild-beta-result-title">
+              {{ i18n.t('classic.rebuild.beta.finalTitle') }}
+            </p>
+            <p class="result-points">
+              {{ i18n.t('classic.rebuild.beta.totalPoints', { points: totalScore() }) }}
+            </p>
+          </div>
+          <div class="result-record-badge" [class.is-new]="isNewRunRecord()">
             {{
+              isNewRunRecord()
+                ? i18n.t('classic.rebuild.beta.newRecord')
+                : i18n.t('classic.rebuild.beta.record', {
+                    points: runRecord()?.bestScore ?? totalScore(),
+                  })
+            }}
+          </div>
+        </div>
+        <div class="result-recap-grid">
+          <div>
+            <span>{{
+              i18n.t('classic.rebuild.beta.completedFlags', { count: completedRounds() })
+            }}</span>
+            <strong>{{
               i18n.t('classic.rebuild.beta.progressCount', {
                 completed: completedRounds(),
                 total: runTotal,
               })
-            }}
-          </p>
-          <p class="result-points">
-            {{ i18n.t('classic.rebuild.beta.pointsWon', { points: betaResult.points }) }}
-          </p>
-          <p class="zone-progress">{{ resultMomentumLabel() }}</p>
+            }}</strong>
+          </div>
+          <div>
+            <span>{{ i18n.t('classic.rebuild.beta.bestStreak') }}</span>
+            <strong>{{ bestStreak() }}</strong>
+          </div>
+          <div>
+            <span>{{ i18n.t('classic.rebuild.beta.totalPointsLabel') }}</span>
+            <strong>{{ totalScore() }}</strong>
+          </div>
         </div>
-        <img
-          width="128"
-          [src]="currentPuzzle().flagUrl"
-          [alt]="i18n.t('countries.flagOf', { country: countryName(currentPuzzle()) })"
-        />
-      </div>
+      } @else {
+        <div class="summary-head result-verdict">
+          <div>
+            <p class="eyebrow" id="rebuild-beta-result-title">
+              {{ i18n.t(betaResult.labelKey) }}
+            </p>
+            <p class="summary-value result-score">
+              {{
+                i18n.t('classic.rebuild.beta.progressCount', {
+                  completed: completedRounds(),
+                  total: runTotal,
+                })
+              }}
+            </p>
+            <p class="result-points">
+              {{ i18n.t('classic.rebuild.beta.pointsWon', { points: betaResult.points }) }}
+            </p>
+            <p class="zone-progress">{{ resultMomentumLabel() }}</p>
+          </div>
+          <img
+            width="128"
+            [src]="currentPuzzle().flagUrl"
+            [alt]="i18n.t('countries.flagOf', { country: countryName(currentPuzzle()) })"
+          />
+        </div>
+        <div class="result-point-tags" aria-hidden="true">
+          @for (tag of resultPointTags(); track tag.labelKey) {
+            <span [attr.data-tone]="tag.tone"> {{ i18n.t(tag.labelKey) }} +{{ tag.points }} </span>
+          }
+        </div>
+      }
       <div
         class="result-run-progress"
         [attr.aria-label]="

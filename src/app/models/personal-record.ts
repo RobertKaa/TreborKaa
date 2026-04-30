@@ -6,6 +6,7 @@ export type GameRecordKey =
   | 'shape-to-country-easy'
   | 'shape-to-country-hard'
   | 'flag-rebuild'
+  | 'flag-rebuild-beta'
   | 'find-the-error'
   | 'pixel-flag'
   | 'chrono-flags'

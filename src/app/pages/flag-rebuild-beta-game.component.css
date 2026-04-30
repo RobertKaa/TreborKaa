@@ -14,7 +14,6 @@
 
 .beta-head,
 .mission-panel,
-.result-bars,
 .beta-actions {
   display: flex;
   gap: 14px;
@@ -284,22 +283,8 @@ h3 {
   outline-offset: 2px;
 }
 
-.result-card {
-  display: grid;
-  gap: 10px;
-  padding: 14px;
-  border: 1px solid var(--accent-line);
-  border-radius: 18px;
-  background: var(--surface-raise);
-}
-
 .result-verdict {
   display: flex;
-}
-
-.result-rank {
-  color: var(--accent-dark);
-  font-weight: 800;
 }
 
 .result-score {
@@ -308,36 +293,119 @@ h3 {
   font-weight: 800;
 }
 
-.result-bars {
-  flex-wrap: wrap;
+.result-modal {
+  animation: result-pop 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
-.result-bars > div {
-  flex: 1;
-  min-width: 110px;
-  display: grid;
-  gap: 4px;
-  padding: 10px;
-  border-radius: 14px;
-  background: var(--surface);
+.result-modal::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0.42;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 173, 86, 0.2), transparent 28%),
+    radial-gradient(circle at 88% 16%, rgba(12, 127, 111, 0.18), transparent 24%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 42%);
 }
 
-.result-bars span,
-.zone-score-list {
-  color: var(--ink-soft);
-  font-size: 0.86rem;
+.result-modal[data-result-tone='perfect'] {
+  border-color: color-mix(in srgb, var(--accent) 70%, var(--line));
 }
 
-.zone-score-list {
+.result-modal[data-result-tone='close'] {
+  border-color: color-mix(in srgb, var(--secondary) 62%, var(--line));
+}
+
+.result-modal-final {
+  overflow: hidden;
+}
+
+.result-point-tags,
+.result-recap-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
-.zone-score-list span {
-  padding: 5px 8px;
+.result-point-tags span {
+  padding: 7px 10px;
+  border: 1px solid var(--line-soft);
   border-radius: 999px;
-  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.86rem;
+  font-weight: 800;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+}
+
+.result-point-tags span[data-tone='streak'] {
+  border-color: color-mix(in srgb, var(--secondary) 54%, var(--line));
+  background: color-mix(in srgb, var(--secondary) 16%, var(--surface));
+}
+
+.result-point-tags span[data-tone='precision'] {
+  border-color: color-mix(in srgb, var(--accent) 52%, var(--line));
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+}
+
+.result-point-tags span[data-tone='perfect'] {
+  border-color: color-mix(in srgb, var(--accent-strong) 50%, var(--line));
+  background: color-mix(in srgb, var(--accent-strong) 13%, var(--surface));
+}
+
+.result-record-badge {
+  align-self: flex-start;
+  padding: 9px 12px;
+  border: 1px solid color-mix(in srgb, var(--secondary) 52%, var(--line));
+  border-radius: 999px;
+  color: var(--ink);
+  font-weight: 900;
+  background: color-mix(in srgb, var(--secondary) 14%, var(--surface));
+}
+
+.result-record-badge.is-new {
+  border-color: color-mix(in srgb, var(--accent) 58%, var(--line));
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 20%, var(--surface)),
+    color-mix(in srgb, var(--secondary) 18%, var(--surface))
+  );
+}
+
+.result-recap-grid > div {
+  flex: 1 1 150px;
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 84%, transparent);
+}
+
+.result-recap-grid span {
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.result-recap-grid strong {
+  color: var(--ink);
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+@keyframes result-pop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 8px)) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 .beta-actions {
