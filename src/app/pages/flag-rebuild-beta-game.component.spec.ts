@@ -231,6 +231,39 @@ describe('FlagRebuildBetaGameComponent', () => {
     expect((component as any).bestStreak()).toBe(0);
   });
 
+  it('builds gamified result feedback from score details', () => {
+    const result = {
+      score: 91,
+      colorScore: 91,
+      imageScore: 89,
+      patternScore: 100,
+      zoneScores: [82, 94, 88],
+      labelKey: 'classic.rebuild.beta.rank.close',
+    };
+
+    expect((component as any).buildResultBadges(result, 2)).toEqual([
+      'classic.rebuild.beta.badge.structure',
+      'classic.rebuild.beta.badge.precision',
+      'classic.rebuild.beta.badge.zones',
+      'classic.rebuild.beta.badge.streak',
+    ]);
+    expect((component as any).getResultTipLabelKey(result)).toBe('classic.rebuild.beta.tip.close');
+    expect((component as any).computeAverageScore(result.zoneScores)).toBe(88);
+  });
+
+  it('explains when the selected shape limits the score', () => {
+    const result = {
+      score: 58,
+      colorScore: 100,
+      imageScore: 100,
+      patternScore: 58,
+      zoneScores: [100, 100, 100],
+      labelKey: 'classic.rebuild.beta.rank.warm',
+    };
+
+    expect((component as any).getResultTipLabelKey(result)).toBe('classic.rebuild.beta.tip.shape');
+  });
+
   it('moves to the next empty zone after selecting a color', () => {
     (component as any).hasChosenPattern.set(true);
     (component as any).pieces.set([

@@ -94,6 +94,8 @@ const DIAGONAL_RAY_POLYGONS: RatioPoint[][] = [
 ];
 const BETA_PATTERN_CHOICE_COUNT = 4;
 const BETA_STREAK_SCORE_THRESHOLD = 76;
+const BETA_ZONE_SUCCESS_THRESHOLD = 76;
+const BETA_PRECISION_BADGE_THRESHOLD = 88;
 const BETA_PALETTE_MIN_SIZE = 8;
 const BETA_PALETTE_MAX_SIZE = 10;
 const BETA_PALETTE_TARGET_MIN_DISTANCE = 30;
@@ -370,6 +372,22 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     return result.score >= BETA_STREAK_SCORE_THRESHOLD
       ? this.i18n.t('classic.rebuild.beta.streakGain', { streak: this.currentStreak() })
       : this.i18n.t('classic.rebuild.beta.streakBreak');
+  });
+  protected readonly resultBadges = computed(() => {
+    const result = this.result();
+    return result ? this.buildResultBadges(result, this.currentStreak()) : [];
+  });
+  protected readonly resultTipLabel = computed(() => {
+    const result = this.result();
+    return result ? this.getResultTipLabelKey(result) : '';
+  });
+  protected readonly resultZoneAverage = computed(() => {
+    const result = this.result();
+    if (!result) {
+      return 0;
+    }
+
+    return this.computeAverageScore(result.zoneScores);
   });
   protected readonly activeFlowStep = computed<BetaFlowStep>(() => {
     if (this.result()) {
@@ -711,6 +729,53 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     }
 
     return 'classic.rebuild.beta.rank.cold';
+  }
+
+  private getResultTipLabelKey(result: BetaResult): string {
+    if (result.patternScore < 100) {
+      return 'classic.rebuild.beta.tip.shape';
+    }
+
+    if (Math.min(...result.zoneScores) < 55) {
+      return 'classic.rebuild.beta.tip.zone';
+    }
+
+    if (result.score >= 92) {
+      return 'classic.rebuild.beta.tip.perfect';
+    }
+
+    if (result.score >= BETA_STREAK_SCORE_THRESHOLD) {
+      return 'classic.rebuild.beta.tip.close';
+    }
+
+    return 'classic.rebuild.beta.tip.retry';
+  }
+
+  private buildResultBadges(result: BetaResult, streak: number): string[] {
+    const badges: string[] = [];
+    const visualScore = result.imageScore ?? result.colorScore;
+
+    if (result.patternScore === 100) {
+      badges.push('classic.rebuild.beta.badge.structure');
+    }
+
+    if (visualScore >= BETA_PRECISION_BADGE_THRESHOLD) {
+      badges.push('classic.rebuild.beta.badge.precision');
+    }
+
+    if (result.zoneScores.every((score) => score >= BETA_ZONE_SUCCESS_THRESHOLD)) {
+      badges.push('classic.rebuild.beta.badge.zones');
+    }
+
+    if (result.score >= BETA_STREAK_SCORE_THRESHOLD && streak > 1) {
+      badges.push('classic.rebuild.beta.badge.streak');
+    }
+
+    return badges;
+  }
+
+  private computeAverageScore(scores: number[]): number {
+    return Math.round(scores.reduce((sum, score) => sum + score, 0) / Math.max(1, scores.length));
   }
 
   private buildInitialPieces(puzzle: FlagRebuildPuzzle): BetaPiece[] {

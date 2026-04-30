@@ -218,6 +218,14 @@
               [alt]="i18n.t('countries.flagOf', { country: countryName(currentPuzzle()) })"
             />
           </div>
+          <p class="zone-progress">{{ i18n.t(resultTipLabel()) }}</p>
+          @if (resultBadges().length) {
+            <div class="zone-score-list">
+              @for (badge of resultBadges(); track badge) {
+                <span>{{ i18n.t(badge) }}</span>
+              }
+            </div>
+          }
           <div class="result-bars">
             <div>
               <span>{{ i18n.t('classic.rebuild.beta.realImageScore') }}</span>
@@ -226,6 +234,10 @@
             <div>
               <span>{{ i18n.t('classic.rebuild.beta.patternScore') }}</span>
               <strong>{{ betaResult.patternScore }}%</strong>
+            </div>
+            <div>
+              <span>{{ i18n.t('classic.rebuild.beta.zoneAverageScore') }}</span>
+              <strong>{{ resultZoneAverage() }}%</strong>
             </div>
             <div>
               <span>{{ i18n.t('classic.rebuild.beta.bestStreak') }}</span>
