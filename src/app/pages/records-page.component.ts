@@ -33,7 +33,6 @@ export class RecordsPageComponent {
     { key: 'find-the-error' },
     { key: 'pixel-flag' },
     { key: 'flag-rebuild' },
-    { key: 'flag-rebuild-beta' },
   ];
 
   protected readonly rows = computed(() =>
@@ -64,11 +63,11 @@ export class RecordsPageComponent {
       return this.i18n.t('records.value.classic', { score: record.bestScore });
     }
 
-    if (key === 'find-the-error' || key === 'flag-rebuild' || key === 'pixel-flag') {
+    if (key === 'find-the-error' || key === 'pixel-flag') {
       return this.i18n.t('records.value.streak', { score: record.bestScore });
     }
 
-    if (key === 'flag-rebuild-beta') {
+    if (key === 'flag-rebuild') {
       return this.i18n.t('records.value.points', { score: record.bestScore });
     }
 
