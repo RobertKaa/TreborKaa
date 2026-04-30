@@ -273,37 +273,6 @@
   transition: width 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.flow-panel {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.flow-step {
-  flex: 1 1 150px;
-  padding: 8px;
-  border: 1px solid var(--line-soft);
-  border-radius: 16px;
-  background: var(--surface);
-}
-
-.flow-step span {
-  margin-right: 6px;
-  font-family: 'Space Mono', monospace;
-  font-weight: 800;
-}
-
-.flow-step small {
-  display: block;
-  color: var(--ink-soft);
-  font-size: 0.76rem;
-  line-height: 1.25;
-}
-
-.flow-step.active {
-  border-color: var(--accent-line-strong);
-}
-
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -364,6 +333,136 @@
   padding: 12px 20px;
 }
 
+app-flag-rebuild-beta-game .pattern-choice-card {
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+app-flag-rebuild-beta-game .beta-board-grid {
+  display: grid;
+  grid-template-columns: minmax(190px, 250px) minmax(320px, 1fr) minmax(280px, 310px);
+  gap: 14px;
+}
+
+app-flag-rebuild-beta-game .beta-setup-card {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-width: 0;
+}
+
+app-flag-rebuild-beta-game .beta-setup-card .mission-panel {
+  padding: 12px;
+}
+
+app-flag-rebuild-beta-game .pattern-choice-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 7px;
+}
+
+app-flag-rebuild-beta-game .beta-setup-card .pattern-choice-card {
+  grid-template-columns: 74px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  padding: 6px;
+  border-radius: 14px;
+}
+
+app-flag-rebuild-beta-game .beta-setup-card .shape-blueprint {
+  aspect-ratio: 2.4 / 1;
+  border-radius: 9px;
+}
+
+app-flag-rebuild-beta-game .beta-setup-card .pattern-choice-card span {
+  text-align: left;
+  font-size: 0.8rem;
+}
+
+app-flag-rebuild-beta-game .pattern-choice-card.selected {
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--accent) 16%, transparent);
+  transform: translateY(-1px);
+}
+
+app-flag-rebuild-beta-game .completion-fill {
+  transition: width 220ms ease;
+}
+
+app-flag-rebuild-beta-game .score-preview {
+  margin-top: 8px;
+  color: var(--ink-soft);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+app-flag-rebuild-beta-game .palette-swatch {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease;
+}
+
+app-flag-rebuild-beta-game .palette-swatch.selected {
+  transform: scale(1.03);
+}
+
+app-flag-rebuild-beta-game :where(.palette-token, .palette-code) {
+  position: absolute;
+  padding: 2px 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: #172033;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.64rem;
+  font-weight: 800;
+}
+
+app-flag-rebuild-beta-game .palette-token {
+  top: 5px;
+  left: 5px;
+}
+
+app-flag-rebuild-beta-game .palette-code {
+  right: 5px;
+  bottom: 5px;
+}
+
+app-flag-rebuild-beta-game .result-card {
+  animation: rebuild-result-pop 220ms ease both;
+}
+
+app-flag-rebuild-beta-game .round-scored .beta-flag-board {
+  animation: rebuild-board-pulse 260ms ease both;
+}
+
+app-flag-rebuild-beta-game .result-points {
+  color: var(--secondary-dark);
+  font-weight: 800;
+}
+
+@keyframes rebuild-result-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes rebuild-board-pulse {
+  50% {
+    box-shadow:
+      inset 0 0 0 1px var(--line-soft),
+      0 0 0 5px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+}
+
 @media (max-width: 900px) {
   :where(.hero-card, .summary-head, .summary-score, .mistake-card, .answer-form) {
     flex-direction: column;
@@ -372,6 +471,18 @@
 
   :where(.name-grid, .flag-grid, .option-grid) {
     grid-template-columns: 1fr;
+  }
+
+  app-flag-rebuild-beta-game .beta-board-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  app-flag-rebuild-beta-game .pattern-choice-grid {
+    display: flex;
+    grid-template-columns: none;
+    gap: 8px;
+    padding-bottom: 4px;
+    overflow-x: auto;
   }
 }
 
@@ -398,17 +509,14 @@
     flex: 1 1 calc(50% - 6px);
   }
 
-  app-flag-rebuild-beta-game .flow-panel {
-    gap: 6px;
+  app-flag-rebuild-beta-game .beta-controls {
+    position: sticky;
+    bottom: 8px;
+    z-index: 3;
+    box-shadow: 0 -12px 34px rgba(30, 24, 20, 0.18);
   }
 
-  app-flag-rebuild-beta-game .flow-step {
-    flex: 1 1 86px;
-    padding: 6px 8px;
-    border-radius: 12px;
-  }
-
-  app-flag-rebuild-beta-game .flow-step small {
+  app-flag-rebuild-beta-game .palette-code {
     display: none;
   }
 }
@@ -429,7 +537,8 @@
     font-size: 1.45rem;
   }
 
-  app-flag-rebuild-beta-game :where(.mission-panel, .visual-choice-panel, .beta-board-card, .beta-controls) {
+  app-flag-rebuild-beta-game
+    :where(.mission-panel, .visual-choice-panel, .beta-board-card, .beta-controls) {
     padding: 8px;
     border-radius: 14px;
   }
@@ -438,6 +547,10 @@
     gap: 5px;
     padding: 8px;
     border-radius: 12px;
+  }
+
+  app-flag-rebuild-beta-game .beta-setup-card {
+    gap: 8px;
   }
 
   app-flag-rebuild-beta-game .pattern-choice-card {
@@ -457,6 +570,14 @@
     font-size: 0.68rem;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  app-flag-rebuild-beta-game .beta-setup-card .pattern-choice-card {
+    grid-template-columns: none;
+  }
+
+  app-flag-rebuild-beta-game .beta-setup-card .pattern-choice-card span {
+    text-align: center;
   }
 
   app-flag-rebuild-beta-game .beta-flag-board {

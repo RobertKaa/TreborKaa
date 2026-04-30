@@ -14,7 +14,6 @@
 
 .beta-head,
 .mission-panel,
-.beta-board-grid,
 .result-bars,
 .beta-actions {
   display: flex;
@@ -93,7 +92,7 @@ h3 {
 }
 
 .visual-choice-panel {
-  padding: 14px;
+  padding: 12px;
   overflow: hidden;
   border: 1px solid var(--line-soft);
   border-radius: 20px;
@@ -102,12 +101,6 @@ h3 {
 
 .mission-copy {
   min-width: 0;
-}
-
-.pattern-choice-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
 }
 
 .pattern-choice-card {
@@ -197,7 +190,6 @@ h3 {
 }
 
 .beta-board-card {
-  flex: 1 1 420px;
   display: grid;
   place-items: center;
   min-width: 0;
@@ -225,7 +217,6 @@ h3 {
 }
 
 .beta-controls {
-  flex: 0 0 300px;
   display: grid;
   align-content: start;
   gap: 14px;
@@ -356,8 +347,7 @@ h3 {
 
 @media (max-width: 860px) {
   .beta-head,
-  .mission-panel,
-  .beta-board-grid {
+  .mission-panel {
     flex-direction: column;
   }
 
@@ -371,10 +361,6 @@ h3 {
   .beta-actions {
     justify-content: flex-start;
   }
-
-  .pattern-choice-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 520px) {
@@ -384,28 +370,16 @@ h3 {
   }
 
   .mission-panel,
+  .visual-choice-panel,
   .beta-board-card,
   .beta-controls {
     padding: 12px;
     border-radius: 18px;
   }
 
-  .visual-choice-panel {
-    padding: 10px;
-    border-radius: 18px;
-  }
-
   .visual-choice-panel .question-label {
     margin-bottom: 6px;
     font-size: 0.58rem;
-  }
-
-  .pattern-choice-grid {
-    display: flex;
-    grid-template-columns: none;
-    gap: 8px;
-    padding-bottom: 4px;
-    overflow-x: auto;
   }
 
   .pattern-choice-card {

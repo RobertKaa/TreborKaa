@@ -134,4 +134,7 @@ Implementation:
   - Reconstruction de drapeau beta: choix de forme enrichi avec famille `Canton + bandes`, tirage de leurres diversifie par familles visuelles et puzzle Chili.
   - Reconstruction de drapeau beta: palette couleur consolidee avec leurres plus distants des bonnes couleurs, ordre melange et boutons bloques avant le choix de forme.
   - Reconstruction de drapeau beta: scoring enrichi avec badges de resultat, moyenne zones et conseil contextualise apres scan.
-  - Reconstruction de drapeau beta: interface mobile compactee avec rail de formes plus court, etapes reduites et resultat/palette moins hauts pour garder la zone de jeu visible.
+  - Reconstruction de drapeau beta: interface mobile compactee avec rail de formes plus court et resultat/palette moins hauts pour garder la zone de jeu visible.
+  - Reconstruction de drapeau beta: suppression du panneau d'etapes et du scan manuel; le resultat est calcule automatiquement quand toutes les zones sont remplies.
+  - Reconstruction de drapeau beta: palette transformee en choix numerotes avec code couleur visible, animations courtes et points bonus de serie/precision.
+  - Reconstruction de drapeau beta: mission et choix de forme integres dans la grille de jeu pour reduire la hauteur de page; controles mobiles rendus sticky pour limiter les allers-retours au scroll.

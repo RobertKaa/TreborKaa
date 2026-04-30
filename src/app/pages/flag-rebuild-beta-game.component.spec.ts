@@ -61,6 +61,7 @@ describe('FlagRebuildBetaGameComponent', () => {
     return result.then((evaluation: any) => {
       expect(evaluation.score).toBe(100);
       expect(evaluation.colorScore).toBe(100);
+      expect(evaluation.points).toBe(100);
     });
   });
 
@@ -168,7 +169,7 @@ describe('FlagRebuildBetaGameComponent', () => {
     });
   });
 
-  it('does not stack the same round score across repeated scans', async () => {
+  it('does not stack the same round points across repeated scoring', async () => {
     const puzzle = (component as any).currentPuzzle();
     (component as any).selectedPattern.set(puzzle.targetPattern);
     (component as any).hasChosenPattern.set(true);
@@ -191,7 +192,7 @@ describe('FlagRebuildBetaGameComponent', () => {
     await (component as any).submitRound();
     await (component as any).submitRound();
 
-    expect((component as any).totalScore()).toBe(80);
+    expect((component as any).totalScore()).toBe(85);
     expect((component as any).completedRounds()).toBe(1);
 
     (component as any).retryRound();
@@ -229,6 +230,20 @@ describe('FlagRebuildBetaGameComponent', () => {
 
     expect((component as any).currentStreak()).toBe(0);
     expect((component as any).bestStreak()).toBe(0);
+  });
+
+  it('adds gamified bonus points for streak and precision', () => {
+    const result = (component as any).addGamifiedPoints({
+      score: 92,
+      points: 92,
+      colorScore: 92,
+      imageScore: 92,
+      patternScore: 100,
+      zoneScores: [92, 94],
+      labelKey: 'classic.rebuild.beta.rank.perfect',
+    });
+
+    expect(result.points).toBe(122);
   });
 
   it('builds gamified result feedback from score details', () => {
@@ -281,7 +296,6 @@ describe('FlagRebuildBetaGameComponent', () => {
   });
 
   it('keeps the round focused on shape choice before painting', () => {
-    expect((component as any).activeFlowStep()).toBe('shape');
     expect((component as any).isReadyToScan()).toBe(false);
 
     const initialPieces = (component as any).pieces();
@@ -292,7 +306,53 @@ describe('FlagRebuildBetaGameComponent', () => {
     (component as any).selectPattern((component as any).currentPuzzle().targetPattern);
 
     expect((component as any).hasChosenPattern()).toBe(true);
-    expect((component as any).activeFlowStep()).toBe('paint');
+    expect((component as any).isReadyToScan()).toBe(false);
+  });
+
+  it('scores automatically after the last zone is filled', async () => {
+    (component as any).currentPuzzle.set({
+      code: 'xx',
+      nameFrench: 'Test',
+      targetPattern: 'horizontal-stripes',
+      patternOptions: ['horizontal-stripes', 'vertical-stripes'],
+      targetColors: ['#222222', '#111111'],
+      palette: ['#222222', '#111111'],
+      flagUrl: 'https://flagcdn.com/w320/fr.png',
+    });
+    (component as any).selectedPattern.set('horizontal-stripes');
+    (component as any).hasChosenPattern.set(true);
+    (component as any).pieces.set([
+      { id: 'zone-1', color: '#222222' },
+      { id: 'zone-2', color: '#f7f3ea' },
+    ]);
+    (component as any).selectedZoneIndex.set(1);
+    (component as any).evaluatePuzzle = () =>
+      Promise.resolve({
+        score: 76,
+        points: 76,
+        colorScore: 76,
+        imageScore: 76,
+        patternScore: 100,
+        zoneScores: [76],
+        labelKey: 'classic.rebuild.beta.rank.close',
+      });
+
+    (component as any).selectColor('#111111');
+    await Promise.resolve();
+
+    expect((component as any).result()?.score).toBe(76);
+    expect((component as any).totalScore()).toBe(81);
+  });
+
+  it('does not render the removed step tracker', () => {
+    expect(fixture.nativeElement.querySelector('.flow-panel')).toBeNull();
+  });
+
+  it('keeps mission and shape choices inside the playable grid', () => {
+    const boardGrid = fixture.nativeElement.querySelector('.beta-board-grid');
+
+    expect(boardGrid.querySelector('.beta-setup-card .mission-panel')).not.toBeNull();
+    expect(boardGrid.querySelector('.beta-setup-card .visual-choice-panel')).not.toBeNull();
   });
 
   it('keeps diagonal rays as five selectable zones', () => {

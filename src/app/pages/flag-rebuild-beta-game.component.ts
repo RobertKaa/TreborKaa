@@ -19,6 +19,7 @@ type BetaPiece = {
 
 type BetaResult = {
   score: number;
+  points: number;
   colorScore: number;
   imageScore: number | null;
   patternScore: number;
@@ -29,8 +30,6 @@ type BetaResult = {
 type PatternChoice = {
   pattern: FlagRebuildPattern;
 };
-
-type BetaFlowStep = 'shape' | 'paint' | 'scan';
 
 type PixelZoneMask = {
   puzzleCode: string;
@@ -355,7 +354,10 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   );
   protected readonly isReadyToScan = computed(
     () =>
-      this.hasChosenPattern() && this.filledZoneCount() === this.zoneCount() && !this.isScoring(),
+      this.hasChosenPattern() &&
+      this.filledZoneCount() === this.zoneCount() &&
+      !this.result() &&
+      !this.isScoring(),
   );
   protected readonly masteryPercent = computed(() =>
     Math.min(
@@ -389,18 +391,6 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
 
     return this.computeAverageScore(result.zoneScores);
   });
-  protected readonly activeFlowStep = computed<BetaFlowStep>(() => {
-    if (this.result()) {
-      return 'scan';
-    }
-
-    if (!this.hasChosenPattern()) {
-      return 'shape';
-    }
-
-    return this.isReadyToScan() ? 'scan' : 'paint';
-  });
-
   constructor() {
     effect(() => {
       const puzzle = this.currentPuzzle();
@@ -561,6 +551,7 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       pieces.map((piece) => (piece.id === activePiece.id ? { ...piece, color } : piece)),
     );
     this.advanceToNextOpenZone(activeIndex);
+    void this.submitRound();
   }
 
   protected async submitRound(): Promise<void> {
@@ -580,16 +571,18 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     this.isScoring.set(true);
 
     try {
-      const result = await this.evaluatePuzzle(
-        this.currentPuzzle(),
-        this.selectedPattern(),
-        this.previewColors(),
+      const result = this.addGamifiedPoints(
+        await this.evaluatePuzzle(
+          this.currentPuzzle(),
+          this.selectedPattern(),
+          this.previewColors(),
+        ),
       );
 
       this.result.set(result);
-      this.currentRoundScore.set(result.score);
+      this.currentRoundScore.set(result.points);
       this.hasScoredCurrentRound.set(true);
-      this.totalScore.update((score) => score - previousScore + result.score);
+      this.totalScore.update((score) => score - previousScore + result.points);
       if (!hadScore) {
         this.completedRounds.update((rounds) => rounds + 1);
       }
@@ -712,6 +705,24 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       patternScore,
       zoneScores,
       labelKey: this.getResultLabelKey(score),
+      points: score,
+    };
+  }
+
+  private addGamifiedPoints(result: BetaResult): BetaResult {
+    const streakAfterRound =
+      result.score >= BETA_STREAK_SCORE_THRESHOLD ? this.currentStreak() + 1 : 0;
+    const streakBonus = Math.min(25, streakAfterRound * 5);
+    const precisionBonus =
+      result.score >= BETA_PRECISION_BADGE_THRESHOLD &&
+      result.zoneScores.every((score) => score >= BETA_PRECISION_BADGE_THRESHOLD)
+        ? 10
+        : 0;
+    const perfectBonus = result.score >= 92 ? 15 : 0;
+
+    return {
+      ...result,
+      points: result.score + streakBonus + precisionBonus + perfectBonus,
     };
   }
 
