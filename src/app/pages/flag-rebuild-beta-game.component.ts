@@ -7,10 +7,13 @@ import {
   effect,
   inject,
   signal,
+  untracked,
 } from '@angular/core';
+import { GameId } from '../data/game-catalog';
 import { FLAG_REBUILD_PUZZLES } from '../data/flag-rebuild-puzzles';
 import { FlagRebuildPattern, FlagRebuildPuzzle } from '../models/flag-rebuild-puzzle';
 import { PersonalRecord } from '../models/personal-record';
+import { GameProgressService } from '../services/game-progress.service';
 import { I18nService } from '../services/i18n.service';
 import { PersonalRecordsService } from '../services/personal-records.service';
 
@@ -41,6 +44,26 @@ type ResultPointTag = {
 
 type PatternChoice = {
   pattern: FlagRebuildPattern;
+};
+
+type BetaProgressSnapshot = {
+  version: 2;
+  runPuzzleCodes: string[];
+  currentPuzzleCode: string;
+  patternChoices: FlagRebuildPattern[];
+  paletteOptions: string[];
+  selectedPattern: FlagRebuildPattern;
+  hasChosenPattern: boolean;
+  selectedZoneIndex: number;
+  pieces: BetaPiece[];
+  result: BetaResult | null;
+  round: number;
+  totalScore: number;
+  completedRounds: number;
+  currentStreak: number;
+  bestStreak: number;
+  hasSavedRunRecord: boolean;
+  isNewRunRecord: boolean;
 };
 
 type PixelZoneMask = {
@@ -433,8 +456,10 @@ const BETA_EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
   styleUrl: './flag-rebuild-beta-game.component.css',
 })
 export class FlagRebuildBetaGameComponent implements AfterViewInit {
+  private static readonly PROGRESS_GAME_ID: GameId = 'flag-rebuild';
   protected readonly i18n = inject(I18nService);
   private readonly personalRecordsService = inject(PersonalRecordsService);
+  private readonly progressService = inject(GameProgressService);
   private readonly englishRegionNames = this.createEnglishRegionNames();
   private readonly allPuzzles = [...FLAG_REBUILD_PUZZLES, ...BETA_EXTRA_FLAG_REBUILD_PUZZLES];
   private readonly runPuzzles = signal<FlagRebuildPuzzle[]>(this.buildRunPuzzles());
@@ -550,6 +575,8 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       : this.i18n.t('common.next'),
   );
   constructor() {
+    this.restoreProgress();
+
     effect(() => {
       const puzzle = this.currentPuzzle();
       void this.preparePixelMask(puzzle);
@@ -560,6 +587,27 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       this.previewColorsForPattern();
       this.selectedZoneIndex();
       this.renderPlayerCanvas();
+    });
+
+    effect(() => {
+      const snapshot = this.buildProgressSnapshot();
+      const view = {
+        percent: this.masteryPercent(),
+        labelKey: 'home.resume.rebuildBeta',
+        labelParams: {
+          current: Math.min(this.runTotal, Math.max(1, this.completedRounds() + 1)),
+          total: this.runTotal,
+          score: this.totalScore(),
+        },
+      };
+
+      untracked(() =>
+        this.progressService.saveProgress(
+          FlagRebuildBetaGameComponent.PROGRESS_GAME_ID,
+          snapshot,
+          view,
+        ),
+      );
     });
   }
 
@@ -913,6 +961,88 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     this.hasSavedRunRecord = true;
   }
 
+  private buildProgressSnapshot(): BetaProgressSnapshot {
+    return {
+      version: 2,
+      runPuzzleCodes: this.runPuzzles().map((puzzle) => puzzle.code),
+      currentPuzzleCode: this.currentPuzzle().code,
+      patternChoices: this.patternChoices().map((choice) => choice.pattern),
+      paletteOptions: this.paletteOptions(),
+      selectedPattern: this.selectedPattern(),
+      hasChosenPattern: this.hasChosenPattern(),
+      selectedZoneIndex: this.selectedZoneIndex(),
+      pieces: this.pieces(),
+      result: this.result(),
+      round: this.round(),
+      totalScore: this.totalScore(),
+      completedRounds: this.completedRounds(),
+      currentStreak: this.currentStreak(),
+      bestStreak: this.bestStreak(),
+      hasSavedRunRecord: this.hasSavedRunRecord,
+      isNewRunRecord: this.isNewRunRecord(),
+    };
+  }
+
+  private restoreProgress(): boolean {
+    const snapshot = this.progressService.getPayload<BetaProgressSnapshot>(
+      FlagRebuildBetaGameComponent.PROGRESS_GAME_ID,
+    );
+    if (!snapshot || snapshot.version !== 2 || snapshot.runPuzzleCodes.length === 0) {
+      return false;
+    }
+
+    const byCode = new Map(this.allPuzzles.map((puzzle) => [puzzle.code, puzzle]));
+    const runPuzzles = snapshot.runPuzzleCodes
+      .map((code) => byCode.get(code) ?? null)
+      .filter((puzzle): puzzle is FlagRebuildPuzzle => !!puzzle);
+    const currentPuzzle = byCode.get(snapshot.currentPuzzleCode);
+    if (!runPuzzles.length || !currentPuzzle) {
+      this.clearProgress();
+      return false;
+    }
+
+    const patternChoices = snapshot.patternChoices
+      .filter((pattern) => BETA_FLAG_REBUILD_PATTERNS.includes(pattern))
+      .slice(0, BETA_PATTERN_CHOICE_COUNT);
+    if (!patternChoices.includes(currentPuzzle.targetPattern)) {
+      patternChoices.unshift(currentPuzzle.targetPattern);
+    }
+
+    const selectedPattern = BETA_FLAG_REBUILD_PATTERNS.includes(snapshot.selectedPattern)
+      ? snapshot.selectedPattern
+      : (patternChoices[0] ?? currentPuzzle.targetPattern);
+    const pieces = this.fitPiecesToPattern(selectedPattern, snapshot.pieces, currentPuzzle);
+
+    this.runPuzzles.set(runPuzzles);
+    this.currentPuzzle.set(currentPuzzle);
+    this.patternChoices.set(patternChoices.map((pattern) => ({ pattern })));
+    this.paletteOptions.set(
+      snapshot.paletteOptions.length
+        ? snapshot.paletteOptions
+        : this.buildPaletteOptions(currentPuzzle),
+    );
+    this.selectedPattern.set(selectedPattern);
+    this.hasChosenPattern.set(snapshot.hasChosenPattern);
+    this.pieces.set(pieces);
+    this.selectedZoneIndex.set(
+      Math.max(0, Math.min(snapshot.selectedZoneIndex, Math.max(0, pieces.length - 1))),
+    );
+    this.result.set(snapshot.result);
+    this.round.set(Math.max(1, Math.min(BETA_RUN_LENGTH, snapshot.round)));
+    this.totalScore.set(Math.max(0, snapshot.totalScore));
+    this.completedRounds.set(Math.max(0, Math.min(BETA_RUN_LENGTH, snapshot.completedRounds)));
+    this.currentStreak.set(Math.max(0, snapshot.currentStreak));
+    this.bestStreak.set(Math.max(0, snapshot.bestStreak));
+    this.hasSavedRunRecord = snapshot.hasSavedRunRecord;
+    this.runRecord.set(this.personalRecordsService.getRecord('flag-rebuild-beta'));
+    this.isNewRunRecord.set(snapshot.isNewRunRecord);
+    return true;
+  }
+
+  private clearProgress(): void {
+    this.progressService.clearProgress(FlagRebuildBetaGameComponent.PROGRESS_GAME_ID);
+  }
+
   private getResultLabelKey(score: number): string {
     if (score >= 92) {
       return 'classic.rebuild.beta.rank.perfect';
@@ -977,6 +1107,7 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   }
 
   private startNewRun(): void {
+    this.clearProgress();
     const runPuzzles = this.buildRunPuzzles();
     this.runPuzzles.set(runPuzzles);
     this.totalScore.set(0);

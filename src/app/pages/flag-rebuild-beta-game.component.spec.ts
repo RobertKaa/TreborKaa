@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { GameProgressService } from '../services/game-progress.service';
 import { PersonalRecordsService } from '../services/personal-records.service';
 import { FlagRebuildBetaGameComponent } from './flag-rebuild-beta-game.component';
 
@@ -457,6 +458,44 @@ describe('FlagRebuildBetaGameComponent', () => {
     expect(fixture.nativeElement.querySelector('.result-modal-final')).not.toBeNull();
     expect(fixture.nativeElement.textContent).toContain('Run complete');
     expect(fixture.nativeElement.textContent).toContain('Play again');
+  });
+
+  it('restores the beta run progress after leaving the page', async () => {
+    const progressService = TestBed.inject(GameProgressService);
+    const puzzle = (component as any).currentPuzzle();
+    const filledPieces = puzzle.targetColors.map((color: string, index: number) => ({
+      id: `filled-${index}`,
+      color,
+    }));
+
+    (component as any).completedRounds.set(4);
+    (component as any).round.set(5);
+    (component as any).totalScore.set(420);
+    (component as any).currentStreak.set(2);
+    (component as any).bestStreak.set(3);
+    (component as any).selectedPattern.set(puzzle.targetPattern);
+    (component as any).pieces.set(filledPieces);
+    (component as any).selectedZoneIndex.set(1);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(progressService.getPayload<any>('flag-rebuild')?.totalScore).toBe(420);
+
+    fixture.destroy();
+    const restoredFixture = TestBed.createComponent(FlagRebuildBetaGameComponent);
+    const restoredComponent = restoredFixture.componentInstance;
+    restoredFixture.detectChanges();
+
+    expect((restoredComponent as any).currentPuzzle().code).toBe(puzzle.code);
+    expect((restoredComponent as any).completedRounds()).toBe(4);
+    expect((restoredComponent as any).round()).toBe(5);
+    expect((restoredComponent as any).totalScore()).toBe(420);
+    expect((restoredComponent as any).currentStreak()).toBe(2);
+    expect((restoredComponent as any).bestStreak()).toBe(3);
+    expect((restoredComponent as any).selectedPattern()).toBe(puzzle.targetPattern);
+    expect((restoredComponent as any).pieces()).toEqual(filledPieces);
+
+    restoredFixture.destroy();
   });
 
   it('does not render the removed step tracker', () => {
