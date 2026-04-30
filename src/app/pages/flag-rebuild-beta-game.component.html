@@ -11,7 +11,14 @@
       <p class="beta-intro">{{ i18n.t('classic.rebuild.beta.intro') }}</p>
     </div>
     <div class="beta-meter" [attr.aria-label]="i18n.t('classic.rebuild.beta.mastery')">
-      <span>{{ masteryPercent() }}%</span>
+      <span>
+        {{
+          i18n.t('classic.rebuild.beta.progressCount', {
+            completed: completedRounds(),
+            total: runTotal,
+          })
+        }}
+      </span>
       <div class="beta-meter-track" aria-hidden="true">
         <div class="beta-meter-fill" [style.width.%]="masteryPercent()"></div>
       </div>
@@ -25,7 +32,7 @@
           <p class="question-label">{{ i18n.t('classic.rebuild.beta.target') }}</p>
           <h3>{{ countryName(currentPuzzle()) }}</h3>
           <p class="mission-stat">
-            {{ i18n.t('classic.rebuild.beta.round', { round: round() }) }} |
+            {{ i18n.t('classic.rebuild.beta.roundOf', { round: round(), total: runTotal }) }} |
             {{ i18n.t('classic.rebuild.beta.points', { points: totalScore() }) }} |
             {{ i18n.t('classic.rebuild.beta.streak', { streak: currentStreak() }) }}
           </p>
@@ -215,7 +222,14 @@
           <p class="eyebrow" id="rebuild-beta-result-title">
             {{ i18n.t(betaResult.labelKey) }}
           </p>
-          <p class="summary-value result-score">{{ betaResult.score }}%</p>
+          <p class="summary-value result-score">
+            {{
+              i18n.t('classic.rebuild.beta.progressCount', {
+                completed: completedRounds(),
+                total: runTotal,
+              })
+            }}
+          </p>
           <p class="result-points">
             {{ i18n.t('classic.rebuild.beta.pointsWon', { points: betaResult.points }) }}
           </p>
@@ -227,40 +241,31 @@
           [alt]="i18n.t('countries.flagOf', { country: countryName(currentPuzzle()) })"
         />
       </div>
-      <p class="zone-progress">{{ i18n.t(resultTipLabel()) }}</p>
-      @if (resultBadges().length) {
-        <div class="zone-score-list">
-          @for (badge of resultBadges(); track badge) {
-            <span>{{ i18n.t(badge) }}</span>
+      <div
+        class="result-run-progress"
+        [attr.aria-label]="
+          i18n.t('classic.rebuild.beta.progressCount', {
+            completed: completedRounds(),
+            total: runTotal,
+          })
+        "
+      >
+        <div class="beta-meter-track" aria-hidden="true">
+          <div class="beta-meter-fill" [style.width.%]="masteryPercent()"></div>
+        </div>
+        <div class="result-run-dots" aria-hidden="true">
+          @for (slot of runSlots; track slot) {
+            <span
+              class="result-run-dot"
+              [class.done]="slot < completedRounds()"
+              [class.active]="slot === completedRounds() && !isRunComplete()"
+            ></span>
           }
         </div>
-      }
-      <div class="summary-score result-bars">
-        <div>
-          <p class="status-label">{{ i18n.t('classic.rebuild.beta.realImageScore') }}</p>
-          <p class="summary-value">{{ betaResult.imageScore ?? betaResult.colorScore }}%</p>
-        </div>
-        <div>
-          <p class="status-label">{{ i18n.t('classic.rebuild.beta.patternScore') }}</p>
-          <p class="summary-value">{{ betaResult.patternScore }}%</p>
-        </div>
-        <div>
-          <p class="status-label">{{ i18n.t('classic.rebuild.beta.zoneAverageScore') }}</p>
-          <p class="summary-value">{{ resultZoneAverage() }}%</p>
-        </div>
-        <div>
-          <p class="status-label">{{ i18n.t('classic.rebuild.beta.bestStreak') }}</p>
-          <p class="summary-value">{{ bestStreak() }}</p>
-        </div>
-      </div>
-      <div class="zone-score-list">
-        @for (score of betaResult.zoneScores; track $index) {
-          <span>{{ getZoneLabel($index) }} {{ score }}%</span>
-        }
       </div>
       <div class="summary-actions beta-actions">
         <button type="button" class="primary-button" (click)="nextRound()">
-          {{ i18n.t('common.next') }}
+          {{ resultCtaLabel() }}
         </button>
       </div>
     </div>

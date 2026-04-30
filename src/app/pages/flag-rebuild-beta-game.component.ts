@@ -91,6 +91,7 @@ const DIAGONAL_RAY_POLYGONS: RatioPoint[][] = [
     [0, 1],
   ],
 ];
+const BETA_RUN_LENGTH = 15;
 const BETA_PATTERN_CHOICE_COUNT = 4;
 const BETA_STREAK_SCORE_THRESHOLD = 76;
 const BETA_ZONE_SUCCESS_THRESHOLD = 76;
@@ -302,8 +303,13 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   protected readonly i18n = inject(I18nService);
   private readonly englishRegionNames = this.createEnglishRegionNames();
   private readonly allPuzzles = [...FLAG_REBUILD_PUZZLES, ...BETA_EXTRA_FLAG_REBUILD_PUZZLES];
+  private readonly runPuzzles = signal<FlagRebuildPuzzle[]>(this.buildRunPuzzles());
   @ViewChild('playerCanvas') private playerCanvas?: ElementRef<HTMLCanvasElement>;
-  protected readonly currentPuzzle = signal<FlagRebuildPuzzle>(this.pickPuzzle());
+  protected readonly runTotal = BETA_RUN_LENGTH;
+  protected readonly runSlots = Array.from({ length: BETA_RUN_LENGTH }, (_, index) => index);
+  protected readonly currentPuzzle = signal<FlagRebuildPuzzle>(
+    this.runPuzzles()[0] ?? this.allPuzzles[0],
+  );
   protected readonly patternChoices = signal<PatternChoice[]>(
     this.buildPatternChoices(this.currentPuzzle()),
   );
@@ -313,7 +319,7 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   protected readonly selectedPattern = signal<FlagRebuildPattern>(
     this.pickInitialPattern(this.patternChoices()),
   );
-  protected readonly hasChosenPattern = signal(false);
+  protected readonly hasChosenPattern = signal(true);
   protected readonly selectedZoneIndex = signal(0);
   protected readonly pieces = signal<BetaPiece[]>(
     this.fitPiecesToPattern(
@@ -356,11 +362,9 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       !this.isScoring(),
   );
   protected readonly masteryPercent = computed(() =>
-    Math.min(
-      100,
-      Math.round((this.totalScore() / Math.max(1, this.completedRounds() * 100)) * 100),
-    ),
+    Math.min(100, Math.round((this.completedRounds() / BETA_RUN_LENGTH) * 100)),
   );
+  protected readonly isRunComplete = computed(() => this.completedRounds() >= BETA_RUN_LENGTH);
   protected readonly resultMomentumLabel = computed(() => {
     const result = this.result();
     if (!result) {
@@ -387,6 +391,11 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
 
     return this.computeAverageScore(result.zoneScores);
   });
+  protected readonly resultCtaLabel = computed(() =>
+    this.isRunComplete()
+      ? this.i18n.t('classic.rebuild.beta.replayAction')
+      : this.i18n.t('common.next'),
+  );
   constructor() {
     effect(() => {
       const puzzle = this.currentPuzzle();
@@ -576,20 +585,15 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   }
 
   protected nextRound(): void {
-    const nextPuzzle = this.pickPuzzle(this.currentPuzzle().code);
-    const nextPatternChoices = this.buildPatternChoices(nextPuzzle);
-    const nextPattern = this.pickInitialPattern(nextPatternChoices);
-    this.currentPuzzle.set(nextPuzzle);
-    this.patternChoices.set(nextPatternChoices);
-    this.paletteOptions.set(this.buildPaletteOptions(nextPuzzle));
-    this.selectedPattern.set(nextPattern);
-    this.hasChosenPattern.set(false);
-    this.pieces.set(
-      this.fitPiecesToPattern(nextPattern, this.buildInitialPieces(nextPuzzle), nextPuzzle),
-    );
-    this.selectedZoneIndex.set(0);
-    this.result.set(null);
-    this.round.update((round) => round + 1);
+    if (this.isRunComplete()) {
+      this.startNewRun();
+      return;
+    }
+
+    const nextPuzzle =
+      this.runPuzzles()[this.completedRounds()] ?? this.pickPuzzle(this.currentPuzzle().code);
+    this.setCurrentPuzzle(nextPuzzle);
+    this.round.set(Math.min(BETA_RUN_LENGTH, this.completedRounds() + 1));
   }
 
   protected selectZoneFromCanvas(event: MouseEvent): void {
@@ -751,6 +755,32 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
     return Math.round(scores.reduce((sum, score) => sum + score, 0) / Math.max(1, scores.length));
   }
 
+  private startNewRun(): void {
+    const runPuzzles = this.buildRunPuzzles();
+    this.runPuzzles.set(runPuzzles);
+    this.totalScore.set(0);
+    this.completedRounds.set(0);
+    this.currentStreak.set(0);
+    this.bestStreak.set(0);
+    this.round.set(1);
+    this.setCurrentPuzzle(runPuzzles[0] ?? this.allPuzzles[0]);
+  }
+
+  private setCurrentPuzzle(puzzle: FlagRebuildPuzzle): void {
+    const patternChoices = this.buildPatternChoices(puzzle);
+    const selectedPattern = this.pickInitialPattern(patternChoices);
+    this.currentPuzzle.set(puzzle);
+    this.patternChoices.set(patternChoices);
+    this.paletteOptions.set(this.buildPaletteOptions(puzzle));
+    this.selectedPattern.set(selectedPattern);
+    this.hasChosenPattern.set(true);
+    this.pieces.set(
+      this.fitPiecesToPattern(selectedPattern, this.buildInitialPieces(puzzle), puzzle),
+    );
+    this.selectedZoneIndex.set(0);
+    this.result.set(null);
+  }
+
   private buildInitialPieces(puzzle: FlagRebuildPuzzle): BetaPiece[] {
     return puzzle.targetColors.map((_, index) => ({
       id: `${puzzle.code}-beta-${index}`,
@@ -891,7 +921,7 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
   }
 
   private pickInitialPattern(patternChoices: PatternChoice[]): FlagRebuildPattern {
-    return this.shuffle(patternChoices.map((choice) => choice.pattern))[0] ?? 'horizontal-stripes';
+    return patternChoices[0]?.pattern ?? 'horizontal-stripes';
   }
 
   private getPatternPreviewColors(
@@ -1985,6 +2015,14 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       ? this.allPuzzles.filter((puzzle) => puzzle.code !== excludedCode)
       : this.allPuzzles;
     return candidates[Math.floor(Math.random() * candidates.length)] ?? this.allPuzzles[0];
+  }
+
+  private buildRunPuzzles(): FlagRebuildPuzzle[] {
+    const uniquePuzzles = Array.from(
+      new Map(this.allPuzzles.map((puzzle) => [puzzle.code, puzzle])).values(),
+    );
+
+    return this.shuffle(uniquePuzzles).slice(0, BETA_RUN_LENGTH);
   }
 
   private shuffle<T>(values: T[]): T[] {

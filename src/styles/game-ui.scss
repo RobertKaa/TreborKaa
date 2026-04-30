@@ -293,7 +293,7 @@
   position: fixed;
   top: 50%;
   left: 50%;
-  z-index: 51;
+  z-index: 151 !important;
   width: min(760px, calc(100vw - 24px));
   max-height: 80vh;
   padding: 24px;
@@ -465,6 +465,32 @@ app-flag-rebuild-beta-game .result-modal .summary-score > div {
   border: 1px solid var(--line-soft);
   border-radius: 16px;
   background: color-mix(in srgb, var(--surface) 88%, transparent);
+}
+
+app-flag-rebuild-beta-game .result-run-progress {
+  display: grid;
+  gap: 12px;
+}
+
+app-flag-rebuild-beta-game .result-run-dots {
+  display: grid;
+  grid-template-columns: repeat(15, minmax(0, 1fr));
+  gap: 6px;
+}
+
+app-flag-rebuild-beta-game .result-run-dot {
+  height: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--line-soft) 72%, transparent);
+}
+
+app-flag-rebuild-beta-game .result-run-dot.done {
+  background: linear-gradient(90deg, var(--secondary), var(--accent));
+}
+
+app-flag-rebuild-beta-game .result-run-dot.active {
+  background: var(--accent-strong);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 @keyframes rebuild-board-pulse {
