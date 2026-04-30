@@ -397,6 +397,122 @@
   .summary-actions :where(.ghost-link, .primary-button, .next-button) {
     flex: 1 1 calc(50% - 6px);
   }
+
+  app-flag-rebuild-beta-game .flow-panel {
+    gap: 6px;
+  }
+
+  app-flag-rebuild-beta-game .flow-step {
+    flex: 1 1 86px;
+    padding: 6px 8px;
+    border-radius: 12px;
+  }
+
+  app-flag-rebuild-beta-game .flow-step small {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  app-flag-rebuild-beta-game .beta-shell {
+    gap: 10px;
+    margin-top: 12px;
+    padding: 10px;
+    border-radius: 18px;
+  }
+
+  app-flag-rebuild-beta-game .beta-intro {
+    display: none;
+  }
+
+  app-flag-rebuild-beta-game :where(h2, h3) {
+    font-size: 1.45rem;
+  }
+
+  app-flag-rebuild-beta-game :where(.mission-panel, .visual-choice-panel, .beta-board-card, .beta-controls) {
+    padding: 8px;
+    border-radius: 14px;
+  }
+
+  app-flag-rebuild-beta-game .beta-meter {
+    gap: 5px;
+    padding: 8px;
+    border-radius: 12px;
+  }
+
+  app-flag-rebuild-beta-game .pattern-choice-card {
+    flex-basis: 104px;
+    gap: 4px;
+    padding: 5px;
+    border-radius: 12px;
+  }
+
+  app-flag-rebuild-beta-game .shape-blueprint {
+    aspect-ratio: 2.65 / 1;
+    border-radius: 8px;
+  }
+
+  app-flag-rebuild-beta-game .pattern-choice-card span {
+    overflow: hidden;
+    font-size: 0.68rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  app-flag-rebuild-beta-game .beta-flag-board {
+    border-radius: 14px;
+  }
+
+  app-flag-rebuild-beta-game .beta-controls {
+    gap: 9px;
+  }
+
+  app-flag-rebuild-beta-game .active-color-preview {
+    flex-basis: 34px;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+  }
+
+  app-flag-rebuild-beta-game .active-zone {
+    font-size: 1rem;
+  }
+
+  app-flag-rebuild-beta-game .palette-swatch {
+    min-height: 38px;
+    border-radius: 10px;
+  }
+
+  app-flag-rebuild-beta-game .result-card {
+    gap: 8px;
+    padding: 10px;
+  }
+
+  app-flag-rebuild-beta-game .result-score {
+    font-size: 1.85rem;
+  }
+
+  app-flag-rebuild-beta-game .result-verdict {
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  app-flag-rebuild-beta-game .result-verdict img {
+    width: 72px;
+  }
+
+  app-flag-rebuild-beta-game .result-bars > div {
+    min-width: calc(50% - 8px);
+    padding: 8px;
+  }
+
+  app-flag-rebuild-beta-game .zone-score-list span {
+    padding: 4px 7px;
+  }
+
+  app-flag-rebuild-beta-game .beta-actions :where(.primary-button, .ghost-button) {
+    flex: 1 1 120px;
+  }
 }
 
 @media (max-width: 420px) {
