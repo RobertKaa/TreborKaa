@@ -94,6 +94,10 @@ const DIAGONAL_RAY_POLYGONS: RatioPoint[][] = [
 ];
 const BETA_PATTERN_CHOICE_COUNT = 4;
 const BETA_STREAK_SCORE_THRESHOLD = 76;
+const BETA_PALETTE_MIN_SIZE = 8;
+const BETA_PALETTE_MAX_SIZE = 10;
+const BETA_PALETTE_TARGET_MIN_DISTANCE = 30;
+const BETA_PALETTE_DECOY_MIN_DISTANCE = 18;
 const BETA_FLAG_REBUILD_PATTERNS: FlagRebuildPattern[] = [
   'horizontal-stripes',
   'vertical-stripes',
@@ -735,40 +739,69 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
 
   private buildPaletteOptions(puzzle: FlagRebuildPuzzle): string[] {
     const targetColors = Array.from(new Set(puzzle.targetColors));
-    const relatedPalette = puzzle.palette.filter(
-      (color) =>
-        !targetColors.some((targetColor) => this.areColorsTooClose(color, targetColor, 16)),
-    );
-    const distantFlagColors = this.shuffle(
-      this.allPuzzles
-        .filter((candidate) => candidate.code !== puzzle.code)
-        .flatMap((candidate) => candidate.targetColors)
-        .filter((color) =>
-          targetColors.every((targetColor) => !this.areColorsTooClose(color, targetColor, 24)),
-        ),
-    ).slice(0, Math.max(4, targetColors.length + 1));
+    const relatedPalette = puzzle.palette.filter((color) => !targetColors.includes(color));
+    const distantFlagColors = this.allPuzzles
+      .filter((candidate) => candidate.code !== puzzle.code)
+      .flatMap((candidate) => candidate.targetColors)
+      .filter((color) => !targetColors.includes(color));
     const generatedDecoys = targetColors
       .flatMap((color) => [this.rotateColor(color, 58), this.rotateColor(color, -42)])
-      .filter((color): color is string => !!color)
-      .filter((color) =>
-        targetColors.every((targetColor) => !this.areColorsTooClose(color, targetColor, 28)),
-      );
-
-    const decoys = Array.from(
-      new Set([
-        ...this.shuffle(relatedPalette).slice(0, 2),
-        ...distantFlagColors,
-        ...generatedDecoys,
-        ...BETA_SHARED_DECOY_COLORS.filter((color) =>
-          targetColors.every((targetColor) => color !== targetColor),
-        ),
-      ]),
+      .filter((color): color is string => !!color);
+    const decoyCandidates = this.shuffle([
+      ...relatedPalette,
+      ...generatedDecoys,
+      ...distantFlagColors,
+      ...BETA_SHARED_DECOY_COLORS,
+    ]);
+    const paletteSize = Math.min(
+      BETA_PALETTE_MAX_SIZE,
+      Math.max(BETA_PALETTE_MIN_SIZE, targetColors.length + 3),
+    );
+    const decoys = this.pickPaletteDecoys(
+      targetColors,
+      decoyCandidates,
+      Math.max(0, paletteSize - targetColors.length),
     );
 
-    return this.shuffle([
-      ...targetColors,
-      ...this.shuffle(decoys).slice(0, Math.max(4, 8 - targetColors.length)),
-    ]);
+    return this.shuffle([...targetColors, ...decoys]);
+  }
+
+  private pickPaletteDecoys(targetColors: string[], candidates: string[], count: number): string[] {
+    const selected: string[] = [];
+
+    for (const candidate of candidates) {
+      if (selected.length >= count) {
+        break;
+      }
+
+      if (
+        this.isPaletteDecoyCandidate(candidate, targetColors, selected) &&
+        !selected.includes(candidate)
+      ) {
+        selected.push(candidate);
+      }
+    }
+
+    return selected;
+  }
+
+  private isPaletteDecoyCandidate(
+    color: string,
+    targetColors: string[],
+    selectedDecoys: string[],
+  ): boolean {
+    return (
+      targetColors.every(
+        (targetColor) =>
+          color !== targetColor &&
+          !this.areColorsTooClose(color, targetColor, BETA_PALETTE_TARGET_MIN_DISTANCE),
+      ) &&
+      selectedDecoys.every(
+        (selectedColor) =>
+          color !== selectedColor &&
+          !this.areColorsTooClose(color, selectedColor, BETA_PALETTE_DECOY_MIN_DISTANCE),
+      )
+    );
   }
 
   private buildPatternChoices(puzzle: FlagRebuildPuzzle): PatternChoice[] {

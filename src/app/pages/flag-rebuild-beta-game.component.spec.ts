@@ -136,11 +136,36 @@ describe('FlagRebuildBetaGameComponent', () => {
   it('keeps exact colors in a mixed beta palette', () => {
     const puzzle = (component as any).currentPuzzle();
     const palette = (component as any).buildPaletteOptions(puzzle);
+    const targetColors = Array.from(new Set(puzzle.targetColors));
 
     puzzle.targetColors.forEach((color: string) => {
       expect(palette).toContain(color);
     });
-    expect(palette.length).toBeGreaterThan(new Set(puzzle.targetColors).size);
+    expect(palette.length).toBeGreaterThan(targetColors.length);
+  });
+
+  it('keeps beta palette decoys distinct from target colors', () => {
+    const puzzle = {
+      code: 'fr',
+      nameFrench: 'France',
+      targetPattern: 'vertical-stripes',
+      patternOptions: ['vertical-stripes', 'horizontal-stripes'],
+      targetColors: ['#0055a4', '#ffffff', '#ef4135'],
+      palette: ['#0055a4', '#f8f8f8', '#ef4135', '#0060ad', '#1f6ac7', '#22aa55'],
+      flagUrl: 'https://flagcdn.com/w320/fr.png',
+    };
+    const palette = (component as any).buildPaletteOptions(puzzle);
+    const targetColors = Array.from(new Set(puzzle.targetColors));
+    const decoys = palette.filter((color: string) => !targetColors.includes(color));
+
+    expect(palette.length).toBeGreaterThanOrEqual(8);
+    decoys.forEach((color: string) => {
+      expect(
+        targetColors.some((targetColor: string) =>
+          (component as any).areColorsTooClose(color, targetColor, 30),
+        ),
+      ).toBe(false);
+    });
   });
 
   it('does not stack the same round score across repeated scans', async () => {
