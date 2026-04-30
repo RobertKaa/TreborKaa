@@ -7,6 +7,8 @@ export type FlagRebuildPattern =
   | 'nordic-cross'
   | 'center-disc'
   | 'horizontal-stripes-center-disc'
+  | 'center-star'
+  | 'horizontal-stripes-center-star'
   | 'saltire'
   | 'diagonal-rays'
   | 'canton-horizontal-bands';

@@ -123,6 +123,32 @@ describe('FlagRebuildBetaGameComponent', () => {
     expect((component as any).currentPuzzle().code).toBe(runPuzzles[0].code);
   });
 
+  it('offers a larger beta country pool with symbol-based flags', () => {
+    const allPuzzles = (component as any).allPuzzles;
+    const countryCodes = allPuzzles.map((puzzle: any) => puzzle.code);
+
+    expect(allPuzzles.length).toBeGreaterThanOrEqual(59);
+    expect(new Set(countryCodes).size).toBe(allPuzzles.length);
+    expect(allPuzzles.some((puzzle: any) => puzzle.targetPattern === 'center-star')).toBe(true);
+    expect(
+      allPuzzles.some((puzzle: any) => puzzle.targetPattern === 'horizontal-stripes-center-star'),
+    ).toBe(true);
+  });
+
+  it('supports center star shapes as selectable zones', () => {
+    expect((component as any).getPatternZoneCount('center-star', 2)).toBe(2);
+    expect((component as any).findZoneAtPoint('center-star', 0.5, 0.38, 2)).toBe(1);
+    expect((component as any).findZoneAtPoint('center-star', 0.1, 0.1, 2)).toBe(0);
+
+    expect((component as any).getPatternZoneCount('horizontal-stripes-center-star', 4)).toBe(4);
+    expect((component as any).findZoneAtPoint('horizontal-stripes-center-star', 0.5, 0.4, 4)).toBe(
+      3,
+    );
+    expect((component as any).findZoneAtPoint('horizontal-stripes-center-star', 0.5, 0.9, 4)).toBe(
+      2,
+    );
+  });
+
   it('selects the first shape choice by default', () => {
     const firstChoice = (component as any).patternChoices()[0];
 

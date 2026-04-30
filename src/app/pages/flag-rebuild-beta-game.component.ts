@@ -52,6 +52,7 @@ type PatternFamily =
   | 'crosses'
   | 'diagonals'
   | 'discs'
+  | 'stars'
   | 'stripes'
   | 'triangles';
 
@@ -109,6 +110,8 @@ const BETA_FLAG_REBUILD_PATTERNS: FlagRebuildPattern[] = [
   'nordic-cross',
   'center-disc',
   'horizontal-stripes-center-disc',
+  'center-star',
+  'horizontal-stripes-center-star',
   'saltire',
   'diagonal-rays',
   'canton-horizontal-bands',
@@ -122,6 +125,8 @@ const BETA_PATTERN_FAMILIES: Record<FlagRebuildPattern, PatternFamily> = {
   'nordic-cross': 'crosses',
   'center-disc': 'discs',
   'horizontal-stripes-center-disc': 'discs',
+  'center-star': 'stars',
+  'horizontal-stripes-center-star': 'stars',
   saltire: 'diagonals',
   'diagonal-rays': 'diagonals',
   'canton-horizontal-bands': 'cantons',
@@ -291,6 +296,122 @@ const BETA_EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     targetColors: ['#0039a6', '#ffffff', '#d52b1e'],
     palette: ['#2d62bd', '#f5f5f5', '#e34a3e', '#0039a6', '#ffffff', '#d52b1e'],
     flagUrl: 'https://flagcdn.com/w320/cl.png',
+  },
+  {
+    code: 'ci',
+    nameFrench: "Côte d'Ivoire",
+    targetPattern: 'vertical-stripes',
+    patternOptions: ['vertical-stripes', 'horizontal-stripes', 'left-band-horizontal'],
+    targetColors: ['#f77f00', '#ffffff', '#009e60'],
+    palette: ['#ff9a2b', '#f5f5f5', '#28b47a', '#f77f00', '#ffffff', '#009e60'],
+    flagUrl: 'https://flagcdn.com/w320/ci.png',
+  },
+  {
+    code: 'bo',
+    nameFrench: 'Bolivie',
+    targetPattern: 'horizontal-stripes',
+    patternOptions: ['horizontal-stripes', 'vertical-stripes', 'left-band-horizontal'],
+    targetColors: ['#d52b1e', '#f9e300', '#007934'],
+    palette: ['#e34a3e', '#ffed4f', '#269354', '#d52b1e', '#f9e300', '#007934'],
+    flagUrl: 'https://flagcdn.com/w320/bo.png',
+  },
+  {
+    code: 'bj',
+    nameFrench: 'Bénin',
+    targetPattern: 'left-band-horizontal',
+    patternOptions: ['left-band-horizontal', 'horizontal-stripes', 'vertical-stripes'],
+    targetColors: ['#008751', '#fcd116', '#e8112d'],
+    palette: ['#29a672', '#ffe04b', '#f04255', '#008751', '#fcd116', '#e8112d'],
+    flagUrl: 'https://flagcdn.com/w320/bj.png',
+  },
+  {
+    code: 'mg',
+    nameFrench: 'Madagascar',
+    targetPattern: 'left-band-horizontal',
+    patternOptions: ['left-band-horizontal', 'vertical-stripes', 'horizontal-stripes'],
+    targetColors: ['#ffffff', '#fc3d32', '#007e3a'],
+    palette: ['#f5f5f5', '#ff5b50', '#27975a', '#ffffff', '#fc3d32', '#007e3a'],
+    flagUrl: 'https://flagcdn.com/w320/mg.png',
+  },
+  {
+    code: 'gm',
+    nameFrench: 'Gambie',
+    targetPattern: 'horizontal-stripes',
+    patternOptions: ['horizontal-stripes', 'vertical-stripes', 'left-band-horizontal'],
+    targetColors: ['#ce1126', '#ffffff', '#0c1c8c', '#ffffff', '#3a7728'],
+    palette: ['#df3d4f', '#f5f5f5', '#2f3fa6', '#58934a', '#ce1126', '#0c1c8c', '#3a7728'],
+    flagUrl: 'https://flagcdn.com/w320/gm.png',
+  },
+  {
+    code: 'bw',
+    nameFrench: 'Botswana',
+    targetPattern: 'horizontal-stripes',
+    patternOptions: ['horizontal-stripes', 'vertical-stripes', 'nordic-cross'],
+    targetColors: ['#75aadb', '#ffffff', '#000000', '#ffffff', '#75aadb'],
+    palette: ['#8ec0e5', '#f5f5f5', '#2a2a2a', '#75aadb', '#ffffff', '#000000'],
+    flagUrl: 'https://flagcdn.com/w320/bw.png',
+  },
+  {
+    code: 'ne',
+    nameFrench: 'Niger',
+    targetPattern: 'horizontal-stripes-center-disc',
+    patternOptions: ['horizontal-stripes-center-disc', 'horizontal-stripes', 'center-disc'],
+    targetColors: ['#e05206', '#ffffff', '#0db02b', '#e05206'],
+    palette: ['#ef7330', '#f5f5f5', '#31c650', '#e05206', '#ffffff', '#0db02b'],
+    flagUrl: 'https://flagcdn.com/w320/ne.png',
+  },
+  {
+    code: 'mc',
+    nameFrench: 'Monaco',
+    targetPattern: 'horizontal-stripes',
+    patternOptions: ['horizontal-stripes', 'vertical-stripes', 'center-disc'],
+    targetColors: ['#ce1126', '#ffffff'],
+    palette: ['#df3d4f', '#f5f5f5', '#ce1126', '#ffffff'],
+    flagUrl: 'https://flagcdn.com/w320/mc.png',
+  },
+  {
+    code: 'vn',
+    nameFrench: 'Viêt Nam',
+    targetPattern: 'center-star',
+    patternOptions: ['center-star', 'center-disc', 'horizontal-stripes-center-star'],
+    targetColors: ['#da251d', '#ffff00'],
+    palette: ['#e94a43', '#fff35a', '#da251d', '#ffff00'],
+    flagUrl: 'https://flagcdn.com/w320/vn.png',
+  },
+  {
+    code: 'so',
+    nameFrench: 'Somalie',
+    targetPattern: 'center-star',
+    patternOptions: ['center-star', 'center-disc', 'horizontal-stripes-center-star'],
+    targetColors: ['#4189dd', '#ffffff'],
+    palette: ['#61a0ea', '#f5f5f5', '#4189dd', '#ffffff'],
+    flagUrl: 'https://flagcdn.com/w320/so.png',
+  },
+  {
+    code: 'gh',
+    nameFrench: 'Ghana',
+    targetPattern: 'horizontal-stripes-center-star',
+    patternOptions: [
+      'horizontal-stripes-center-star',
+      'horizontal-stripes-center-disc',
+      'horizontal-stripes',
+    ],
+    targetColors: ['#ce1126', '#fcd116', '#006b3f', '#000000'],
+    palette: ['#df3d4f', '#ffe04b', '#278858', '#2a2a2a', '#ce1126', '#fcd116', '#006b3f'],
+    flagUrl: 'https://flagcdn.com/w320/gh.png',
+  },
+  {
+    code: 'mm',
+    nameFrench: 'Myanmar',
+    targetPattern: 'horizontal-stripes-center-star',
+    patternOptions: [
+      'horizontal-stripes-center-star',
+      'horizontal-stripes-center-disc',
+      'horizontal-stripes',
+    ],
+    targetColors: ['#fecb00', '#34b233', '#ea2839', '#ffffff'],
+    palette: ['#ffdd45', '#54c651', '#ef5260', '#f5f5f5', '#fecb00', '#34b233', '#ea2839'],
+    flagUrl: 'https://flagcdn.com/w320/mm.png',
   },
 ];
 
@@ -484,14 +605,27 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
           this.i18n.t('rebuild.zone.generic', { index: index + 1 })
         );
       case 'center-disc':
+      case 'center-star':
         return (
-          [this.i18n.t('rebuild.zone.background'), this.i18n.t('rebuild.zone.disc')][index] ??
-          this.i18n.t('rebuild.zone.generic', { index: index + 1 })
+          [
+            this.i18n.t('rebuild.zone.background'),
+            this.i18n.t(
+              this.selectedPattern() === 'center-disc' ? 'rebuild.zone.disc' : 'rebuild.zone.star',
+            ),
+          ][index] ?? this.i18n.t('rebuild.zone.generic', { index: index + 1 })
         );
       case 'horizontal-stripes-center-disc': {
-        const discIndex = this.previewColorsForPattern().length - 1;
-        if (index === discIndex) {
+        const symbolIndex = this.previewColorsForPattern().length - 1;
+        if (index === symbolIndex) {
           return this.i18n.t('rebuild.zone.disc');
+        }
+
+        return this.i18n.t('rebuild.zone.stripe', { index: index + 1 });
+      }
+      case 'horizontal-stripes-center-star': {
+        const symbolIndex = this.previewColorsForPattern().length - 1;
+        if (index === symbolIndex) {
+          return this.i18n.t('rebuild.zone.star');
         }
 
         return this.i18n.t('rebuild.zone.stripe', { index: index + 1 });
@@ -944,8 +1078,10 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
         return Math.max(3, colorCount);
       case 'nordic-cross':
       case 'center-disc':
+      case 'center-star':
         return 2;
       case 'horizontal-stripes-center-disc':
+      case 'horizontal-stripes-center-star':
       case 'saltire':
         return colorCount;
       case 'diagonal-rays':
@@ -1619,6 +1755,13 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
         context.arc(width * 0.5, height * 0.5, height * 0.24, 0, Math.PI * 2);
         context.fill();
         break;
+      case 'center-star':
+        context.fillStyle = colors[0] ?? '#f7f3ea';
+        context.fillRect(0, 0, width, height);
+        context.fillStyle = colors[1] ?? '#f7f3ea';
+        this.traceStar(context, width * 0.5, height * 0.5, height * 0.24, height * 0.1);
+        context.fill();
+        break;
       case 'horizontal-stripes-center-disc': {
         const discIndex = colors.length - 1;
         const stripeColors = colors.slice(0, discIndex);
@@ -1634,6 +1777,23 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
         context.fillStyle = colors[discIndex] ?? '#f7f3ea';
         context.beginPath();
         context.arc(width * 0.5, height * 0.5, height * 0.19, 0, Math.PI * 2);
+        context.fill();
+        break;
+      }
+      case 'horizontal-stripes-center-star': {
+        const starIndex = colors.length - 1;
+        const stripeColors = colors.slice(0, starIndex);
+        stripeColors.forEach((color, index) => {
+          context.fillStyle = color;
+          context.fillRect(
+            0,
+            (index * height) / stripeColors.length,
+            width,
+            height / stripeColors.length,
+          );
+        });
+        context.fillStyle = colors[starIndex] ?? '#f7f3ea';
+        this.traceStar(context, width * 0.5, height * 0.5, height * 0.2, height * 0.085);
         context.fill();
         break;
       }
@@ -1761,10 +1921,32 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
           context.strokeRect(3, 3, width - 6, height - 6);
         }
         break;
+      case 'center-star':
+        if (zoneIndex === 1) {
+          this.traceStar(context, width * 0.5, height * 0.5, height * 0.24, height * 0.1);
+          context.stroke();
+        } else {
+          context.strokeRect(3, 3, width - 6, height - 6);
+        }
+        break;
       case 'horizontal-stripes-center-disc':
         if (zoneIndex === zoneCount - 1) {
           context.beginPath();
           context.arc(width * 0.5, height * 0.5, height * 0.19, 0, Math.PI * 2);
+          context.stroke();
+        } else {
+          const stripes = zoneCount - 1;
+          context.strokeRect(
+            3,
+            (zoneIndex * height) / stripes + 3,
+            width - 6,
+            height / stripes - 6,
+          );
+        }
+        break;
+      case 'horizontal-stripes-center-star':
+        if (zoneIndex === zoneCount - 1) {
+          this.traceStar(context, width * 0.5, height * 0.5, height * 0.2, height * 0.085);
           context.stroke();
         } else {
           const stripes = zoneCount - 1;
@@ -1838,6 +2020,69 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
       }
     });
     context.closePath();
+  }
+
+  private traceStar(
+    context: CanvasRenderingContext2D,
+    centerX: number,
+    centerY: number,
+    outerRadius: number,
+    innerRadius: number,
+  ): void {
+    context.beginPath();
+    this.createStarPoints(centerX, centerY, outerRadius, innerRadius).forEach(
+      ([x, y], pointIndex) => {
+        if (pointIndex === 0) {
+          context.moveTo(x, y);
+        } else {
+          context.lineTo(x, y);
+        }
+      },
+    );
+    context.closePath();
+  }
+
+  private createStarPoints(
+    centerX: number,
+    centerY: number,
+    outerRadius: number,
+    innerRadius: number,
+  ): RatioPoint[] {
+    return Array.from({ length: 10 }, (_, index) => {
+      const angle = -Math.PI / 2 + (index * Math.PI) / 5;
+      const radius = index % 2 === 0 ? outerRadius : innerRadius;
+      return [centerX + Math.cos(angle) * radius, centerY + Math.sin(angle) * radius] as const;
+    });
+  }
+
+  private isPointInStar(
+    x: number,
+    y: number,
+    centerX: number,
+    centerY: number,
+    outerRadius: number,
+    innerRadius: number,
+  ): boolean {
+    const points = this.createStarPoints(centerX, centerY, outerRadius, innerRadius);
+    let inside = false;
+
+    for (
+      let pointIndex = 0, previousIndex = points.length - 1;
+      pointIndex < points.length;
+      previousIndex = pointIndex, pointIndex += 1
+    ) {
+      const [currentX, currentY] = points[pointIndex];
+      const [previousX, previousY] = points[previousIndex];
+      const crossesY = currentY > y !== previousY > y;
+      const intersectionX =
+        ((previousX - currentX) * (y - currentY)) / (previousY - currentY) + currentX;
+
+      if (crossesY && x < intersectionX) {
+        inside = !inside;
+      }
+    }
+
+    return inside;
   }
 
   private getTargetPatternPixelMask(): PixelZoneMask | null {
@@ -1935,8 +2180,16 @@ export class FlagRebuildBetaGameComponent implements AfterViewInit {
         return (x >= 0.3 && x <= 0.46) || (y >= 0.415 && y <= 0.585) ? 1 : 0;
       case 'center-disc':
         return ((x - 0.5) / 0.16) ** 2 + ((y - 0.5) / 0.24) ** 2 <= 1 ? 1 : 0;
+      case 'center-star':
+        return this.isPointInStar(x, y, 0.5, 0.5, 0.24, 0.1) ? 1 : 0;
       case 'horizontal-stripes-center-disc':
         if (((x - 0.5) / 0.127) ** 2 + ((y - 0.5) / 0.19) ** 2 <= 1) {
+          return zoneCount - 1;
+        }
+
+        return Math.min(zoneCount - 2, Math.floor(y * (zoneCount - 1)));
+      case 'horizontal-stripes-center-star':
+        if (this.isPointInStar(x, y, 0.5, 0.5, 0.2, 0.085)) {
           return zoneCount - 1;
         }
 
