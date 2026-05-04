@@ -1527,20 +1527,19 @@ export class FlagRebuildGamePageComponent implements AfterViewInit {
 
     const zoneIndexes = new Uint8Array(reference.width * reference.height);
     for (let pixelIndex = 0; pixelIndex < zoneIndexes.length; pixelIndex += 1) {
-      const dataIndex = pixelIndex * 4;
-      const closestIndex = this.findClosestTargetColorIndex(
-        reference.data[dataIndex],
-        reference.data[dataIndex + 1],
-        reference.data[dataIndex + 2],
-        targetColors,
-      );
+      const x = (pixelIndex % reference.width) / reference.width;
+      const y = Math.floor(pixelIndex / reference.width) / reference.height;
       zoneIndexes[pixelIndex] =
-        closestIndex === discIndex
+        this.isPointInHorizontalStripeDisc(x, y)
           ? discIndex
           : bandZoneIndexes[Math.floor(pixelIndex / reference.width)];
     }
 
     return zoneIndexes;
+  }
+
+  private isPointInHorizontalStripeDisc(x: number, y: number): boolean {
+    return ((x - 0.5) / 0.127) ** 2 + ((y - 0.5) / 0.19) ** 2 <= 1;
   }
 
   private createCantonHorizontalBandZoneIndexes(reference: ImageData): Uint8Array {
@@ -2405,7 +2404,7 @@ export class FlagRebuildGamePageComponent implements AfterViewInit {
       case 'center-star':
         return this.isPointInStar(x, y, 0.5, 0.5, 0.24, 0.1) ? 1 : 0;
       case 'horizontal-stripes-center-disc':
-        if (((x - 0.5) / 0.127) ** 2 + ((y - 0.5) / 0.19) ** 2 <= 1) {
+        if (this.isPointInHorizontalStripeDisc(x, y)) {
           return zoneCount - 1;
         }
 

@@ -43,6 +43,19 @@ export class FavoriteGamesService {
     this.persist();
   }
 
+  mergeFavorites(gameIds: readonly string[]): void {
+    const next: FavoriteStore = { ...this.favorites() };
+
+    for (const gameId of gameIds) {
+      if (VALID_IDS.has(gameId as GameId)) {
+        next[gameId as GameId] = true;
+      }
+    }
+
+    this.favorites.set(next);
+    this.persist();
+  }
+
   private loadFromStorage(): FavoriteStore {
     const parsed = this.storage.getJson<Record<string, unknown>>(STORAGE_KEY, {});
     if (!parsed || typeof parsed !== 'object') {

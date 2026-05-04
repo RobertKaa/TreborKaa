@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { GAME_CATALOG, GameCatalogItem, GameId } from '../data/game-catalog';
 import { FavoriteGamesService } from '../services/favorite-games.service';
 import { GameProgressService } from '../services/game-progress.service';
+import { AchievementsService } from '../services/achievements.service';
 import { I18nService } from '../services/i18n.service';
 import { PersonalRecordsService } from '../services/personal-records.service';
 import { PersonalRecord } from '../models/personal-record';
@@ -36,40 +37,44 @@ const CLASSIC_FAMILIES: Array<{
     labelKey: 'home.classicCountryToFlag',
     descriptionKey: 'home.classicCountryToFlag.description',
     easyId: 'classic-country-to-flag-easy',
-    hardId: 'classic-country-to-flag-hard'
+    hardId: 'classic-country-to-flag-hard',
   },
   {
     id: 'flag-to-country',
     labelKey: 'home.classicFlagToCountry',
     descriptionKey: 'home.classicFlagToCountry.description',
     easyId: 'classic-flag-to-country-easy',
-    hardId: 'classic-flag-to-country-hard'
+    hardId: 'classic-flag-to-country-hard',
   },
   {
     id: 'shape-to-country',
     labelKey: 'home.classicShapeToCountry',
     descriptionKey: 'home.classicShapeToCountry.description',
     easyId: 'classic-shape-to-country-easy',
-    hardId: 'classic-shape-to-country-hard'
-  }
+    hardId: 'classic-shape-to-country-hard',
+  },
 ];
 
 const CLASSIC_GAME_IDS = new Set<GameId>(
-  CLASSIC_FAMILIES.flatMap((family) => [family.easyId, family.hardId])
+  CLASSIC_FAMILIES.flatMap((family) => [family.easyId, family.hardId]),
 );
 
 @Component({
   selector: 'app-home-page',
   imports: [RouterLink],
   templateUrl: './home-page.component.html',
-  styleUrl: './home-page.component.scss'
+  styleUrl: './home-page.component.scss',
 })
 export class HomePageComponent {
   protected readonly i18n = inject(I18nService);
   private readonly favoritesService = inject(FavoriteGamesService);
   private readonly progressService = inject(GameProgressService);
   private readonly recordsService = inject(PersonalRecordsService);
+  private readonly achievementsService = inject(AchievementsService);
   protected readonly selectedTab = signal<'all' | 'favorites'>('all');
+  protected readonly achievements = this.achievementsService.achievements;
+  protected readonly profile = this.achievementsService.profile;
+  protected readonly unlockedCount = this.achievementsService.unlockedCount;
 
   protected readonly games = computed<HomeGameView[]>(() => {
     const favorites = this.favoritesService.snapshot();
@@ -85,14 +90,14 @@ export class HomePageComponent {
         progressLabel: entry ? this.i18n.t(entry.labelKey, entry.labelParams) : null,
         progressPercent: entry ? entry.percent : null,
         hasInProgress: !!entry,
-        bestRecord
+        bestRecord,
       };
     });
   });
   protected readonly visibleGames = computed(() =>
     this.selectedTab() === 'favorites'
       ? this.games().filter((game) => game.isFavorite && !CLASSIC_GAME_IDS.has(game.id))
-      : this.games().filter((game) => !CLASSIC_GAME_IDS.has(game.id))
+      : this.games().filter((game) => !CLASSIC_GAME_IDS.has(game.id)),
   );
   protected readonly visibleClassicFamilies = computed<ClassicGameFamilyView[]>(() => {
     const favoritesOnly = this.selectedTab() === 'favorites';
@@ -115,12 +120,12 @@ export class HomePageComponent {
         descriptionKey: family.descriptionKey,
         easy,
         hard,
-        bestRecord: this.pickBestRecord([easy.bestRecord, hard.bestRecord])
+        bestRecord: this.pickBestRecord([easy.bestRecord, hard.bestRecord]),
       };
     }).filter((family): family is ClassicGameFamilyView => family !== null);
   });
   protected readonly displayedGamesCount = computed(
-    () => this.visibleClassicFamilies().length + this.visibleGames().length
+    () => this.visibleClassicFamilies().length + this.visibleGames().length,
   );
 
   protected setTab(tab: 'all' | 'favorites'): void {
@@ -159,7 +164,7 @@ export class HomePageComponent {
 
     return this.i18n.t('home.bestRecord', {
       score: record.bestScore,
-      percent: record.bestPercent
+      percent: record.bestPercent,
     });
   }
 
@@ -170,7 +175,7 @@ export class HomePageComponent {
 
     return this.i18n.t('home.bestRecord', {
       score: game.bestRecord.bestScore,
-      percent: game.bestRecord.bestPercent
+      percent: game.bestRecord.bestPercent,
     });
   }
 

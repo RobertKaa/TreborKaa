@@ -54,6 +54,18 @@ export class PersonalRecordsService {
     this.storage.remove(STORAGE_KEY);
   }
 
+  mergeRecords(records: StoredRecords): void {
+    const next: StoredRecords = { ...this.records() };
+
+    for (const [key, incoming] of Object.entries(records) as [GameRecordKey, PersonalRecord][]) {
+      const existing = next[key];
+      next[key] = this.mergeRecord(existing, incoming);
+    }
+
+    this.records.set(next);
+    this.persist();
+  }
+
   private loadFromStorage(): StoredRecords {
     const parsed = this.storage.getJson<StoredRecords>(STORAGE_KEY, {});
     return typeof parsed === 'object' && parsed !== null ? parsed : {};
@@ -61,5 +73,31 @@ export class PersonalRecordsService {
 
   private persist(): void {
     this.storage.setJson(STORAGE_KEY, this.records());
+  }
+
+  private mergeRecord(
+    existing: PersonalRecord | undefined,
+    incoming: PersonalRecord,
+  ): PersonalRecord {
+    if (!existing) {
+      return incoming;
+    }
+
+    const incomingIsBetter =
+      incoming.bestPercent > existing.bestPercent ||
+      (incoming.bestPercent === existing.bestPercent && incoming.bestScore > existing.bestScore);
+    const bestSource = incomingIsBetter ? incoming : existing;
+
+    return {
+      bestScore: bestSource.bestScore,
+      bestMaxScore: bestSource.bestMaxScore,
+      bestPercent: bestSource.bestPercent,
+      gamesPlayed: Math.max(existing.gamesPlayed, incoming.gamesPlayed),
+      lastPlayedAt:
+        Date.parse(incoming.lastPlayedAt) > Date.parse(existing.lastPlayedAt)
+          ? incoming.lastPlayedAt
+          : existing.lastPlayedAt,
+      bestStreak: Math.max(existing.bestStreak ?? 0, incoming.bestStreak ?? 0),
+    };
   }
 }
