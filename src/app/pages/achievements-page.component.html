@@ -4,8 +4,24 @@
     <h1>{{ i18n.t('achievements.title') }}</h1>
     <p class="intro">{{ i18n.t('achievements.intro') }}</p>
     <p class="summary">
-      {{ i18n.t('achievements.count', { unlocked: unlockedCount(), total: achievements().length }) }}
+      {{
+        i18n.t('achievements.count', { unlocked: unlockedCount(), total: achievements().length })
+      }}
     </p>
+    <div class="profile-summary" [attr.aria-label]="i18n.t('gamification.profileAria')">
+      <div>
+        <span>{{ i18n.t('gamification.level', { level: profile().level }) }}</span>
+        <strong>{{ i18n.t(profile().levelLabelKey) }}</strong>
+      </div>
+      <div>
+        <span>{{ i18n.t('gamification.points') }}</span>
+        <strong>{{ profile().achievementPoints }}</strong>
+      </div>
+      <div>
+        <span>{{ i18n.t('gamification.xpShort') }}</span>
+        <strong>{{ profile().xp }}</strong>
+      </div>
+    </div>
   </section>
 
   <section class="grid-card">
@@ -19,7 +35,11 @@
           <div class="card-topline">
             <p class="card-title">{{ i18n.t(achievement.displayTitleKey) }}</p>
             <span class="card-state">
-              {{ achievement.unlocked ? i18n.t('achievements.unlocked') : i18n.t('achievements.locked') }}
+              {{
+                achievement.unlocked
+                  ? i18n.t('achievements.unlocked')
+                  : i18n.t('achievements.locked')
+              }}
             </span>
           </div>
           <p class="card-desc">{{ i18n.t(achievement.displayDescriptionKey) }}</p>

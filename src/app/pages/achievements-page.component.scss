@@ -56,6 +56,35 @@ h1 {
   color: var(--ink-soft);
 }
 
+.profile-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.profile-summary > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--line-soft);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+}
+
+.profile-summary span {
+  color: var(--ink-soft);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.profile-summary strong {
+  font-size: 1.05rem;
+}
+
 .achievement-grid {
   display: grid;
   gap: 10px;
@@ -125,6 +154,10 @@ h1 {
 
 @media (max-width: 760px) {
   .achievement-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-summary {
     grid-template-columns: 1fr;
   }
 }

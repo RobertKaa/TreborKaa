@@ -26,13 +26,21 @@ describe('FavoriteGamesService', () => {
       JSON.stringify({
         'flag-chrono': true,
         'invalid-game': true,
-        'classic-country-to-flag-easy': false
-      })
+        'classic-country-to-flag-easy': false,
+      }),
     );
 
     const service = TestBed.inject(FavoriteGamesService);
     expect(service.isFavorite('flag-chrono')).toBe(true);
     expect(service.ids()).toEqual(['flag-chrono']);
   });
-});
 
+  it('merges remote favorites without losing local ones', () => {
+    const service = TestBed.inject(FavoriteGamesService);
+    service.set('flag-chrono', true);
+
+    service.mergeFavorites(['pixel-flag', 'invalid-game']);
+
+    expect(service.ids()).toEqual(['flag-chrono', 'pixel-flag']);
+  });
+});

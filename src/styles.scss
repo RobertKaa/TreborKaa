@@ -1,6 +1,8 @@
 @use './styles/design-system';
 @use './styles/app-theme';
 @use './styles/game-ui';
+@use './styles/gamification';
+@use './styles/auth';
 
 html,
 body {

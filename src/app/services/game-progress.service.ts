@@ -75,6 +75,23 @@ export class GameProgressService {
     this.persist();
   }
 
+  mergeProgress(entries: readonly GameProgressEntry[]): void {
+    const next: ProgressStore = { ...this.store() };
+
+    for (const entry of entries) {
+      const existing = next[entry.gameId];
+      const existingTime = existing ? Date.parse(existing.updatedAt) : 0;
+      const incomingTime = Date.parse(entry.updatedAt);
+
+      if (!existing || incomingTime >= existingTime) {
+        next[entry.gameId] = entry;
+      }
+    }
+
+    this.store.set(next);
+    this.persist();
+  }
+
   private loadFromStorage(): ProgressStore {
     const parsed = this.storage.getJson<ProgressStore>(STORAGE_KEY, {});
     if (!parsed || typeof parsed !== 'object') {

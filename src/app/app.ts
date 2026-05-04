@@ -1,8 +1,11 @@
-import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
+import { Component, OnDestroy, computed, effect, inject, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AppLanguage } from './data/i18n-translations';
+import { AchievementsService } from './services/achievements.service';
 import { BrowserStorageService } from './services/browser-storage.service';
 import { I18nService } from './services/i18n.service';
+import { SupabaseAuthService } from './services/supabase-auth.service';
+import { UserDataSyncService } from './services/user-data-sync.service';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +21,9 @@ import { I18nService } from './services/i18n.service';
 })
 export class App implements OnDestroy {
   protected readonly i18n = inject(I18nService);
+  private readonly auth = inject(SupabaseAuthService);
+  private readonly userDataSync = inject(UserDataSyncService);
+  private readonly achievementsService = inject(AchievementsService);
   private readonly storage = inject(BrowserStorageService);
   private readonly canUseWindow = typeof window !== 'undefined';
   private readonly viewportRef = this.canUseWindow ? window.visualViewport : null;
@@ -30,6 +36,7 @@ export class App implements OnDestroy {
   private readonly onOnline = () => this.isOffline.set(false);
   private readonly onOffline = () => this.isOffline.set(true);
   private readonly onGlobalResourceError = (event: Event) => this.handleResourceError(event);
+  private achievementToastTimeoutId: number | null = null;
 
   protected readonly isDarkTheme = signal(this.readInitialTheme());
   protected readonly themeLabel = computed(() =>
@@ -40,6 +47,18 @@ export class App implements OnDestroy {
   protected readonly isOffline = signal(false);
   protected readonly keyboardOffset = signal(0);
   protected readonly isMenuOpen = signal(false);
+  protected readonly authProfile = this.auth.profile;
+  protected readonly isAuthenticated = this.auth.isAuthenticated;
+  protected readonly isAuthLoading = this.auth.isLoading;
+  protected readonly authError = this.auth.lastError;
+  protected readonly latestAchievement = this.achievementsService.latestUnlock;
+  protected readonly authDisplayName = computed(
+    () => this.authProfile()?.displayName ?? this.i18n.t('auth.account'),
+  );
+  protected readonly authInitial = computed(() => {
+    const displayName = this.authDisplayName().trim();
+    return (displayName.charAt(0) || 'V').toUpperCase();
+  });
   protected readonly mobileNotice = computed(() => {
     if (this.isOffline()) {
       return this.i18n.t('mobile.offline');
@@ -53,6 +72,21 @@ export class App implements OnDestroy {
   });
 
   constructor() {
+    effect(() => {
+      const latest = this.latestAchievement();
+      if (!latest || !this.canUseWindow) {
+        return;
+      }
+
+      if (this.achievementToastTimeoutId !== null) {
+        window.clearTimeout(this.achievementToastTimeoutId);
+      }
+
+      this.achievementToastTimeoutId = window.setTimeout(() => {
+        this.dismissAchievementToast();
+      }, 5200);
+    });
+
     if (!this.canUseWindow) {
       return;
     }
@@ -71,6 +105,33 @@ export class App implements OnDestroy {
     this.isMenuOpen.update((value) => !value);
   }
 
+  protected handleAuthButtonClick(): void {
+    if (this.isAuthLoading()) {
+      return;
+    }
+
+    if (this.isAuthenticated()) {
+      this.toggleMenu();
+      return;
+    }
+
+    void this.auth.signInWithGoogle();
+  }
+
+  protected signInWithGoogle(): void {
+    if (this.isAuthLoading()) {
+      return;
+    }
+
+    void this.auth.signInWithGoogle();
+    this.closeMenu();
+  }
+
+  protected signOut(): void {
+    void this.auth.signOut();
+    this.closeMenu();
+  }
+
   protected closeMenu(): void {
     this.isMenuOpen.set(false);
   }
@@ -84,17 +145,29 @@ export class App implements OnDestroy {
     return this.i18n.currentLanguage() === language;
   }
 
-  ngOnDestroy(): void {
-    if (!this.canUseWindow) {
-      return;
+  protected dismissAchievementToast(): void {
+    if (this.achievementToastTimeoutId !== null && this.canUseWindow) {
+      window.clearTimeout(this.achievementToastTimeoutId);
+      this.achievementToastTimeoutId = null;
     }
 
-    window.removeEventListener('resize', this.onWindowResize);
-    window.removeEventListener('orientationchange', this.onWindowResize);
-    window.removeEventListener('online', this.onOnline);
-    window.removeEventListener('offline', this.onOffline);
-    window.removeEventListener('error', this.onGlobalResourceError, true);
-    this.viewportRef?.removeEventListener('resize', this.onViewportResize);
+    this.achievementsService.acknowledgeLatestUnlock();
+  }
+
+  ngOnDestroy(): void {
+    if (this.canUseWindow) {
+      window.removeEventListener('resize', this.onWindowResize);
+      window.removeEventListener('orientationchange', this.onWindowResize);
+      window.removeEventListener('online', this.onOnline);
+      window.removeEventListener('offline', this.onOffline);
+      window.removeEventListener('error', this.onGlobalResourceError, true);
+      this.viewportRef?.removeEventListener('resize', this.onViewportResize);
+
+      if (this.achievementToastTimeoutId !== null) {
+        window.clearTimeout(this.achievementToastTimeoutId);
+        this.achievementToastTimeoutId = null;
+      }
+    }
   }
 
   private readInitialTheme(): boolean {

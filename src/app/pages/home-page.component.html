@@ -1,8 +1,36 @@
 <main class="shell">
   <section class="hero-card">
-    <p class="eyebrow">{{ i18n.t('home.eyebrow') }}</p>
-    <h1>{{ i18n.t('home.heroTitle') }}</h1>
-    <p class="intro">{{ i18n.t('home.heroIntro') }}</p>
+    <div class="hero-copy">
+      <p class="eyebrow">{{ i18n.t('home.eyebrow') }}</p>
+      <h1>{{ i18n.t('home.heroTitle') }}</h1>
+      <p class="intro">{{ i18n.t('home.heroIntro') }}</p>
+    </div>
+
+    <aside class="profile-panel" [attr.aria-label]="i18n.t('gamification.profileAria')">
+      <div class="level-line">
+        <span class="level-badge">{{
+          i18n.t('gamification.level', { level: profile().level })
+        }}</span>
+        <span>{{ i18n.t(profile().levelLabelKey) }}</span>
+      </div>
+      <p class="xp-line">{{ i18n.t('gamification.xp', { xp: profile().xp }) }}</p>
+      <div class="progress-track" aria-hidden="true">
+        <div class="progress-fill" [style.width.%]="profile().progressPercent"></div>
+      </div>
+      <p class="achievement-line">
+        {{
+          i18n.t('gamification.achievementSummary', {
+            unlocked: unlockedCount(),
+            total: achievements().length,
+          })
+        }}
+      </p>
+      @if (profile().nextAchievement; as nextAchievement) {
+        <p class="next-goal">
+          {{ i18n.t('gamification.nextGoal', { goal: i18n.t(nextAchievement.displayTitleKey) }) }}
+        </p>
+      }
+    </aside>
   </section>
 
   <section class="games-card">
@@ -68,12 +96,22 @@
                 <div class="difficulty-entry">
                   <p class="difficulty-title">{{ i18n.t('common.easy') }}</p>
                   <a class="play-link difficulty-link" [routerLink]="family.easy.route">
-                    {{ family.easy.hasInProgress ? i18n.t('home.resumeAction') : i18n.t('common.play') }}
+                    {{
+                      family.easy.hasInProgress
+                        ? i18n.t('home.resumeAction')
+                        : i18n.t('common.play')
+                    }}
                   </a>
-                  @if (family.easy.hasInProgress && family.easy.progressLabel; as easyProgressText) {
+                  @if (
+                    family.easy.hasInProgress && family.easy.progressLabel;
+                    as easyProgressText
+                  ) {
                     <p class="difficulty-progress-line">{{ easyProgressText }}</p>
                     <div class="progress-track difficulty-progress-track" aria-hidden="true">
-                      <div class="progress-fill" [style.width.%]="family.easy.progressPercent"></div>
+                      <div
+                        class="progress-fill"
+                        [style.width.%]="family.easy.progressPercent"
+                      ></div>
                     </div>
                   }
                 </div>
@@ -81,12 +119,22 @@
                 <div class="difficulty-entry">
                   <p class="difficulty-title">{{ i18n.t('common.hard') }}</p>
                   <a class="play-link difficulty-link" [routerLink]="family.hard.route">
-                    {{ family.hard.hasInProgress ? i18n.t('home.resumeAction') : i18n.t('common.play') }}
+                    {{
+                      family.hard.hasInProgress
+                        ? i18n.t('home.resumeAction')
+                        : i18n.t('common.play')
+                    }}
                   </a>
-                  @if (family.hard.hasInProgress && family.hard.progressLabel; as hardProgressText) {
+                  @if (
+                    family.hard.hasInProgress && family.hard.progressLabel;
+                    as hardProgressText
+                  ) {
                     <p class="difficulty-progress-line">{{ hardProgressText }}</p>
                     <div class="progress-track difficulty-progress-track" aria-hidden="true">
-                      <div class="progress-fill" [style.width.%]="family.hard.progressPercent"></div>
+                      <div
+                        class="progress-fill"
+                        [style.width.%]="family.hard.progressPercent"
+                      ></div>
                     </div>
                   }
                 </div>
@@ -96,7 +144,11 @@
         }
 
         @for (game of visibleGames(); track game.id) {
-          <article class="game-row" [class.favorite]="game.isFavorite" [class.unavailable]="!game.available">
+          <article
+            class="game-row"
+            [class.favorite]="game.isFavorite"
+            [class.unavailable]="!game.available"
+          >
             <div>
               <div class="game-topline">
                 <h3>{{ i18n.t(game.labelKey) }}</h3>

@@ -151,6 +151,46 @@ describe('FlagRebuildGamePageComponent', () => {
     );
   });
 
+  it('keeps the Niger center disc as a separate rebuild zone', () => {
+    const imageData = {
+      width: 8,
+      height: 8,
+      data: new Uint8ClampedArray(8 * 8 * 4),
+    } as ImageData;
+    const rows = [
+      [0xe0, 0x52, 0x06],
+      [0xe0, 0x52, 0x06],
+      [0xe0, 0x52, 0x06],
+      [0xff, 0xff, 0xff],
+      [0xff, 0xff, 0xff],
+      [0x0d, 0xb0, 0x2b],
+      [0x0d, 0xb0, 0x2b],
+      [0x0d, 0xb0, 0x2b],
+    ];
+
+    for (let y = 0; y < imageData.height; y += 1) {
+      for (let x = 0; x < imageData.width; x += 1) {
+        const dataIndex = (y * imageData.width + x) * 4;
+        const color = rows[y];
+        imageData.data[dataIndex] = color[0];
+        imageData.data[dataIndex + 1] = color[1];
+        imageData.data[dataIndex + 2] = color[2];
+        imageData.data[dataIndex + 3] = 255;
+      }
+    }
+
+    const zoneIndexes = (component as any).createStripeDiscZoneIndexes(imageData, [
+      '#e05206',
+      '#ffffff',
+      '#0db02b',
+      '#e05206',
+    ]);
+
+    expect(zoneIndexes[0]).toBe(0);
+    expect(zoneIndexes[4 * imageData.width + 4]).toBe(3);
+    expect(zoneIndexes[7 * imageData.width]).toBe(2);
+  });
+
   it('selects the first shape choice by default', () => {
     const firstChoice = (component as any).patternChoices()[0];
 
