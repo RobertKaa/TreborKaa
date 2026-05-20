@@ -69,8 +69,8 @@ The npm scripts generate `src/app/config/supabase.generated.ts` automatically be
 
 For GitHub Actions:
 
-- create a repository variable named `SUPABASE_URL`
-- create a repository secret named `SUPABASE_PUBLISHABLE_KEY`
+- create a repository variable or secret named `SUPABASE_URL`
+- create a repository variable or secret named `SUPABASE_PUBLISHABLE_KEY`
 
 ## Running end-to-end tests
 
