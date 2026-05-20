@@ -1,0 +1,299 @@
+<main class="speedrun-shell">
+  <nav class="mode-switch" [attr.aria-label]="i18n.t('home.modeSwitchAria')">
+    <span>{{ i18n.t('speedrun.modeSpeedrunActive') }}</span>
+    <a class="ghost-link" routerLink="/">{{ i18n.t('speedrun.modeClassic') }}</a>
+  </nav>
+
+  <section class="hero-card speedrun-hero">
+    <div>
+      <p class="eyebrow">{{ i18n.t('speedrun.eyebrow') }}</p>
+      <h1>{{ i18n.t('speedrun.title') }}</h1>
+      <p class="intro">{{ i18n.t('speedrun.intro') }}</p>
+      <p class="personal-record-line">
+        @if (bestRecord(); as record) {
+          {{
+            i18n.t('speedrun.personalBestInline', {
+              time: formatTime(record.totalTimeMs),
+              errors: record.mistakeCount,
+            })
+          }}
+        } @else if (isAuthenticated()) {
+          {{ i18n.t('speedrun.noPersonalBestInline') }}
+        } @else {
+          {{ i18n.t('speedrun.signInForRecord') }}
+        }
+      </p>
+    </div>
+    <div class="hero-actions">
+      <a class="ghost-link" routerLink="/speedrun/classement">{{
+        i18n.t('speedrun.leaderboard')
+      }}</a>
+      <button type="button" class="primary-button" [disabled]="!isReady()" (click)="startRun()">
+        {{ i18n.t('speedrun.start') }}
+      </button>
+    </div>
+  </section>
+
+  @if (!isReady()) {
+    <section class="board-card loading-card">
+      <p>{{ i18n.t('common.loadingCountries') }}</p>
+    </section>
+  } @else if (state() === 'intro') {
+    <section class="speedrun-ready-panel">
+      <p class="question-label">{{ i18n.t('speedrun.rulesKicker') }}</p>
+      <ul class="quick-rules">
+        <li>{{ i18n.t('speedrun.quickRule.splits') }}</li>
+        <li>{{ i18n.t('speedrun.quickRule.penalty') }}</li>
+        <li>{{ i18n.t('speedrun.quickRule.submit') }}</li>
+      </ul>
+      @if (pendingGuestSaveCompleted()) {
+        <p class="save-state">{{ i18n.t('speedrun.guestSavedAfterLogin') }}</p>
+      }
+    </section>
+  } @else if (state() === 'countdown') {
+    <section class="board-card countdown-card" aria-live="polite">
+      <p class="question-label">{{ i18n.t('speedrun.countdown') }}</p>
+      <strong>{{ countdown() }}</strong>
+    </section>
+  } @else if (question(); as currentQuestion) {
+    <section class="speedrun-board-grid">
+      <article class="board-card question-card">
+        <div class="board-head">
+          <div>
+            <p class="question-label">
+              {{
+                i18n.t('speedrun.questionLabel', {
+                  current: currentQuestionNumber(),
+                  total: currentQuestion.split.questionCount,
+                })
+              }}
+            </p>
+            <h2>{{ getModeTitle(currentQuestion.split.mode) }}</h2>
+            <p class="question-hint">{{ i18n.t('speedrun.questionHint') }}</p>
+          </div>
+          <span class="difficulty-badge">{{ i18n.t('common.hard') }}</span>
+        </div>
+
+        <div class="prompt-panel">
+          @if (currentQuestion.split.mode === 'flag-to-country') {
+            <div class="prompt-flag">
+              <img
+                [src]="currentQuestion.promptCountry.flagUrl"
+                [alt]="
+                  i18n.t('countries.flagOf', {
+                    country: countryName(currentQuestion.promptCountry),
+                  })
+                "
+              />
+            </div>
+          } @else if (currentQuestion.split.mode === 'shape-to-country') {
+            <div class="prompt-shape">
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                [attr.viewBox]="currentQuestion.shapeViewBox"
+              >
+                <path [attr.d]="currentQuestion.shapePath"></path>
+              </svg>
+            </div>
+          } @else {
+            <p class="prompt-text">{{ getQuestionHeadline(currentQuestion) }}</p>
+          }
+        </div>
+
+        @if (getPromptMode(currentQuestion) === 'name-options') {
+          <div class="name-grid">
+            @for (option of currentQuestion.options; track option.code) {
+              <button
+                type="button"
+                class="name-card"
+                [class.is-correct]="getOptionState(option.code) === 'correct'"
+                [class.is-wrong]="getOptionState(option.code) === 'wrong'"
+                [disabled]="answered()"
+                (click)="selectAnswer(option.code)"
+              >
+                {{ countryName(option) }}
+              </button>
+            }
+          </div>
+        } @else {
+          <div class="flag-grid">
+            @for (option of currentQuestion.options; track option.code) {
+              <button
+                type="button"
+                class="flag-card"
+                [class.is-correct]="getOptionState(option.code) === 'correct'"
+                [class.is-wrong]="getOptionState(option.code) === 'wrong'"
+                [disabled]="answered()"
+                (click)="selectAnswer(option.code)"
+              >
+                <span class="flag-surface">
+                  <img
+                    [src]="option.flagUrl"
+                    [alt]="i18n.t('countries.flagOf', { country: countryName(option) })"
+                  />
+                </span>
+              </button>
+            }
+          </div>
+        }
+      </article>
+
+      <aside class="split-panel" [attr.aria-label]="i18n.t('speedrun.splitsAria')">
+        <div class="split-panel-head">
+          <strong>{{ i18n.t('speedrun.liveSplitTitle') }}</strong>
+          <span>{{ completedQuestionCount() }}/{{ totalQuestions }}</span>
+        </div>
+
+        <div class="split-list">
+          @for (split of splits; track split.id) {
+            <article class="split-row" [class]="getSplitStateClass(split)">
+              <strong>{{ i18n.t(split.labelKey) }}</strong>
+              <div class="split-delta-cell">
+                @if (getFinishedSplit(split); as splitResult) {
+                  <span>{{ getSplitDeltaLabel(splitResult) }}</span>
+                }
+              </div>
+              <strong class="split-time-cell">{{ getSplitTimeLabel(split) }}</strong>
+            </article>
+          }
+        </div>
+
+        <div class="live-timer">
+          <span>{{ i18n.t('speedrun.timer') }}</span>
+          <strong>{{ timerLabel() }}</strong>
+        </div>
+
+        <div class="live-stats">
+          <span>{{ i18n.t('speedrun.previousSegment') }}</span>
+          <strong>{{ previousSegmentLabel() }}</strong>
+          <span>{{ i18n.t('speedrun.bestPossibleTime') }}</span>
+          <strong>{{ bestPossibleLabel() }}</strong>
+          <span>{{ i18n.t('speedrun.sumOfBestSegments') }}</span>
+          <strong>{{ theoreticalBestLabel() }}</strong>
+        </div>
+      </aside>
+    </section>
+  }
+</main>
+
+@if (state() === 'running') {
+  <section class="status-dock" [attr.aria-label]="i18n.t('speedrun.statusAria')">
+    <div class="status-block time-block">
+      <p class="status-label">{{ i18n.t('speedrun.currentSplit') }}</p>
+      <p class="status-value">{{ currentSplitTimerLabel() }}</p>
+    </div>
+    <div class="status-block">
+      <p class="status-label">{{ i18n.t('common.progress') }}</p>
+      <p class="status-value">{{ completedQuestionCount() }}/{{ totalQuestions }}</p>
+    </div>
+    <div class="status-block">
+      <p class="status-label">{{ i18n.t('common.errors') }}</p>
+      <p class="status-value">{{ mistakes().length }}</p>
+    </div>
+    <div class="status-block progress-block">
+      <div class="progress-track" aria-hidden="true">
+        <div class="progress-fill" [style.width.%]="progressPercent()"></div>
+      </div>
+    </div>
+  </section>
+}
+
+@if (state() === 'finished' && result(); as finalResult) {
+  <button type="button" class="modal-backdrop" [attr.aria-label]="i18n.t('common.close')"></button>
+  <section class="summary-modal" role="dialog" aria-modal="true" aria-labelledby="speedrun-result">
+    <div class="summary-head">
+      <div>
+        <p class="eyebrow">{{ i18n.t('speedrun.completed') }}</p>
+        <h2 id="speedrun-result">{{ i18n.t('speedrun.resultTitle') }}</h2>
+      </div>
+    </div>
+
+    <div class="summary-score">
+      <div>
+        <p class="status-label">{{ i18n.t('speedrun.totalTime') }}</p>
+        <p class="summary-value">{{ formatTime(finalResult.totalTimeMs) }}</p>
+      </div>
+      <div>
+        <p class="status-label">{{ i18n.t('speedrun.rawTime') }}</p>
+        <p class="summary-value">{{ formatTime(finalResult.rawTimeMs) }}</p>
+      </div>
+      <div>
+        <p class="status-label">{{ i18n.t('speedrun.penalty') }}</p>
+        <p class="summary-value">{{ penaltyLabel() }}</p>
+      </div>
+    </div>
+
+    <div class="summary-splits">
+      @for (splitResult of splitResults(); track splitResult.splitId) {
+        <article class="summary-split" [class.is-improved]="splitResult.isImprovement">
+          <span>{{ i18n.t(splitResult.labelKey) }}</span>
+          <strong>{{ formatTime(splitResult.totalTimeMs) }}</strong>
+          <small>{{ getSplitDeltaLabel(splitResult) }}</small>
+        </article>
+      }
+    </div>
+
+    <p class="save-state">
+      @if (isAuthenticated()) {
+        @if (rankingState() === 'pending') {
+          {{ i18n.t('speedrun.rankingPending') }}
+        } @else if (rankingState() === 'accepted') {
+          {{ i18n.t('speedrun.rankingAccepted') }}
+        } @else if (rankingState() === 'failed') {
+          {{ i18n.t('speedrun.rankingFailed') }}
+        } @else {
+          {{
+            i18n.t('speedrun.savedUserBest', {
+              time: savedBestTimeMs()
+                ? formatTime(savedBestTimeMs()!)
+                : formatTime(finalResult.totalTimeMs),
+            })
+          }}
+        }
+      } @else {
+        <span>{{ i18n.t('speedrun.guestResult') }}</span>
+        <button type="button" class="inline-save-button" (click)="signInToSaveResult(finalResult)">
+          {{ i18n.t('speedrun.signInToSave') }}
+        </button>
+      }
+    </p>
+
+    <div class="mistakes-list">
+      @if (mistakes().length === 0) {
+        <p class="empty-state">{{ i18n.t('speedrun.noMistake') }}</p>
+      } @else {
+        @for (mistake of mistakes(); track $index) {
+          <article class="mistake-card">
+            <div>
+              <p class="mistake-country">
+                {{
+                  i18n.t('speedrun.mistakeStep', {
+                    split: i18n.t(mistake.split.labelKey),
+                    question: mistake.questionNumber,
+                  })
+                }}
+              </p>
+              <p class="mistake-line">
+                {{ i18n.t('common.yourAnswer') }}:
+                {{ mistake.selectedCountryName ?? i18n.t('common.none') }}
+              </p>
+              <p class="mistake-line">
+                {{ i18n.t('common.correctAnswer') }}: {{ mistake.correctCountryName }}
+              </p>
+            </div>
+          </article>
+        }
+      }
+    </div>
+
+    <div class="summary-actions">
+      <a class="ghost-link" routerLink="/speedrun/classement">{{
+        i18n.t('speedrun.leaderboard')
+      }}</a>
+      <button type="button" class="primary-button" (click)="restartRun()">
+        {{ i18n.t('common.replay') }}
+      </button>
+    </div>
+  </section>
+}

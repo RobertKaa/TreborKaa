@@ -21,6 +21,18 @@ export const routes: Routes = [
       import('./pages/achievements-page.component').then((m) => m.AchievementsPageComponent),
   },
   {
+    path: 'speedrun',
+    loadComponent: () =>
+      import('./pages/speedrun-page.component').then((m) => m.SpeedrunPageComponent),
+  },
+  {
+    path: 'speedrun/classement',
+    loadComponent: () =>
+      import('./pages/speedrun-leaderboard-page.component').then(
+        (m) => m.SpeedrunLeaderboardPageComponent,
+      ),
+  },
+  {
     path: 'jeu/pays-vers-drapeaux/:difficulty',
     loadComponent: () =>
       import('./pages/country-to-flag-game-page.component').then(

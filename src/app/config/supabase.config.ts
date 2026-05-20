@@ -1,4 +1,3 @@
-export const SUPABASE_CONFIG = {
-  url: 'https://ywiajyyayhzbrovwrtuy.supabase.co',
-  publishableKey: 'sb_publishable_-iUrKN2lSxSy-zmEJNohSQ_VUYg75CI',
-} as const;
+import { SUPABASE_GENERATED_CONFIG } from './supabase.generated';
+
+export const SUPABASE_CONFIG = SUPABASE_GENERATED_CONFIG;

@@ -1,4 +1,9 @@
 <main class="shell">
+  <nav class="mode-switch" [attr.aria-label]="i18n.t('home.modeSwitchAria')">
+    <span>{{ i18n.t('home.modeClassic') }}</span>
+    <a class="play-link" routerLink="/speedrun">{{ i18n.t('home.modeSpeedrun') }}</a>
+  </nav>
+
   <section class="hero-card">
     <div class="hero-copy">
       <p class="eyebrow">{{ i18n.t('home.eyebrow') }}</p>

@@ -173,12 +173,12 @@
 }
 
 @media (max-width: 420px) {
-  .auth-button.signed-in {
+  .auth-button {
     width: 40px;
     padding: 0;
   }
 
-  .auth-button.signed-in .auth-label {
+  .auth-button .auth-label {
     display: none;
   }
 }

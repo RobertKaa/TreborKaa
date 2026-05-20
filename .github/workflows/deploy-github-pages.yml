@@ -17,6 +17,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
     outputs:
       app_dir: ${{ steps.dist.outputs.app_dir }}
     steps:
@@ -31,6 +34,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Generate Supabase config
+        run: npm run generate:supabase-config -- --strict
 
       - name: Build (GitHub Pages base href)
         run: npm run build

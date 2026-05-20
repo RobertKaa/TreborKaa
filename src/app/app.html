@@ -93,6 +93,10 @@
                 <span class="menu-icon icon-records">&#128200;</span>
                 <span>{{ i18n.t('menu.records') }}</span>
               </a>
+              <a routerLink="/speedrun/classement" (click)="closeMenu()">
+                <span class="menu-icon icon-records">&#9201;</span>
+                <span>{{ i18n.t('menu.speedrunLeaderboard') }}</span>
+              </a>
               @if (isAuthenticated()) {
                 <button type="button" (click)="signOut()">
                   <span class="menu-icon icon-sign-out" aria-hidden="true">&#8617;</span>

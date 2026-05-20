@@ -39,6 +39,9 @@ testem.log
 /typings
 __screenshots__/
 dev-server*.log
+/\.env.local
+/\.env*.local
+/src/app/config/supabase.generated.ts
 
 # System files
 .DS_Store
