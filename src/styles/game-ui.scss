@@ -14,12 +14,20 @@
   margin: 0;
 }
 
-:where(.game-shell, .chrono-shell, .culture-shell, .pixel-shell, .error-shell, .rebuild-shell) {
+:where(
+  .game-shell,
+  .chrono-shell,
+  .culture-shell,
+  .pixel-shell,
+  .error-shell,
+  .rebuild-shell,
+  .speedrun-shell
+) {
   display: grid;
   padding-bottom: 24px;
 }
 
-:where(.game-shell, .chrono-shell, .culture-shell) {
+:where(.game-shell, .chrono-shell, .culture-shell, .speedrun-shell) {
   gap: 16px;
   min-height: calc(100dvh - 180px);
 }
@@ -34,6 +42,8 @@
   .board-card,
   .workspace-card,
   .difficulty-card,
+  .games-card,
+  .speedrun-card,
   .summary-modal,
   .game-modal
 ) {
@@ -44,7 +54,7 @@
   backdrop-filter: blur(10px) saturate(120%);
 }
 
-:where(.hero-card, .question-card, .board-card, .difficulty-card) {
+:where(.hero-card, .question-card, .board-card, .difficulty-card, .games-card, .speedrun-card) {
   padding: var(--game-card-padding);
 }
 
@@ -53,7 +63,15 @@
   padding: var(--game-card-padding-large);
 }
 
-:where(.game-shell, .chrono-shell, .culture-shell, .pixel-shell, .error-shell, .rebuild-shell)
+:where(
+    .game-shell,
+    .chrono-shell,
+    .culture-shell,
+    .pixel-shell,
+    .error-shell,
+    .rebuild-shell,
+    .speedrun-shell
+  )
   > .hero-card {
   display: flex;
   align-items: center;
@@ -108,7 +126,8 @@
 }
 
 .hero-card h1,
-:where(.chrono-shell, .culture-shell, .pixel-shell, .error-shell, .rebuild-shell) h1 {
+:where(.chrono-shell, .culture-shell, .pixel-shell, .error-shell, .rebuild-shell, .speedrun-shell)
+  h1 {
   font-size: clamp(2rem, 4vw, 3.2rem);
   line-height: 0.92;
 }
@@ -525,7 +544,15 @@ app-flag-rebuild-game-page .result-run-dot.active {
 }
 
 @media (max-width: 640px) {
-  :where(.hero-card, .question-card, .board-card, .workspace-card, .difficulty-card) {
+  :where(
+    .hero-card,
+    .question-card,
+    .board-card,
+    .workspace-card,
+    .difficulty-card,
+    .games-card,
+    .speedrun-card
+  ) {
     padding: 18px;
   }
 

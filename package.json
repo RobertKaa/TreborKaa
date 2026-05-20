@@ -3,9 +3,14 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "generate:supabase-config": "node scripts/generate-supabase-config.mjs",
+    "postinstall": "npm run generate:supabase-config",
+    "prestart": "npm run generate:supabase-config",
     "start": "ng serve",
+    "prebuild": "npm run generate:supabase-config",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
+    "pretest": "npm run generate:supabase-config",
     "test": "ng test",
     "generate:country-shapes": "node scripts/generate-country-shapes.mjs"
   },

@@ -4,6 +4,12 @@
 @use './styles/gamification';
 @use './styles/auth';
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body {
   margin: 0;
@@ -59,6 +65,8 @@ img {
 .board-card,
 .workspace-card,
 .difficulty-card,
+.games-card,
+.speedrun-card,
 .header-card,
 .table-card,
 .records-card,
@@ -243,7 +251,8 @@ img {
   .culture-shell,
   .pixel-shell,
   .error-shell,
-  .rebuild-shell {
+  .rebuild-shell,
+  .speedrun-shell {
     padding-bottom: calc(164px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
@@ -273,7 +282,9 @@ img {
   .question-card,
   .board-card,
   .workspace-card,
-  .difficulty-card {
+  .difficulty-card,
+  .games-card,
+  .speedrun-card {
     border-radius: 20px !important;
   }
 
@@ -291,7 +302,8 @@ img {
   app-root.mobile-viewport .culture-shell,
   app-root.mobile-viewport .pixel-shell,
   app-root.mobile-viewport .error-shell,
-  app-root.mobile-viewport .rebuild-shell {
+  app-root.mobile-viewport .rebuild-shell,
+  app-root.mobile-viewport .speedrun-shell {
     padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
@@ -321,6 +333,35 @@ img {
   }
 }
 
+.mode-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 50px;
+  padding: 8px 10px 8px 16px;
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+}
+
+.mode-switch > span {
+  color: var(--ink-soft);
+  font-weight: 800;
+}
+
+@media (max-width: 640px) {
+  .mode-switch {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 12px;
+  }
+
+  .mode-switch :is(.play-link, .ghost-link) {
+    width: 100%;
+  }
+}
+
 app-root.mobile-keyboard-open.mobile-viewport .status-dock {
   opacity: 0;
   pointer-events: none;
@@ -343,7 +384,8 @@ app-root.mobile-landscape .chrono-shell,
 app-root.mobile-landscape .culture-shell,
 app-root.mobile-landscape .pixel-shell,
 app-root.mobile-landscape .error-shell,
-app-root.mobile-landscape .rebuild-shell {
+app-root.mobile-landscape .rebuild-shell,
+app-root.mobile-landscape .speedrun-shell {
   padding-bottom: 12px !important;
 }
 

@@ -120,9 +120,9 @@ export class UserDataSyncService {
 
   private async uploadAll(client: SupabaseClient, userId: string): Promise<void> {
     const results = await Promise.allSettled([
-      this.replaceFavorites(client, userId),
-      this.replaceRecords(client, userId),
-      this.replaceAchievements(client, userId),
+      this.syncFavorites(client, userId),
+      this.syncRecords(client, userId),
+      this.syncAchievements(client, userId),
     ]);
 
     for (const result of results) {
@@ -176,56 +176,84 @@ export class UserDataSyncService {
     return (data ?? []) as RemoteAchievement[];
   }
 
-  private async replaceFavorites(client: SupabaseClient, userId: string): Promise<void> {
-    await this.deleteUserRows(client, 'favorite_games', userId);
+  private async syncFavorites(client: SupabaseClient, userId: string): Promise<void> {
+    const remoteFavorites = await this.safeFetch(() => this.fetchFavorites(client, userId), []);
+    const localIds = new Set<string>(this.favorites.ids());
+    const remoteIds = new Set(remoteFavorites.map((favorite) => favorite.game_id));
+    const staleIds = [...remoteIds].filter((gameId) => !localIds.has(gameId));
+    const rows = [...localIds]
+      .filter((gameId) => !remoteIds.has(gameId))
+      .map((gameId) => ({
+        user_id: userId,
+        game_id: gameId,
+      }));
 
-    const rows = this.favorites.ids().map((gameId) => ({
-      user_id: userId,
-      game_id: gameId,
-    }));
-
+    await this.deleteRowsByValues(client, 'favorite_games', userId, 'game_id', staleIds);
     await this.insertRows(client, 'favorite_games', rows);
   }
 
-  private async replaceRecords(client: SupabaseClient, userId: string): Promise<void> {
-    await this.deleteUserRows(client, 'personal_records', userId);
-
-    const rows = Object.entries(this.records.snapshot())
+  private async syncRecords(client: SupabaseClient, userId: string): Promise<void> {
+    const remoteRecords = await this.safeFetch(() => this.fetchRecords(client, userId), []);
+    const localRecords = Object.entries(this.records.snapshot())
       .filter((entry): entry is [GameRecordKey, PersonalRecord] => !!entry[1])
-      .map(([recordKey, record]) => ({
-        user_id: userId,
-        record_key: recordKey,
-        best_score: record.bestScore,
-        best_max_score: record.bestMaxScore,
-        best_percent: record.bestPercent,
-        games_played: record.gamesPlayed,
-        last_played_at: record.lastPlayedAt,
-        best_streak: record.bestStreak ?? 0,
-      }));
+      .map(([recordKey, record]) => [recordKey, record] as const);
+    const localKeys = new Set(localRecords.map(([recordKey]) => recordKey));
+    const staleKeys = remoteRecords
+      .map((record) => record.record_key)
+      .filter((recordKey) => !localKeys.has(recordKey as GameRecordKey));
+    const rows = localRecords.map(([recordKey, record]) => ({
+      user_id: userId,
+      record_key: recordKey,
+      best_score: record.bestScore,
+      best_max_score: record.bestMaxScore,
+      best_percent: record.bestPercent,
+      games_played: record.gamesPlayed,
+      last_played_at: record.lastPlayedAt,
+      best_streak: record.bestStreak ?? 0,
+    }));
 
-    await this.insertRows(client, 'personal_records', rows);
+    await this.deleteRowsByValues(client, 'personal_records', userId, 'record_key', staleKeys);
+    await this.upsertRows(client, 'personal_records', rows, 'user_id,record_key');
   }
 
-  private async replaceAchievements(client: SupabaseClient, userId: string): Promise<void> {
-    await this.deleteUserRows(client, 'achievement_unlocks', userId);
-
-    const rows = Object.entries(this.achievements.snapshot()).map(
-      ([achievementId, unlockedAt]) => ({
-        user_id: userId,
-        achievement_id: achievementId,
-        unlocked_at: unlockedAt,
-      }),
+  private async syncAchievements(client: SupabaseClient, userId: string): Promise<void> {
+    const remoteAchievements = await this.safeFetch(
+      () => this.fetchAchievements(client, userId),
+      [],
     );
+    const localEntries = Object.entries(this.achievements.snapshot());
+    const localIds = new Set(localEntries.map(([achievementId]) => achievementId));
+    const staleIds = remoteAchievements
+      .map((achievement) => achievement.achievement_id)
+      .filter((achievementId) => !localIds.has(achievementId));
+    const rows = localEntries.map(([achievementId, unlockedAt]) => ({
+      user_id: userId,
+      achievement_id: achievementId,
+      unlocked_at: unlockedAt,
+    }));
 
-    await this.insertRows(client, 'achievement_unlocks', rows);
+    await this.deleteRowsByValues(
+      client,
+      'achievement_unlocks',
+      userId,
+      'achievement_id',
+      staleIds,
+    );
+    await this.upsertRows(client, 'achievement_unlocks', rows, 'user_id,achievement_id');
   }
 
-  private async deleteUserRows(
+  private async deleteRowsByValues(
     client: SupabaseClient,
     table: string,
     userId: string,
+    column: string,
+    values: string[],
   ): Promise<void> {
-    const { error } = await client.from(table).delete().eq('user_id', userId);
+    if (values.length === 0) {
+      return;
+    }
+
+    const { error } = await client.from(table).delete().eq('user_id', userId).in(column, values);
 
     if (error) {
       throw error;
@@ -242,6 +270,23 @@ export class UserDataSyncService {
     }
 
     const { error } = await client.from(table).insert(rows);
+
+    if (error) {
+      throw error;
+    }
+  }
+
+  private async upsertRows(
+    client: SupabaseClient,
+    table: string,
+    rows: Record<string, unknown>[],
+    onConflict: string,
+  ): Promise<void> {
+    if (rows.length === 0) {
+      return;
+    }
+
+    const { error } = await client.from(table).upsert(rows, { onConflict });
 
     if (error) {
       throw error;

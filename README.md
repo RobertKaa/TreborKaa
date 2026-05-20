@@ -44,6 +44,34 @@ To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use th
 ng test
 ```
 
+## Supabase config
+
+The frontend Supabase URL and publishable key are public browser config, not server secrets. They
+are still generated from environment variables so values are not hardcoded in the repository.
+
+Local PowerShell example:
+
+```powershell
+$env:SUPABASE_URL = "https://your-project-ref.supabase.co"
+$env:SUPABASE_PUBLISHABLE_KEY = "your-publishable-key"
+npm start
+```
+
+Alternatively, create an ignored `.env.local` file:
+
+```text
+SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+```
+
+The npm scripts generate `src/app/config/supabase.generated.ts` automatically before `start`,
+`test` and `build`. This generated file is ignored by Git.
+
+For GitHub Actions:
+
+- create a repository variable named `SUPABASE_URL`
+- create a repository secret named `SUPABASE_PUBLISHABLE_KEY`
+
 ## Running end-to-end tests
 
 For end-to-end (e2e) testing, run:
@@ -63,6 +91,8 @@ For more information on using the Angular CLI, including detailed command refere
 Le Design System de l'application est documente ici:
 
 - [docs/design-system.md](docs/design-system.md)
+- [docs/security-architecture.md](docs/security-architecture.md)
+- [docs/local-secrets.md](docs/local-secrets.md)
 
 ## Deploy to GitHub Pages
 
