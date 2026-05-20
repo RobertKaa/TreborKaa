@@ -165,12 +165,18 @@
         </div>
 
         <div class="live-stats">
-          <span>{{ i18n.t('speedrun.previousSegment') }}</span>
-          <strong>{{ previousSegmentLabel() }}</strong>
-          <span>{{ i18n.t('speedrun.bestPossibleTime') }}</span>
-          <strong>{{ bestPossibleLabel() }}</strong>
-          <span>{{ i18n.t('speedrun.sumOfBestSegments') }}</span>
-          <strong>{{ theoreticalBestLabel() }}</strong>
+          <div class="live-stat">
+            <span>{{ i18n.t('speedrun.previousSegment') }}</span>
+            <strong>{{ previousSegmentLabel() }}</strong>
+          </div>
+          <div class="live-stat is-primary">
+            <span>{{ i18n.t('speedrun.bestPossibleTime') }}</span>
+            <strong>{{ bestPossibleLabel() }}</strong>
+          </div>
+          <div class="live-stat">
+            <span>{{ i18n.t('speedrun.sumOfBestSegments') }}</span>
+            <strong>{{ theoreticalBestLabel() }}</strong>
+          </div>
         </div>
       </aside>
     </section>
@@ -253,7 +259,7 @@
         }
       } @else {
         <span>{{ i18n.t('speedrun.guestResult') }}</span>
-        <button type="button" class="inline-save-button" (click)="signInToSaveResult(finalResult)">
+        <button type="button" class="primary-button inline-save-button" (click)="signInToSaveResult(finalResult)">
           {{ i18n.t('speedrun.signInToSave') }}
         </button>
       }

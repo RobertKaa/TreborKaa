@@ -232,6 +232,200 @@
   animation: answer-wrong-shake 260ms ease-out;
 }
 
+.split-panel {
+  position: sticky;
+  top: 16px;
+  display: grid;
+  min-width: 0;
+  overflow: hidden;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--surface-strong) 90%, transparent);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px) saturate(120%);
+}
+
+.split-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 34px;
+  padding: 6px 8px 10px;
+}
+
+.split-panel-head > span,
+.side-timer,
+.split-time-cell,
+.split-delta-cell,
+.live-stats strong {
+  font-family: 'Space Mono', monospace;
+}
+
+.split-list {
+  display: grid;
+  gap: 4px;
+}
+
+.split-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  min-height: 36px;
+  padding: 8px 10px 8px 12px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--line-soft) 80%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface-raise) 72%, transparent);
+}
+
+.split-row::before {
+  content: '';
+  position: absolute;
+  inset: 8px auto 8px 6px;
+  width: 3px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--line-strong) 56%, transparent);
+}
+
+.split-row strong {
+  overflow-wrap: anywhere;
+  font-size: 0.94rem;
+  line-height: 1.15;
+}
+
+.split-time-cell,
+.split-delta-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.split-row.is-current {
+  border-color: color-mix(in srgb, var(--secondary) 64%, var(--line));
+  background: color-mix(in srgb, var(--secondary) 18%, var(--surface-raise));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--secondary) 22%, transparent);
+}
+
+.split-row.is-current::before {
+  background: var(--secondary);
+}
+
+.split-row.is-improved .split-delta-cell span,
+.split-row.is-new .split-delta-cell span {
+  color: #ffd34d;
+  font-weight: 900;
+}
+
+.split-row.is-improved,
+.split-row.is-new {
+  animation: split-confirm 540ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.split-row.is-improved::before,
+.split-row.is-new::before {
+  background: #ffd34d;
+}
+
+.split-row.is-slower .split-delta-cell span {
+  color: var(--danger);
+  font-weight: 900;
+}
+
+.split-row.is-slower::before {
+  background: var(--danger);
+}
+
+.live-timer {
+  display: grid;
+  gap: 2px;
+  margin-top: 8px;
+  padding: 14px 10px 12px;
+  border: 1px solid var(--accent-line);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--accent-soft) 60%, var(--surface));
+}
+
+.live-timer span {
+  color: var(--accent-dark);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.live-timer strong {
+  color: var(--accent-dark);
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(2.35rem, 8vw, 4rem);
+  line-height: 0.9;
+  text-align: right;
+}
+
+.live-stats {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 10px;
+  border: 1px solid var(--line-soft);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+}
+
+.live-stat {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: baseline;
+  min-height: 30px;
+  padding: 4px 6px;
+  border-radius: 10px;
+}
+
+.live-stat.is-primary {
+  border: 1px solid var(--accent-line);
+  background: color-mix(in srgb, var(--accent-soft) 48%, transparent);
+}
+
+.live-stat span {
+  min-width: 0;
+  color: var(--ink-soft);
+  overflow-wrap: anywhere;
+}
+
+.live-stat strong {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.live-stat.is-primary strong {
+  color: var(--accent-dark);
+}
+
+@keyframes split-confirm {
+  0% {
+    transform: translateX(6px);
+    box-shadow: 0 0 0 rgba(255, 211, 77, 0);
+  }
+  52% {
+    transform: translateX(0);
+    box-shadow: 0 0 0 4px rgba(255, 211, 77, 0.13);
+  }
+  100% {
+    transform: translateX(0);
+    box-shadow: 0 0 0 rgba(255, 211, 77, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .split-row.is-improved,
+  .split-row.is-new {
+    animation: none;
+  }
+}
+
 .flag-surface,
 .prompt-flag,
 .mistake-flag,
