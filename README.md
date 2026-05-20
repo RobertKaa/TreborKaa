@@ -71,6 +71,8 @@ For GitHub Actions:
 
 - create a repository variable or secret named `SUPABASE_URL`
 - create a repository variable or secret named `SUPABASE_PUBLISHABLE_KEY`
+- if those values are absent, the deploy workflow falls back to the public Vexiio Supabase URL and
+  publishable key so the frontend build remains reproducible.
 
 ## Running end-to-end tests
 
