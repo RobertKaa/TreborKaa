@@ -1,12 +1,4 @@
 <main class="game-shell">
-  <section class="hero-card">
-    <div>
-      <p class="eyebrow">{{ i18n.t('classic.eyebrow') }}</p>
-      <h1>{{ i18n.t('classic.shapeToCountry.title') }}</h1>
-      <p class="intro">{{ i18n.t('classic.shapeToCountry.intro') }}</p>
-    </div>
-  </section>
-
   @if (currentQuestion(); as question) {
     <section class="question-card">
       <p class="question-label">{{ i18n.t('classic.questionShapeToCountry') }}</p>

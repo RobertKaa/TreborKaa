@@ -1,4 +1,8 @@
 app-root {
+  app-xp-feedback-toast {
+    display: contents;
+  }
+
   .achievement-toast {
     position: fixed;
     right: calc(18px + var(--safe-right));
@@ -62,6 +66,166 @@ app-root {
     font-size: 1.2rem;
     line-height: 1;
   }
+
+  .xp-feedback-toast {
+    position: fixed;
+    right: calc(18px + var(--safe-right));
+    bottom: calc(102px + var(--safe-bottom));
+    z-index: 131;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    width: min(440px, calc(100vw - 28px - var(--safe-left) - var(--safe-right)));
+    padding: 12px;
+    border: 1px solid color-mix(in srgb, var(--success) 46%, var(--line));
+    border-radius: 16px;
+    color: var(--ink);
+    background: color-mix(in srgb, var(--surface-strong) 94%, transparent);
+    box-shadow: var(--shadow-pop);
+    backdrop-filter: blur(10px) saturate(135%);
+    animation: achievement-toast-in 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .xp-feedback-badge {
+    --tier-badge: url('/data/img/level-grey.png');
+    --badge-text: var(--ds-text-primary-light);
+    --badge-shadow: none;
+
+    display: grid;
+    place-items: center;
+    width: 58px;
+    height: 62px;
+    padding: 15px;
+    background: var(--tier-badge) center / contain no-repeat;
+  }
+
+  .xp-feedback-badge[data-tier='green'] {
+    --tier-badge: url('/data/img/level-green.png');
+  }
+
+  .xp-feedback-badge[data-tier='blue'] {
+    --tier-badge: url('/data/img/level-blue.png');
+  }
+
+  .xp-feedback-badge[data-tier='violet'] {
+    --tier-badge: url('/data/img/level-purple.png');
+  }
+
+  .xp-feedback-badge[data-tier='red'] {
+    --tier-badge: url('/data/img/level-red.png');
+  }
+
+  .xp-feedback-badge[data-tier='gold'] {
+    --tier-badge: url('/data/img/level-gold.png');
+  }
+
+  .xp-feedback-badge strong {
+    color: var(--badge-text);
+    font-family: var(--ds-font-mono);
+    font-size: 1.28rem;
+    font-weight: 900;
+    line-height: 1;
+    text-shadow: var(--badge-shadow);
+  }
+
+  &.theme-dark .xp-feedback-badge {
+    --badge-text: var(--ds-color-white);
+    --badge-shadow: 0 1px 2px rgba(2, 9, 19, 0.82), 0 0 8px rgba(2, 9, 19, 0.6);
+  }
+
+  .xp-feedback-body {
+    display: grid;
+    min-width: 0;
+    gap: 6px;
+  }
+
+  .xp-feedback-kicker,
+  .xp-feedback-range,
+  .xp-feedback-title {
+    margin: 0;
+  }
+
+  .xp-feedback-kicker,
+  .xp-feedback-range,
+  .xp-feedback-meter-head {
+    color: var(--ink-soft);
+    font-family: var(--ds-font-mono);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+  }
+
+  .xp-feedback-kicker {
+    text-transform: uppercase;
+  }
+
+  .xp-feedback-title {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .xp-feedback-title strong {
+    color: var(--success);
+    font-size: 1.45rem;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .xp-feedback-title span {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--ink);
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .xp-feedback-meter-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .xp-feedback-meter-head strong {
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .xp-feedback-meter {
+    height: 8px;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--line-soft) 74%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--line-soft) 78%, transparent);
+  }
+
+  .xp-feedback-meter span {
+    display: block;
+    width: var(--xp-progress);
+    height: 100%;
+    border-radius: inherit;
+    background: var(--success);
+    transition: width 110ms linear;
+  }
+
+  .xp-feedback-close {
+    display: inline-grid;
+    place-items: center;
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--ink);
+    background: color-mix(in srgb, var(--surface) 84%, transparent);
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 1;
+  }
 }
 
 @keyframes achievement-toast-in {
@@ -82,5 +246,38 @@ app-root {
     bottom: calc(8px + var(--safe-bottom));
     grid-template-columns: auto minmax(0, 1fr) auto;
     padding: 10px;
+  }
+
+  app-root .xp-feedback-toast {
+    right: calc(8px + var(--safe-right));
+    bottom: calc(90px + var(--safe-bottom) + var(--keyboard-offset, 0px));
+    width: calc(100vw - 16px - var(--safe-left) - var(--safe-right));
+    padding: 10px;
+  }
+
+  app-root .xp-feedback-badge {
+    width: 50px;
+    height: 54px;
+    padding: 13px;
+  }
+
+  app-root .xp-feedback-title {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  app-root .xp-feedback-title span {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  app-root .xp-feedback-toast {
+    animation: none;
+  }
+
+  app-root .xp-feedback-meter span {
+    transition: none;
   }
 }

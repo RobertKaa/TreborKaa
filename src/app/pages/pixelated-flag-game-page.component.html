@@ -1,12 +1,4 @@
 <main class="pixel-shell">
-  <section class="hero-card">
-    <div>
-      <p class="eyebrow">{{ i18n.t('classic.pixel.eyebrow') }}</p>
-      <h1>{{ i18n.t('classic.pixel.title') }}</h1>
-      <p class="intro">{{ i18n.t('classic.pixel.intro') }}</p>
-    </div>
-  </section>
-
   @if (isLoading()) {
     <section class="board-card loading-card">
       <p>{{ i18n.t('classic.pixel.loading') }}</p>

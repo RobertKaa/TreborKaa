@@ -2,10 +2,6 @@
   display: block;
 }
 
-.hero-card {
-  background: var(--card);
-}
-
 h2 {
   margin-bottom: 10px;
   font-size: clamp(2rem, 4.8vw, 3rem);
@@ -70,7 +66,6 @@ h2 {
 }
 
 @media (max-width: 640px) {
-  .hero-card,
   .hero-actions {
     flex-direction: column;
   }

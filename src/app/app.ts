@@ -1,11 +1,13 @@
 import { Component, OnDestroy, computed, effect, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { XpFeedbackToastComponent } from './components/xp-feedback-toast.component';
 import { AppLanguage } from './data/i18n-translations';
 import { AchievementsService } from './services/achievements.service';
 import { BrowserStorageService } from './services/browser-storage.service';
 import { I18nService } from './services/i18n.service';
 import { SupabaseAuthService } from './services/supabase-auth.service';
 import { UserDataSyncService } from './services/user-data-sync.service';
+import { XpFeedbackService, XpFeedbackSnapshot } from './services/xp-feedback.service';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +17,7 @@ import { UserDataSyncService } from './services/user-data-sync.service';
     '[class.mobile-landscape]': 'isMobileLandscape()',
     '[class.mobile-keyboard-open]': 'keyboardOffset() > 0',
   },
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, XpFeedbackToastComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -24,6 +26,7 @@ export class App implements OnDestroy {
   private readonly auth = inject(SupabaseAuthService);
   private readonly userDataSync = inject(UserDataSyncService);
   private readonly achievementsService = inject(AchievementsService);
+  private readonly xpFeedback = inject(XpFeedbackService);
   private readonly storage = inject(BrowserStorageService);
   private readonly canUseWindow = typeof window !== 'undefined';
   private readonly viewportRef = this.canUseWindow ? window.visualViewport : null;
@@ -37,6 +40,8 @@ export class App implements OnDestroy {
   private readonly onOffline = () => this.isOffline.set(true);
   private readonly onGlobalResourceError = (event: Event) => this.handleResourceError(event);
   private achievementToastTimeoutId: number | null = null;
+  private previousXpSnapshot: XpFeedbackSnapshot | null = null;
+  private readonly xpFeedbackReadyAt = this.canUseWindow ? window.performance.now() + 2500 : 0;
 
   protected readonly isDarkTheme = signal(this.readInitialTheme());
   protected readonly themeLabel = computed(() =>
@@ -74,6 +79,20 @@ export class App implements OnDestroy {
   });
 
   constructor() {
+    effect(() => {
+      const profile = this.profile();
+      const nextSnapshot = {
+        xp: profile.xp,
+        level: profile.level,
+      };
+
+      if (!this.isXpFeedbackHydrating()) {
+        this.xpFeedback.notifyProfileChange(this.previousXpSnapshot, nextSnapshot);
+      }
+
+      this.previousXpSnapshot = nextSnapshot;
+    });
+
     effect(() => {
       const latest = this.latestAchievement();
       if (!latest || !this.canUseWindow) {
@@ -246,6 +265,10 @@ export class App implements OnDestroy {
 
     this.keyboardOffset.set(keyboardOffset);
     document.documentElement.style.setProperty('--keyboard-offset', `${keyboardOffset}px`);
+  }
+
+  private isXpFeedbackHydrating(): boolean {
+    return this.canUseWindow && window.performance.now() < this.xpFeedbackReadyAt;
   }
 
   private handleResourceError(event: Event): void {
