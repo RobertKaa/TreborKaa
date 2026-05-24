@@ -8,7 +8,7 @@ type FlagSourceConfig = {
   localBasePath: string;
 };
 
-export const FLAG_SOURCE_CONFIG: FlagSourceConfig = {
+const FLAG_SOURCE_CONFIG: FlagSourceConfig = {
   mode: 'remote-first',
   remoteBaseUrl: 'https://flagcdn.com/w320',
   localBasePath: 'assets/flags'

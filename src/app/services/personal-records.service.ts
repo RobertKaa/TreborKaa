@@ -5,6 +5,15 @@ import { BrowserStorageService } from './browser-storage.service';
 type StoredRecords = Partial<Record<GameRecordKey, PersonalRecord>>;
 
 const STORAGE_KEY = 'vexiio.personal-records.v1';
+const VALID_RECORD_KEYS = new Set<GameRecordKey>([
+  'country-to-flag-easy',
+  'flag-to-country-easy',
+  'shape-to-country-easy',
+  'flag-rebuild',
+  'find-the-error',
+  'pixel-flag',
+  'chrono-flags',
+]);
 
 @Injectable({ providedIn: 'root' })
 export class PersonalRecordsService {
@@ -58,6 +67,10 @@ export class PersonalRecordsService {
     const next: StoredRecords = { ...this.records() };
 
     for (const [key, incoming] of Object.entries(records) as [GameRecordKey, PersonalRecord][]) {
+      if (!VALID_RECORD_KEYS.has(key)) {
+        continue;
+      }
+
       const existing = next[key];
       next[key] = this.mergeRecord(existing, incoming);
     }
@@ -67,8 +80,19 @@ export class PersonalRecordsService {
   }
 
   private loadFromStorage(): StoredRecords {
-    const parsed = this.storage.getJson<StoredRecords>(STORAGE_KEY, {});
-    return typeof parsed === 'object' && parsed !== null ? parsed : {};
+    const parsed = this.storage.getJson<Record<string, PersonalRecord>>(STORAGE_KEY, {});
+    if (typeof parsed !== 'object' || parsed === null) {
+      return {};
+    }
+
+    const next: StoredRecords = {};
+    for (const [key, record] of Object.entries(parsed)) {
+      if (VALID_RECORD_KEYS.has(key as GameRecordKey)) {
+        next[key as GameRecordKey] = record;
+      }
+    }
+
+    return next;
   }
 
   private persist(): void {

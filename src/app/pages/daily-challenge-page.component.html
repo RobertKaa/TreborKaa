@@ -1,0 +1,161 @@
+<main class="game-shell daily-challenge-shell">
+
+  <section class="hero-card daily-challenge-hero">
+    <div>
+      <p class="eyebrow">{{ i18n.t('daily.eyebrow') }}</p>
+      <h1>{{ i18n.t('daily.title') }}</h1>
+      <p class="intro">{{ i18n.t('daily.intro') }}</p>
+    </div>
+    <aside class="daily-status-card" [class.completed]="dailyChallenge().completed">
+      <span>{{ dailyChallenge().completed ? i18n.t('daily.completed') : i18n.t('daily.reward') }}</span>
+      <strong>{{ i18n.t('home.dailyXp', { xp: dailyChallenge().xp }) }}</strong>
+      <small>{{ i18n.t('daily.dateLabel', { date: dailyChallenge().dateKey }) }}</small>
+    </aside>
+  </section>
+
+  @if (state() === 'intro') {
+    <section class="question-card daily-intro-card">
+      <div>
+        <p class="question-label">{{ i18n.t('daily.rulesLabel') }}</p>
+        <h2>{{ i18n.t('daily.rulesTitle') }}</h2>
+        <p class="question-help">{{ i18n.t('daily.rulesText') }}</p>
+      </div>
+      <button type="button" class="primary-button" [disabled]="!isReady()" (click)="startChallenge()">
+        {{ isReady() ? i18n.t('daily.start') : i18n.t('common.loadingGame') }}
+      </button>
+    </section>
+  }
+
+  @if (state() === 'running') {
+    @if (currentQuestion(); as question) {
+      <section class="question-card daily-question-card">
+        <div class="daily-question-head">
+          <div>
+            <p class="question-label">{{ getModeTitle(question.mode) }}</p>
+            <h2>{{ getQuestionTitle(question) }}</h2>
+          </div>
+          <div class="daily-run-actions">
+            <span class="daily-progress-pill">{{ progressLabel() }}</span>
+            <span class="daily-error-pill">{{ mistakeLabel() }}</span>
+            <button type="button" class="daily-quit-button" (click)="quitChallenge()">
+              {{ i18n.t('daily.quit') }}
+            </button>
+          </div>
+        </div>
+
+        @if (question.mode === 'flag-to-country') {
+          <div class="prompt-flag">
+            <img
+              [src]="question.promptCountry.flagUrl"
+              [alt]="i18n.t('countries.flagOf', { country: countryName(question.promptCountry) })"
+            />
+          </div>
+        }
+
+        @if (question.mode === 'shape-to-country') {
+          <div class="prompt-shape">
+            @if (question.shapePath) {
+              <svg
+                [attr.viewBox]="shapeViewBox(question)"
+                preserveAspectRatio="xMidYMid meet"
+                role="img"
+                [attr.aria-label]="i18n.t('classic.shapeAria')"
+              >
+                <path [attr.d]="question.shapePath" fill-rule="evenodd" clip-rule="evenodd"></path>
+              </svg>
+            }
+          </div>
+        }
+
+        @if (getPromptMode(question) === 'flag-options') {
+          <div class="option-grid">
+            @for (option of question.options; track option.code) {
+              <button
+                type="button"
+                class="option-card"
+                [class.is-correct]="getOptionState(option.code) === 'correct'"
+                [class.is-wrong]="getOptionState(option.code) === 'wrong'"
+                [disabled]="isOptionDisabled()"
+                (click)="selectAnswer(option.code)"
+              >
+                <span class="flag-surface">
+                  <img
+                    [src]="option.flagUrl"
+                    [alt]="i18n.t('countries.flagOf', { country: countryName(option) })"
+                  />
+                </span>
+              </button>
+            }
+          </div>
+        } @else {
+          <div class="name-grid">
+            @for (option of question.options; track option.code) {
+              <button
+                type="button"
+                class="name-card"
+                [class.is-correct]="getOptionState(option.code) === 'correct'"
+                [class.is-wrong]="getOptionState(option.code) === 'wrong'"
+                [disabled]="isOptionDisabled()"
+                (click)="selectAnswer(option.code)"
+              >
+                {{ countryName(option) }}
+              </button>
+            }
+          </div>
+        }
+      </section>
+    }
+  }
+
+  @if (state() === 'success') {
+    <section class="question-card daily-result-card">
+      <p class="eyebrow">{{ i18n.t('daily.completed') }}</p>
+      <h2>{{ i18n.t('daily.successTitle') }}</h2>
+      <p class="question-help">
+        {{
+          rewardEarned()
+            ? i18n.t('daily.successText', { xp: dailyChallenge().xp })
+            : i18n.t('daily.successReplayText')
+        }}
+      </p>
+      <div class="summary-actions">
+        <a class="ghost-link" routerLink="/">{{ i18n.t('common.home') }}</a>
+        <button type="button" class="primary-button" (click)="restartChallenge()">
+          {{ i18n.t('common.replay') }}
+        </button>
+      </div>
+    </section>
+  }
+
+  @if (state() === 'failed') {
+    <section class="question-card daily-result-card is-failed">
+      <p class="eyebrow">{{ i18n.t('daily.failed') }}</p>
+      <h2>{{ i18n.t('daily.failedTitle') }}</h2>
+      @if (failedCorrectCountry(); as correctCountry) {
+        <p class="question-help">
+          {{ i18n.t('common.correctAnswer') }}: {{ countryName(correctCountry) }}
+        </p>
+      }
+      @if (failedSelectedCountry(); as selectedCountry) {
+        <p class="question-help">
+          {{ i18n.t('common.yourAnswer') }}: {{ countryName(selectedCountry) }}
+        </p>
+      }
+      <div class="summary-actions">
+        <a class="ghost-link" routerLink="/">{{ i18n.t('common.home') }}</a>
+        <button type="button" class="primary-button" (click)="restartChallenge()">
+          {{ i18n.t('common.restart') }}
+        </button>
+      </div>
+    </section>
+  }
+</main>
+
+@if (state() === 'running') {
+  <section class="quiz-progress-strip" [attr.aria-label]="i18n.t('classic.stateAria')">
+    <p class="quiz-progress-value">{{ progressLabel() }}</p>
+    <div class="quiz-progress-track" aria-hidden="true">
+      <div class="quiz-progress-fill" [style.width.%]="progressPercent()"></div>
+    </div>
+  </section>
+}

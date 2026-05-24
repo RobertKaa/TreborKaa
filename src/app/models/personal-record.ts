@@ -1,18 +1,11 @@
 export type GameRecordKey =
   | 'country-to-flag-easy'
-  | 'country-to-flag-hard'
   | 'flag-to-country-easy'
-  | 'flag-to-country-hard'
   | 'shape-to-country-easy'
-  | 'shape-to-country-hard'
   | 'flag-rebuild'
   | 'find-the-error'
   | 'pixel-flag'
-  | 'chrono-flags'
-  | 'flag-culture-easy'
-  | 'flag-culture-medium'
-  | 'flag-culture-hard'
-  | 'flag-culture-mixed';
+  | 'chrono-flags';
 
 export type PersonalRecord = {
   bestScore: number;

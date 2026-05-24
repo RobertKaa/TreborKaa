@@ -10,13 +10,7 @@
   overflow: hidden;
   border: 1px solid var(--line-soft);
   border-radius: 18px;
-  background:
-    radial-gradient(
-      circle at 30% 20%,
-      color-mix(in srgb, var(--secondary-soft) 35%, transparent),
-      transparent 55%
-    ),
-    color-mix(in srgb, var(--surface-raise) 84%, transparent);
+  background: color-mix(in srgb, var(--surface-raise) 84%, transparent);
 }
 
 .prompt-shape svg {

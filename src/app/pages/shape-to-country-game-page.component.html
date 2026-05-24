@@ -24,9 +24,7 @@
           <p class="question-help">{{ i18n.t('common.loadingGame') }}</p>
         }
       </div>
-      @if (difficulty() === 'easy') {
-        <p class="question-help">{{ i18n.t('classic.capital', { capital: capitalName(question.promptCountry) }) }}</p>
-      }
+      <p class="question-help">{{ i18n.t('classic.capital', { capital: capitalName(question.promptCountry) }) }}</p>
 
       <div class="name-grid">
         @for (option of question.options; track option.code) {

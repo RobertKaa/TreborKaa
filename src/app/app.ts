@@ -1,5 +1,5 @@
 import { Component, OnDestroy, computed, effect, inject, signal } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AppLanguage } from './data/i18n-translations';
 import { AchievementsService } from './services/achievements.service';
 import { BrowserStorageService } from './services/browser-storage.service';
@@ -15,7 +15,7 @@ import { UserDataSyncService } from './services/user-data-sync.service';
     '[class.mobile-landscape]': 'isMobileLandscape()',
     '[class.mobile-keyboard-open]': 'keyboardOffset() > 0',
   },
-  imports: [RouterOutlet, RouterLink],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -47,11 +47,13 @@ export class App implements OnDestroy {
   protected readonly isOffline = signal(false);
   protected readonly keyboardOffset = signal(0);
   protected readonly isMenuOpen = signal(false);
+  protected readonly isSettingsOpen = signal(false);
   protected readonly authProfile = this.auth.profile;
   protected readonly isAuthenticated = this.auth.isAuthenticated;
   protected readonly isAuthLoading = this.auth.isLoading;
   protected readonly authError = this.auth.lastError;
   protected readonly latestAchievement = this.achievementsService.latestUnlock;
+  protected readonly profile = this.achievementsService.profile;
   protected readonly authDisplayName = computed(
     () => this.authProfile()?.displayName ?? this.i18n.t('auth.account'),
   );
@@ -102,7 +104,13 @@ export class App implements OnDestroy {
   }
 
   protected toggleMenu(): void {
+    this.isSettingsOpen.set(false);
     this.isMenuOpen.update((value) => !value);
+  }
+
+  protected toggleSettings(): void {
+    this.isMenuOpen.set(false);
+    this.isSettingsOpen.update((value) => !value);
   }
 
   protected handleAuthButtonClick(): void {
@@ -111,7 +119,7 @@ export class App implements OnDestroy {
     }
 
     if (this.isAuthenticated()) {
-      this.toggleMenu();
+      this.signOut();
       return;
     }
 
@@ -124,21 +132,30 @@ export class App implements OnDestroy {
     }
 
     void this.auth.signInWithGoogle();
-    this.closeMenu();
+    this.closeOverlays();
   }
 
   protected signOut(): void {
     void this.auth.signOut();
-    this.closeMenu();
+    this.closeOverlays();
   }
 
   protected closeMenu(): void {
     this.isMenuOpen.set(false);
   }
 
+  protected closeSettings(): void {
+    this.isSettingsOpen.set(false);
+  }
+
+  protected closeOverlays(): void {
+    this.closeMenu();
+    this.closeSettings();
+  }
+
   protected setLanguage(language: AppLanguage): void {
     this.i18n.setLanguage(language);
-    this.closeMenu();
+    this.closeOverlays();
   }
 
   protected isActiveLanguage(language: AppLanguage): boolean {
@@ -172,7 +189,7 @@ export class App implements OnDestroy {
 
   private readInitialTheme(): boolean {
     if (typeof window === 'undefined') {
-      return false;
+      return true;
     }
 
     const stored = this.storage.getString('ftf-theme');
@@ -184,7 +201,7 @@ export class App implements OnDestroy {
       return false;
     }
 
-    return this.prefersDark;
+    return true;
   }
 
   private persistTheme(): void {

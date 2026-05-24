@@ -1,4 +1,4 @@
-export type FlagLayout =
+type FlagLayout =
   | 'vertical-tricolor'
   | 'horizontal-tricolor'
   | 'horizontal-bicolor'

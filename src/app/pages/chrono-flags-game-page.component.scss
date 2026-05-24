@@ -3,13 +3,7 @@
 }
 
 .hero-card {
-  background:
-    radial-gradient(
-      circle at 95% 5%,
-      color-mix(in srgb, var(--secondary-soft) 70%, transparent),
-      transparent 35%
-    ),
-    var(--card);
+  background: var(--card);
 }
 
 h2 {
@@ -19,13 +13,7 @@ h2 {
 .board-card {
   display: grid;
   gap: 14px;
-  background:
-    linear-gradient(
-      185deg,
-      color-mix(in srgb, var(--surface-strong) 80%, transparent),
-      transparent 30%
-    ),
-    var(--card);
+  background: var(--card);
 }
 
 .loading-card {
@@ -111,7 +99,7 @@ h2 {
 }
 
 .time-fill {
-  background: linear-gradient(90deg, #0c7f6f, #ef8d35, #b53e53);
+  background: var(--success);
 }
 
 .feedback-toast {
@@ -130,22 +118,16 @@ h2 {
 }
 
 .feedback-toast.is-correct {
-  background: linear-gradient(135deg, #1f9c67, #0c7f6f);
+  background: var(--success);
 }
 
 .feedback-toast.is-wrong {
-  background: linear-gradient(135deg, #b53e53, #d45b6f);
+  background: var(--danger);
 }
 
 .summary-modal {
   width: min(860px, calc(100vw - 24px));
-  background:
-    radial-gradient(
-      circle at 95% 4%,
-      color-mix(in srgb, var(--secondary-soft) 55%, transparent),
-      transparent 40%
-    ),
-    var(--card);
+  background: var(--card);
 }
 
 .mistake-card {

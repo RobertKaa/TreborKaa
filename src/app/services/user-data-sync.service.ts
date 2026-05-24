@@ -1,14 +1,11 @@
 import { Injectable, effect, inject } from '@angular/core';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { GameRecordKey, PersonalRecord } from '../models/personal-record';
+import { SpeedrunSplitBest, SpeedrunSplitId, SpeedrunUserRecord } from '../models/speedrun';
 import { AchievementsService } from './achievements.service';
-import { FavoriteGamesService } from './favorite-games.service';
 import { PersonalRecordsService } from './personal-records.service';
+import { SpeedrunRecordsService } from './speedrun-records.service';
 import { SupabaseAuthService } from './supabase-auth.service';
-
-type RemoteFavorite = {
-  game_id: string;
-};
 
 type RemoteRecord = {
   record_key: string;
@@ -25,12 +22,31 @@ type RemoteAchievement = {
   unlocked_at: string;
 };
 
+type RemoteSpeedrunBest = {
+  user_id: string;
+  total_time_ms: number;
+  raw_time_ms: number;
+  penalty_ms: number;
+  mistake_count: number;
+  correct_count: number;
+  completed_at: string;
+};
+
+type RemoteSpeedrunSplitBest = {
+  split_id: string;
+  total_time_ms: number;
+  raw_time_ms: number;
+  penalty_ms: number;
+  mistake_count: number;
+  completed_at: string;
+};
+
 @Injectable({ providedIn: 'root' })
 export class UserDataSyncService {
   private readonly auth = inject(SupabaseAuthService);
-  private readonly favorites = inject(FavoriteGamesService);
   private readonly records = inject(PersonalRecordsService);
   private readonly achievements = inject(AchievementsService);
+  private readonly speedrunRecords = inject(SpeedrunRecordsService);
 
   private initializedUserId: string | null = null;
   private isApplyingRemote = false;
@@ -52,7 +68,6 @@ export class UserDataSyncService {
 
     effect(() => {
       const userId = this.auth.user()?.id ?? null;
-      this.favorites.snapshot();
       this.records.snapshot();
       this.achievements.snapshot();
 
@@ -82,15 +97,20 @@ export class UserDataSyncService {
   }
 
   private async pullRemoteData(client: SupabaseClient, userId: string): Promise<void> {
-    const [favorites, records, achievements] = await Promise.all([
-      this.safeFetch(() => this.fetchFavorites(client, userId), []),
+    const [records, achievements, speedrunBest, speedrunSplitBests] = await Promise.all([
       this.safeFetch(() => this.fetchRecords(client, userId), []),
       this.safeFetch(() => this.fetchAchievements(client, userId), []),
+      this.safeFetch(() => this.fetchSpeedrunBest(client, userId), null),
+      this.safeFetch(() => this.fetchSpeedrunSplitBests(client, userId), []),
     ]);
 
-    this.favorites.mergeFavorites(favorites.map((favorite) => favorite.game_id));
     this.records.mergeRecords(this.mapRemoteRecords(records));
     this.achievements.mergeUnlocks(this.mapRemoteAchievements(achievements));
+    this.speedrunRecords.mergeBestForUser(userId, this.mapRemoteSpeedrunBest(userId, speedrunBest));
+    this.speedrunRecords.mergeSplitBestsForUser(
+      userId,
+      this.mapRemoteSpeedrunSplitBests(speedrunSplitBests),
+    );
   }
 
   private scheduleUpload(userId: string): void {
@@ -120,7 +140,6 @@ export class UserDataSyncService {
 
   private async uploadAll(client: SupabaseClient, userId: string): Promise<void> {
     const results = await Promise.allSettled([
-      this.syncFavorites(client, userId),
       this.syncRecords(client, userId),
       this.syncAchievements(client, userId),
     ]);
@@ -130,19 +149,6 @@ export class UserDataSyncService {
         console.warn('Unable to push user data', result.reason);
       }
     }
-  }
-
-  private async fetchFavorites(client: SupabaseClient, userId: string): Promise<RemoteFavorite[]> {
-    const { data, error } = await client
-      .from('favorite_games')
-      .select('game_id')
-      .eq('user_id', userId);
-
-    if (error) {
-      throw error;
-    }
-
-    return (data ?? []) as RemoteFavorite[];
   }
 
   private async fetchRecords(client: SupabaseClient, userId: string): Promise<RemoteRecord[]> {
@@ -176,20 +182,39 @@ export class UserDataSyncService {
     return (data ?? []) as RemoteAchievement[];
   }
 
-  private async syncFavorites(client: SupabaseClient, userId: string): Promise<void> {
-    const remoteFavorites = await this.safeFetch(() => this.fetchFavorites(client, userId), []);
-    const localIds = new Set<string>(this.favorites.ids());
-    const remoteIds = new Set(remoteFavorites.map((favorite) => favorite.game_id));
-    const staleIds = [...remoteIds].filter((gameId) => !localIds.has(gameId));
-    const rows = [...localIds]
-      .filter((gameId) => !remoteIds.has(gameId))
-      .map((gameId) => ({
-        user_id: userId,
-        game_id: gameId,
-      }));
+  private async fetchSpeedrunBest(
+    client: SupabaseClient,
+    userId: string,
+  ): Promise<RemoteSpeedrunBest | null> {
+    const { data, error } = await client
+      .from('speedrun_leaderboard')
+      .select(
+        'user_id,total_time_ms,raw_time_ms,penalty_ms,mistake_count,correct_count,completed_at',
+      )
+      .eq('user_id', userId)
+      .maybeSingle();
 
-    await this.deleteRowsByValues(client, 'favorite_games', userId, 'game_id', staleIds);
-    await this.insertRows(client, 'favorite_games', rows);
+    if (error) {
+      throw error;
+    }
+
+    return (data ?? null) as RemoteSpeedrunBest | null;
+  }
+
+  private async fetchSpeedrunSplitBests(
+    client: SupabaseClient,
+    userId: string,
+  ): Promise<RemoteSpeedrunSplitBest[]> {
+    const { data, error } = await client
+      .from('speedrun_split_bests')
+      .select('split_id,total_time_ms,raw_time_ms,penalty_ms,mistake_count,completed_at')
+      .eq('user_id', userId);
+
+    if (error) {
+      throw error;
+    }
+
+    return (data ?? []) as RemoteSpeedrunSplitBest[];
   }
 
   private async syncRecords(client: SupabaseClient, userId: string): Promise<void> {
@@ -260,22 +285,6 @@ export class UserDataSyncService {
     }
   }
 
-  private async insertRows(
-    client: SupabaseClient,
-    table: string,
-    rows: Record<string, unknown>[],
-  ): Promise<void> {
-    if (rows.length === 0) {
-      return;
-    }
-
-    const { error } = await client.from(table).insert(rows);
-
-    if (error) {
-      throw error;
-    }
-  }
-
   private async upsertRows(
     client: SupabaseClient,
     table: string,
@@ -331,5 +340,35 @@ export class UserDataSyncService {
     }
 
     return next;
+  }
+
+  private mapRemoteSpeedrunBest(
+    userId: string,
+    record: RemoteSpeedrunBest | null,
+  ): SpeedrunUserRecord | null {
+    if (!record) {
+      return null;
+    }
+
+    return {
+      userId,
+      totalTimeMs: record.total_time_ms,
+      rawTimeMs: record.raw_time_ms,
+      penaltyMs: record.penalty_ms,
+      mistakeCount: record.mistake_count,
+      correctCount: record.correct_count,
+      completedAt: record.completed_at,
+    };
+  }
+
+  private mapRemoteSpeedrunSplitBests(records: RemoteSpeedrunSplitBest[]): SpeedrunSplitBest[] {
+    return records.map((record) => ({
+      splitId: record.split_id as SpeedrunSplitId,
+      totalTimeMs: record.total_time_ms,
+      rawTimeMs: record.raw_time_ms,
+      penaltyMs: record.penalty_ms,
+      mistakeCount: record.mistake_count,
+      completedAt: record.completed_at,
+    }));
   }
 }

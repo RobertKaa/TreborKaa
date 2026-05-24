@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Vexiio compass">
+  <defs>
+    <linearGradient id="gold" x1="12" y1="84" x2="84" y2="12" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9f5f16"/>
+      <stop offset="0.42" stop-color="#f2b542"/>
+      <stop offset="1" stop-color="#ffe8a3"/>
+    </linearGradient>
+  </defs>
+  <circle cx="48" cy="48" r="31" fill="none" stroke="#8f5b1c" stroke-width="2.2" opacity=".72"/>
+  <circle cx="48" cy="48" r="22" fill="none" stroke="#f2b542" stroke-width="1.4" opacity=".58"/>
+  <path d="M48 5 56 38 91 48 56 58 48 91 40 58 5 48 40 38Z" fill="url(#gold)" stroke="#7f4f18" stroke-width="1.6" stroke-linejoin="round"/>
+  <path d="M48 18 52 41 78 48 52 55 48 78 44 55 18 48 44 41Z" fill="#071421" stroke="#f2b542" stroke-width="1.2" stroke-linejoin="round"/>
+  <path d="M48 8 52 43 48 48 44 43Z" fill="#fff1b8"/>
+  <path d="M88 48 53 52 48 48 53 44Z" fill="#f2a72a"/>
+  <path d="M48 88 44 53 48 48 52 53Z" fill="#c9821d"/>
+  <path d="M8 48 43 44 48 48 43 52Z" fill="#f7c55a"/>
+  <circle cx="48" cy="48" r="4.8" fill="#f2b542" stroke="#06131f" stroke-width="2"/>
+</svg>

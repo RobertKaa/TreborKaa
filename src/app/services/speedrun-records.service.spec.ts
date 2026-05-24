@@ -45,4 +45,27 @@ describe('SpeedrunRecordsService', () => {
     service.saveSplitBestsForUser('user-1', [faster]);
     expect(service.getBestSplitForUser('user-1', split.id)?.totalTimeMs).toBe(faster.totalTimeMs);
   });
+
+  it('merges remote speedrun bests without replacing better local values', () => {
+    const service = TestBed.inject(SpeedrunRecordsService);
+    const localBest = {
+      ...buildSpeedrunResult(38_000, 0, '2026-05-19T18:00:00.000Z'),
+      userId: 'user-1',
+    };
+    const remoteSlower = {
+      ...buildSpeedrunResult(42_000, 0, '2026-05-19T18:01:00.000Z'),
+      userId: 'user-1',
+    };
+    const remoteFaster = {
+      ...buildSpeedrunResult(34_000, 0, '2026-05-19T18:02:00.000Z'),
+      userId: 'user-1',
+    };
+
+    service.mergeBestForUser('user-1', localBest);
+    service.mergeBestForUser('user-1', remoteSlower);
+    expect(service.getBestForUser('user-1')?.totalTimeMs).toBe(localBest.totalTimeMs);
+
+    service.mergeBestForUser('user-1', remoteFaster);
+    expect(service.getBestForUser('user-1')?.totalTimeMs).toBe(remoteFaster.totalTimeMs);
+  });
 });

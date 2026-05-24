@@ -2,14 +2,31 @@
   display: block;
 }
 
+.speedrun-top-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
+  gap: 16px;
+  align-items: start;
+  margin-bottom: 16px;
+}
+
 .speedrun-hero {
-  background:
-    radial-gradient(
-      circle at 92% 6%,
-      color-mix(in srgb, var(--secondary-soft) 64%, transparent),
-      transparent 38%
-    ),
-    var(--card);
+  min-height: 100%;
+  background: var(--card);
+}
+
+.speedrun-hero-copy {
+  display: grid;
+  align-content: center;
+  min-height: 100%;
+}
+
+.speedrun-hero-actions {
+  margin-top: 22px;
+}
+
+.speedrun-hero-actions .primary-button {
+  min-width: min(100%, 220px);
 }
 
 .loading-card,
@@ -36,7 +53,8 @@
   font-family: 'Space Mono', monospace;
   font-size: clamp(4rem, 18vw, 9rem);
   line-height: 0.85;
-  color: var(--accent-dark);
+  color: var(--ds-color-gold-300);
+  text-shadow: none;
 }
 
 .speedrun-ready-panel {
@@ -100,7 +118,7 @@
   min-height: 160px;
   padding: 16px;
   border: 1px solid var(--line-soft);
-  border-radius: 18px;
+  border-radius: var(--ds-radius-lg);
   background: color-mix(in srgb, var(--surface) 82%, transparent);
 }
 
@@ -138,7 +156,7 @@
 .name-card {
   min-height: 72px;
   padding: 15px 16px;
-  border-radius: 18px;
+  border-radius: var(--ds-radius-lg);
   color: var(--ink);
   font-size: 1rem;
   font-weight: 800;
@@ -146,7 +164,7 @@
 
 .flag-card {
   padding: 10px;
-  border-radius: 18px;
+  border-radius: var(--ds-radius-lg);
 }
 
 .flag-surface {
@@ -200,7 +218,7 @@
   gap: 4px;
   padding: 12px;
   border: 1px solid var(--line-soft);
-  border-radius: 14px;
+  border-radius: var(--ds-radius-md);
   background: color-mix(in srgb, var(--surface) 88%, transparent);
 }
 
@@ -222,7 +240,7 @@
   margin-top: 14px;
   padding: 12px 14px;
   border: 1px solid var(--line-soft);
-  border-radius: 14px;
+  border-radius: var(--ds-radius-md);
   background: color-mix(in srgb, var(--surface) 88%, transparent);
 }
 
@@ -235,6 +253,10 @@
 }
 
 @media (max-width: 1040px) {
+  .speedrun-top-grid {
+    grid-template-columns: 1fr;
+  }
+
   .speedrun-board-grid {
     grid-template-columns: 1fr;
   }
@@ -260,6 +282,18 @@
 }
 
 @media (max-width: 640px) {
+  .inline-leaderboard-entry {
+    grid-template-columns: 34px 30px minmax(0, 1fr);
+  }
+
+  .leaderboard-time {
+    grid-column: 3;
+  }
+
+  .leaderboard-pager {
+    grid-template-columns: 1fr;
+  }
+
   .prompt-panel {
     min-height: 132px;
     padding: 12px;
@@ -274,16 +308,29 @@
     height: 170px;
   }
 
+  .speedrun-board-grid {
+    gap: 10px;
+    padding-bottom: 76px;
+  }
+
   .split-list {
-    grid-template-columns: 1fr;
+    order: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-height: 112px;
+    overflow: auto;
   }
 
   .split-panel {
-    padding: 6px;
+    position: sticky;
+    top: 8px;
+    z-index: 20;
+    order: -1;
+    padding: 8px;
     border-radius: 18px;
   }
 
   .split-panel-head {
+    order: -2;
     min-height: 30px;
     padding: 4px 6px 8px;
   }
@@ -291,8 +338,8 @@
   .split-row {
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 4px 8px;
-    min-height: 46px;
-    padding: 7px 9px 7px 12px;
+    min-height: 40px;
+    padding: 6px 8px 6px 12px;
   }
 
   .split-row > strong:first-child {
@@ -308,9 +355,11 @@
   }
 
   .live-timer {
+    order: -1;
     grid-template-columns: auto minmax(0, 1fr);
     align-items: baseline;
-    padding: 10px;
+    margin-top: 0;
+    padding: 9px 10px;
   }
 
   .live-timer strong {
@@ -318,11 +367,59 @@
   }
 
   .live-stats {
-    padding: 8px;
+    display: none;
   }
 
-  .live-stat {
-    min-height: 28px;
-    padding: 3px 4px;
+  .status-dock {
+    position: fixed !important;
+    top: auto !important;
+    right: max(10px, env(safe-area-inset-right, 0px)) !important;
+    bottom: max(10px, env(safe-area-inset-bottom, 0px)) !important;
+    left: max(10px, env(safe-area-inset-left, 0px)) !important;
+    z-index: 45 !important;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    width: auto !important;
+    margin: 0;
+    padding: 6px;
+    border-radius: 16px;
+  }
+
+  :host-context(app-root.mobile-viewport) .status-dock {
+    position: fixed !important;
+    inset: auto max(10px, env(safe-area-inset-right, 0px))
+      max(10px, env(safe-area-inset-bottom, 0px))
+      max(10px, env(safe-area-inset-left, 0px)) !important;
+    width: auto !important;
+    z-index: 45 !important;
+  }
+
+  .status-block {
+    min-width: 0;
+    justify-content: center;
+    padding: 6px 8px;
+  }
+
+  .status-block:not(.time-block) .status-label {
+    display: none;
+  }
+
+  .time-block {
+    justify-content: flex-start;
+  }
+
+  .time-block .status-value {
+    font-size: 1.08rem;
+  }
+
+  .progress-block {
+    grid-column: 1 / -1;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .progress-block .progress-track {
+    height: 5px;
   }
 }

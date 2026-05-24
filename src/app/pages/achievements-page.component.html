@@ -11,11 +11,11 @@
     <div class="profile-summary" [attr.aria-label]="i18n.t('gamification.profileAria')">
       <div>
         <span>{{ i18n.t('gamification.level', { level: profile().level }) }}</span>
-        <strong>{{ i18n.t(profile().levelLabelKey) }}</strong>
+        <strong>{{ i18n.t(profile().levelTierLabelKey) }}</strong>
       </div>
       <div>
-        <span>{{ i18n.t('gamification.points') }}</span>
-        <strong>{{ profile().achievementPoints }}</strong>
+        <span>{{ i18n.t('gamification.successes') }}</span>
+        <strong>{{ unlockedCount() }}/{{ achievements().length }}</strong>
       </div>
       <div>
         <span>{{ i18n.t('gamification.xpShort') }}</span>

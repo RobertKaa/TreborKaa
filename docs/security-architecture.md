@@ -18,7 +18,6 @@ If public leaderboards are added later, score writes must go through a backend v
 
 Current user data tables are acceptable for non-competitive private data:
 
-- `favorite_games`
 - `personal_records`
 - `achievement_unlocks`
 - `user_profiles`

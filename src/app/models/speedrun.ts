@@ -5,7 +5,7 @@ export type SpeedrunQuestionMode =
   | 'flag-to-country'
   | 'capital-to-country'
   | 'shape-to-country';
-export type SpeedrunDifficulty = 'easy' | 'hard';
+type SpeedrunDifficulty = 'easy' | 'hard';
 export type SpeedrunSplitId =
   | 'country-to-flag-hard'
   | 'flag-to-country-hard'
@@ -76,7 +76,7 @@ export type SpeedrunSplitBest = {
   completedAt: string;
 };
 
-export const SPEEDRUN_SPLIT_QUESTION_COUNT = 15;
+const SPEEDRUN_SPLIT_QUESTION_COUNT = 15;
 
 export const SPEEDRUN_SPLITS: SpeedrunSplit[] = [
   {

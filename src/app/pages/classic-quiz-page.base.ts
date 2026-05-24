@@ -1,7 +1,5 @@
 import { computed, effect, inject, signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
-import { map } from 'rxjs';
 import { GameId } from '../data/game-catalog';
 import { CountrySummary } from '../models/country-summary';
 import { GameRecordKey } from '../models/personal-record';
@@ -10,7 +8,6 @@ import { GameProgressService } from '../services/game-progress.service';
 import { I18nService } from '../services/i18n.service';
 import { PersonalRecordsService } from '../services/personal-records.service';
 
-type GameDifficulty = 'easy' | 'hard';
 type BaseQuestion = {
   promptCountry: CountrySummary;
   options: CountrySummary[];
@@ -24,12 +21,12 @@ export type ClassicQuizError = {
 };
 
 type QuizSetup<TQuestion extends BaseQuestion> = {
-  buildQuestion: (countries: CountrySummary[], difficulty: GameDifficulty, excludeCodes: string[]) => TQuestion;
-  getRecordKey: (difficulty: GameDifficulty) => GameRecordKey;
-  getProgressGameId: (difficulty: GameDifficulty) => GameId;
+  buildQuestion: (countries: CountrySummary[], excludeCodes: string[]) => TQuestion;
+  getRecordKey: () => GameRecordKey;
+  getProgressGameId: () => GameId;
   progressLabelKey: string;
   isReady?: () => boolean;
-  getTotalQuestions?: (countries: CountrySummary[], difficulty: GameDifficulty) => number;
+  getTotalQuestions?: (countries: CountrySummary[]) => number;
 };
 
 const MAX_ERRORS = 3;
@@ -48,7 +45,6 @@ type ClassicQuestionSnapshot = {
 
 type ClassicQuizProgressSnapshot = {
   version: 1;
-  difficulty: GameDifficulty;
   score: number;
   questionIndex: number;
   answered: boolean;
@@ -62,7 +58,6 @@ type ClassicQuizProgressSnapshot = {
 };
 
 export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
-  private readonly route = inject(ActivatedRoute);
   protected readonly i18n = inject(I18nService);
   private readonly countriesService = inject(CountriesService);
   private readonly personalRecordsService = inject(PersonalRecordsService);
@@ -87,20 +82,13 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
   protected readonly usedCodes = signal<string[]>([]);
   protected readonly errors = signal<ClassicQuizError[]>([]);
   protected readonly isComplete = signal(false);
-  protected readonly difficulty = toSignal(
-    this.route.paramMap.pipe(
-      map((params) => (params.get('difficulty') === 'hard' ? 'hard' : 'easy') as GameDifficulty)
-    ),
-    { initialValue: 'easy' as GameDifficulty }
-  );
   protected readonly countries$ = this.countriesService.getCountries();
   protected readonly countriesSignal = toSignal(this.countries$, { initialValue: [] as CountrySummary[] });
   protected readonly currentQuestion = signal<TQuestion | null>(null);
   protected readonly totalQuestions = computed(() => {
     const countries = this.countriesSignal();
-    const difficulty = this.difficulty();
     if (this.getTotalQuestionsFn) {
-      return Math.max(0, this.getTotalQuestionsFn(countries, difficulty));
+      return Math.max(0, this.getTotalQuestionsFn(countries));
     }
 
     return countries.length;
@@ -131,7 +119,6 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
     this.hasBoundEffect = true;
     effect(() => {
       const countries = this.countriesSignal();
-      const difficulty = this.difficulty();
       const isReady = this.isReadyFn?.() ?? true;
       const totalQuestions = this.totalQuestions();
 
@@ -139,10 +126,10 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
         return;
       }
 
-      const restored = untracked(() => this.restoreProgressState(countries, difficulty));
+      const restored = untracked(() => this.restoreProgressState(countries));
       if (!restored) {
         this.resetGameState();
-        this.currentQuestion.set(this.buildQuestionFn(countries, difficulty, []));
+        this.currentQuestion.set(this.buildQuestionFn(countries, []));
       }
     });
 
@@ -279,7 +266,7 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
       return;
     }
 
-    this.currentQuestion.set(this.buildQuestionFn(countries, this.difficulty(), this.usedCodes()));
+    this.currentQuestion.set(this.buildQuestionFn(countries, this.usedCodes()));
   }
 
   private scheduleAdvance(): void {
@@ -322,7 +309,7 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
       return;
     }
 
-    this.personalRecordsService.saveResult(this.getRecordKeyFn(this.difficulty()), {
+    this.personalRecordsService.saveResult(this.getRecordKeyFn(), {
       score: this.score(),
       maxScore: Math.max(1, this.score() + this.wrongAttempts())
     });
@@ -336,10 +323,8 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
 
     this.hasBoundProgressEffect = true;
     effect(() => {
-      const countries = this.countriesSignal();
-      const difficulty = this.difficulty();
       const question = this.currentQuestion();
-      const progressGameId = this.getProgressGameIdFn?.(difficulty) ?? null;
+      const progressGameId = this.getProgressGameIdFn?.() ?? null;
       const isReady = this.isReadyFn?.() ?? true;
       const totalQuestions = this.totalQuestions();
 
@@ -350,7 +335,7 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
         return;
       }
 
-      const snapshot = this.buildProgressSnapshot(difficulty, question);
+      const snapshot = this.buildProgressSnapshot(question);
       this.gameProgressService.saveProgress(progressGameId, snapshot, {
         percent: this.progressPercent(),
         labelKey: this.progressLabelKey,
@@ -363,12 +348,10 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
   }
 
   private buildProgressSnapshot(
-    difficulty: GameDifficulty,
     question: TQuestion
   ): ClassicQuizProgressSnapshot {
     return {
       version: 1,
-      difficulty,
       score: this.score(),
       questionIndex: this.questionIndex(),
       answered: this.answered(),
@@ -390,14 +373,14 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
     };
   }
 
-  private restoreProgressState(countries: CountrySummary[], difficulty: GameDifficulty): boolean {
-    const gameId = this.getProgressGameIdFn?.(difficulty);
+  private restoreProgressState(countries: CountrySummary[]): boolean {
+    const gameId = this.getProgressGameIdFn?.();
     if (!gameId) {
       return false;
     }
 
     const snapshot = this.gameProgressService.getPayload<ClassicQuizProgressSnapshot>(gameId);
-    if (!snapshot || snapshot.version !== 1 || snapshot.difficulty !== difficulty || snapshot.isComplete) {
+    if (!snapshot || snapshot.version !== 1 || snapshot.isComplete) {
       return false;
     }
 
@@ -468,7 +451,7 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
   }
 
   private clearProgressState(): void {
-    const gameId = this.getProgressGameIdFn?.(this.difficulty());
+    const gameId = this.getProgressGameIdFn?.();
     if (!gameId) {
       return;
     }

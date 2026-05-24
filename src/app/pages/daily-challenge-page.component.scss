@@ -1,0 +1,238 @@
+@use './classic-quiz-shared';
+
+:host {
+  display: block;
+}
+
+.daily-challenge-shell {
+  gap: 16px;
+}
+
+.daily-challenge-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
+  align-items: stretch;
+  background: var(--card);
+}
+
+.daily-challenge-hero h1,
+.daily-question-card h2,
+.daily-result-card h2 {
+  letter-spacing: 0;
+}
+
+.daily-status-card {
+  display: grid;
+  align-content: center;
+  gap: 6px;
+  padding: 18px;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--ds-radius-lg);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+}
+
+.daily-status-card span,
+.daily-status-card small {
+  color: var(--ink-soft);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.daily-status-card strong {
+  color: var(--ds-color-gold-300);
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1;
+}
+
+.daily-status-card.completed strong {
+  color: var(--success);
+}
+
+.daily-intro-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 20px;
+}
+
+.daily-intro-card h2,
+.daily-question-card h2,
+.daily-result-card h2 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3.35rem);
+}
+
+.daily-question-card {
+  background: var(--card);
+}
+
+.daily-question-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.daily-run-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.daily-progress-pill,
+.daily-error-pill,
+.daily-quit-button {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.daily-error-pill {
+  color: var(--ds-color-gold-300);
+}
+
+.daily-quit-button {
+  background: transparent;
+  cursor: pointer;
+}
+
+.daily-quit-button:hover {
+  border-color: var(--accent-line);
+  color: var(--accent-dark);
+}
+
+.prompt-flag,
+.prompt-shape {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(190px, 34dvh, 300px);
+  margin: 16px 0 12px;
+  padding: clamp(12px, 1.6vw, 18px);
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--ds-radius-lg);
+  background: color-mix(in srgb, var(--surface-raise) 84%, transparent);
+}
+
+.prompt-flag img {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  max-height: 280px;
+  object-fit: contain;
+}
+
+.prompt-shape svg {
+  display: block;
+  width: min(100%, 560px);
+  height: auto;
+  max-height: min(42dvh, 320px);
+}
+
+.prompt-shape path {
+  fill: color-mix(in srgb, var(--accent) 36%, var(--surface-strong));
+  stroke: color-mix(in srgb, var(--accent-strong) 45%, var(--line));
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.option-grid,
+.name-grid {
+  margin-top: 16px;
+}
+
+.option-grid {
+  gap: 14px;
+}
+
+.option-card {
+  padding: 12px;
+  border-radius: var(--ds-radius-lg);
+  background: color-mix(in srgb, var(--surface-raise) 84%, transparent);
+}
+
+.flag-surface {
+  min-height: min(20vh, 160px);
+  padding: 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--ds-radius-md);
+}
+
+.option-card img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 220px);
+  max-height: 120px;
+  object-fit: contain;
+}
+
+.name-card {
+  min-height: 74px;
+  padding: 14px 16px;
+  border-radius: var(--ds-radius-lg);
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.name-card:disabled {
+  color: var(--ink);
+}
+
+.daily-result-card {
+  text-align: left;
+}
+
+.daily-result-card.is-failed {
+  border-color: color-mix(in srgb, var(--danger) 42%, var(--line));
+}
+
+@media (max-width: 900px) {
+  .daily-challenge-hero,
+  .daily-intro-card {
+    grid-template-columns: 1fr;
+  }
+
+  .daily-intro-card .primary-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .daily-question-head {
+    display: grid;
+  }
+
+  .daily-progress-pill {
+    width: fit-content;
+  }
+
+  .daily-run-actions {
+    justify-content: flex-start;
+  }
+
+  .prompt-flag,
+  .prompt-shape {
+    min-height: 170px;
+    padding: 12px;
+  }
+
+  .flag-surface {
+    min-height: 96px;
+    padding: 10px;
+  }
+}

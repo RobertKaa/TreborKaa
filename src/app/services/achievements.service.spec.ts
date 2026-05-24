@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { AchievementsService } from './achievements.service';
-import { FavoriteGamesService } from './favorite-games.service';
 import { GameProgressService } from './game-progress.service';
 import { PersonalRecordsService } from './personal-records.service';
 
@@ -21,14 +20,10 @@ describe('AchievementsService', () => {
     expect(firstGame?.unlocked).toBe(true);
   });
 
-  it('unlocks three-favorites and resume-ready on main actions', () => {
-    const favorites = TestBed.inject(FavoriteGamesService);
+  it('unlocks resume-ready when a game is in progress', () => {
     const progress = TestBed.inject(GameProgressService);
     const achievements = TestBed.inject(AchievementsService);
 
-    favorites.set('flag-chrono', true);
-    favorites.set('pixel-flag', true);
-    favorites.set('flag-rebuild', true);
     progress.saveProgress(
       'pixel-flag',
       { score: 5 },
@@ -36,23 +31,18 @@ describe('AchievementsService', () => {
     );
     TestBed.tick();
 
-    const threeFavorites = achievements
-      .achievements()
-      .find((item) => item.id === 'three-favorites');
     const resumeReady = achievements.achievements().find((item) => item.id === 'resume-ready');
 
-    expect(threeFavorites?.unlocked).toBe(true);
     expect(resumeReady?.unlocked).toBe(true);
   });
 
-  it('unlocks global and mystery achievements from records and favorites', () => {
+  it('unlocks global and mystery achievements from records', () => {
     const records = TestBed.inject(PersonalRecordsService);
-    const favorites = TestBed.inject(FavoriteGamesService);
     const achievements = TestBed.inject(AchievementsService);
 
-    records.saveResult('country-to-flag-hard', { score: 10, maxScore: 10, streak: 10 });
-    records.saveResult('flag-to-country-hard', { score: 10, maxScore: 10 });
-    records.saveResult('shape-to-country-hard', { score: 10, maxScore: 10 });
+    records.saveResult('country-to-flag-easy', { score: 10, maxScore: 10, streak: 10 });
+    records.saveResult('flag-to-country-easy', { score: 10, maxScore: 10 });
+    records.saveResult('shape-to-country-easy', { score: 10, maxScore: 10 });
     records.saveResult('chrono-flags', {
       score: 950,
       maxScore: 950,
@@ -62,18 +52,13 @@ describe('AchievementsService', () => {
     records.saveResult('find-the-error', { score: 8, maxScore: 10, percentOverride: 80 });
     records.saveResult('pixel-flag', { score: 8, maxScore: 10, percentOverride: 80 });
     records.saveResult('flag-rebuild', { score: 800, maxScore: 1000, percentOverride: 80 });
-    favorites.set('find-the-error', true);
-    favorites.set('pixel-flag', true);
-    favorites.set('flag-rebuild', true);
     TestBed.tick();
 
     const byId = new Map(achievements.achievements().map((item) => [item.id, item]));
 
-    expect(byId.get('hard-mode-ace')?.unlocked).toBe(true);
     expect(byId.get('visual-trio')?.unlocked).toBe(true);
     expect(byId.get('chrono-sprinter')?.unlocked).toBe(true);
     expect(byId.get('rebuild-architect')?.unlocked).toBe(true);
-    expect(byId.get('mystery-visual-curator')?.unlocked).toBe(true);
     expect(byId.get('mystery-clean-tour')?.unlocked).toBe(true);
   });
 

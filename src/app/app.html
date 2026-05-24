@@ -2,6 +2,67 @@
   <header class="topbar-shell">
     <div class="topbar">
       <a class="brand" routerLink="/">Vexiio</a>
+      <div
+        class="topbar-level-badge"
+        [attr.data-tier]="profile().levelTier"
+        [attr.aria-label]="i18n.t('gamification.level', { level: profile().level })"
+      >
+        <strong>{{ profile().level }}</strong>
+      </div>
+
+      <nav class="desktop-nav" [attr.aria-label]="i18n.t('menu.nav')">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M4 10.5 12 4l8 6.5" />
+              <path d="M6.5 9.5V20h11V9.5" />
+              <path d="M10 20v-6h4v6" />
+            </svg>
+          </span>
+          <span>{{ i18n.t('menu.home') }}</span>
+        </a>
+        <a routerLink="/pays" routerLinkActive="active">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <circle cx="12" cy="12" r="8" />
+              <path d="M4 12h16" />
+              <path d="M12 4a12 12 0 0 1 0 16" />
+              <path d="M12 4a12 12 0 0 0 0 16" />
+            </svg>
+          </span>
+          <span>{{ i18n.t('menu.atlas') }}</span>
+        </a>
+        <a routerLink="/records" routerLinkActive="active">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M5 20V10" />
+              <path d="M12 20V4" />
+              <path d="M19 20v-7" />
+            </svg>
+          </span>
+          <span>{{ i18n.t('menu.statistics') }}</span>
+        </a>
+        <a routerLink="/succes" routerLinkActive="active">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M8 5h8v4a4 4 0 0 1-8 0Z" />
+              <path d="M8 7H5a3 3 0 0 0 3 4" />
+              <path d="M16 7h3a3 3 0 0 1-3 4" />
+              <path d="M12 13v4" />
+              <path d="M9 20h6" />
+            </svg>
+          </span>
+          <span>{{ i18n.t('menu.achievements') }}</span>
+        </a>
+        <a routerLink="/speedrun" routerLinkActive="active">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="m13 2-8 12h7l-1 8 8-12h-7Z" />
+            </svg>
+          </span>
+          <span>{{ i18n.t('menu.speedrun') }}</span>
+        </a>
+      </nav>
 
       <div class="header-actions">
         <button
@@ -10,7 +71,7 @@
           [class.signed-in]="isAuthenticated()"
           [disabled]="isAuthLoading()"
           [attr.aria-label]="
-            isAuthenticated() ? i18n.t('auth.account') : i18n.t('auth.signInWithGoogle')
+            isAuthenticated() ? i18n.t('auth.signOut') : i18n.t('auth.signInWithGoogle')
           "
           (click)="handleAuthButtonClick()"
         >
@@ -45,99 +106,133 @@
 
           @if (isMenuOpen()) {
             <nav class="menu-panel" [attr.aria-label]="i18n.t('menu.nav')">
-              @if (authProfile(); as profile) {
-                <div class="account-summary">
-                  @if (profile.avatarUrl) {
-                    <img
-                      class="account-avatar"
-                      [src]="profile.avatarUrl"
-                      [alt]="profile.displayName"
-                    />
-                  } @else {
-                    <span class="account-avatar-fallback" aria-hidden="true">{{
-                      authInitial()
-                    }}</span>
-                  }
-                  <span class="account-copy">
-                    <strong>{{ profile.displayName }}</strong>
-                    <small>{{ profile.email }}</small>
-                  </span>
-                </div>
-              }
-              @if (authError(); as error) {
-                <p class="auth-error" role="alert">{{ error }}</p>
-              }
-              @if (!isAuthenticated()) {
-                <button type="button" class="menu-auth-action" (click)="signInWithGoogle()">
-                  <span class="google-mark menu-google-mark" aria-hidden="true">G</span>
-                  <span>{{ i18n.t('auth.signInWithGoogle') }}</span>
-                </button>
-              }
-              <a routerLink="/pays" (click)="closeMenu()">
-                <span class="menu-icon icon-countries">&#127758;</span>
-                <span>{{ i18n.t('menu.countries') }}</span>
+              <a
+                routerLink="/"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="closeMenu()"
+              >
+                <span class="menu-icon icon-home" aria-hidden="true">&#8962;</span>
+                <span>{{ i18n.t('menu.home') }}</span>
               </a>
-              <a routerLink="/succes" (click)="closeMenu()">
-                <span class="menu-icon icon-achievements">&#127942;</span>
+              <a routerLink="/pays" routerLinkActive="active" (click)="closeMenu()">
+                <span class="menu-icon icon-countries" aria-hidden="true">&#9678;</span>
+                <span>{{ i18n.t('menu.atlas') }}</span>
+              </a>
+              <a routerLink="/records" routerLinkActive="active" (click)="closeMenu()">
+                <span class="menu-icon icon-records" aria-hidden="true">&#9637;</span>
+                <span>{{ i18n.t('menu.statistics') }}</span>
+              </a>
+              <a routerLink="/succes" routerLinkActive="active" (click)="closeMenu()">
+                <span class="menu-icon icon-achievements" aria-hidden="true">&#9813;</span>
                 <span>{{ i18n.t('menu.achievements') }}</span>
               </a>
-              <button type="button" (click)="toggleTheme(); closeMenu()">
-                @if (isDarkTheme()) {
-                  <span class="menu-icon icon-theme">&#9728;</span>
-                } @else {
-                  <span class="menu-icon icon-theme">&#9790;</span>
-                }
-                <span>{{ themeLabel() }}</span>
-              </button>
-              <a routerLink="/records" (click)="closeMenu()">
-                <span class="menu-icon icon-records">&#128200;</span>
-                <span>{{ i18n.t('menu.records') }}</span>
+              <a routerLink="/speedrun" routerLinkActive="active" (click)="closeMenu()">
+                <span class="menu-icon icon-speedrun" aria-hidden="true">&#9889;</span>
+                <span>{{ i18n.t('menu.speedrun') }}</span>
               </a>
-              <a routerLink="/speedrun/classement" (click)="closeMenu()">
-                <span class="menu-icon icon-records">&#9201;</span>
-                <span>{{ i18n.t('menu.speedrunLeaderboard') }}</span>
-              </a>
-              @if (isAuthenticated()) {
-                <button type="button" (click)="signOut()">
-                  <span class="menu-icon icon-sign-out" aria-hidden="true">&#8617;</span>
-                  <span>{{ i18n.t('auth.signOut') }}</span>
+              <div class="menu-settings-group">
+                <button type="button" (click)="toggleTheme()">
+                  @if (isDarkTheme()) {
+                    <span class="menu-icon icon-theme" aria-hidden="true">&#9728;</span>
+                  } @else {
+                    <span class="menu-icon icon-theme" aria-hidden="true">&#9790;</span>
+                  }
+                  <span>{{ themeLabel() }}</span>
                 </button>
-              }
-              <div
-                class="language-switch"
-                role="group"
-                [attr.aria-label]="i18n.t('language.label')"
-              >
-                <button
-                  type="button"
-                  class="language-button"
-                  [class.active]="isActiveLanguage('fr')"
-                  (click)="setLanguage('fr')"
+                <div
+                  class="language-switch"
+                  role="group"
+                  [attr.aria-label]="i18n.t('language.label')"
                 >
-                  FR
-                </button>
-                <button
-                  type="button"
-                  class="language-button"
-                  [class.active]="isActiveLanguage('en')"
-                  (click)="setLanguage('en')"
-                >
-                  EN
-                </button>
+                  <button
+                    type="button"
+                    class="language-button"
+                    [class.active]="isActiveLanguage('fr')"
+                    (click)="setLanguage('fr')"
+                  >
+                    FR
+                  </button>
+                  <button
+                    type="button"
+                    class="language-button"
+                    [class.active]="isActiveLanguage('en')"
+                    (click)="setLanguage('en')"
+                  >
+                    EN
+                  </button>
+                </div>
               </div>
             </nav>
           }
         </div>
       </div>
+
+      <div class="sidebar-settings">
+        <button
+          type="button"
+          class="settings-trigger"
+          [attr.aria-label]="i18n.t('settings.open')"
+          aria-haspopup="menu"
+          [attr.aria-expanded]="isSettingsOpen()"
+          (click)="toggleSettings()"
+        >
+          <span class="settings-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M12 3v3" />
+              <path d="M12 18v3" />
+              <path d="M4.8 4.8 7 7" />
+              <path d="m17 17 2.2 2.2" />
+              <path d="M3 12h3" />
+              <path d="M18 12h3" />
+              <path d="m4.8 19.2 2.2-2.2" />
+              <path d="m17 7 2.2-2.2" />
+              <circle cx="12" cy="12" r="3.2" />
+            </svg>
+          </span>
+          <span>{{ i18n.t('settings.title') }}</span>
+        </button>
+
+        @if (isSettingsOpen()) {
+          <section class="settings-panel" [attr.aria-label]="i18n.t('settings.title')">
+            <button type="button" (click)="toggleTheme(); closeSettings()">
+              @if (isDarkTheme()) {
+                <span class="menu-icon icon-theme">&#9728;</span>
+              } @else {
+                <span class="menu-icon icon-theme">&#9790;</span>
+              }
+              <span>{{ themeLabel() }}</span>
+            </button>
+            <div class="language-switch" role="group" [attr.aria-label]="i18n.t('language.label')">
+              <button
+                type="button"
+                class="language-button"
+                [class.active]="isActiveLanguage('fr')"
+                (click)="setLanguage('fr')"
+              >
+                FR
+              </button>
+              <button
+                type="button"
+                class="language-button"
+                [class.active]="isActiveLanguage('en')"
+                (click)="setLanguage('en')"
+              >
+                EN
+              </button>
+            </div>
+          </section>
+        }
+      </div>
     </div>
   </header>
 
-  @if (isMenuOpen()) {
+  @if (isMenuOpen() || isSettingsOpen()) {
     <button
       type="button"
       class="menu-backdrop"
       [attr.aria-label]="i18n.t('menu.close')"
-      (click)="closeMenu()"
+      (click)="closeOverlays()"
     ></button>
   }
 
@@ -165,5 +260,7 @@
     </aside>
   }
 
-  <router-outlet />
+  <main class="app-main">
+    <router-outlet />
+  </main>
 </div>

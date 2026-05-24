@@ -5,7 +5,6 @@ This folder stores the database migrations required by Vexiio.
 ## Current model
 
 - `user_profiles`: public application profile linked to `auth.users`.
-- `favorite_games`: synced favorite game ids per user.
 - `personal_records`: synced personal records per user.
 - `achievement_unlocks`: synced unlocked achievement ids per user.
 - `game_runs`: reserved for future validated run history or leaderboards.

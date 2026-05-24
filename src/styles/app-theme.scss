@@ -11,13 +11,15 @@ app-root {
   --line-strong: rgba(31, 27, 46, 0.25);
   --card: color-mix(in srgb, var(--ds-surface-card-light) 88%, transparent);
   --surface-strong: color-mix(in srgb, var(--ds-surface-card-light) 92%, transparent);
+  --sidebar-bg: #fff8ee;
+  --sidebar-link-bg: rgba(31, 27, 46, 0.04);
   --surface: color-mix(in srgb, var(--ds-surface-card-light) 80%, transparent);
   --surface-raise: var(--ds-surface-raised-light);
   --accent: var(--ds-color-amber-500);
   --accent-strong: var(--ds-color-amber-600);
   --accent-dark: #9c4617;
   --accent-soft: rgba(239, 141, 53, 0.2);
-  --accent-line: rgba(239, 141, 53, 0.4);
+  --accent-line: rgba(239, 141, 53, 0.6);
   --accent-line-strong: rgba(239, 141, 53, 0.56);
   --secondary: var(--ds-color-teal-600);
   --secondary-soft: rgba(12, 127, 111, 0.2);
@@ -32,11 +34,7 @@ app-root {
   display: block;
   min-height: calc(var(--app-vh, 1vh) * 100);
   color: var(--ink);
-  background:
-    radial-gradient(circle at 5% -10%, rgba(239, 141, 53, 0.24), transparent 40%),
-    radial-gradient(circle at 92% 6%, rgba(12, 127, 111, 0.19), transparent 33%),
-    radial-gradient(circle at 75% 96%, rgba(181, 62, 83, 0.16), transparent 40%),
-    linear-gradient(185deg, #fef9f2 0%, var(--paper) 100%);
+  background: var(--paper);
   transition:
     background 320ms ease,
     color 240ms ease;
@@ -55,53 +53,145 @@ app-root::before {
   background-image: var(--grain);
   background-size: 3px 3px;
   mix-blend-mode: multiply;
-  opacity: 0.45;
+  opacity: 0;
 }
 
 app-root::after {
   z-index: -1;
-  background: linear-gradient(
-    110deg,
-    transparent 0 35%,
-    rgba(255, 255, 255, 0.25) 44%,
-    transparent 56%
-  );
-  opacity: 0.6;
-  animation: app-sheen 11s ease-in-out infinite;
+  opacity: 0;
+  animation: none;
 }
 
 app-root.theme-dark {
   --paper: var(--ds-surface-bg-dark);
   --ink: var(--ds-text-primary-dark);
   --ink-soft: var(--ds-text-muted-dark);
-  --line: rgba(236, 241, 248, 0.16);
-  --line-soft: rgba(236, 241, 248, 0.1);
-  --line-strong: rgba(236, 241, 248, 0.26);
+  --line: rgba(217, 227, 240, 0.16);
+  --line-soft: rgba(217, 227, 240, 0.09);
+  --line-strong: rgba(217, 227, 240, 0.28);
   --card: color-mix(in srgb, var(--ds-surface-card-dark) 90%, transparent);
   --surface-strong: color-mix(in srgb, var(--ds-surface-card-dark) 94%, transparent);
+  --sidebar-bg: var(--ds-color-navy-950);
+  --sidebar-link-bg: rgba(17, 31, 50, 0.92);
   --surface: color-mix(in srgb, var(--ds-surface-card-dark) 82%, transparent);
   --surface-raise: var(--ds-surface-raised-dark);
-  --accent: #ffb06a;
-  --accent-strong: #ef8d35;
-  --accent-dark: #ffd7ad;
-  --accent-soft: rgba(255, 176, 106, 0.16);
-  --accent-line: rgba(255, 176, 106, 0.34);
-  --accent-line-strong: rgba(255, 176, 106, 0.5);
-  --secondary: #4aaea0;
-  --secondary-soft: rgba(74, 174, 160, 0.16);
-  --success: #72d39e;
-  --danger: #f0899d;
+  --accent: var(--ds-color-gold-500);
+  --accent-strong: var(--ds-color-gold-600);
+  --accent-dark: var(--ds-color-gold-300);
+  --accent-soft: rgba(245, 166, 35, 0.15);
+  --accent-line: rgba(245, 166, 35, 0.6);
+  --accent-line-strong: rgba(245, 166, 35, 0.58);
+  --secondary: var(--ds-color-blue-500);
+  --secondary-soft: rgba(59, 130, 246, 0.14);
+  --success: var(--ds-color-green-400);
+  --danger: var(--ds-color-red-400);
   --on-accent: #271103;
   --shadow: var(--ds-shadow-card-dark);
   --shadow-pop: var(--ds-shadow-pop-dark);
-  --overlay: rgba(6, 12, 20, 0.68);
-  --flag-backdrop: radial-gradient(circle at 12% 10%, #233143, #172332 68%);
+  --overlay: rgba(2, 9, 19, 0.76);
+  --flag-backdrop: radial-gradient(circle at 12% 10%, #17243a, #091422 68%);
   --grain: radial-gradient(circle at 1px 1px, rgba(236, 241, 248, 0.07) 1px, transparent 0);
-  background:
-    radial-gradient(circle at 5% -10%, rgba(255, 176, 106, 0.16), transparent 44%),
-    radial-gradient(circle at 92% 6%, rgba(74, 174, 160, 0.14), transparent 37%),
-    radial-gradient(circle at 75% 96%, rgba(240, 137, 157, 0.12), transparent 42%),
-    linear-gradient(185deg, var(--paper) 0%, var(--paper) 100%);
+  background: var(--paper);
+}
+
+app-root .settings-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  color: var(--ink-soft);
+  background: color-mix(in srgb, var(--surface) 52%, transparent);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
+}
+
+app-root .settings-trigger:hover {
+  color: var(--ink);
+  transform: translateY(-1px);
+  border-color: var(--accent-line);
+  background: color-mix(in srgb, var(--surface-raise) 72%, transparent);
+}
+
+app-root .settings-icon,
+app-root .settings-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+app-root .settings-icon {
+  display: grid;
+  place-items: center;
+}
+
+app-root .settings-icon svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+app-root .topbar-level-badge {
+  --tier-badge: url('/data/img/level-grey.png');
+  --badge-text: var(--ds-text-primary-light);
+  --badge-shadow: none;
+
+  display: none;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 11px;
+  background: var(--tier-badge) center / contain no-repeat;
+}
+
+app-root .topbar-level-badge[data-tier='green'] {
+  --tier-badge: url('/data/img/level-green.png');
+}
+
+app-root .topbar-level-badge[data-tier='blue'] {
+  --tier-badge: url('/data/img/level-blue.png');
+}
+
+app-root .topbar-level-badge[data-tier='violet'] {
+  --tier-badge: url('/data/img/level-purple.png');
+}
+
+app-root .topbar-level-badge[data-tier='red'] {
+  --tier-badge: url('/data/img/level-red.png');
+}
+
+app-root .topbar-level-badge[data-tier='gold'] {
+  --tier-badge: url('/data/img/level-gold.png');
+}
+
+app-root .topbar-level-badge strong {
+  color: var(--badge-text);
+  font-family: 'Space Mono', monospace;
+  font-size: 1.04rem;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: var(--badge-shadow);
+}
+
+app-root.theme-dark .topbar-level-badge {
+  --badge-text: var(--ds-color-white);
+  --badge-shadow: 0 1px 2px rgba(2, 9, 19, 0.82), 0 0 8px rgba(2, 9, 19, 0.6);
+}
+
+app-root .menu-settings-group {
+  display: grid;
+  gap: 6px;
+  padding-top: 8px;
+  margin-top: 4px;
+  border-top: 1px solid var(--line-soft);
 }
 
 @keyframes app-sheen {
@@ -114,5 +204,253 @@ app-root.theme-dark {
   50% {
     transform: translateX(20%);
     opacity: 0.8;
+  }
+}
+
+@media (max-width: 640px) {
+  app-root .topbar {
+    gap: 8px !important;
+  }
+
+  app-root .topbar .brand {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    gap: 7px !important;
+    padding-left: 0 !important;
+    font-size: 0.86rem !important;
+    letter-spacing: 0.14em !important;
+  }
+
+  app-root .brand::before {
+    width: 26px !important;
+    height: 26px !important;
+  }
+
+  app-root .topbar-level-badge {
+    display: grid;
+  }
+
+  app-root .auth-button {
+    max-width: 116px;
+  }
+}
+
+@media (max-width: 520px) {
+  app-root .auth-button {
+    width: 40px;
+    padding: 0;
+  }
+
+  app-root .auth-button .auth-label {
+    display: none;
+  }
+}
+
+/* Desktop application sidebar */
+@media (min-width: 1180px) {
+  app-root .app-shell {
+    display: grid;
+    grid-template-columns: 200px minmax(0, 1fr) !important;
+    gap: 24px !important;
+    width: 100% !important;
+    min-height: calc(var(--app-vh, 1vh) * 100);
+    padding: 0 24px 0 0 !important;
+    margin: 0 !important;
+  }
+
+  app-root .topbar-shell {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: calc(var(--app-vh, 1vh) * 100);
+    margin: 0 !important;
+    background: var(--sidebar-bg) !important;
+  }
+
+  app-root .app-main {
+    min-width: 0;
+    padding: clamp(18px, 3vh, 28px) 0 0 !important;
+  }
+
+  app-root .topbar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: clamp(14px, 2.4vh, 22px) !important;
+    height: 100% !important;
+    padding: clamp(20px, 3vh, 30px) 12px 18px !important;
+    border-width: 0 1px 0 0 !important;
+    border-radius: 0 !important;
+    background: var(--sidebar-bg) !important;
+    box-shadow:
+      inset -1px 0 0 var(--line-soft),
+      18px 0 48px rgba(0, 0, 0, 0.22) !important;
+    backdrop-filter: none !important;
+  }
+
+  app-root .brand {
+    min-height: 42px !important;
+    padding: 0 16px !important;
+    font-size: 1.42rem !important;
+    letter-spacing: 0.18em !important;
+  }
+
+  app-root .brand::before {
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  app-root .topbar .desktop-nav {
+    display: grid !important;
+    gap: 7px !important;
+    align-content: start;
+    justify-content: stretch !important;
+    width: 100%;
+    margin: 8px 0 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+
+  app-root .topbar .desktop-nav a {
+    position: relative;
+    display: grid !important;
+    grid-template-columns: 22px minmax(0, 1fr);
+    gap: 11px !important;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: clamp(38px, 5.3vh, 48px) !important;
+    padding: 0 18px !important;
+    border: 1px solid transparent;
+    border-radius: var(--ds-radius-lg) !important;
+    color: var(--ink-soft) !important;
+    font-size: 0.9rem !important;
+    font-weight: 800;
+    text-align: left !important;
+    background: transparent;
+    transition:
+      background var(--ds-transition-fast),
+      border-color var(--ds-transition-fast),
+      color var(--ds-transition-fast),
+      transform var(--ds-transition-fast);
+  }
+
+  app-root .topbar .desktop-nav a::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: -1px;
+    bottom: 10px;
+    width: 2px;
+    border-radius: 999px;
+    background: transparent;
+  }
+
+  app-root .topbar .desktop-nav a:hover,
+  app-root .topbar .desktop-nav a.active {
+    color: var(--accent-dark) !important;
+    border-color: var(--accent-line);
+    border-right-width: 8px;
+    background: var(--sidebar-link-bg);
+    transform: translateX(2px);
+  }
+
+  app-root .nav-icon {
+    display: grid !important;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    color: currentColor;
+  }
+
+  app-root .nav-icon svg {
+    width: 20px !important;
+    height: 20px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+    stroke-width: 1.8 !important;
+  }
+
+  app-root .sidebar-level-card {
+    display: grid !important;
+    place-items: center;
+    justify-self: center;
+    gap: 6px !important;
+    width: 138px !important;
+    min-height: clamp(118px, 17vh, 146px) !important;
+    margin-top: auto;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--ds-radius-xl) !important;
+    background: var(--sidebar-link-bg) !important;
+  }
+
+  app-root .sidebar-level-card strong {
+    display: grid;
+    place-items: center;
+    width: 70px !important;
+    height: 78px !important;
+    clip-path: polygon(50% 0, 92% 24%, 92% 76%, 50% 100%, 8% 76%, 8% 24%);
+    color: var(--ink);
+    background: rgba(82, 217, 139, 0.1);
+    border: 1px solid rgba(82, 217, 139, 0.52);
+    font-size: 1.72rem !important;
+    font-weight: 900;
+  }
+
+  app-root .sidebar-level-card span,
+  app-root .sidebar-level-card small {
+    color: var(--ink-soft);
+    font-size: 0.78rem;
+  }
+
+  app-root .header-actions {
+    display: grid;
+    gap: 10px !important;
+    align-items: stretch;
+    margin-top: auto;
+    padding-top: 14px !important;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  app-root .auth-button {
+    width: 100%;
+    max-width: none;
+    min-height: 44px !important;
+    justify-content: flex-start;
+    padding: 6px 8px !important;
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  app-root .auth-button:hover {
+    border-color: var(--line);
+    background: var(--sidebar-link-bg);
+  }
+
+  app-root .header-menu {
+    display: none !important;
+  }
+
+  app-root .sidebar-settings {
+    display: grid !important;
+  }
+
+  app-root .settings-trigger {
+    border-color: var(--line-soft);
+    background: transparent;
+  }
+
+  app-root .settings-trigger:hover {
+    background: var(--sidebar-link-bg);
+  }
+
+  app-root .settings-panel {
+    min-width: 176px;
+    background: var(--sidebar-bg);
+    backdrop-filter: none;
   }
 }

@@ -1,5 +1,5 @@
 :root {
-  --game-card-radius: 28px;
+  --game-card-radius: var(--ds-radius-xl);
   --game-card-padding: 20px 24px;
   --game-card-padding-large: 22px 24px;
 }
@@ -17,7 +17,6 @@
 :where(
   .game-shell,
   .chrono-shell,
-  .culture-shell,
   .pixel-shell,
   .error-shell,
   .rebuild-shell,
@@ -27,7 +26,7 @@
   padding-bottom: 24px;
 }
 
-:where(.game-shell, .chrono-shell, .culture-shell, .speedrun-shell) {
+:where(.game-shell, .chrono-shell, .speedrun-shell) {
   gap: 16px;
   min-height: calc(100dvh - 180px);
 }
@@ -47,11 +46,13 @@
   .summary-modal,
   .game-modal
 ) {
-  background: var(--card);
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
   border: 1px solid var(--line);
   border-radius: var(--game-card-radius);
   box-shadow: var(--shadow);
-  backdrop-filter: blur(10px) saturate(120%);
+  backdrop-filter: blur(14px) saturate(125%);
 }
 
 :where(.hero-card, .question-card, .board-card, .difficulty-card, .games-card, .speedrun-card) {
@@ -66,7 +67,6 @@
 :where(
     .game-shell,
     .chrono-shell,
-    .culture-shell,
     .pixel-shell,
     .error-shell,
     .rebuild-shell,
@@ -126,8 +126,7 @@
 }
 
 .hero-card h1,
-:where(.chrono-shell, .culture-shell, .pixel-shell, .error-shell, .rebuild-shell, .speedrun-shell)
-  h1 {
+:where(.chrono-shell, .pixel-shell, .error-shell, .rebuild-shell, .speedrun-shell) h1 {
   font-size: clamp(2rem, 4vw, 3.2rem);
   line-height: 0.92;
 }
@@ -139,7 +138,7 @@
   min-height: 42px;
   padding: 10px 16px;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: var(--ds-radius-md);
   color: var(--ink);
   background: color-mix(in srgb, var(--surface-strong) 86%, transparent);
   font-weight: 700;
@@ -148,17 +147,19 @@
   transition:
     transform 150ms ease,
     border-color 150ms ease,
+    box-shadow 150ms ease,
     filter 150ms ease;
 }
 
 :where(.primary-button, .next-button, .difficulty-button.active, .pattern-chip.selected) {
-  color: var(--on-accent);
+  color: #120a02;
   border-color: color-mix(in srgb, var(--accent-strong) 72%, transparent);
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  background: var(--accent);
+  box-shadow: none;
 }
 
 :where(.ghost-link, .primary-button, .next-button, .difficulty-button, .pattern-chip):hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   border-color: var(--accent-line);
 }
 
@@ -171,8 +172,8 @@
 :where(.name-card, .flag-card, .option-card) {
   position: relative;
   isolation: isolate;
-  border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--surface-raise) 86%, transparent);
+  border: 1px solid var(--line-soft);
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
   cursor: pointer;
   transition:
     transform 140ms ease,
@@ -191,20 +192,9 @@
 
 :where(.name-card, .flag-card, .option-card).is-correct {
   border-color: color-mix(in srgb, var(--success) 74%, transparent);
-  background:
-    linear-gradient(
-      150deg,
-      color-mix(in srgb, var(--success) 24%, transparent),
-      color-mix(in srgb, var(--surface-raise) 92%, transparent)
-    ),
-    color-mix(in srgb, var(--surface-raise) 86%, transparent);
-  box-shadow:
-    inset 0 0 0 2px color-mix(in srgb, var(--success) 34%, transparent),
-    0 0 0 3px color-mix(in srgb, var(--success) 20%, transparent),
-    0 14px 30px color-mix(in srgb, var(--success) 28%, transparent);
-  animation:
-    answer-correct-pop 360ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    answer-correct-glow 860ms ease-out;
+  background: color-mix(in srgb, var(--success) 18%, var(--surface-raise));
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--success) 34%, transparent);
+  animation: answer-correct-pop 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 :where(.name-card, .flag-card, .option-card).is-correct::after {
@@ -220,7 +210,7 @@
   border-radius: 50%;
   color: #fff;
   background: var(--success);
-  box-shadow: 0 8px 14px color-mix(in srgb, var(--success) 44%, transparent);
+  box-shadow: none;
   font-size: 0.9rem;
   font-weight: 900;
   animation: answer-correct-badge 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -228,8 +218,8 @@
 
 :where(.name-card, .flag-card, .option-card).is-wrong {
   border-color: color-mix(in srgb, var(--danger) 78%, transparent);
-  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--danger) 36%, transparent);
-  animation: answer-wrong-shake 260ms ease-out;
+  background: color-mix(in srgb, var(--danger) 14%, var(--surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--danger) 34%, transparent);
 }
 
 .split-panel {
@@ -407,15 +397,15 @@
 @keyframes split-confirm {
   0% {
     transform: translateX(6px);
-    box-shadow: 0 0 0 rgba(255, 211, 77, 0);
+    box-shadow: none;
   }
   52% {
     transform: translateX(0);
-    box-shadow: 0 0 0 4px rgba(255, 211, 77, 0.13);
+    box-shadow: none;
   }
   100% {
     transform: translateX(0);
-    box-shadow: 0 0 0 rgba(255, 211, 77, 0);
+    box-shadow: none;
   }
 }
 
@@ -489,8 +479,8 @@
 .progress-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--secondary), var(--accent), var(--accent-strong));
-  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 45%, transparent);
+  background: var(--success);
+  box-shadow: none;
   transition: width 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -512,6 +502,11 @@
   padding: 24px;
   overflow: auto;
   transform: translate(-50%, -50%);
+  border: 1px solid var(--line);
+  border-radius: var(--ds-radius-xl);
+  background: color-mix(in srgb, var(--surface-strong) 94%, transparent);
+  box-shadow: var(--shadow-pop);
+  backdrop-filter: blur(18px) saturate(130%);
 }
 
 .summary-score {
@@ -532,20 +527,24 @@
 
 .mistakes-list {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   margin-top: 18px;
+  max-height: min(34vh, 280px);
+  overflow: auto;
+  padding-right: 4px;
 }
 
 .mistake-card {
-  padding: 14px 16px;
+  padding: 10px 12px;
   border: 1px solid var(--line-soft);
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  border-radius: var(--ds-radius-md);
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
 }
 
 .summary-actions {
   justify-content: flex-end;
   flex-wrap: wrap;
+  padding-top: 4px;
 }
 
 .summary-actions :where(.ghost-link, .primary-button, .next-button) {
@@ -595,7 +594,7 @@ app-flag-rebuild-game-page .beta-setup-card .shape-blueprint {
 }
 
 app-flag-rebuild-game-page .pattern-choice-card.selected {
-  box-shadow: 0 10px 26px color-mix(in srgb, var(--accent) 16%, transparent);
+  box-shadow: none;
   transform: translateY(-1px);
 }
 
@@ -698,19 +697,19 @@ app-flag-rebuild-game-page .result-run-dot {
 }
 
 app-flag-rebuild-game-page .result-run-dot.done {
-  background: linear-gradient(90deg, var(--secondary), var(--accent));
+  background: var(--success);
 }
 
 app-flag-rebuild-game-page .result-run-dot.active {
   background: var(--accent-strong);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+  box-shadow: none;
 }
 
 @keyframes rebuild-board-pulse {
   50% {
     box-shadow:
       inset 0 0 0 1px var(--line-soft),
-      0 0 0 5px color-mix(in srgb, var(--accent) 20%, transparent);
+      0 0 0 0 transparent;
   }
 }
 
@@ -772,7 +771,7 @@ app-flag-rebuild-game-page .result-run-dot.active {
     position: sticky;
     bottom: 8px;
     z-index: 3;
-    box-shadow: 0 -12px 34px rgba(30, 24, 20, 0.18);
+    box-shadow: none;
   }
 
   app-flag-rebuild-game-page .palette-code {
@@ -976,7 +975,7 @@ app-flag-rebuild-game-page {
   .beta-meter-fill {
     height: 100%;
     border-radius: inherit;
-    background: linear-gradient(90deg, var(--secondary), var(--accent), var(--accent-strong));
+    background: var(--success);
   }
 
   .mission-panel {
@@ -1070,9 +1069,9 @@ app-flag-rebuild-game-page {
   }
 
   .primary-button {
-    color: var(--on-accent);
+    color: #120a02;
     border-color: var(--accent-strong);
-    background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+    background: var(--accent);
   }
 
   .primary-button:disabled {
@@ -1155,7 +1154,7 @@ app-flag-rebuild-game-page {
 
   .completion-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--secondary), var(--accent));
+    background: var(--success);
   }
 
   .palette-grid {
@@ -1194,16 +1193,13 @@ app-flag-rebuild-game-page {
   }
 
   .result-modal::before {
-    content: '';
+    content: none;
     position: absolute;
     inset: 0;
     z-index: -1;
     border-radius: inherit;
     opacity: 0.42;
-    background:
-      radial-gradient(circle at 18% 18%, rgba(255, 173, 86, 0.2), transparent 28%),
-      radial-gradient(circle at 88% 16%, rgba(12, 127, 111, 0.18), transparent 24%),
-      linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 42%);
+    background: transparent;
   }
 
   .result-modal[data-result-tone='perfect'] {
@@ -1262,11 +1258,7 @@ app-flag-rebuild-game-page {
 
   .result-record-badge.is-new {
     border-color: color-mix(in srgb, var(--accent) 58%, var(--line));
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--accent) 20%, var(--surface)),
-      color-mix(in srgb, var(--secondary) 18%, var(--surface))
-    );
+    background: color-mix(in srgb, var(--accent) 18%, var(--surface));
   }
 
   .result-recap-grid > div {
@@ -1375,5 +1367,164 @@ app-flag-rebuild-game-page {
       min-height: 42px;
       border-radius: 12px;
     }
+  }
+}
+
+app-speedrun-page {
+  .speedrun-leaderboard-panel {
+    display: grid;
+    gap: 14px;
+    min-height: 100%;
+    background: var(--card);
+  }
+
+  .leaderboard-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .leaderboard-panel-head h2 {
+    margin: 0;
+    font-family: var(--ds-font-display);
+    font-size: clamp(1.35rem, 3vw, 1.85rem);
+    line-height: 1;
+  }
+
+  .leaderboard-search {
+    display: grid;
+    gap: 7px;
+  }
+
+  .leaderboard-search span {
+    color: var(--ink-soft);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .leaderboard-search input {
+    width: 100%;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--ds-radius-md);
+    color: var(--ink);
+    background: var(--surface);
+    font: inherit;
+    outline: none;
+  }
+
+  .leaderboard-search input:focus {
+    border-color: var(--accent-line);
+  }
+
+  .inline-leaderboard-list {
+    display: grid;
+    gap: 7px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .inline-leaderboard-entry {
+    display: grid;
+    grid-template-columns: 38px 34px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 9px;
+    min-height: 54px;
+    padding: 8px 10px;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--ds-radius-md);
+    background: color-mix(in srgb, var(--surface) 76%, transparent);
+  }
+
+  .leaderboard-rank,
+  .leaderboard-time {
+    font-family: 'Space Mono', monospace;
+    font-weight: 900;
+  }
+
+  .leaderboard-rank {
+    color: var(--accent-dark);
+  }
+
+  .leaderboard-avatar {
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--line-soft);
+    border-radius: 999px;
+    object-fit: cover;
+  }
+
+  .leaderboard-avatar.initials {
+    display: grid;
+    place-items: center;
+    color: var(--accent-dark);
+    background: var(--accent-soft);
+    font-family: 'Space Mono', monospace;
+    font-weight: 800;
+  }
+
+  .leaderboard-player {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .leaderboard-player strong,
+  .leaderboard-player span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .leaderboard-player strong {
+    color: var(--ink);
+    font-size: 0.94rem;
+  }
+
+  .leaderboard-player span {
+    color: var(--ink-soft);
+    font-size: 0.78rem;
+  }
+
+  .leaderboard-time {
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .leaderboard-pager {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink-soft);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+  }
+
+  .leaderboard-pager button {
+    min-height: 34px;
+    padding: 7px 10px;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--ds-radius-sm);
+    color: var(--ink);
+    background: var(--surface);
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .leaderboard-pager button:disabled {
+    opacity: 0.42;
+    cursor: not-allowed;
+  }
+
+  .leaderboard-pager span {
+    text-align: center;
   }
 }

@@ -27,31 +27,48 @@ export const routes: Routes = [
   },
   {
     path: 'speedrun/classement',
+    redirectTo: '/speedrun',
+    pathMatch: 'full',
+  },
+  {
+    path: 'defi-du-jour',
     loadComponent: () =>
-      import('./pages/speedrun-leaderboard-page.component').then(
-        (m) => m.SpeedrunLeaderboardPageComponent,
+      import('./pages/daily-challenge-page.component').then(
+        (m) => m.DailyChallengePageComponent,
       ),
   },
   {
-    path: 'jeu/pays-vers-drapeaux/:difficulty',
+    path: 'jeu/pays-vers-drapeaux',
     loadComponent: () =>
       import('./pages/country-to-flag-game-page.component').then(
         (m) => m.CountryToFlagGamePageComponent,
       ),
   },
   {
-    path: 'jeu/drapeaux-vers-pays/:difficulty',
+    path: 'jeu/pays-vers-drapeaux/:difficulty',
+    redirectTo: '/jeu/pays-vers-drapeaux',
+  },
+  {
+    path: 'jeu/drapeaux-vers-pays',
     loadComponent: () =>
       import('./pages/flag-to-country-game-page.component').then(
         (m) => m.FlagToCountryGamePageComponent,
       ),
   },
   {
-    path: 'jeu/formes-vers-pays/:difficulty',
+    path: 'jeu/drapeaux-vers-pays/:difficulty',
+    redirectTo: '/jeu/drapeaux-vers-pays',
+  },
+  {
+    path: 'jeu/formes-vers-pays',
     loadComponent: () =>
       import('./pages/shape-to-country-game-page.component').then(
         (m) => m.ShapeToCountryGamePageComponent,
       ),
+  },
+  {
+    path: 'jeu/formes-vers-pays/:difficulty',
+    redirectTo: '/jeu/formes-vers-pays',
   },
   {
     path: 'jeu/reconstruction-drapeau',
@@ -80,11 +97,6 @@ export const routes: Routes = [
       import('./pages/chrono-flags-game-page.component').then(
         (m) => m.ChronoFlagsGamePageComponent,
       ),
-  },
-  {
-    path: 'jeu/culture-drapeaux',
-    redirectTo: '',
-    pathMatch: 'full',
   },
   {
     path: '**',

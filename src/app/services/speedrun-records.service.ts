@@ -61,6 +61,35 @@ export class SpeedrunRecordsService {
     return next;
   }
 
+  mergeBestForUser(userId: string, record: SpeedrunUserRecord | null): void {
+    if (!record) {
+      return;
+    }
+
+    const existing = this.getBestForUser(userId);
+    const next: SpeedrunUserRecord = {
+      ...record,
+      userId,
+    };
+
+    if (existing && existing.totalTimeMs <= next.totalTimeMs) {
+      return;
+    }
+
+    this.records.update((records) => {
+      const userStore = records[userId] ?? {};
+
+      return {
+        ...records,
+        [userId]: {
+          ...userStore,
+          bestRun: next,
+        },
+      };
+    });
+    this.persist();
+  }
+
   getBestSplitForUser(
     userId: string | null | undefined,
     splitId: SpeedrunSplitId,
@@ -109,6 +138,44 @@ export class SpeedrunRecordsService {
 
     this.persist();
     return savedBests;
+  }
+
+  mergeSplitBestsForUser(userId: string, incomingBests: SpeedrunSplitBest[]): void {
+    if (incomingBests.length === 0) {
+      return;
+    }
+
+    let changed = false;
+    this.records.update((records) => {
+      const userStore = records[userId] ?? {};
+      const splitBests = { ...(userStore.splitBests ?? {}) };
+
+      for (const incomingBest of incomingBests) {
+        const existing = splitBests[incomingBest.splitId];
+        if (existing && existing.totalTimeMs <= incomingBest.totalTimeMs) {
+          continue;
+        }
+
+        splitBests[incomingBest.splitId] = incomingBest;
+        changed = true;
+      }
+
+      if (!changed) {
+        return records;
+      }
+
+      return {
+        ...records,
+        [userId]: {
+          ...userStore,
+          splitBests,
+        },
+      };
+    });
+
+    if (changed) {
+      this.persist();
+    }
   }
 
   getTheoreticalBestForUser(userId: string | null | undefined): number | null {

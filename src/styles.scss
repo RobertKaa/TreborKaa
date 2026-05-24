@@ -2,6 +2,7 @@
 @use './styles/app-theme';
 @use './styles/game-ui';
 @use './styles/gamification';
+@use './styles/home-dashboard';
 @use './styles/auth';
 
 *,
@@ -19,7 +20,7 @@ body {
 }
 
 body {
-  font-family: Outfit, 'Segoe UI', sans-serif;
+  font-family: var(--ds-font-body);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   background: #fbf6ef;
@@ -34,7 +35,7 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: 'DM Serif Display', Georgia, serif;
+  font-family: var(--ds-font-display);
   font-weight: 400;
 }
 
@@ -56,6 +57,45 @@ img {
   max-width: 100%;
 }
 
+:is(
+  .ds-button,
+  .ghost-link,
+  .primary-button,
+  .next-button,
+  .difficulty-button,
+  .pattern-chip,
+  .clear-button,
+  .danger-button,
+  .pagination button,
+  .auth-button,
+  .menu-panel a,
+  .menu-panel button,
+  .tab-button,
+  .play-link,
+  .continue-action,
+  .ghost-action
+) {
+  border-radius: var(--ds-radius-md);
+  box-shadow: none;
+}
+
+:is(.name-card, .flag-card, .option-card) {
+  border-radius: var(--ds-radius-lg) !important;
+  box-shadow: none;
+}
+
+:is(.primary-button, .next-button, .play-link, .danger-button):not(.danger-button) {
+  color: #120a02;
+  border-color: color-mix(in srgb, var(--accent-strong) 72%, transparent);
+  background: var(--accent);
+}
+
+.danger-button {
+  color: #fff;
+  border-color: color-mix(in srgb, var(--danger) 68%, var(--line));
+  background: var(--danger);
+}
+
 ::selection {
   background: rgba(239, 141, 53, 0.3);
 }
@@ -69,27 +109,22 @@ img {
 .speedrun-card,
 .header-card,
 .table-card,
-.records-card,
-.category-card,
-.mode-card {
-  animation: rise-in 560ms cubic-bezier(0.16, 1, 0.3, 1);
+.records-card {
+  animation: none;
 }
 
 .summary-modal {
   animation: none !important;
 }
 
-.mode-card:nth-child(2),
 .mistake-card:nth-child(2) {
   animation-delay: 40ms;
 }
 
-.mode-card:nth-child(3),
 .mistake-card:nth-child(3) {
   animation-delay: 80ms;
 }
 
-.mode-card:nth-child(4),
 .mistake-card:nth-child(4) {
   animation-delay: 120ms;
 }
@@ -180,54 +215,6 @@ img {
   }
 }
 
-@supports (animation-timeline: view()) {
-  .mode-card,
-  .category-card,
-  .record-row,
-  .mistake-card,
-  .status-block {
-    animation: card-reveal 1ms linear both;
-    animation-timeline: view(block);
-    animation-range: entry 5% cover 30%;
-  }
-
-  @keyframes card-reveal {
-    from {
-      opacity: 0;
-      transform: translateY(22px) scale(0.985);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-}
-
-@supports (animation-timeline: scroll()) {
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 90;
-    height: 4px;
-    width: 100%;
-    transform-origin: 0 50%;
-    background: linear-gradient(90deg, #ef8d35, #ef5668 45%, #0c7f6f 90%);
-    animation: scroll-progress linear;
-    animation-timeline: scroll(root);
-  }
-
-  @keyframes scroll-progress {
-    from {
-      transform: scaleX(0);
-    }
-    to {
-      transform: scaleX(1);
-    }
-  }
-}
-
 @media (pointer: coarse) {
   button,
   a,
@@ -248,7 +235,6 @@ img {
 
   .game-shell,
   .chrono-shell,
-  .culture-shell,
   .pixel-shell,
   .error-shell,
   .rebuild-shell,
@@ -285,7 +271,7 @@ img {
   .difficulty-card,
   .games-card,
   .speedrun-card {
-    border-radius: 20px !important;
+    border-radius: var(--ds-radius-xl) !important;
   }
 
   .summary-modal {
@@ -299,7 +285,6 @@ img {
 
   app-root.mobile-viewport .game-shell,
   app-root.mobile-viewport .chrono-shell,
-  app-root.mobile-viewport .culture-shell,
   app-root.mobile-viewport .pixel-shell,
   app-root.mobile-viewport .error-shell,
   app-root.mobile-viewport .rebuild-shell,
@@ -338,10 +323,10 @@ img {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  min-height: 50px;
-  padding: 8px 10px 8px 16px;
-  border: 1px solid var(--line-soft);
-  border-radius: 14px;
+  min-height: 56px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--ds-radius-lg);
   background: color-mix(in srgb, var(--surface) 82%, transparent);
 }
 
@@ -381,7 +366,6 @@ app-root.mobile-landscape .status-dock {
 
 app-root.mobile-landscape .game-shell,
 app-root.mobile-landscape .chrono-shell,
-app-root.mobile-landscape .culture-shell,
 app-root.mobile-landscape .pixel-shell,
 app-root.mobile-landscape .error-shell,
 app-root.mobile-landscape .rebuild-shell,

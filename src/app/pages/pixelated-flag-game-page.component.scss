@@ -3,13 +3,7 @@
 }
 
 .hero-card {
-  background:
-    radial-gradient(
-      circle at 94% 8%,
-      color-mix(in srgb, var(--secondary-soft) 70%, transparent),
-      transparent 36%
-    ),
-    var(--card);
+  background: var(--card);
 }
 
 h2 {
@@ -20,13 +14,7 @@ h2 {
 .board-card {
   display: grid;
   gap: 18px;
-  background:
-    linear-gradient(
-      190deg,
-      color-mix(in srgb, var(--surface-strong) 78%, transparent),
-      transparent 30%
-    ),
-    var(--card);
+  background: var(--card);
 }
 
 .loading-card {

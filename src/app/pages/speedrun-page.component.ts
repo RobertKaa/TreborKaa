@@ -22,6 +22,10 @@ import { CountryShapesService } from '../services/country-shapes.service';
 import { BrowserStorageService } from '../services/browser-storage.service';
 import { FlagQuizService } from '../services/flag-quiz.service';
 import { I18nService } from '../services/i18n.service';
+import {
+  SpeedrunLeaderboardEntry,
+  SpeedrunLeaderboardService,
+} from '../services/speedrun-leaderboard.service';
 import { SpeedrunRecordsService } from '../services/speedrun-records.service';
 import { SpeedrunRunSubmissionService } from '../services/speedrun-run-submission.service';
 import { SupabaseAuthService } from '../services/supabase-auth.service';
@@ -40,6 +44,8 @@ const TICK_MS = 80;
 const NEXT_STEP_DELAY_MS = 520;
 const COUNTDOWN_SECONDS = 3;
 const PENDING_GUEST_SPEEDRUN_KEY = 'vexiio.speedrun.pendingGuestResult.v1';
+const SPEEDRUN_LEADERBOARD_LIMIT = 20;
+const SPEEDRUN_LEADERBOARD_PAGE_SIZE = 5;
 
 @Component({
   selector: 'app-speedrun-page',
@@ -56,6 +62,7 @@ export class SpeedrunPageComponent implements OnDestroy {
   private readonly flagQuizService = inject(FlagQuizService);
   private readonly records = inject(SpeedrunRecordsService);
   private readonly runSubmission = inject(SpeedrunRunSubmissionService);
+  protected readonly leaderboard = inject(SpeedrunLeaderboardService);
 
   private timerIntervalId: number | null = null;
   private countdownIntervalId: number | null = null;
@@ -87,6 +94,9 @@ export class SpeedrunPageComponent implements OnDestroy {
   protected readonly savedBestTimeMs = signal<number | null>(null);
   protected readonly rankingState = signal<SpeedrunRankingState>('idle');
   protected readonly pendingGuestSaveCompleted = signal(false);
+  protected readonly leaderboardSearch = signal('');
+  protected readonly leaderboardPage = signal(1);
+  protected readonly leaderboardPageSize = SPEEDRUN_LEADERBOARD_PAGE_SIZE;
 
   protected readonly splits = SPEEDRUN_SPLITS;
   protected readonly totalQuestions = SPEEDRUN_TOTAL_QUESTIONS;
@@ -187,8 +197,37 @@ export class SpeedrunPageComponent implements OnDestroy {
     const previous = this.splitResults().at(-1);
     return previous ? this.getSplitDeltaLabel(previous) : this.i18n.t('common.none');
   });
+  protected readonly topLeaderboardEntries = computed(() =>
+    this.leaderboard.entries().slice(0, SPEEDRUN_LEADERBOARD_LIMIT),
+  );
+  protected readonly filteredLeaderboardEntries = computed(() => {
+    const search = this.normalizeSearch(this.leaderboardSearch());
+    const entries = this.topLeaderboardEntries();
+
+    if (!search) {
+      return entries;
+    }
+
+    return entries.filter((entry) => this.normalizeSearch(entry.displayName).includes(search));
+  });
+  protected readonly leaderboardPageCount = computed(() =>
+    Math.max(1, Math.ceil(this.filteredLeaderboardEntries().length / this.leaderboardPageSize)),
+  );
+  protected readonly visibleLeaderboardEntries = computed(() => {
+    const page = Math.min(this.leaderboardPage(), this.leaderboardPageCount());
+    const start = (page - 1) * this.leaderboardPageSize;
+    return this.filteredLeaderboardEntries().slice(start, start + this.leaderboardPageSize);
+  });
+  protected readonly leaderboardPageLabel = computed(() =>
+    this.i18n.t('speedrun.leaderboardPage', {
+      current: Math.min(this.leaderboardPage(), this.leaderboardPageCount()),
+      total: this.leaderboardPageCount(),
+    }),
+  );
 
   constructor() {
+    void this.leaderboard.refresh(SPEEDRUN_LEADERBOARD_LIMIT);
+
     effect(() => {
       const userId = this.auth.user()?.id;
       if (!userId) {
@@ -341,6 +380,45 @@ export class SpeedrunPageComponent implements OnDestroy {
 
   protected formatTime(milliseconds: number): string {
     return formatSpeedrunTime(milliseconds);
+  }
+
+  protected setLeaderboardSearch(value: string): void {
+    this.leaderboardSearch.set(value);
+    this.leaderboardPage.set(1);
+  }
+
+  protected previousLeaderboardPage(): void {
+    this.leaderboardPage.update((page) => Math.max(1, page - 1));
+  }
+
+  protected nextLeaderboardPage(): void {
+    this.leaderboardPage.update((page) => Math.min(this.leaderboardPageCount(), page + 1));
+  }
+
+  protected rankLabel(entry: SpeedrunLeaderboardEntry): string {
+    const rank = this.topLeaderboardEntries().findIndex(
+      (candidate) => candidate.userId === entry.userId,
+    );
+    return rank === -1 ? '-' : `#${rank + 1}`;
+  }
+
+  protected displayInitials(entry: SpeedrunLeaderboardEntry): string {
+    const initials = entry.displayName
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part.charAt(0).toLocaleUpperCase(this.i18n.locale()))
+      .join('');
+
+    return initials || '?';
+  }
+
+  protected formatLeaderboardMeta(entry: SpeedrunLeaderboardEntry): string {
+    return this.i18n.t('speedrun.leaderboardEntryMeta', {
+      errors: entry.mistakeCount,
+      correct: entry.correctCount,
+    });
   }
 
   protected getFinishedSplit(split: SpeedrunSplit): SpeedrunSplitResult | null {
@@ -612,9 +690,18 @@ export class SpeedrunPageComponent implements OnDestroy {
         })),
       });
       this.rankingState.set('accepted');
+      void this.leaderboard.refresh(SPEEDRUN_LEADERBOARD_LIMIT);
     } catch (error) {
       console.warn('Unable to submit ranked speedrun result', error);
       this.rankingState.set('failed');
     }
+  }
+
+  private normalizeSearch(value: string): string {
+    return value
+      .trim()
+      .toLocaleLowerCase(this.i18n.locale())
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
   }
 }

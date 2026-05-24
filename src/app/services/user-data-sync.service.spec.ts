@@ -3,14 +3,12 @@ import { TestBed } from '@angular/core/testing';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { vi } from 'vitest';
 import { AchievementsService } from './achievements.service';
-import { FavoriteGamesService } from './favorite-games.service';
 import { PersonalRecordsService } from './personal-records.service';
 import { SupabaseAuthService } from './supabase-auth.service';
 import { UserDataSyncService } from './user-data-sync.service';
 
 type QueryCall =
   | { type: 'delete'; table: string; column: string; values: string[] }
-  | { type: 'insert'; table: string; rows: Record<string, unknown>[] }
   | {
       type: 'upsert';
       table: string;
@@ -23,9 +21,10 @@ describe('UserDataSyncService', () => {
     const calls: QueryCall[] = [];
     const client = createClientStub(
       {
-        favorite_games: [{ game_id: 'flag-chrono' }, { game_id: 'find-the-error' }],
         personal_records: [{ record_key: 'country-to-flag-hard' }],
         achievement_unlocks: [{ achievement_id: 'twenty-runs' }],
+        speedrun_leaderboard: [],
+        speedrun_split_bests: [],
       },
       calls,
     );
@@ -37,14 +36,6 @@ describe('UserDataSyncService', () => {
           useValue: {
             user: signal(null),
             getClient: vi.fn().mockResolvedValue(client),
-          },
-        },
-        {
-          provide: FavoriteGamesService,
-          useValue: {
-            snapshot: signal({}),
-            ids: vi.fn(() => ['flag-chrono', 'pixel-flag']),
-            mergeFavorites: vi.fn(),
           },
         },
         {
@@ -82,17 +73,6 @@ describe('UserDataSyncService', () => {
 
     expect(calls).toContainEqual({
       type: 'delete',
-      table: 'favorite_games',
-      column: 'game_id',
-      values: ['find-the-error'],
-    });
-    expect(calls).toContainEqual({
-      type: 'insert',
-      table: 'favorite_games',
-      rows: [{ user_id: 'user-1', game_id: 'pixel-flag' }],
-    });
-    expect(calls).toContainEqual({
-      type: 'delete',
       table: 'personal_records',
       column: 'record_key',
       values: ['country-to-flag-hard'],
@@ -128,7 +108,7 @@ function createClientStub(
     from(table: string) {
       return {
         select: () => ({
-          eq: async () => ({ data: dataByTable[table] ?? [], error: null }),
+          eq: () => createSelectResult(dataByTable[table] ?? []),
         }),
         delete: () => ({
           eq: () => ({
@@ -138,10 +118,6 @@ function createClientStub(
             },
           }),
         }),
-        insert: async (rows: Record<string, unknown>[]) => {
-          calls.push({ type: 'insert', table, rows });
-          return { error: null };
-        },
         upsert: async (rows: Record<string, unknown>[], options: { onConflict: string }) => {
           calls.push({ type: 'upsert', table, rows, options });
           return { error: null };
@@ -149,4 +125,13 @@ function createClientStub(
       };
     },
   } as unknown as SupabaseClient;
+}
+
+function createSelectResult(rows: Record<string, unknown>[]) {
+  const result = { data: rows, error: null };
+
+  return {
+    then: (resolve: (value: typeof result) => unknown) => Promise.resolve(result).then(resolve),
+    maybeSingle: async () => ({ data: rows[0] ?? null, error: null }),
+  };
 }

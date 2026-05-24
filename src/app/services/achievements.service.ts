@@ -1,10 +1,21 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
-import { GAME_CATALOG, GameId } from '../data/game-catalog';
+import { GAME_CATALOG } from '../data/game-catalog';
 import { GameRecordKey } from '../models/personal-record';
+import { SPEEDRUN_SPLITS } from '../models/speedrun';
 import { BrowserStorageService } from './browser-storage.service';
-import { FavoriteGamesService } from './favorite-games.service';
+import { DailyChallengeService } from './daily-challenge.service';
 import { GameProgressService } from './game-progress.service';
 import { PersonalRecordsService } from './personal-records.service';
+import { SpeedrunRecordsService } from './speedrun-records.service';
+import { SupabaseAuthService } from './supabase-auth.service';
+import {
+  ACHIEVEMENT_XP_BY_DIFFICULTY,
+  AchievementDifficulty,
+  LevelTierId,
+  buildLevelProgress,
+  calculateRecordXp,
+  calculateSpeedrunXp,
+} from './xp-progression';
 
 export type AchievementId =
   | 'first-game'
@@ -14,19 +25,15 @@ export type AchievementId =
   | 'seven-games'
   | 'accuracy-90'
   | 'perfect-score'
-  | 'three-favorites'
   | 'streak-master'
   | 'streak-legend'
   | 'resume-ready'
-  | 'hard-mode-scout'
-  | 'hard-mode-ace'
   | 'visual-trio'
   | 'chrono-sprinter'
   | 'rebuild-architect'
   | 'all-available-games'
   | 'collector-level-5'
   | 'collector-level-10'
-  | 'mystery-visual-curator'
   | 'mystery-combo'
   | 'mystery-clean-tour'
   | 'mystery-full-house';
@@ -37,12 +44,13 @@ type AchievementDefinition = {
   descriptionKey: string;
   hidden?: boolean;
   color: 'lime' | 'amber' | 'cyan' | 'rose' | 'violet';
-  points: number;
+  difficulty: AchievementDifficulty;
 };
 
 type AchievementStore = Partial<Record<AchievementId, string>>;
 
 export type AchievementState = AchievementDefinition & {
+  points: number;
   unlockedAt: string | null;
   unlocked: boolean;
   displayTitleKey: string;
@@ -52,11 +60,14 @@ export type AchievementState = AchievementDefinition & {
 export type GamificationProfile = {
   xp: number;
   level: number;
-  levelLabelKey: string;
+  levelTier: LevelTierId;
+  levelTierLabelKey: string;
+  nextTierLevel: number | null;
   currentLevelXp: number;
   nextLevelXp: number;
   progressPercent: number;
   achievementPoints: number;
+  speedrunPoints: number;
   nextAchievement: AchievementState | null;
 };
 
@@ -64,10 +75,10 @@ const STORAGE_KEY = 'vexiio.achievements.v1';
 const ENABLED_RECORD_KEYS = new Set(
   GAME_CATALOG.filter((game) => game.available).flatMap((game) => game.recordKeys),
 );
-const HARD_RECORD_KEYS: GameRecordKey[] = [
-  'country-to-flag-hard',
-  'flag-to-country-hard',
-  'shape-to-country-hard',
+const CLASSIC_RECORD_KEYS: GameRecordKey[] = [
+  'country-to-flag-easy',
+  'flag-to-country-easy',
+  'shape-to-country-easy',
 ];
 const VISUAL_RECORD_KEYS: GameRecordKey[] = ['find-the-error', 'pixel-flag', 'flag-rebuild'];
 
@@ -77,141 +88,112 @@ const DEFINITIONS: AchievementDefinition[] = [
     titleKey: 'achievement.first-game.title',
     descriptionKey: 'achievement.first-game.description',
     color: 'lime',
-    points: 25,
+    difficulty: 'easy',
   },
   {
     id: 'five-runs',
     titleKey: 'achievement.five-runs.title',
     descriptionKey: 'achievement.five-runs.description',
     color: 'lime',
-    points: 40,
+    difficulty: 'easy',
   },
   {
     id: 'three-games',
     titleKey: 'achievement.three-games.title',
     descriptionKey: 'achievement.three-games.description',
     color: 'amber',
-    points: 60,
+    difficulty: 'medium',
   },
   {
     id: 'seven-games',
     titleKey: 'achievement.seven-games.title',
     descriptionKey: 'achievement.seven-games.description',
     color: 'amber',
-    points: 100,
+    difficulty: 'medium',
   },
   {
     id: 'accuracy-90',
     titleKey: 'achievement.accuracy-90.title',
     descriptionKey: 'achievement.accuracy-90.description',
     color: 'cyan',
-    points: 80,
+    difficulty: 'medium',
   },
   {
     id: 'perfect-score',
     titleKey: 'achievement.perfect-score.title',
     descriptionKey: 'achievement.perfect-score.description',
     color: 'violet',
-    points: 120,
+    difficulty: 'hard',
   },
   {
     id: 'twenty-runs',
     titleKey: 'achievement.twenty-runs.title',
     descriptionKey: 'achievement.twenty-runs.description',
     color: 'amber',
-    points: 150,
-  },
-  {
-    id: 'three-favorites',
-    titleKey: 'achievement.three-favorites.title',
-    descriptionKey: 'achievement.three-favorites.description',
-    color: 'cyan',
-    points: 45,
+    difficulty: 'hard',
   },
   {
     id: 'streak-master',
     titleKey: 'achievement.streak-master.title',
     descriptionKey: 'achievement.streak-master.description',
     color: 'rose',
-    points: 110,
+    difficulty: 'hard',
   },
   {
     id: 'streak-legend',
     titleKey: 'achievement.streak-legend.title',
     descriptionKey: 'achievement.streak-legend.description',
     color: 'violet',
-    points: 180,
+    difficulty: 'hard',
   },
   {
     id: 'resume-ready',
     titleKey: 'achievement.resume-ready.title',
     descriptionKey: 'achievement.resume-ready.description',
     color: 'lime',
-    points: 35,
-  },
-  {
-    id: 'hard-mode-scout',
-    titleKey: 'achievement.hard-mode-scout.title',
-    descriptionKey: 'achievement.hard-mode-scout.description',
-    color: 'rose',
-    points: 70,
-  },
-  {
-    id: 'hard-mode-ace',
-    titleKey: 'achievement.hard-mode-ace.title',
-    descriptionKey: 'achievement.hard-mode-ace.description',
-    color: 'rose',
-    points: 140,
+    difficulty: 'easy',
   },
   {
     id: 'visual-trio',
     titleKey: 'achievement.visual-trio.title',
     descriptionKey: 'achievement.visual-trio.description',
     color: 'cyan',
-    points: 120,
+    difficulty: 'medium',
   },
   {
     id: 'chrono-sprinter',
     titleKey: 'achievement.chrono-sprinter.title',
     descriptionKey: 'achievement.chrono-sprinter.description',
     color: 'amber',
-    points: 110,
+    difficulty: 'medium',
   },
   {
     id: 'rebuild-architect',
     titleKey: 'achievement.rebuild-architect.title',
     descriptionKey: 'achievement.rebuild-architect.description',
     color: 'lime',
-    points: 90,
+    difficulty: 'medium',
   },
   {
     id: 'all-available-games',
     titleKey: 'achievement.all-available-games.title',
     descriptionKey: 'achievement.all-available-games.description',
     color: 'violet',
-    points: 220,
+    difficulty: 'hard',
   },
   {
     id: 'collector-level-5',
     titleKey: 'achievement.collector-level-5.title',
     descriptionKey: 'achievement.collector-level-5.description',
     color: 'lime',
-    points: 60,
+    difficulty: 'medium',
   },
   {
     id: 'collector-level-10',
     titleKey: 'achievement.collector-level-10.title',
     descriptionKey: 'achievement.collector-level-10.description',
     color: 'violet',
-    points: 150,
-  },
-  {
-    id: 'mystery-visual-curator',
-    titleKey: 'achievement.mystery-visual-curator.title',
-    descriptionKey: 'achievement.mystery-visual-curator.description',
-    hidden: true,
-    color: 'violet',
-    points: 120,
+    difficulty: 'hard',
   },
   {
     id: 'mystery-combo',
@@ -219,7 +201,7 @@ const DEFINITIONS: AchievementDefinition[] = [
     descriptionKey: 'achievement.mystery-combo.description',
     hidden: true,
     color: 'violet',
-    points: 160,
+    difficulty: 'rare',
   },
   {
     id: 'mystery-clean-tour',
@@ -227,7 +209,7 @@ const DEFINITIONS: AchievementDefinition[] = [
     descriptionKey: 'achievement.mystery-clean-tour.description',
     hidden: true,
     color: 'violet',
-    points: 180,
+    difficulty: 'rare',
   },
   {
     id: 'mystery-full-house',
@@ -235,7 +217,7 @@ const DEFINITIONS: AchievementDefinition[] = [
     descriptionKey: 'achievement.mystery-full-house.description',
     hidden: true,
     color: 'violet',
-    points: 240,
+    difficulty: 'rare',
   },
 ];
 
@@ -243,8 +225,10 @@ const DEFINITIONS: AchievementDefinition[] = [
 export class AchievementsService {
   private readonly storage = inject(BrowserStorageService);
   private readonly recordsService = inject(PersonalRecordsService);
-  private readonly favoritesService = inject(FavoriteGamesService);
   private readonly progressService = inject(GameProgressService);
+  private readonly dailyChallengeService = inject(DailyChallengeService);
+  private readonly speedrunRecordsService = inject(SpeedrunRecordsService);
+  private readonly auth = inject(SupabaseAuthService);
   private readonly unlocked = signal<AchievementStore>(this.loadFromStorage());
   private readonly latestUnlockSignal = signal<AchievementState | null>(null);
 
@@ -254,6 +238,7 @@ export class AchievementsService {
       const unlockedAt = this.unlocked()[definition.id] ?? null;
       return {
         ...definition,
+        points: ACHIEVEMENT_XP_BY_DIFFICULTY[definition.difficulty],
         unlockedAt,
         unlocked: !!unlockedAt,
         displayTitleKey:
@@ -284,10 +269,7 @@ export class AchievementsService {
       const uniqueRecordCount = entries.length;
       const maxStreak = entries.reduce((max, entry) => Math.max(max, entry?.bestStreak ?? 0), 0);
       const maxPercent = entries.reduce((max, entry) => Math.max(max, entry?.bestPercent ?? 0), 0);
-      const favoriteCount = this.favoritesService.count();
-      const favoriteIds = this.favoritesService.ids();
       const inProgressCount = this.progressService.count();
-      const hardRecordCount = HARD_RECORD_KEYS.filter((key) => !!records[key]).length;
       const visualRecordCount = VISUAL_RECORD_KEYS.filter((key) => !!records[key]).length;
       const hasAllAvailableGames = uniqueRecordCount >= ENABLED_RECORD_KEYS.size;
 
@@ -319,10 +301,6 @@ export class AchievementsService {
         this.unlock('perfect-score');
       }
 
-      if (favoriteCount >= 3) {
-        this.unlock('three-favorites');
-      }
-
       if (maxStreak >= 10) {
         this.unlock('streak-master');
       }
@@ -333,14 +311,6 @@ export class AchievementsService {
 
       if (inProgressCount >= 1) {
         this.unlock('resume-ready');
-      }
-
-      if (hardRecordCount >= 1) {
-        this.unlock('hard-mode-scout');
-      }
-
-      if (hardRecordCount >= HARD_RECORD_KEYS.length) {
-        this.unlock('hard-mode-ace');
       }
 
       if (visualRecordCount >= VISUAL_RECORD_KEYS.length) {
@@ -373,26 +343,22 @@ export class AchievementsService {
         this.unlock('collector-level-10');
       }
 
-      if (this.hasAllFavorites(favoriteIds, ['find-the-error', 'pixel-flag', 'flag-rebuild'])) {
-        this.unlock('mystery-visual-curator');
-      }
-
-      const hasHardClassicCombo =
-        (records['country-to-flag-hard']?.gamesPlayed ?? 0) > 0 &&
-        (records['flag-to-country-hard']?.gamesPlayed ?? 0) > 0 &&
+      const hasClassicCombo =
+        (records['country-to-flag-easy']?.gamesPlayed ?? 0) > 0 &&
+        (records['flag-to-country-easy']?.gamesPlayed ?? 0) > 0 &&
         (records['chrono-flags']?.bestStreak ?? 0) >= 5;
-      if (hasHardClassicCombo) {
+      if (hasClassicCombo) {
         this.unlock('mystery-combo');
       }
 
       const hasCleanClassicTour =
-        HARD_RECORD_KEYS.every((key) => (records[key]?.bestPercent ?? 0) >= 100) &&
+        CLASSIC_RECORD_KEYS.every((key) => (records[key]?.bestPercent ?? 0) >= 100) &&
         (records['chrono-flags']?.bestPercent ?? 0) >= 90;
       if (hasCleanClassicTour) {
         this.unlock('mystery-clean-tour');
       }
 
-      if (hasAllAvailableGames && favoriteCount >= 5 && maxStreak >= 10) {
+      if (hasAllAvailableGames && totalGamesPlayed >= 20 && maxStreak >= 10) {
         this.unlock('mystery-full-house');
       }
     });
@@ -434,16 +400,22 @@ export class AchievementsService {
 
   private loadFromStorage(): AchievementStore {
     const parsed = this.storage.getJson<AchievementStore>(STORAGE_KEY, {});
-    return parsed && typeof parsed === 'object' ? parsed : {};
+    if (!parsed || typeof parsed !== 'object') {
+      return {};
+    }
+
+    const next: AchievementStore = {};
+    for (const [id, unlockedAt] of Object.entries(parsed)) {
+      if (this.isAchievementId(id) && typeof unlockedAt === 'string') {
+        next[id] = unlockedAt;
+      }
+    }
+
+    return next;
   }
 
   private persist(): void {
     this.storage.setJson(STORAGE_KEY, this.unlocked());
-  }
-
-  private hasAllFavorites(current: GameId[], expected: GameId[]): boolean {
-    const favoriteSet = new Set(current);
-    return expected.every((id) => favoriteSet.has(id));
   }
 
   private isAchievementId(id: string): id is AchievementId {
@@ -458,6 +430,7 @@ export class AchievementsService {
 
     return {
       ...definition,
+      points: ACHIEVEMENT_XP_BY_DIFFICULTY[definition.difficulty],
       unlockedAt,
       unlocked: true,
       displayTitleKey: definition.titleKey,
@@ -472,19 +445,12 @@ export class AchievementsService {
     const achievementPoints = this.achievements()
       .filter((achievement) => achievement.unlocked)
       .reduce((sum, achievement) => sum + achievement.points, 0);
-    const recordXp = records.reduce(
-      (sum, record) =>
-        sum +
-        record.gamesPlayed * 35 +
-        record.bestPercent * 2 +
-        (record.bestStreak ?? 0) * 20 +
-        Math.min(record.bestScore, 500),
-      0,
+    const recordXp = records.reduce((sum, record) => sum + calculateRecordXp(record), 0);
+    const speedrunPoints = this.buildSpeedrunXp();
+    const xp = Math.round(
+      recordXp + achievementPoints + speedrunPoints + this.dailyChallengeService.bonusXp(),
     );
-    const xp = Math.round(recordXp + achievementPoints);
-    const level = Math.max(1, Math.floor(Math.sqrt(xp / 140)) + 1);
-    const currentLevelXp = this.levelThreshold(level);
-    const nextLevelXp = this.levelThreshold(level + 1);
+    const levelProgress = buildLevelProgress(xp);
     const nextAchievement =
       this.achievements().find((achievement) => !achievement.unlocked && !achievement.hidden) ??
       this.achievements().find((achievement) => !achievement.unlocked) ??
@@ -492,36 +458,32 @@ export class AchievementsService {
 
     return {
       xp,
-      level,
-      levelLabelKey: this.getLevelLabelKey(level),
-      currentLevelXp,
-      nextLevelXp,
-      progressPercent:
-        nextLevelXp > currentLevelXp
-          ? Math.round(((xp - currentLevelXp) / (nextLevelXp - currentLevelXp)) * 100)
-          : 100,
+      level: levelProgress.level,
+      levelTier: levelProgress.tier.id,
+      levelTierLabelKey: levelProgress.tier.labelKey,
+      nextTierLevel: levelProgress.tier.nextLevel,
+      currentLevelXp: levelProgress.currentLevelXp,
+      nextLevelXp: levelProgress.nextLevelXp,
+      progressPercent: levelProgress.progressPercent,
       achievementPoints,
+      speedrunPoints,
       nextAchievement,
     };
   }
 
-  private levelThreshold(level: number): number {
-    return Math.pow(Math.max(0, level - 1), 2) * 140;
-  }
+  private buildSpeedrunXp(): number {
+    const userId = this.auth.user()?.id;
+    this.speedrunRecordsService.snapshot();
 
-  private getLevelLabelKey(level: number): string {
-    if (level >= 10) {
-      return 'gamification.rank.legend';
+    if (!userId) {
+      return 0;
     }
 
-    if (level >= 7) {
-      return 'gamification.rank.expert';
-    }
-
-    if (level >= 4) {
-      return 'gamification.rank.explorer';
-    }
-
-    return 'gamification.rank.rookie';
+    return calculateSpeedrunXp(
+      this.speedrunRecordsService.getBestForUser(userId),
+      SPEEDRUN_SPLITS.map((split) =>
+        this.speedrunRecordsService.getBestSplitForUser(userId, split.id),
+      ),
+    );
   }
 }

@@ -4,7 +4,7 @@
 
 .records-shell {
   display: grid;
-  gap: 18px;
+  gap: 22px;
   padding-bottom: 24px;
 }
 
@@ -12,7 +12,7 @@
 .records-card {
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 26px;
+  border-radius: var(--ds-radius-xl);
   box-shadow: var(--shadow);
   backdrop-filter: blur(10px) saturate(120%);
 }
@@ -22,18 +22,12 @@
   justify-content: space-between;
   align-items: center;
   gap: 18px;
-  padding: 22px 24px;
-  background:
-    radial-gradient(
-      circle at 94% 8%,
-      color-mix(in srgb, var(--secondary-soft) 72%, transparent),
-      transparent 35%
-    ),
-    var(--card);
+  padding: clamp(18px, 3vw, 28px);
+  background: var(--card);
 }
 
 .records-card {
-  padding: 18px;
+  padding: clamp(16px, 2.4vw, 24px);
 }
 
 .eyebrow {
@@ -75,7 +69,7 @@ h1 {
   justify-content: center;
   min-height: 42px;
   padding: 10px 16px;
-  border-radius: 999px;
+  border-radius: var(--ds-radius-md);
   border: 1px solid var(--line);
   text-decoration: none;
   font-weight: 700;
@@ -97,23 +91,19 @@ h1 {
 
 .danger-button {
   color: #fff;
-  background: linear-gradient(
-    135deg,
-    var(--danger),
-    color-mix(in srgb, var(--danger) 74%, #491720)
-  );
+  background: var(--danger);
   cursor: pointer;
 }
 
 .records-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
 .record-row {
-  padding: 14px;
-  border-radius: 16px;
+  padding: 16px;
+  border-radius: var(--ds-radius-lg);
   border: 1px solid var(--line-soft);
   background: color-mix(in srgb, var(--surface) 88%, transparent);
 }
@@ -137,5 +127,11 @@ h1 {
 
   .records-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 861px) and (max-width: 1120px) {
+  .records-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

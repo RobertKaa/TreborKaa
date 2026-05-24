@@ -1,8 +1,17 @@
 .app-shell {
   position: relative;
-  width: min(1240px, calc(100% - 34px - var(--safe-left) - var(--safe-right)));
+  width: min(1520px, calc(100% - 34px - var(--safe-left) - var(--safe-right)));
   margin: 0 auto;
-  padding: calc(20px + var(--safe-top)) 0 calc(64px + var(--safe-bottom));
+  padding: calc(24px + var(--safe-top)) 0 calc(64px + var(--safe-bottom));
+}
+
+.app-main {
+  min-width: 0;
+}
+
+.sidebar-level-card,
+.nav-icon {
+  display: none;
 }
 
 .topbar-shell {
@@ -20,37 +29,77 @@
   gap: 16px;
   width: 100%;
   margin: 0;
-  padding: 12px 14px 12px 18px;
-  border: 1px solid var(--line);
-  border-radius: 20px;
+  padding: 14px 16px 14px 20px;
+  border: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+  border-radius: var(--ds-radius-xl);
   background: color-mix(in srgb, var(--surface-strong) 78%, transparent);
   box-shadow: var(--shadow);
-  backdrop-filter: blur(10px) saturate(125%);
+  backdrop-filter: blur(16px) saturate(130%);
 }
 
 .brand {
   position: relative;
-  padding-left: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  padding-left: 0;
   color: var(--ink);
-  font-family: 'Space Mono', monospace;
-  font-size: 1.06rem;
+  font-family: var(--ds-font-display);
+  font-size: 1.28rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.16em;
   text-decoration: none;
   text-transform: uppercase;
 }
 
 .brand::before {
   content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), var(--secondary));
-  transform: translateY(-50%);
-  animation: float-drift 3.8s ease-in-out infinite;
+  position: static;
+  width: 32px;
+  height: 32px;
+  background: url('/data/img/vexiio-compass.png') center / contain no-repeat;
+  animation: none;
+}
+
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 4px;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+}
+
+.desktop-nav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 7px 13px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background var(--ds-transition-fast),
+    border-color var(--ds-transition-fast),
+    color var(--ds-transition-fast),
+    transform var(--ds-transition-fast);
+}
+
+.desktop-nav a:hover {
+  color: var(--ink);
+  border-color: var(--accent-line);
+  background: color-mix(in srgb, var(--accent-soft) 58%, transparent);
+  transform: translateY(-1px);
 }
 
 .header-menu {
@@ -68,7 +117,7 @@
   height: 42px;
   padding: 0;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 14px;
   background: var(--surface);
   cursor: pointer;
   transition:
@@ -95,22 +144,41 @@
   background: var(--ink);
 }
 
-.menu-panel {
+.sidebar-settings {
+  display: none;
+  position: relative;
+  z-index: 112;
+}
+
+.menu-panel,
+.settings-panel {
   position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
   z-index: 112;
   display: grid;
   gap: 5px;
-  min-width: 240px;
-  max-width: min(320px, calc(100vw - 16px - var(--safe-left) - var(--safe-right)));
-  padding: 8px;
+  min-width: 270px;
+  max-width: min(340px, calc(100vw - 16px - var(--safe-left) - var(--safe-right)));
+  padding: 10px;
   border: 1px solid var(--line);
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--surface-strong) 86%, transparent);
-  box-shadow: var(--shadow);
+  border-radius: var(--ds-radius-xl);
+  background: var(--sidebar-bg, var(--surface-strong));
+  box-shadow: var(--shadow-pop);
+  backdrop-filter: none;
   transform-origin: top right;
   animation: menu-in 220ms cubic-bezier(0.2, 0.7, 0.25, 1);
+}
+
+.menu-panel {
+  top: calc(100% + 10px);
+  right: 0;
+}
+
+.settings-panel {
+  right: 0;
+  bottom: calc(100% + 10px);
+  left: 0;
+  min-width: 0;
+  transform-origin: bottom left;
 }
 
 @keyframes menu-in {
@@ -148,16 +216,17 @@
 }
 
 .menu-panel a,
-.menu-panel button {
+.menu-panel button,
+.settings-panel button {
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
-  min-height: 38px;
-  padding: 8px 12px;
-  border: 1px solid transparent;
-  border-radius: 11px;
+  min-height: 42px;
+  padding: 9px 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: 13px;
   color: var(--ink);
-  background: transparent;
+  background: color-mix(in srgb, var(--surface) 52%, transparent);
   font: inherit;
   font-weight: 600;
   text-decoration: none;
@@ -181,6 +250,11 @@
   color: #2f9962;
 }
 
+.menu-icon.icon-home,
+.menu-icon.icon-speedrun {
+  color: var(--accent-dark);
+}
+
 .menu-icon.icon-achievements {
   color: #f39c12;
 }
@@ -194,13 +268,21 @@
 }
 
 .menu-panel a:hover,
-.menu-panel button:hover {
+.menu-panel button:hover,
+.settings-panel button:hover {
   transform: translateX(2px);
   background: var(--accent-soft);
   border-color: var(--accent-line);
 }
 
-.menu-panel button:active {
+.menu-panel a.active {
+  color: var(--accent-dark);
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+
+.menu-panel button:active,
+.settings-panel button:active {
   transform: translateX(2px) translateY(1px);
 }
 
@@ -210,24 +292,30 @@
   gap: 6px;
   padding: 2px;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 14px;
   background: var(--surface);
 }
 
-.menu-panel .language-button {
+.menu-panel .language-button,
+.settings-panel .language-button {
   justify-content: center;
-  min-height: 34px;
+  min-height: 38px;
   font-family: 'Space Mono', monospace;
   font-size: 0.8rem;
   letter-spacing: 0.08em;
 }
 
-.menu-panel .language-button.active {
+.menu-panel .language-button.active,
+.settings-panel .language-button.active {
   background: var(--accent-soft);
   border-color: var(--accent-line);
 }
 
 @media (max-width: 920px) {
+  .desktop-nav {
+    display: none;
+  }
+
   .topbar {
     align-items: center;
   }

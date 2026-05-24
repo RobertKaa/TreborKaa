@@ -1,15 +1,16 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { GAME_CATALOG, GameCatalogItem, GameId } from '../data/game-catalog';
-import { FavoriteGamesService } from '../services/favorite-games.service';
 import { GameProgressService } from '../services/game-progress.service';
 import { AchievementsService } from '../services/achievements.service';
+import { DailyChallengeService } from '../services/daily-challenge.service';
 import { I18nService } from '../services/i18n.service';
 import { PersonalRecordsService } from '../services/personal-records.service';
-import { PersonalRecord } from '../models/personal-record';
+import { SpeedrunLeaderboardService } from '../services/speedrun-leaderboard.service';
+import { SupabaseAuthService } from '../services/supabase-auth.service';
+import { type GameRecordKey, type PersonalRecord } from '../models/personal-record';
 
 type HomeGameView = GameCatalogItem & {
-  isFavorite: boolean;
   progressLabel: string | null;
   progressPercent: number | null;
   hasInProgress: boolean;
@@ -20,44 +21,53 @@ type ClassicGameFamilyView = {
   id: 'country-to-flag' | 'flag-to-country' | 'shape-to-country';
   labelKey: string;
   descriptionKey: string;
-  easy: HomeGameView;
-  hard: HomeGameView;
+  game: HomeGameView;
   bestRecord: PersonalRecord | null;
+};
+
+type HomeSearchSuggestion = {
+  id: string;
+  label: string;
+  description: string;
+  route: string[];
+};
+
+type ProgressStats = {
+  gamesPlayed: number;
+  averageAccuracy: number | null;
 };
 
 const CLASSIC_FAMILIES: Array<{
   id: ClassicGameFamilyView['id'];
   labelKey: string;
   descriptionKey: string;
-  easyId: GameId;
-  hardId: GameId;
+  gameId: GameId;
 }> = [
   {
     id: 'country-to-flag',
     labelKey: 'home.classicCountryToFlag',
     descriptionKey: 'home.classicCountryToFlag.description',
-    easyId: 'classic-country-to-flag-easy',
-    hardId: 'classic-country-to-flag-hard',
+    gameId: 'classic-country-to-flag-easy',
   },
   {
     id: 'flag-to-country',
     labelKey: 'home.classicFlagToCountry',
     descriptionKey: 'home.classicFlagToCountry.description',
-    easyId: 'classic-flag-to-country-easy',
-    hardId: 'classic-flag-to-country-hard',
+    gameId: 'classic-flag-to-country-easy',
   },
   {
     id: 'shape-to-country',
     labelKey: 'home.classicShapeToCountry',
     descriptionKey: 'home.classicShapeToCountry.description',
-    easyId: 'classic-shape-to-country-easy',
-    hardId: 'classic-shape-to-country-hard',
+    gameId: 'classic-shape-to-country-easy',
   },
 ];
 
-const CLASSIC_GAME_IDS = new Set<GameId>(
-  CLASSIC_FAMILIES.flatMap((family) => [family.easyId, family.hardId]),
+const CLASSIC_GAME_IDS = new Set<GameId>(CLASSIC_FAMILIES.map((family) => family.gameId));
+const AVAILABLE_RECORD_KEYS = new Set<GameRecordKey>(
+  GAME_CATALOG.filter((game) => game.available).flatMap((game) => game.recordKeys),
 );
+const PRIMARY_GAME_ORDER: GameId[] = ['flag-chrono', 'flag-rebuild'];
 
 @Component({
   selector: 'app-home-page',
@@ -67,17 +77,46 @@ const CLASSIC_GAME_IDS = new Set<GameId>(
 })
 export class HomePageComponent {
   protected readonly i18n = inject(I18nService);
-  private readonly favoritesService = inject(FavoriteGamesService);
   private readonly progressService = inject(GameProgressService);
   private readonly recordsService = inject(PersonalRecordsService);
   private readonly achievementsService = inject(AchievementsService);
-  protected readonly selectedTab = signal<'all' | 'favorites'>('all');
+  private readonly dailyChallengeService = inject(DailyChallengeService);
+  private readonly leaderboardService = inject(SpeedrunLeaderboardService);
+  private readonly auth = inject(SupabaseAuthService);
+  protected readonly homeSearch = signal('');
+  protected readonly showAllGames = signal(false);
   protected readonly achievements = this.achievementsService.achievements;
   protected readonly profile = this.achievementsService.profile;
   protected readonly unlockedCount = this.achievementsService.unlockedCount;
+  protected readonly progressStats = computed<ProgressStats>(() => {
+    const records = Object.entries(this.recordsService.snapshot()).filter(
+      (entry): entry is [GameRecordKey, PersonalRecord] =>
+        AVAILABLE_RECORD_KEYS.has(entry[0] as GameRecordKey) && !!entry[1],
+    );
+    const gamesPlayed = records.reduce((sum, [, record]) => sum + record.gamesPlayed, 0);
+    const averageAccuracy =
+      records.length > 0
+        ? Math.round(
+            records.reduce((sum, [, record]) => sum + record.bestPercent, 0) / records.length,
+          )
+        : null;
 
+    return {
+      gamesPlayed,
+      averageAccuracy,
+    };
+  });
+  protected readonly progressAccuracyLabel = computed(() => {
+    const accuracy = this.progressStats().averageAccuracy;
+    return accuracy === null ? this.i18n.t('common.none') : `${accuracy}%`;
+  });
+  protected readonly nextTierLabel = computed(() => {
+    const nextTierLevel = this.profile().nextTierLevel;
+    return nextTierLevel
+      ? this.i18n.t('gamification.nextTier', { level: nextTierLevel })
+      : this.i18n.t('gamification.maxTier');
+  });
   protected readonly games = computed<HomeGameView[]>(() => {
-    const favorites = this.favoritesService.snapshot();
     const records = this.recordsService.snapshot();
     const progress = this.progressService.snapshot();
 
@@ -86,7 +125,6 @@ export class HomePageComponent {
       const bestRecord = this.pickBestRecord(item.recordKeys.map((key) => records[key] ?? null));
       return {
         ...item,
-        isFavorite: !!favorites[item.id],
         progressLabel: entry ? this.i18n.t(entry.labelKey, entry.labelParams) : null,
         progressPercent: entry ? entry.percent : null,
         hasInProgress: !!entry,
@@ -95,22 +133,29 @@ export class HomePageComponent {
     });
   });
   protected readonly visibleGames = computed(() =>
-    this.selectedTab() === 'favorites'
-      ? this.games().filter((game) => game.isFavorite && !CLASSIC_GAME_IDS.has(game.id))
-      : this.games().filter((game) => !CLASSIC_GAME_IDS.has(game.id)),
+    this.sortDashboardGames(
+      this.games().filter(
+        (game) => !CLASSIC_GAME_IDS.has(game.id) && PRIMARY_GAME_ORDER.includes(game.id),
+      ),
+    ),
   );
+  protected readonly hiddenGames = computed(() =>
+    this.sortHiddenGames(
+      this.games().filter(
+        (game) => !CLASSIC_GAME_IDS.has(game.id) && !PRIMARY_GAME_ORDER.includes(game.id),
+      ),
+    ),
+  );
+  protected readonly displayedSecondaryGames = computed(() => [
+    ...this.visibleGames(),
+    ...(this.showAllGames() ? this.hiddenGames() : []),
+  ]);
   protected readonly visibleClassicFamilies = computed<ClassicGameFamilyView[]>(() => {
-    const favoritesOnly = this.selectedTab() === 'favorites';
     const byId = new Map(this.games().map((game) => [game.id, game]));
 
     return CLASSIC_FAMILIES.map((family) => {
-      const easy = byId.get(family.easyId);
-      const hard = byId.get(family.hardId);
-      if (!easy || !hard) {
-        return null;
-      }
-
-      if (favoritesOnly && !easy.isFavorite && !hard.isFavorite) {
+      const game = byId.get(family.gameId);
+      if (!game) {
         return null;
       }
 
@@ -118,42 +163,56 @@ export class HomePageComponent {
         id: family.id,
         labelKey: family.labelKey,
         descriptionKey: family.descriptionKey,
-        easy,
-        hard,
-        bestRecord: this.pickBestRecord([easy.bestRecord, hard.bestRecord]),
+        game,
+        bestRecord: game.bestRecord,
       };
     }).filter((family): family is ClassicGameFamilyView => family !== null);
   });
   protected readonly displayedGamesCount = computed(
-    () => this.visibleClassicFamilies().length + this.visibleGames().length,
+    () =>
+      this.visibleClassicFamilies().length +
+      this.visibleGames().length +
+      (this.showAllGames() ? this.hiddenGames().length : 0),
   );
+  protected readonly hasDisplayedGames = computed(() => this.displayedGamesCount() > 0);
+  protected readonly dailyChallenge = this.dailyChallengeService.today;
+  protected readonly speedrunRankLabel = computed(() => {
+    const userId = this.auth.user()?.id;
+    if (!userId) {
+      return '-';
+    }
 
-  protected setTab(tab: 'all' | 'favorites'): void {
-    this.selectedTab.set(tab);
+    const rank = this.leaderboardService.entries().findIndex((entry) => entry.userId === userId);
+
+    return rank === -1 ? '-' : `#${rank + 1}`;
+  });
+  protected readonly searchSuggestions = computed<HomeSearchSuggestion[]>(() => {
+    const search = this.normalizeForSearch(this.homeSearch());
+    if (search.length === 0) {
+      return [];
+    }
+
+    return this.searchableGames()
+      .filter((suggestion) =>
+        this.normalizeForSearch(`${suggestion.label} ${suggestion.description}`).includes(search),
+      )
+      .slice(0, 6);
+  });
+
+  constructor() {
+    void this.leaderboardService.refresh(100);
   }
 
-  protected toggleFavorite(gameId: GameId): void {
-    this.favoritesService.toggle(gameId);
+  protected setHomeSearch(value: string): void {
+    this.homeSearch.set(value);
   }
 
-  protected favoriteAriaLabel(game: HomeGameView): string {
-    return game.isFavorite ? this.i18n.t('home.favoriteRemove') : this.i18n.t('home.favoriteAdd');
+  protected clearHomeSearch(): void {
+    this.homeSearch.set('');
   }
 
-  protected isClassicFavorite(family: ClassicGameFamilyView): boolean {
-    return family.easy.isFavorite || family.hard.isFavorite;
-  }
-
-  protected toggleClassicFavorite(family: ClassicGameFamilyView): void {
-    const nextValue = !this.isClassicFavorite(family);
-    this.favoritesService.set(family.easy.id, nextValue);
-    this.favoritesService.set(family.hard.id, nextValue);
-  }
-
-  protected classicFavoriteAriaLabel(family: ClassicGameFamilyView): string {
-    return this.isClassicFavorite(family)
-      ? this.i18n.t('home.favoriteRemove')
-      : this.i18n.t('home.favoriteAdd');
+  protected toggleAllGames(): void {
+    this.showAllGames.update((value) => !value);
   }
 
   protected recordLine(game: HomeGameView): string | null {
@@ -197,5 +256,74 @@ export class HomePageComponent {
     }
 
     return best;
+  }
+
+  private sortDashboardGames(games: HomeGameView[]): HomeGameView[] {
+    return [...games].sort(
+      (left, right) => this.dashboardGameOrder(left.id) - this.dashboardGameOrder(right.id),
+    );
+  }
+
+  private sortHiddenGames(games: HomeGameView[]): HomeGameView[] {
+    return [...games].sort((left, right) =>
+      this.i18n.t(left.labelKey).localeCompare(this.i18n.t(right.labelKey)),
+    );
+  }
+
+  private dashboardGameOrder(id: GameId): number {
+    const index = PRIMARY_GAME_ORDER.indexOf(id);
+    return index === -1 ? PRIMARY_GAME_ORDER.length : index;
+  }
+
+  private searchableGames(): HomeSearchSuggestion[] {
+    const byId = new Map(this.games().map((game) => [game.id, game]));
+    const classicSuggestions = CLASSIC_FAMILIES.flatMap((family) => {
+      const game = byId.get(family.gameId);
+      if (!game?.available) {
+        return [];
+      }
+
+      return [
+        {
+          id: family.id,
+          label: this.i18n.t(family.labelKey),
+          description: this.i18n.t(family.descriptionKey),
+          route: game.route,
+        },
+      ];
+    });
+    const gameSuggestions = this.games()
+      .filter((game) => !CLASSIC_GAME_IDS.has(game.id) && game.available)
+      .map((game) => ({
+        id: game.id,
+        label: this.i18n.t(game.labelKey),
+        description: this.i18n.t(game.descriptionKey),
+        route: game.route,
+      }));
+
+    return [
+      ...classicSuggestions,
+      ...gameSuggestions,
+      {
+        id: 'daily-challenge',
+        label: this.i18n.t('daily.title'),
+        description: this.i18n.t('daily.intro'),
+        route: ['/defi-du-jour'],
+      },
+      {
+        id: 'speedrun',
+        label: this.i18n.t('speedrun.homeTitle'),
+        description: this.i18n.t('speedrun.homeIntro'),
+        route: ['/speedrun'],
+      },
+    ];
+  }
+
+  private normalizeForSearch(value: string): string {
+    return value
+      .trim()
+      .toLocaleLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
   }
 }

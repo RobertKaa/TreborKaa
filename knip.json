@@ -1,0 +1,4 @@
+{
+  "ignore": ["supabase/functions/**"],
+  "ignoreDependencies": ["prettier"]
+}

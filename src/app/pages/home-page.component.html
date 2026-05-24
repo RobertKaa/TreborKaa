@@ -1,199 +1,170 @@
-<main class="shell">
-  <nav class="mode-switch" [attr.aria-label]="i18n.t('home.modeSwitchAria')">
-    <span>{{ i18n.t('home.modeClassic') }}</span>
-    <a class="play-link" routerLink="/speedrun">{{ i18n.t('home.modeSpeedrun') }}</a>
-  </nav>
+<main class="home-dashboard">
+  <section class="home-command" [attr.aria-label]="i18n.t('home.commandAria')">
+    <div class="home-search-shell">
+      <label class="home-search">
+        <span class="search-icon" aria-hidden="true"></span>
+        <span class="sr-only">{{ i18n.t('home.searchLabel') }}</span>
+        <input
+          type="search"
+          [value]="homeSearch()"
+          [placeholder]="i18n.t('home.searchPlaceholder')"
+          (input)="setHomeSearch($any($event.target).value)"
+        />
+      </label>
 
-  <section class="hero-card">
-    <div class="hero-copy">
-      <p class="eyebrow">{{ i18n.t('home.eyebrow') }}</p>
-      <h1>{{ i18n.t('home.heroTitle') }}</h1>
-      <p class="intro">{{ i18n.t('home.heroIntro') }}</p>
+      @if (homeSearch().trim()) {
+        <div class="search-results" role="listbox" [attr.aria-label]="i18n.t('home.searchResults')">
+          @if (searchSuggestions().length > 0) {
+            @for (suggestion of searchSuggestions(); track suggestion.id) {
+              <a role="option" [routerLink]="suggestion.route" (click)="clearHomeSearch()">
+                <strong>{{ suggestion.label }}</strong>
+                <span>{{ suggestion.description }}</span>
+              </a>
+            }
+          } @else {
+            <p>{{ i18n.t('home.searchNoResults') }}</p>
+          }
+        </div>
+      }
     </div>
 
-    <aside class="profile-panel" [attr.aria-label]="i18n.t('gamification.profileAria')">
-      <div class="level-line">
-        <span class="level-badge">{{
-          i18n.t('gamification.level', { level: profile().level })
-        }}</span>
-        <span>{{ i18n.t(profile().levelLabelKey) }}</span>
+    <a
+      class="top-stat rank-stat"
+      routerLink="/speedrun"
+      [attr.aria-label]="i18n.t('home.speedrunRank')"
+    >
+      <span aria-hidden="true">🏆</span>
+      <strong>{{ speedrunRankLabel() }}</strong>
+    </a>
+  </section>
+
+  <section class="overview-grid">
+    <article class="featured-card daily-hero-card" [class.completed]="dailyChallenge().completed">
+      <div class="featured-copy">
+        <p class="eyebrow">{{ i18n.t('daily.eyebrow') }}</p>
+        <h1>{{ i18n.t('daily.homeTitle') }}</h1>
+        <p class="intro">{{ i18n.t('daily.homeIntro') }}</p>
+        <span class="xp-badge">
+          {{
+            dailyChallenge().completed
+              ? i18n.t('home.dailyXpClaimed')
+              : i18n.t('home.dailyXp', { xp: dailyChallenge().xp })
+          }}
+        </span>
+        <a class="featured-action" routerLink="/defi-du-jour">
+          <span>{{
+            dailyChallenge().completed ? i18n.t('home.dailyCompleted') : i18n.t('home.dailyCta')
+          }}</span>
+          <span aria-hidden="true">→</span>
+        </a>
       </div>
-      <p class="xp-line">{{ i18n.t('gamification.xp', { xp: profile().xp }) }}</p>
-      <div class="progress-track" aria-hidden="true">
-        <div class="progress-fill" [style.width.%]="profile().progressPercent"></div>
+    </article>
+
+    <article class="teaser-card speedrun-preview-card">
+      <p class="eyebrow">{{ i18n.t('speedrun.homeEyebrow') }}</p>
+      <h2>{{ i18n.t('speedrun.homeTitle') }}</h2>
+      <p>{{ i18n.t('speedrun.homeIntro') }}</p>
+      <a class="ghost-action" routerLink="/speedrun">
+        <span>{{ i18n.t('common.play') }}</span>
+        <span aria-hidden="true">→</span>
+      </a>
+    </article>
+
+    <aside class="progress-card" [attr.aria-label]="i18n.t('gamification.profileAria')">
+      <p class="eyebrow">{{ i18n.t('gamification.progressTitle') }}</p>
+      <div class="progress-main">
+        <div class="level-crest" [attr.data-tier]="profile().levelTier">
+          <strong>{{ profile().level }}</strong>
+          <small>{{ i18n.t(profile().levelTierLabelKey) }}</small>
+        </div>
+        <div class="progress-copy">
+          <p class="xp-total">{{ i18n.t('gamification.xp', { xp: profile().xp }) }}</p>
+          <div class="progress-track" aria-hidden="true">
+            <div class="progress-fill" [style.width.%]="profile().progressPercent"></div>
+          </div>
+          <p>
+            {{ i18n.t('gamification.nextLevelProgress', { percent: profile().progressPercent }) }}
+          </p>
+          <p class="tier-next">{{ nextTierLabel() }}</p>
+        </div>
       </div>
-      <p class="achievement-line">
-        {{
-          i18n.t('gamification.achievementSummary', {
-            unlocked: unlockedCount(),
-            total: achievements().length,
-          })
-        }}
-      </p>
-      @if (profile().nextAchievement; as nextAchievement) {
-        <p class="next-goal">
-          {{ i18n.t('gamification.nextGoal', { goal: i18n.t(nextAchievement.displayTitleKey) }) }}
-        </p>
-      }
+      <div class="metric-row">
+        <span>
+          <strong>{{ unlockedCount() }}/{{ achievements().length }}</strong>
+          {{ i18n.t('gamification.successes') }}
+        </span>
+        <span>
+          <strong>{{ progressStats().gamesPlayed }}</strong>
+          {{ i18n.t('gamification.runs') }}
+        </span>
+        <span>
+          <strong>{{ progressAccuracyLabel() }}</strong>
+          {{ i18n.t('gamification.averageAccuracy') }}
+        </span>
+      </div>
     </aside>
   </section>
 
-  <section class="games-card">
-    <div class="section-head">
-      <div>
-        <p class="eyebrow">{{ i18n.t('home.gamesKicker') }}</p>
-        <h2>{{ i18n.t('home.gamesTitle') }}</h2>
+  <section class="modes-section">
+    <div class="modes-head">
+      <div class="modes-head-title">
+        <h2>{{ i18n.t('home.modesTitle') }}</h2>
       </div>
-      <p class="games-summary">{{ i18n.t('home.gamesCount', { count: displayedGamesCount() }) }}</p>
+      @if (hiddenGames().length > 0) {
+        <button type="button" class="games-summary" (click)="toggleAllGames()">
+          {{ showAllGames() ? i18n.t('home.hideAllGames') : i18n.t('home.showAllGames') }}
+          <span aria-hidden="true">→</span>
+        </button>
+      }
     </div>
 
-    <div class="tabs-row" role="tablist" [attr.aria-label]="i18n.t('home.gamesTabsAria')">
-      <button
-        type="button"
-        class="tab-button"
-        role="tab"
-        [attr.aria-selected]="selectedTab() === 'all'"
-        [class.active]="selectedTab() === 'all'"
-        (click)="setTab('all')"
-      >
-        {{ i18n.t('home.tab.games') }}
-      </button>
-      <button
-        type="button"
-        class="tab-button"
-        role="tab"
-        [attr.aria-selected]="selectedTab() === 'favorites'"
-        [class.active]="selectedTab() === 'favorites'"
-        (click)="setTab('favorites')"
-      >
-        {{ i18n.t('home.tab.favorites') }}
-      </button>
-    </div>
-
-    <div class="games-list">
-      @if (visibleClassicFamilies().length === 0 && visibleGames().length === 0) {
-        <p class="empty-games">{{ i18n.t('home.emptyFavorites') }}</p>
+    <div class="mode-grid">
+      @if (!hasDisplayedGames()) {
+        <p class="empty-games">{{ i18n.t('home.emptyGames') }}</p>
       } @else {
         @for (family of visibleClassicFamilies(); track family.id) {
-          <article class="game-row classic-row" [class.favorite]="isClassicFavorite(family)">
-            <div>
-              <div class="game-topline">
-                <h3>{{ i18n.t(family.labelKey) }}</h3>
-                <button
-                  type="button"
-                  class="favorite-button family-favorite-button"
-                  [attr.aria-label]="classicFavoriteAriaLabel(family)"
-                  [class.active]="isClassicFavorite(family)"
-                  (click)="toggleClassicFavorite(family)"
-                >
-                  &#9733;
-                </button>
+          <article
+            class="mode-card"
+            [class.mode-card-p-d]="family.id === 'country-to-flag'"
+            [class.mode-card-d-p]="family.id === 'flag-to-country'"
+            [class.mode-card-f-p]="family.id === 'shape-to-country'"
+          >
+            <h3>{{ i18n.t(family.labelKey) }}</h3>
+            <p class="game-desc">{{ i18n.t(family.descriptionKey) }}</p>
+            @if (classicRecordLine(family); as bestLine) {
+              <div class="mode-meta">
+                <small>{{ bestLine }}</small>
               </div>
-              <p class="game-desc">{{ i18n.t(family.descriptionKey) }}</p>
-
-              @if (classicRecordLine(family); as bestLine) {
-                <p class="game-record">{{ bestLine }}</p>
-              }
-            </div>
-
-            <div class="game-actions classic-actions">
-              <div class="difficulty-line">
-                <div class="difficulty-entry">
-                  <p class="difficulty-title">{{ i18n.t('common.easy') }}</p>
-                  <a class="play-link difficulty-link" [routerLink]="family.easy.route">
-                    {{
-                      family.easy.hasInProgress
-                        ? i18n.t('home.resumeAction')
-                        : i18n.t('common.play')
-                    }}
-                  </a>
-                  @if (
-                    family.easy.hasInProgress && family.easy.progressLabel;
-                    as easyProgressText
-                  ) {
-                    <p class="difficulty-progress-line">{{ easyProgressText }}</p>
-                    <div class="progress-track difficulty-progress-track" aria-hidden="true">
-                      <div
-                        class="progress-fill"
-                        [style.width.%]="family.easy.progressPercent"
-                      ></div>
-                    </div>
-                  }
-                </div>
-
-                <div class="difficulty-entry">
-                  <p class="difficulty-title">{{ i18n.t('common.hard') }}</p>
-                  <a class="play-link difficulty-link" [routerLink]="family.hard.route">
-                    {{
-                      family.hard.hasInProgress
-                        ? i18n.t('home.resumeAction')
-                        : i18n.t('common.play')
-                    }}
-                  </a>
-                  @if (
-                    family.hard.hasInProgress && family.hard.progressLabel;
-                    as hardProgressText
-                  ) {
-                    <p class="difficulty-progress-line">{{ hardProgressText }}</p>
-                    <div class="progress-track difficulty-progress-track" aria-hidden="true">
-                      <div
-                        class="progress-fill"
-                        [style.width.%]="family.hard.progressPercent"
-                      ></div>
-                    </div>
-                  }
-                </div>
-              </div>
-            </div>
+            }
+            <a class="play-link card-action" [routerLink]="family.game.route">
+              {{ family.game.hasInProgress ? i18n.t('home.resumeAction') : i18n.t('common.play') }}
+            </a>
           </article>
         }
 
-        @for (game of visibleGames(); track game.id) {
+        @for (game of displayedSecondaryGames(); track game.id) {
           <article
-            class="game-row"
-            [class.favorite]="game.isFavorite"
-            [class.unavailable]="!game.available"
+            class="mode-card"
+            [class.mode-card-r]="game.id === 'flag-rebuild'"
+            [class.mode-card-chrono]="game.id === 'flag-chrono'"
           >
-            <div>
-              <div class="game-topline">
-                <h3>{{ i18n.t(game.labelKey) }}</h3>
-                <button
-                  type="button"
-                  class="favorite-button"
-                  [attr.aria-label]="favoriteAriaLabel(game)"
-                  [class.active]="game.isFavorite"
-                  [disabled]="!game.available"
-                  (click)="toggleFavorite(game.id)"
-                >
-                  &#9733;
-                </button>
+            <h3>{{ i18n.t(game.labelKey) }}</h3>
+            <p class="game-desc">{{ i18n.t(game.descriptionKey) }}</p>
+            @if (!game.available || recordLine(game)) {
+              <div class="mode-meta">
+                @if (!game.available) {
+                  <span>{{ i18n.t('home.comingSoon') }}</span>
+                }
+                @if (recordLine(game); as bestLine) {
+                  <small>{{ bestLine }}</small>
+                }
               </div>
-              <p class="game-desc">{{ i18n.t(game.descriptionKey) }}</p>
-              @if (!game.available) {
-                <p class="coming-soon">{{ i18n.t('home.comingSoon') }}</p>
-              }
-
-              @if (recordLine(game); as bestLine) {
-                <p class="game-record">{{ bestLine }}</p>
-              }
-            </div>
-
-            <div class="game-actions">
-              @if (game.hasInProgress && game.progressLabel; as progressText) {
-                <div class="resume-block">
-                  <p class="resume-line">{{ progressText }}</p>
-                  <div class="progress-track" aria-hidden="true">
-                    <div class="progress-fill" [style.width.%]="game.progressPercent"></div>
-                  </div>
-                </div>
-              }
-
-              @if (game.available) {
-                <a class="play-link" [routerLink]="game.route">
-                  {{ game.hasInProgress ? i18n.t('home.resumeAction') : i18n.t('common.play') }}
-                </a>
-              }
-            </div>
+            }
+            @if (game.available) {
+              <a class="play-link" [routerLink]="game.route">
+                {{ game.hasInProgress ? i18n.t('home.resumeAction') : i18n.t('common.play') }}
+              </a>
+            }
           </article>
         }
       }

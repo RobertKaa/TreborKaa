@@ -1,0 +1,6 @@
+{
+  "ignore": ["**/*.spec.ts", "**/i18n-translations.ts"],
+  "minLines": 20,
+  "minTokens": 120,
+  "reporters": ["console"]
+}

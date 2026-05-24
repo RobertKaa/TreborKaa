@@ -1,5 +1,4 @@
 import { Component, computed, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { GameRecordKey, PersonalRecord } from '../models/personal-record';
 import { I18nService } from '../services/i18n.service';
 import { PersonalRecordsService } from '../services/personal-records.service';
@@ -10,7 +9,6 @@ type RecordTile = {
 
 @Component({
   selector: 'app-records-page',
-  imports: [RouterLink],
   templateUrl: './records-page.component.html',
   styleUrl: './records-page.component.scss',
 })
@@ -20,16 +18,9 @@ export class RecordsPageComponent {
 
   protected readonly tiles: RecordTile[] = [
     { key: 'country-to-flag-easy' },
-    { key: 'country-to-flag-hard' },
     { key: 'flag-to-country-easy' },
-    { key: 'flag-to-country-hard' },
     { key: 'shape-to-country-easy' },
-    { key: 'shape-to-country-hard' },
     { key: 'chrono-flags' },
-    { key: 'flag-culture-easy' },
-    { key: 'flag-culture-medium' },
-    { key: 'flag-culture-hard' },
-    { key: 'flag-culture-mixed' },
     { key: 'find-the-error' },
     { key: 'pixel-flag' },
     { key: 'flag-rebuild' },
@@ -54,11 +45,8 @@ export class RecordsPageComponent {
   protected formatRecord(key: GameRecordKey, record: PersonalRecord): string {
     if (
       key === 'country-to-flag-easy' ||
-      key === 'country-to-flag-hard' ||
       key === 'flag-to-country-easy' ||
-      key === 'flag-to-country-hard' ||
-      key === 'shape-to-country-easy' ||
-      key === 'shape-to-country-hard'
+      key === 'shape-to-country-easy'
     ) {
       return this.i18n.t('records.value.classic', { score: record.bestScore });
     }
@@ -82,11 +70,7 @@ export class RecordsPageComponent {
       });
     }
 
-    return this.i18n.t('records.value.culture', {
-      score: record.bestScore,
-      max: record.bestMaxScore,
-      percent: record.bestPercent,
-    });
+    return this.i18n.t('records.value.points', { score: record.bestScore });
   }
 
   protected formatGamesPlayed(count: number): string {

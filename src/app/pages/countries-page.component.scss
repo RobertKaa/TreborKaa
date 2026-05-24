@@ -4,18 +4,22 @@
 
 .countries-shell {
   display: grid;
-  gap: 20px;
+  gap: 22px;
+  min-width: 0;
+  max-width: 100%;
   padding-bottom: 24px;
 }
 
 .header-card,
 .table-card {
+  min-width: 0;
+  max-width: 100%;
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 26px;
+  border-radius: var(--ds-radius-xl);
   box-shadow: var(--shadow);
   backdrop-filter: blur(10px) saturate(120%);
-  padding: 24px;
+  padding: clamp(18px, 3vw, 28px);
 }
 
 .header-card {
@@ -23,13 +27,7 @@
   justify-content: space-between;
   gap: 20px;
   align-items: flex-start;
-  background:
-    radial-gradient(
-      circle at 94% 8%,
-      color-mix(in srgb, var(--accent-soft) 70%, transparent),
-      transparent 34%
-    ),
-    var(--card);
+  background: var(--card);
 }
 
 .eyebrow {
@@ -83,8 +81,8 @@ h1 {
 
 .search-input {
   width: 100%;
-  min-height: 42px;
-  border-radius: 999px;
+  min-height: 46px;
+  border-radius: var(--ds-radius-md);
   border: 1px solid var(--line);
   padding: 0 14px;
   background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
@@ -97,9 +95,9 @@ h1 {
 }
 
 .clear-button {
-  min-height: 42px;
+  min-height: 46px;
   padding: 0 14px;
-  border-radius: 999px;
+  border-radius: var(--ds-radius-md);
   border: 1px solid var(--line);
   background: color-mix(in srgb, var(--surface-strong) 86%, transparent);
   color: var(--ink);
@@ -108,18 +106,14 @@ h1 {
 }
 
 .table-card {
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--surface-strong) 70%, transparent),
-      transparent 24%
-    ),
-    var(--card);
+  background: var(--card);
 }
 
 .table-wrap {
+  width: 100%;
+  max-width: 100%;
   overflow-x: auto;
-  border-radius: 16px;
+  border-radius: var(--ds-radius-lg);
   border: 1px solid var(--line-soft);
 }
 
@@ -141,7 +135,7 @@ tbody tr {
 }
 
 tbody tr:hover {
-  background: color-mix(in srgb, var(--accent-soft) 38%, transparent);
+  background: color-mix(in srgb, var(--accent-soft) 34%, transparent);
 }
 
 th {
@@ -151,7 +145,7 @@ th {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-weight: 700;
-  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  background: color-mix(in srgb, var(--surface-raise) 72%, transparent);
 }
 
 .th-sort-button {
@@ -223,9 +217,9 @@ th {
 }
 
 .pagination button {
-  min-height: 36px;
+  min-height: 40px;
   padding: 0 12px;
-  border-radius: 999px;
+  border-radius: var(--ds-radius-md);
   border: 1px solid var(--line);
   background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
   color: var(--ink);

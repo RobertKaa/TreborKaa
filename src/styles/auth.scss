@@ -13,12 +13,12 @@
   gap: 8px;
   min-width: 0;
   max-width: min(220px, 42vw);
-  height: 42px;
-  padding: 0 13px 0 10px;
+  height: 44px;
+  padding: 0 14px 0 10px;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 16px;
   color: var(--ink);
-  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
   font: inherit;
   font-size: 0.9rem;
   font-weight: 700;
@@ -31,8 +31,9 @@
 
 .auth-button:hover:not(:disabled) {
   transform: translateY(-1px);
-  background: var(--surface-raise);
+  background: color-mix(in srgb, var(--surface-raise) 84%, transparent);
   border-color: var(--accent-line);
+  box-shadow: var(--ds-shadow-gold);
 }
 
 .auth-button:focus-visible {
@@ -95,7 +96,7 @@
   grid-template-columns: 34px minmax(0, 1fr);
   gap: 10px;
   align-items: center;
-  padding: 8px 10px 10px;
+  padding: 8px 10px 12px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -133,7 +134,7 @@
   margin: 2px 4px 4px;
   padding: 8px 10px;
   border: 1px solid color-mix(in srgb, #d24b4b 42%, var(--line));
-  border-radius: 10px;
+  border-radius: 14px;
   color: #9d2929;
   background: color-mix(in srgb, #d24b4b 10%, var(--surface));
   font-size: 0.8rem;
@@ -142,6 +143,7 @@
 
 .menu-panel .menu-auth-action {
   border-color: var(--accent-line);
+  color: var(--ds-color-gold-300);
   background: color-mix(in srgb, var(--accent-soft) 58%, transparent);
 }
 

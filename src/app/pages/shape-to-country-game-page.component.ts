@@ -8,7 +8,7 @@ import { FlagQuizService } from '../services/flag-quiz.service';
 import { DEFAULT_SHAPE_VIEWBOX, buildShapeViewBox } from '../utils/country-shape-viewbox';
 import { ClassicQuizPageBase } from './classic-quiz-page.base';
 
-const HARD_EXCLUDED_CODES = new Set([
+const SHAPE_EXCLUDED_CODES = new Set([
   'ag',
   'ai',
   'aq',
@@ -85,7 +85,7 @@ const HARD_EXCLUDED_CODES = new Set([
   'yt',
 ]);
 
-const EASY_EXTRA_EXCLUDED_CODES = new Set([
+const SHAPE_EXTRA_EXCLUDED_CODES = new Set([
   'ad',
   'am',
   'az',
@@ -137,7 +137,7 @@ export class ShapeToCountryGamePageComponent
     () => new Set(this.shapes().map((shape) => shape.code)),
   );
   private readonly playableCountries = computed(() =>
-    this.filterPlayableCountries(this.countriesSignal(), this.difficulty()),
+    this.filterPlayableCountries(this.countriesSignal()),
   );
 
   protected readonly currentShapePath = computed(() => {
@@ -162,20 +162,17 @@ export class ShapeToCountryGamePageComponent
     super();
 
     this.setupClassicQuiz({
-      buildQuestion: (countries, difficulty, excludeCodes) =>
+      buildQuestion: (countries, excludeCodes) =>
         this.flagQuizService.buildCountryNameQuestion(
-          this.filterPlayableCountries(countries, difficulty),
-          difficulty,
+          this.filterPlayableCountries(countries),
+          'easy',
           excludeCodes,
         ),
-      getRecordKey: (difficulty) =>
-        difficulty === 'hard' ? 'shape-to-country-hard' : 'shape-to-country-easy',
-      getProgressGameId: (difficulty) =>
-        difficulty === 'hard' ? 'classic-shape-to-country-hard' : 'classic-shape-to-country-easy',
+      getRecordKey: () => 'shape-to-country-easy',
+      getProgressGameId: () => 'classic-shape-to-country-easy',
       progressLabelKey: 'home.resume.classic',
       isReady: () => this.playableCountries().length >= 4,
-      getTotalQuestions: (countries, difficulty) =>
-        this.filterPlayableCountries(countries, difficulty).length,
+      getTotalQuestions: (countries) => this.filterPlayableCountries(countries).length,
     });
   }
 
@@ -191,21 +188,18 @@ export class ShapeToCountryGamePageComponent
     this.clearQuizTimers();
   }
 
-  private filterPlayableCountries(
-    countries: CountrySummary[],
-    difficulty: 'easy' | 'hard',
-  ): CountrySummary[] {
+  private filterPlayableCountries(countries: CountrySummary[]): CountrySummary[] {
     const codes = this.playableCodes();
     return countries.filter((country) => {
       if (!codes.has(country.code)) {
         return false;
       }
 
-      if (HARD_EXCLUDED_CODES.has(country.code)) {
+      if (SHAPE_EXCLUDED_CODES.has(country.code)) {
         return false;
       }
 
-      if (difficulty === 'easy' && EASY_EXTRA_EXCLUDED_CODES.has(country.code)) {
+      if (SHAPE_EXTRA_EXCLUDED_CODES.has(country.code)) {
         return false;
       }
 

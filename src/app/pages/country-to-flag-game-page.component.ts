@@ -20,11 +20,10 @@ export class CountryToFlagGamePageComponent
     super();
 
     this.setupClassicQuiz({
-      buildQuestion: (countries, difficulty, excludeCodes) =>
-        this.flagQuizService.buildQuestion(countries, difficulty, excludeCodes),
-      getRecordKey: (difficulty) => (difficulty === 'hard' ? 'country-to-flag-hard' : 'country-to-flag-easy'),
-      getProgressGameId: (difficulty) =>
-        difficulty === 'hard' ? 'classic-country-to-flag-hard' : 'classic-country-to-flag-easy',
+      buildQuestion: (countries, excludeCodes) =>
+        this.flagQuizService.buildQuestion(countries, 'easy', excludeCodes),
+      getRecordKey: () => 'country-to-flag-easy',
+      getProgressGameId: () => 'classic-country-to-flag-easy',
       progressLabelKey: 'home.resume.classic'
     });
   }
