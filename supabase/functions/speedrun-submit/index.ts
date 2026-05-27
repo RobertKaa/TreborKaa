@@ -1,9 +1,13 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+const ALLOWED_ORIGINS = new Set([
+  'https://vexiio.com',
+  'https://www.vexiio.com',
+  'http://localhost:4200',
+  'http://localhost:4201',
+  'http://127.0.0.1:4200',
+  'http://127.0.0.1:4201',
+]);
 
 const ERROR_PENALTY_MS = 30000;
 const QUESTION_COUNT = 60;
@@ -35,12 +39,15 @@ type SplitResultPayload = {
 };
 
 Deno.serve(async (request) => {
+  const corsHeaders = buildCorsHeaders(request);
+  const sendJson = (body: unknown, status = 200) => jsonResponse(body, status, corsHeaders);
+
   if (request.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
 
   if (request.method !== 'POST') {
-    return jsonResponse({ error: 'method_not_allowed' }, 405);
+    return sendJson({ error: 'method_not_allowed' }, 405);
   }
 
   const supabaseUrl = Deno.env.get('SUPABASE_URL');
@@ -48,7 +55,7 @@ Deno.serve(async (request) => {
   const authHeader = request.headers.get('Authorization');
 
   if (!supabaseUrl || !serviceRoleKey || !authHeader) {
-    return jsonResponse({ error: 'unauthorized' }, 401);
+    return sendJson({ error: 'unauthorized' }, 401);
   }
 
   const client = createClient(supabaseUrl, serviceRoleKey);
@@ -57,14 +64,14 @@ Deno.serve(async (request) => {
   );
 
   if (userError || !userData.user) {
-    return jsonResponse({ error: 'unauthorized' }, 401);
+    return sendJson({ error: 'unauthorized' }, 401);
   }
 
   const payload = (await request.json().catch(() => null)) as SubmitPayload | null;
   const validationError = validatePayload(payload);
 
   if (validationError) {
-    return jsonResponse({ error: validationError }, 400);
+    return sendJson({ error: validationError }, 400);
   }
 
   const { data: attempt, error: attemptError } = await client
@@ -75,17 +82,17 @@ Deno.serve(async (request) => {
     .single();
 
   if (attemptError || !attempt) {
-    return jsonResponse({ error: 'attempt_not_found' }, 404);
+    return sendJson({ error: 'attempt_not_found' }, 404);
   }
 
   if (attempt.status !== 'started') {
-    return jsonResponse({ error: 'attempt_already_submitted' }, 409);
+    return sendJson({ error: 'attempt_already_submitted' }, 409);
   }
 
   const serverElapsedMs = Date.now() - new Date(attempt.started_at).getTime();
   if (payload!.rawTimeMs > serverElapsedMs + 1500) {
     await rejectAttempt(client, attempt.id, 'client_time_exceeds_server_time');
-    return jsonResponse({ error: 'invalid_time' }, 400);
+    return sendJson({ error: 'invalid_time' }, 400);
   }
 
   const mistakeCount = Math.max(0, Math.round(payload!.mistakeCount));
@@ -96,7 +103,9 @@ Deno.serve(async (request) => {
   const completedAt = new Date().toISOString();
   const splitResults = readSplitResults(payload!.metadata);
 
-  const profile = await fetchProfile(client, userData.user.id, userData.user.email ?? 'Joueur');
+  const publicDisplayName =
+    sanitizeProfileDisplayName(userData.user.user_metadata?.['vexiio_display_name']) ??
+    buildPublicDisplayName(userData.user.id);
 
   const { error: updateError } = await client
     .from('speedrun_run_attempts')
@@ -113,7 +122,7 @@ Deno.serve(async (request) => {
     .eq('id', attempt.id);
 
   if (updateError) {
-    return jsonResponse({ error: 'attempt_update_failed' }, 500);
+    return sendJson({ error: 'attempt_update_failed' }, 500);
   }
 
   const { data: currentBest } = await client
@@ -127,8 +136,7 @@ Deno.serve(async (request) => {
       {
         user_id: userData.user.id,
         attempt_id: attempt.id,
-        display_name: profile.displayName,
-        avatar_url: profile.avatarUrl,
+        display_name: publicDisplayName,
         total_time_ms: totalTimeMs,
         raw_time_ms: rawTimeMs,
         penalty_ms: penaltyMs,
@@ -140,7 +148,7 @@ Deno.serve(async (request) => {
     );
 
     if (leaderboardError) {
-      return jsonResponse({ error: 'leaderboard_write_failed' }, 500);
+      return sendJson({ error: 'leaderboard_write_failed' }, 500);
     }
   }
 
@@ -153,10 +161,10 @@ Deno.serve(async (request) => {
   );
 
   if (splitWriteError) {
-    return jsonResponse({ error: 'split_results_write_failed' }, 500);
+    return sendJson({ error: 'split_results_write_failed' }, 500);
   }
 
-  return jsonResponse({
+  return sendJson({
     accepted: true,
     totalTimeMs,
     rawTimeMs,
@@ -311,24 +319,100 @@ async function rejectAttempt(
     .eq('id', attemptId);
 }
 
-async function fetchProfile(
-  client: ReturnType<typeof createClient>,
-  userId: string,
-  fallbackName: string,
-): Promise<{ displayName: string; avatarUrl: string | null }> {
-  const { data } = await client
-    .from('user_profiles')
-    .select('display_name,avatar_url')
-    .eq('user_id', userId)
-    .maybeSingle();
+function buildPublicDisplayName(userId: string): string {
+  const suffix = userId.replaceAll('-', '').slice(0, 6).toUpperCase();
+  return suffix ? `Joueur ${suffix}` : 'Joueur Vexiio';
+}
+
+function sanitizeProfileDisplayName(value: unknown): string | null {
+  if (typeof value !== 'string') {
+    return null;
+  }
+
+  const normalized = value
+    .replace(/[\u0000-\u001f\u007f]/gu, '')
+    .replace(/\s+/gu, ' ')
+    .trim();
+
+  if (
+    normalized.length < 3 ||
+    normalized.length > 18 ||
+    !/^[\p{L}\p{M}\p{N}][\p{L}\p{M}\p{N} ._-]*$/u.test(normalized) ||
+    looksLikeContactOrUrl(normalized)
+  ) {
+    return null;
+  }
+
+  const moderationValue = normalizeForModeration(normalized);
+  const reservedNames = [
+    'admin',
+    'administrateur',
+    'moderateur',
+    'moderatrice',
+    'modérateur',
+    'modératrice',
+    'support',
+    'systeme',
+    'système',
+    'vexiio',
+  ].map(normalizeForModeration);
+  const blockedTerms = [
+    'connard',
+    'connasse',
+    'encule',
+    'enculé',
+    'hitler',
+    'nazi',
+    'porno',
+    'porn',
+    'pute',
+    'raciste',
+    'salope',
+    'sex',
+  ].map(normalizeForModeration);
+
+  if (
+    reservedNames.some((term) => moderationValue === term) ||
+    blockedTerms.some((term) => moderationValue.includes(term))
+  ) {
+    return null;
+  }
+
+  return normalized;
+}
+
+function normalizeForModeration(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/gu, '');
+}
+
+function looksLikeContactOrUrl(value: string): boolean {
+  return /@|https?:\/\/|www\.|(?:^|[^\p{L}\p{N}])[\p{L}\p{N}-]+\.(?:com|fr|net|org|io)\b/iu.test(
+    value,
+  );
+}
+
+function buildCorsHeaders(request: Request): Record<string, string> {
+  const origin = request.headers.get('Origin');
+  const allowOrigin = origin && ALLOWED_ORIGINS.has(origin) ? origin : 'https://vexiio.com';
 
   return {
-    displayName: data?.display_name || fallbackName,
-    avatarUrl: data?.avatar_url ?? null,
+    'Access-Control-Allow-Origin': allowOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Max-Age': '86400',
+    'Vary': 'Origin',
   };
 }
 
-function jsonResponse(body: unknown, status = 200): Response {
+function jsonResponse(
+  body: unknown,
+  status = 200,
+  corsHeaders: Record<string, string>,
+): Response {
   return new Response(JSON.stringify(body), {
     status,
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },

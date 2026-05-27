@@ -1,0 +1,1700 @@
+
+> find-the-flag@0.0.0 prestart
+> npm run generate:supabase-config
+
+
+> find-the-flag@0.0.0 generate:supabase-config
+> node scripts/generate-supabase-config.mjs
+
+
+> find-the-flag@0.0.0 start
+> ng serve --port 4201 --host localhost
+
+[33m>[39m Building...
+[32m√[39m Building...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m [36m92.78 kB[39m[2m | [22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m [36m85.01 kB[39m[2m | [22m
+[32mchunk-VRGEA43K.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m63.36 kB[39m[2m | [22m
+[32mchunk-HKPGFXM5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m16.72 kB[39m[2m | [22m
+[32mchunk-CMKCOU4Q.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-VFNQY3EH.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-ULQ5NDYH.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-KBWCPHQK.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m291.49 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-67G6KO55.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-5KP2L2YD.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m102.05 kB[39m[2m | [22m
+[32mchunk-OTGOGFUU.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-ZIXBIKY4.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-E2PDMLC6.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-YYZ5RNN5.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-6HE2OAJW.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-DJVIXL7P.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-TFQDIQ6C.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-74UA5J7S.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-62YTHHRO.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-TBMZLZMP.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-XX7QLACJ.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 7 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [2.574 seconds] - 2026-05-27T08:19:35.995Z
+
+Watch mode enabled. Watching for file changes...
+NOTE: Raw file sizes do not reflect development server per-request transformations.
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m4201[22m/[39m
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+Application bundle generation failed. [1.201 seconds] - 2026-05-27T08:53:20.107Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m [36m92.78 kB[39m[2m | [22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m [36m84.02 kB[39m[2m | [22m
+[32mchunk-VRGEA43K.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m63.36 kB[39m[2m | [22m
+[32mchunk-U5FSJW3F.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m16.70 kB[39m[2m | [22m
+[32mchunk-34IT73CQ.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-VFNQY3EH.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-ULQ5NDYH.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-KBWCPHQK.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m290.48 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-67G6KO55.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-S5Y5HF3M.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m102.05 kB[39m[2m | [22m
+[32mchunk-OTGOGFUU.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-ZIXBIKY4.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-E2PDMLC6.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-YYZ5RNN5.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-6HE2OAJW.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-UEEG7WC4.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-TFQDIQ6C.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-74UA5J7S.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-5WWV5XXO.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-TBMZLZMP.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-XX7QLACJ.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 7 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.271 seconds] - 2026-05-27T08:53:38.383Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m[1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m92.66 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.147 seconds] - 2026-05-27T08:53:51.625Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                  [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                   [2m | [22m [36m84.02 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                  [2m | [22m [1mRaw size[22m
+[32mchunk-CJLC3UB5.js[39m  [2m | [22m[2mspeedrun-page-component[22m[2m | [22m[36m102.05 kB[39m[2m | [22m
+[32mchunk-QBC76SJQ.js[39m  [2m | [22m[2mhome-page-component[22m    [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-ST6M3LGC.js[39m  [2m | [22m[2m-[22m                      [2m | [22m  [36m2.76 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.393 seconds] - 2026-05-27T08:54:13.753Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                  [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                   [2m | [22m [36m84.02 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                  [2m | [22m [1mRaw size[22m
+[32mchunk-ISE57DUE.js[39m  [2m | [22m[2mspeedrun-page-component[22m[2m | [22m[36m100.96 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.248 seconds] - 2026-05-27T08:54:30.045Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+
+No output file changes.
+
+Application bundle generation complete. [0.003 seconds] - 2026-05-27T09:01:10.432Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                               [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                                [2m | [22m [36m84.15 kB[39m[2m | [22m
+[32mchunk-M7HZ3SNC.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m15.40 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                               [2m | [22m [1mRaw size[22m
+[32mchunk-GYGEVEQA.js[39m  [2m | [22m[2mspeedrun-page-component[22m             [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-NDGHO5P4.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m      [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-NNUENUWB.js[39m  [2m | [22m[2mhome-page-component[22m                 [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-ATALTJAM.js[39m  [2m | [22m[2machievements-page-component[22m         [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-XNELZPNS.js[39m  [2m | [22m[2mshape-to-country-game-page-component[22m[2m | [22m  [36m9.21 kB[39m[2m | [22m
+[32mchunk-C7R3WMBS.js[39m  [2m | [22m[2mprivacy-page-component[22m              [2m | [22m  [36m7.76 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.447 seconds] - 2026-05-27T09:04:37.595Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m[1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m86.02 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.244 seconds] - 2026-05-27T09:05:02.076Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m[1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m86.43 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.296 seconds] - 2026-05-27T09:05:21.738Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                               [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                                [2m | [22m [36m86.43 kB[39m[2m | [22m
+[32mchunk-U2KBLOPC.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m64.52 kB[39m[2m | [22m
+[32mchunk-6N3NGOI3.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m16.70 kB[39m[2m | [22m
+[32mchunk-P33VJK5A.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-3CTFQ4VI.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-KNIAMXN3.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-7UQ5EPMS.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m  [36m2.98 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                               [2m | [22m [1mRaw size[22m
+[32mchunk-NYC7W5UH.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m    [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-WPR6HUCK.js[39m  [2m | [22m[2mspeedrun-page-component[22m             [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-2QMEAONE.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m    [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-BROCSGJH.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m  [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-4NUPF6FH.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m      [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-EO2IKJ6Q.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m  [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-537IGOMK.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-3KIN2KG6.js[39m  [2m | [22m[2mhome-page-component[22m                 [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-Y47PZCGW.js[39m  [2m | [22m[2mcountries-page-component[22m            [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-A4BKKCHS.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-MT26X56W.js[39m  [2m | [22m[2machievements-page-component[22m         [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-QAULYGB2.js[39m  [2m | [22m[2mrecords-page-component[22m              [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-NSJFATFU.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m [2m | [22m [36m11.64 kB[39m[2m | [22m
+[32mchunk-A6DWI4VP.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m  [36m9.90 kB[39m[2m | [22m
+[32mchunk-NFSPN2VC.js[39m  [2m | [22m[2mshape-to-country-game-page-component[22m[2m | [22m  [36m9.21 kB[39m[2m | [22m
+[2m...and 3 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.086 seconds] - 2026-05-27T09:05:46.856Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                               [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                                [2m | [22m [36m86.43 kB[39m[2m | [22m
+[32mchunk-CR5VV6GL.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m65.45 kB[39m[2m | [22m
+[32mchunk-O4NAWL5J.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m16.70 kB[39m[2m | [22m
+[32mchunk-YPZZYKLY.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-5UDEH6ZR.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-QVVPQYFH.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-2BB42JMU.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m  [36m2.98 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                               [2m | [22m [1mRaw size[22m
+[32mchunk-EHJAUHG2.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m    [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-TLLLBLE7.js[39m  [2m | [22m[2mspeedrun-page-component[22m             [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-Q2OSDCTX.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m    [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-QHTXWEIH.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m  [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-7SZJOMOX.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m      [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-HCFFLWC6.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m  [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-RHAQHFOL.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-45PCDBM5.js[39m  [2m | [22m[2mhome-page-component[22m                 [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-YM7NQ4NM.js[39m  [2m | [22m[2mcountries-page-component[22m            [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-GKTQWHGQ.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-VGCIXU44.js[39m  [2m | [22m[2machievements-page-component[22m         [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-KX5GU37N.js[39m  [2m | [22m[2mrecords-page-component[22m              [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-PVDLSFXF.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m [2m | [22m [36m11.64 kB[39m[2m | [22m
+[32mchunk-ZZRH5Q2O.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m  [36m9.90 kB[39m[2m | [22m
+[32mchunk-HIMI7FDI.js[39m  [2m | [22m[2mshape-to-country-game-page-component[22m[2m | [22m  [36m9.21 kB[39m[2m | [22m
+[2m...and 3 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.132 seconds] - 2026-05-27T09:06:06.805Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                  [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                   [2m | [22m [36m86.43 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                  [2m | [22m [1mRaw size[22m
+[32mchunk-ZUW66SMT.js[39m  [2m | [22m[2mspeedrun-page-component[22m[2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-PMET2XDK.js[39m  [2m | [22m[2mhome-page-component[22m    [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-XCIQLBXP.js[39m  [2m | [22m[2m-[22m                      [2m | [22m  [36m2.96 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.396 seconds] - 2026-05-27T09:07:53.733Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m [36m92.66 kB[39m[2m | [22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m [36m86.43 kB[39m[2m | [22m
+[32mchunk-CR5VV6GL.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m65.45 kB[39m[2m | [22m
+[32mchunk-O4NAWL5J.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m16.70 kB[39m[2m | [22m
+[32mchunk-YPZZYKLY.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-5UDEH6ZR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-QVVPQYFH.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-2BB42JMU.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m294.85 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-EHJAUHG2.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-ZUW66SMT.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-Q2OSDCTX.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-QHTXWEIH.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-7SZJOMOX.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-HCFFLWC6.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-RHAQHFOL.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-PMET2XDK.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-YM7NQ4NM.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-GKTQWHGQ.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-VGCIXU44.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-KX5GU37N.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-PVDLSFXF.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 8 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.070 seconds] - 2026-05-27T09:08:17.524Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                  [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                   [2m | [22m [36m86.43 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                  [2m | [22m [1mRaw size[22m
+[32mchunk-HKFW25AH.js[39m  [2m | [22m[2mspeedrun-page-component[22m[2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-EKUYURQE.js[39m  [2m | [22m[2mhome-page-component[22m    [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-BQOCQPHD.js[39m  [2m | [22m[2m-[22m                      [2m | [22m  [36m2.94 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.577 seconds] - 2026-05-27T09:16:02.791Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                  [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                   [2m | [22m [36m86.43 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                  [2m | [22m [1mRaw size[22m
+[32mchunk-FVQV3MTQ.js[39m  [2m | [22m[2mspeedrun-page-component[22m[2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-EVDZBJ4Q.js[39m  [2m | [22m[2mhome-page-component[22m    [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-7I4RL2ZP.js[39m  [2m | [22m[2m-[22m                      [2m | [22m  [36m2.93 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.225 seconds] - 2026-05-27T09:16:19.363Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m [36m92.66 kB[39m[2m | [22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m [36m86.43 kB[39m[2m | [22m
+[32mchunk-CR5VV6GL.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m65.45 kB[39m[2m | [22m
+[32mchunk-O4NAWL5J.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m16.70 kB[39m[2m | [22m
+[32mchunk-YPZZYKLY.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-5UDEH6ZR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-QVVPQYFH.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-2BB42JMU.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m294.85 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-EHJAUHG2.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-FVQV3MTQ.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-Q2OSDCTX.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-QHTXWEIH.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-7SZJOMOX.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-HCFFLWC6.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-RHAQHFOL.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-EVDZBJ4Q.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-YM7NQ4NM.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-GKTQWHGQ.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-VGCIXU44.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-KX5GU37N.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-PVDLSFXF.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 8 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.136 seconds] - 2026-05-27T09:16:50.784Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                      [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                       [2m | [22m [36m86.43 kB[39m[2m | [22m
+[32mchunk-T5E4YHCA.js[39m  [2m | [22m[2m-[22m                          [2m | [22m [36m21.58 kB[39m[2m | [22m
+[32mchunk-VFZPQ4JD.js[39m  [2m | [22m[2m-[22m                          [2m | [22m [36m15.40 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                      [2m | [22m [1mRaw size[22m
+[32mchunk-VE2PD6CN.js[39m  [2m | [22m[2mspeedrun-page-component[22m    [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-7VKX5G3T.js[39m  [2m | [22m[2mhome-page-component[22m        [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-SWRVFATL.js[39m  [2m | [22m[2machievements-page-component[22m[2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-IWRUXAGN.js[39m  [2m | [22m[2m-[22m                          [2m | [22m  [36m2.93 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.558 seconds] - 2026-05-27T09:24:29.034Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.217 seconds] - 2026-05-27T09:26:40.791Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.340 seconds] - 2026-05-27T09:27:23.313Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.154 seconds] - 2026-05-27T09:28:48.696Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.175 seconds] - 2026-05-27T09:30:27.201Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.093 seconds] - 2026-05-27T09:30:55.546Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.434 seconds] - 2026-05-27T09:31:23.657Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.285 seconds] - 2026-05-27T09:35:34.176Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.584 seconds] - 2026-05-27T09:39:52.092Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.221 seconds] - 2026-05-27T09:40:13.855Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.169 seconds] - 2026-05-27T09:42:12.939Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.241 seconds] - 2026-05-27T09:42:44.219Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.058 seconds] - 2026-05-27T09:43:04.785Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m100.53 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m [36m97.26 kB[39m[2m | [22m
+[32mchunk-XXFPNE26.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m67.96 kB[39m[2m | [22m
+[32mchunk-B3OAAAVJ.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m21.87 kB[39m[2m | [22m
+[32mchunk-VGIH3CFU.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-7BYMYRFM.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-SGHWDABE.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-GLSC55I6.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m321.23 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-HDTZ4A3Y.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-4JAPBROJ.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-KA2L3HWN.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-VQQ36MCA.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-6CPHBHNF.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-7KXJ2ZKH.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-ITDFTAUQ.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-O5JI4GDB.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-GOEGK57U.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-ABPQWSBM.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-IIARBLKP.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-U7LREXML.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-BGX4XTR7.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 8 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.199 seconds] - 2026-05-27T09:44:48.128Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m100.53 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m [36m97.26 kB[39m[2m | [22m
+[32mchunk-XXFPNE26.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m67.96 kB[39m[2m | [22m
+[32mchunk-B3OAAAVJ.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m21.87 kB[39m[2m | [22m
+[32mchunk-VGIH3CFU.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-7BYMYRFM.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-SGHWDABE.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-GLSC55I6.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m321.23 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-HDTZ4A3Y.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-4JAPBROJ.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-KA2L3HWN.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-VQQ36MCA.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-6CPHBHNF.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-7KXJ2ZKH.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-ITDFTAUQ.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-O5JI4GDB.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-GOEGK57U.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-ABPQWSBM.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-IIARBLKP.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-U7LREXML.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-BGX4XTR7.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 8 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.096 seconds] - 2026-05-27T09:45:09.623Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m100.53 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m [36m97.26 kB[39m[2m | [22m
+[32mchunk-XXFPNE26.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m67.96 kB[39m[2m | [22m
+[32mchunk-B3OAAAVJ.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m21.87 kB[39m[2m | [22m
+[32mchunk-VGIH3CFU.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-7BYMYRFM.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-SGHWDABE.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-GLSC55I6.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m321.23 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-HDTZ4A3Y.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-4JAPBROJ.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-KA2L3HWN.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-VQQ36MCA.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-6CPHBHNF.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-7KXJ2ZKH.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-ITDFTAUQ.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-O5JI4GDB.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-GOEGK57U.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-ABPQWSBM.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-IIARBLKP.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-U7LREXML.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-BGX4XTR7.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 8 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.084 seconds] - 2026-05-27T09:45:59.948Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m100.60 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.219 seconds] - 2026-05-27T10:38:12.604Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m100.53 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.240 seconds] - 2026-05-27T10:38:36.938Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m[1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m97.36 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.101 seconds] - 2026-05-27T10:38:52.352Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m101.71 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.250 seconds] - 2026-05-27T10:39:15.998Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m[1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m97.85 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.150 seconds] - 2026-05-27T10:39:35.571Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m102.32 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.259 seconds] - 2026-05-27T10:40:25.618Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m102.32 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m [36m97.85 kB[39m[2m | [22m
+[32mchunk-XXFPNE26.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m67.96 kB[39m[2m | [22m
+[32mchunk-B3OAAAVJ.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m21.87 kB[39m[2m | [22m
+[32mchunk-VGIH3CFU.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-7BYMYRFM.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-SGHWDABE.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-GLSC55I6.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m323.62 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-HDTZ4A3Y.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-4JAPBROJ.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-KA2L3HWN.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-VQQ36MCA.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-6CPHBHNF.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-7KXJ2ZKH.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-ITDFTAUQ.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-O5JI4GDB.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-GOEGK57U.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-ABPQWSBM.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-IIARBLKP.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-U7LREXML.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-BGX4XTR7.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 8 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.075 seconds] - 2026-05-27T10:41:05.029Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m100.53 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.176 seconds] - 2026-05-27T10:42:09.638Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m[1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m98.44 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.074 seconds] - 2026-05-27T10:42:33.351Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m100.53 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m [36m98.44 kB[39m[2m | [22m
+[32mchunk-XXFPNE26.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m67.96 kB[39m[2m | [22m
+[32mchunk-B3OAAAVJ.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m21.87 kB[39m[2m | [22m
+[32mchunk-VGIH3CFU.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-7BYMYRFM.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-SGHWDABE.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-GLSC55I6.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m322.41 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-HDTZ4A3Y.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-4JAPBROJ.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-KA2L3HWN.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-VQQ36MCA.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-6CPHBHNF.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-7KXJ2ZKH.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-ITDFTAUQ.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-O5JI4GDB.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-GOEGK57U.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-ABPQWSBM.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-IIARBLKP.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-U7LREXML.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-BGX4XTR7.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 8 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.071 seconds] - 2026-05-27T10:43:11.616Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.505 seconds] - 2026-05-27T11:20:16.583Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.212 seconds] - 2026-05-27T11:20:47.561Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m101.53 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m [36m98.44 kB[39m[2m | [22m
+[32mchunk-XXFPNE26.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m67.96 kB[39m[2m | [22m
+[32mchunk-SP63JOOE.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m22.95 kB[39m[2m | [22m
+[32mchunk-N4W7JQSS.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-7BYMYRFM.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-SGHWDABE.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-GLSC55I6.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m324.50 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-HDTZ4A3Y.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-4SKWOPTO.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-KA2L3HWN.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-VQQ36MCA.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-6CPHBHNF.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-7KXJ2ZKH.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-ITDFTAUQ.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-U2PH2D55.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-GOEGK57U.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-ABPQWSBM.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-JRTHZXXD.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-U7LREXML.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-BGX4XTR7.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 8 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.313 seconds] - 2026-05-27T11:21:18.683Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                               [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                                [2m | [22m[36m101.53 kB[39m[2m | [22m
+[32mchunk-7LYQDBY7.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m68.38 kB[39m[2m | [22m
+[32mchunk-N5UKKV6L.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m22.95 kB[39m[2m | [22m
+[32mchunk-MGIOE75Z.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-4UAP7QH7.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-OQY5SKIP.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-UIGHMZVF.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m  [36m2.98 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                               [2m | [22m [1mRaw size[22m
+[32mchunk-T3X2IPRE.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m    [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-CZYLFH77.js[39m  [2m | [22m[2mspeedrun-page-component[22m             [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-3HJ7MGBB.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m    [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-ZAWOPBDT.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m  [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-QP3ZDNZH.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m      [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-ZOPPU56Y.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m  [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-M2CEVQAT.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-M2AFN2WO.js[39m  [2m | [22m[2mhome-page-component[22m                 [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-52BXBV56.js[39m  [2m | [22m[2mcountries-page-component[22m            [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-LJUUJIDT.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-R7EKE44F.js[39m  [2m | [22m[2machievements-page-component[22m         [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-PCBZTJRQ.js[39m  [2m | [22m[2mrecords-page-component[22m              [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-I4WCV4NH.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m [2m | [22m [36m11.64 kB[39m[2m | [22m
+[32mchunk-7YBCMQ6Y.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m  [36m9.90 kB[39m[2m | [22m
+[32mchunk-MEP2L6J7.js[39m  [2m | [22m[2mshape-to-country-game-page-component[22m[2m | [22m  [36m9.21 kB[39m[2m | [22m
+[2m...and 3 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.337 seconds] - 2026-05-27T11:21:51.540Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m[1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m97.86 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.105 seconds] - 2026-05-27T11:22:22.809Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m[1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m97.86 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.082 seconds] - 2026-05-27T11:23:16.633Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m[1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m97.92 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.089 seconds] - 2026-05-27T11:45:37.514Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m101.64 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.366 seconds] - 2026-05-27T11:45:57.213Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m[1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m98.37 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.088 seconds] - 2026-05-27T11:46:16.491Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m101.70 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.217 seconds] - 2026-05-27T11:46:42.073Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m101.70 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m [36m98.37 kB[39m[2m | [22m
+[32mchunk-7LYQDBY7.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m68.38 kB[39m[2m | [22m
+[32mchunk-N5UKKV6L.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m22.95 kB[39m[2m | [22m
+[32mchunk-MGIOE75Z.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-4UAP7QH7.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-OQY5SKIP.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-UIGHMZVF.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m325.01 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-T3X2IPRE.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-CZYLFH77.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-3HJ7MGBB.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-ZAWOPBDT.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-QP3ZDNZH.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-ZOPPU56Y.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-M2CEVQAT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-M2AFN2WO.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-52BXBV56.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-LJUUJIDT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-R7EKE44F.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-PCBZTJRQ.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-I4WCV4NH.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 8 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.259 seconds] - 2026-05-27T11:48:27.200Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m[1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m98.38 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.077 seconds] - 2026-05-27T12:19:40.462Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m101.70 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m [36m98.38 kB[39m[2m | [22m
+[32mchunk-7LYQDBY7.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m68.38 kB[39m[2m | [22m
+[32mchunk-N5UKKV6L.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m22.95 kB[39m[2m | [22m
+[32mchunk-MGIOE75Z.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-4UAP7QH7.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-OQY5SKIP.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-UIGHMZVF.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m325.02 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-T3X2IPRE.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-CZYLFH77.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-3HJ7MGBB.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-ZAWOPBDT.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-QP3ZDNZH.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-ZOPPU56Y.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-M2CEVQAT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-M2AFN2WO.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-52BXBV56.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-LJUUJIDT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-R7EKE44F.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-PCBZTJRQ.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-I4WCV4NH.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 8 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.086 seconds] - 2026-05-27T12:20:32.958Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                      [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                       [2m | [22m[36m101.70 kB[39m[2m | [22m
+[32mchunk-IKL3R6DL.js[39m  [2m | [22m[2m-[22m                          [2m | [22m [36m23.02 kB[39m[2m | [22m
+[32mchunk-S2VXX4D5.js[39m  [2m | [22m[2m-[22m                          [2m | [22m [36m15.40 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                      [2m | [22m [1mRaw size[22m
+[32mchunk-IHKFTN5X.js[39m  [2m | [22m[2mspeedrun-page-component[22m    [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-RPTK72JP.js[39m  [2m | [22m[2mhome-page-component[22m        [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-OKABCFOU.js[39m  [2m | [22m[2machievements-page-component[22m[2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-PSB4ZPYL.js[39m  [2m | [22m[2m-[22m                          [2m | [22m  [36m2.89 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.429 seconds] - 2026-05-27T15:15:08.051Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                      [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                       [2m | [22m[36m101.70 kB[39m[2m | [22m
+[32mchunk-36QYSPOJ.js[39m  [2m | [22m[2m-[22m                          [2m | [22m [36m22.94 kB[39m[2m | [22m
+[32mchunk-45YU4TD4.js[39m  [2m | [22m[2m-[22m                          [2m | [22m [36m15.40 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                      [2m | [22m [1mRaw size[22m
+[32mchunk-6D44L4LU.js[39m  [2m | [22m[2mspeedrun-page-component[22m    [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-2RBNUQTX.js[39m  [2m | [22m[2mhome-page-component[22m        [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-6N3NOU7E.js[39m  [2m | [22m[2machievements-page-component[22m[2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-FXEMVXY7.js[39m  [2m | [22m[2m-[22m                          [2m | [22m  [36m2.89 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.087 seconds] - 2026-05-27T15:15:31.541Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.197 seconds] - 2026-05-27T15:16:24.953Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m107.96 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m [36m98.38 kB[39m[2m | [22m
+[32mchunk-7LYQDBY7.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m68.38 kB[39m[2m | [22m
+[32mchunk-GVKRQGOG.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m22.73 kB[39m[2m | [22m
+[32mchunk-TKZVDHED.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-4UAP7QH7.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-MRCX6PCV.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m5.72 kB[39m[2m | [22m
+[32mchunk-OQY5SKIP.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-UIGHMZVF.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m336.78 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-T3X2IPRE.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-WFYOGZUE.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-3HJ7MGBB.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-ZAWOPBDT.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-QP3ZDNZH.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-ZOPPU56Y.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-M2CEVQAT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-EYZUET7H.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-52BXBV56.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-LJUUJIDT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-KIFRNAKX.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-PCBZTJRQ.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-I4WCV4NH.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 7 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.323 seconds] - 2026-05-27T15:17:01.126Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                               [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                                [2m | [22m[36m107.96 kB[39m[2m | [22m
+[32mchunk-NBLXWUOG.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m68.83 kB[39m[2m | [22m
+[32mchunk-P3CIAAAX.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m22.73 kB[39m[2m | [22m
+[32mchunk-J2OXFPMN.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-X2U6EAST.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-RWJYLDD7.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-FI3QYMU6.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m  [36m2.98 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                               [2m | [22m [1mRaw size[22m
+[32mchunk-3XJMEIJV.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m    [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-YZKKYAZL.js[39m  [2m | [22m[2mspeedrun-page-component[22m             [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-6KIBM6UR.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m    [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-MO7S2QFN.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m  [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-4RUJLMQW.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m      [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-EN2JNPC3.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m  [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-DMYQ3HNT.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-3Z22LMYJ.js[39m  [2m | [22m[2mhome-page-component[22m                 [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-PDQTVNBT.js[39m  [2m | [22m[2mcountries-page-component[22m            [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-ESXL2JVA.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-IZYU2ROL.js[39m  [2m | [22m[2machievements-page-component[22m         [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-Z7KD7MIO.js[39m  [2m | [22m[2mrecords-page-component[22m              [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-GTWRX4NG.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m [2m | [22m [36m11.64 kB[39m[2m | [22m
+[32mchunk-4PWVEN5B.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m  [36m9.90 kB[39m[2m | [22m
+[32mchunk-6IO2VCC5.js[39m  [2m | [22m[2mshape-to-country-game-page-component[22m[2m | [22m  [36m9.21 kB[39m[2m | [22m
+[2m...and 3 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.228 seconds] - 2026-05-27T15:17:52.021Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m[1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m99.11 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.159 seconds] - 2026-05-27T15:18:29.164Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m[1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m99.47 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.072 seconds] - 2026-05-27T15:19:06.167Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                      [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                       [2m | [22m[36m107.96 kB[39m[2m | [22m
+[32mchunk-GEVWXUC2.js[39m  [2m | [22m[2m-[22m                          [2m | [22m [36m21.69 kB[39m[2m | [22m
+[32mchunk-3C5GEI6D.js[39m  [2m | [22m[2m-[22m                          [2m | [22m [36m15.40 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                      [2m | [22m [1mRaw size[22m
+[32mchunk-HOMFE2NB.js[39m  [2m | [22m[2mspeedrun-page-component[22m    [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-JIL3TWOM.js[39m  [2m | [22m[2mhome-page-component[22m        [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-ZBN3ZSQO.js[39m  [2m | [22m[2machievements-page-component[22m[2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-3MIL3PXF.js[39m  [2m | [22m[2m-[22m                          [2m | [22m  [36m2.89 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.390 seconds] - 2026-05-27T15:20:29.019Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m107.96 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m [36m99.47 kB[39m[2m | [22m
+[32mchunk-NBLXWUOG.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m68.83 kB[39m[2m | [22m
+[32mchunk-GEVWXUC2.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m21.69 kB[39m[2m | [22m
+[32mchunk-3C5GEI6D.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-X2U6EAST.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-MRCX6PCV.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m5.72 kB[39m[2m | [22m
+[32mchunk-RWJYLDD7.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-FI3QYMU6.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m337.29 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-3XJMEIJV.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-HOMFE2NB.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-6KIBM6UR.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-MO7S2QFN.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-4RUJLMQW.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-EN2JNPC3.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-DMYQ3HNT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-JIL3TWOM.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-PDQTVNBT.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-ESXL2JVA.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-ZBN3ZSQO.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-Z7KD7MIO.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-GTWRX4NG.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 7 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.073 seconds] - 2026-05-27T15:20:51.712Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m108.94 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.333 seconds] - 2026-05-27T15:23:01.694Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m108.94 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m [36m99.47 kB[39m[2m | [22m
+[32mchunk-NBLXWUOG.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m68.83 kB[39m[2m | [22m
+[32mchunk-GEVWXUC2.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m21.69 kB[39m[2m | [22m
+[32mchunk-3C5GEI6D.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-X2U6EAST.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-MRCX6PCV.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m5.72 kB[39m[2m | [22m
+[32mchunk-RWJYLDD7.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-FI3QYMU6.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m338.27 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-3XJMEIJV.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-HOMFE2NB.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-6KIBM6UR.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-MO7S2QFN.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-4RUJLMQW.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-EN2JNPC3.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-DMYQ3HNT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-JIL3TWOM.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-PDQTVNBT.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-ESXL2JVA.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-ZBN3ZSQO.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-Z7KD7MIO.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-GTWRX4NG.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 7 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.069 seconds] - 2026-05-27T15:23:22.645Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m107.96 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.244 seconds] - 2026-05-27T15:24:03.105Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m[1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m99.65 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.095 seconds] - 2026-05-27T15:24:26.451Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m107.96 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m [36m99.65 kB[39m[2m | [22m
+[32mchunk-NBLXWUOG.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m68.83 kB[39m[2m | [22m
+[32mchunk-GEVWXUC2.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m21.69 kB[39m[2m | [22m
+[32mchunk-3C5GEI6D.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-X2U6EAST.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-MRCX6PCV.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m5.72 kB[39m[2m | [22m
+[32mchunk-RWJYLDD7.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-FI3QYMU6.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m337.47 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-3XJMEIJV.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-HOMFE2NB.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-6KIBM6UR.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-MO7S2QFN.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-4RUJLMQW.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-EN2JNPC3.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-DMYQ3HNT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-JIL3TWOM.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-PDQTVNBT.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-ESXL2JVA.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-ZBN3ZSQO.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-Z7KD7MIO.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-GTWRX4NG.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 7 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.103 seconds] - 2026-05-27T15:24:45.845Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m107.96 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m [36m99.65 kB[39m[2m | [22m
+[32mchunk-NBLXWUOG.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m68.83 kB[39m[2m | [22m
+[32mchunk-GEVWXUC2.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m21.69 kB[39m[2m | [22m
+[32mchunk-3C5GEI6D.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-X2U6EAST.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-MRCX6PCV.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m5.72 kB[39m[2m | [22m
+[32mchunk-RWJYLDD7.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-FI3QYMU6.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m337.47 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-3XJMEIJV.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-HOMFE2NB.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-6KIBM6UR.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-MO7S2QFN.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-4RUJLMQW.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-EN2JNPC3.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-DMYQ3HNT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-JIL3TWOM.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-PDQTVNBT.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-ESXL2JVA.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-ZBN3ZSQO.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-Z7KD7MIO.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-GTWRX4NG.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 7 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.095 seconds] - 2026-05-27T15:30:21.000Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m108.29 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.221 seconds] - 2026-05-27T15:33:11.658Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m [1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m100.21 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.077 seconds] - 2026-05-27T15:33:44.353Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m [1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m101.14 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.085 seconds] - 2026-05-27T15:34:08.442Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m108.29 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m[36m101.14 kB[39m[2m | [22m
+[32mchunk-NBLXWUOG.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m68.83 kB[39m[2m | [22m
+[32mchunk-GEVWXUC2.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m21.69 kB[39m[2m | [22m
+[32mchunk-3C5GEI6D.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-X2U6EAST.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-MRCX6PCV.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m5.72 kB[39m[2m | [22m
+[32mchunk-RWJYLDD7.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-FI3QYMU6.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m339.29 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-3XJMEIJV.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-HOMFE2NB.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-6KIBM6UR.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-MO7S2QFN.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-4RUJLMQW.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-EN2JNPC3.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-DMYQ3HNT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-JIL3TWOM.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-PDQTVNBT.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-ESXL2JVA.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-ZBN3ZSQO.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-Z7KD7MIO.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-GTWRX4NG.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 7 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.082 seconds] - 2026-05-27T15:34:27.616Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m [1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m101.21 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.084 seconds] - 2026-05-27T15:36:09.615Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m108.29 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m[36m101.21 kB[39m[2m | [22m
+[32mchunk-NBLXWUOG.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m68.83 kB[39m[2m | [22m
+[32mchunk-GEVWXUC2.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m21.69 kB[39m[2m | [22m
+[32mchunk-3C5GEI6D.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-X2U6EAST.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-MRCX6PCV.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m5.72 kB[39m[2m | [22m
+[32mchunk-RWJYLDD7.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-FI3QYMU6.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m339.36 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-3XJMEIJV.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-HOMFE2NB.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-6KIBM6UR.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-MO7S2QFN.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-4RUJLMQW.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-EN2JNPC3.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-DMYQ3HNT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-JIL3TWOM.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-PDQTVNBT.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-ESXL2JVA.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-ZBN3ZSQO.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-Z7KD7MIO.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-GTWRX4NG.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 7 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.087 seconds] - 2026-05-27T15:36:26.978Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m [1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m101.86 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.083 seconds] - 2026-05-27T15:39:13.847Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m [1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m101.93 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.097 seconds] - 2026-05-27T15:39:37.875Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m108.29 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m[36m101.93 kB[39m[2m | [22m
+[32mchunk-NBLXWUOG.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m68.83 kB[39m[2m | [22m
+[32mchunk-GEVWXUC2.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m21.69 kB[39m[2m | [22m
+[32mchunk-3C5GEI6D.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-X2U6EAST.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-MRCX6PCV.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m5.72 kB[39m[2m | [22m
+[32mchunk-RWJYLDD7.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-FI3QYMU6.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m340.08 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-3XJMEIJV.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-HOMFE2NB.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-6KIBM6UR.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-MO7S2QFN.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-4RUJLMQW.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-EN2JNPC3.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-DMYQ3HNT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-JIL3TWOM.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-PDQTVNBT.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-ESXL2JVA.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-ZBN3ZSQO.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-Z7KD7MIO.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-GTWRX4NG.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 7 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.090 seconds] - 2026-05-27T15:40:02.607Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m [1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m101.98 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.100 seconds] - 2026-05-27T15:41:14.598Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m108.29 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m[36m101.98 kB[39m[2m | [22m
+[32mchunk-NBLXWUOG.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m68.83 kB[39m[2m | [22m
+[32mchunk-GEVWXUC2.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m21.69 kB[39m[2m | [22m
+[32mchunk-3C5GEI6D.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-X2U6EAST.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-MRCX6PCV.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m5.72 kB[39m[2m | [22m
+[32mchunk-RWJYLDD7.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-FI3QYMU6.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m340.13 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-3XJMEIJV.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-HOMFE2NB.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-6KIBM6UR.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-MO7S2QFN.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-4RUJLMQW.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-EN2JNPC3.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-DMYQ3HNT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-JIL3TWOM.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-PDQTVNBT.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-ESXL2JVA.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-ZBN3ZSQO.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-Z7KD7MIO.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-GTWRX4NG.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 7 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.073 seconds] - 2026-05-27T15:41:35.044Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m [1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m103.24 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.081 seconds] - 2026-05-27T15:46:28.965Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m108.29 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m[36m103.24 kB[39m[2m | [22m
+[32mchunk-NBLXWUOG.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m68.83 kB[39m[2m | [22m
+[32mchunk-GEVWXUC2.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m21.69 kB[39m[2m | [22m
+[32mchunk-3C5GEI6D.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-X2U6EAST.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-MRCX6PCV.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m5.72 kB[39m[2m | [22m
+[32mchunk-RWJYLDD7.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-FI3QYMU6.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m341.39 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-3XJMEIJV.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-HOMFE2NB.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-6KIBM6UR.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-MO7S2QFN.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-4RUJLMQW.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-EN2JNPC3.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-DMYQ3HNT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-JIL3TWOM.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-PDQTVNBT.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-ESXL2JVA.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-ZBN3ZSQO.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-Z7KD7MIO.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-GTWRX4NG.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 7 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.088 seconds] - 2026-05-27T15:46:46.155Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m [1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m103.27 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.080 seconds] - 2026-05-27T15:48:08.567Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m108.29 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m[36m103.27 kB[39m[2m | [22m
+[32mchunk-NBLXWUOG.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m68.83 kB[39m[2m | [22m
+[32mchunk-GEVWXUC2.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m21.69 kB[39m[2m | [22m
+[32mchunk-3C5GEI6D.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-X2U6EAST.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-MRCX6PCV.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m5.72 kB[39m[2m | [22m
+[32mchunk-RWJYLDD7.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-FI3QYMU6.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m341.42 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-3XJMEIJV.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-HOMFE2NB.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-6KIBM6UR.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-MO7S2QFN.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-4RUJLMQW.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-EN2JNPC3.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-DMYQ3HNT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-JIL3TWOM.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-PDQTVNBT.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-ESXL2JVA.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-ZBN3ZSQO.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-Z7KD7MIO.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-GTWRX4NG.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 7 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.063 seconds] - 2026-05-27T15:48:32.889Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.267 seconds] - 2026-05-27T15:52:04.686Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m108.29 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m[36m103.27 kB[39m[2m | [22m
+[32mchunk-NBLXWUOG.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m68.83 kB[39m[2m | [22m
+[32mchunk-GEVWXUC2.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m21.69 kB[39m[2m | [22m
+[32mchunk-3C5GEI6D.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-X2U6EAST.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-MRCX6PCV.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m5.72 kB[39m[2m | [22m
+[32mchunk-RWJYLDD7.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-FI3QYMU6.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m341.42 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-3XJMEIJV.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-HOMFE2NB.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-6KIBM6UR.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-MO7S2QFN.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-4RUJLMQW.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-EN2JNPC3.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-DMYQ3HNT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-6SG6EANE.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-PDQTVNBT.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-ESXL2JVA.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-ZBN3ZSQO.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-Z7KD7MIO.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-GTWRX4NG.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 7 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.198 seconds] - 2026-05-27T15:52:36.385Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                               [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                                [2m | [22m[36m108.29 kB[39m[2m | [22m
+[32mchunk-SYV5FRG2.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m69.06 kB[39m[2m | [22m
+[32mchunk-2XHPRZ7F.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m21.69 kB[39m[2m | [22m
+[32mchunk-SRW7XHYL.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-FLPPAOU2.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-Y3E4ESZT.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-43FD2HM3.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m  [36m2.98 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                               [2m | [22m [1mRaw size[22m
+[32mchunk-PDF4HTPP.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m    [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-Z37F4P36.js[39m  [2m | [22m[2mspeedrun-page-component[22m             [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-ANQ7RY6X.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m    [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-LQ5AA4HH.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m  [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-NZLWXJ2D.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m      [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-MKFJ7FVF.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m  [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-FVY24ZIZ.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-G7HJZHUX.js[39m  [2m | [22m[2mhome-page-component[22m                 [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-E5T5T7GO.js[39m  [2m | [22m[2mcountries-page-component[22m            [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-2BM66OQ3.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-HI4WW5CL.js[39m  [2m | [22m[2machievements-page-component[22m         [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-DRZ2MGVW.js[39m  [2m | [22m[2mrecords-page-component[22m              [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-HSSGTDRI.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m [2m | [22m [36m11.64 kB[39m[2m | [22m
+[32mchunk-OD6VXBLC.js[39m  [2m | [22m[2m-[22m                                   [2m | [22m  [36m9.90 kB[39m[2m | [22m
+[32mchunk-PPTEZ6AJ.js[39m  [2m | [22m[2mshape-to-country-game-page-component[22m[2m | [22m  [36m9.21 kB[39m[2m | [22m
+[2m...and 3 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.206 seconds] - 2026-05-27T15:53:09.802Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m [1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m[2m | [22m[36m103.00 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.081 seconds] - 2026-05-27T15:53:33.386Z
+
+Stylesheet update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m108.29 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m[36m103.00 kB[39m[2m | [22m
+[32mchunk-SYV5FRG2.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m69.06 kB[39m[2m | [22m
+[32mchunk-2XHPRZ7F.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m21.69 kB[39m[2m | [22m
+[32mchunk-SRW7XHYL.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-FLPPAOU2.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-MRCX6PCV.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m5.72 kB[39m[2m | [22m
+[32mchunk-Y3E4ESZT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-43FD2HM3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m341.38 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-PDF4HTPP.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-Z37F4P36.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-ANQ7RY6X.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.69 kB[39m[2m | [22m
+[32mchunk-LQ5AA4HH.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-NZLWXJ2D.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-MKFJ7FVF.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-FVY24ZIZ.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-G7HJZHUX.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-E5T5T7GO.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-2BM66OQ3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-HI4WW5CL.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-DRZ2MGVW.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-HSSGTDRI.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 7 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.118 seconds] - 2026-05-27T15:53:53.193Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                           [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                            [2m | [22m[36m108.29 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                           [2m | [22m [1mRaw size[22m
+[32mchunk-ISJVLRHW.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m[2m | [22m [36m49.98 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.213 seconds] - 2026-05-27T15:56:45.023Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m108.42 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.520 seconds] - 2026-05-27T21:32:04.014Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m108.41 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.237 seconds] - 2026-05-27T21:32:17.299Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m108.43 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.269 seconds] - 2026-05-27T21:32:36.673Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m108.29 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.290 seconds] - 2026-05-27T21:32:53.455Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m108.44 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.265 seconds] - 2026-05-27T21:33:27.547Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m108.44 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.230 seconds] - 2026-05-27T21:34:04.762Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+Application bundle generation failed. [0.293 seconds] - 2026-05-27T21:34:13.904Z
+
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                               [2m | [22m[36m108.44 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                             [2m | [22m[36m103.00 kB[39m[2m | [22m
+[32mchunk-SYV5FRG2.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m69.06 kB[39m[2m | [22m
+[32mchunk-2XHPRZ7F.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m21.69 kB[39m[2m | [22m
+[32mchunk-SRW7XHYL.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.40 kB[39m[2m | [22m
+[32mchunk-FLPPAOU2.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m10.56 kB[39m[2m | [22m
+[32mchunk-MRCX6PCV.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m5.72 kB[39m[2m | [22m
+[32mchunk-Y3E4ESZT.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m4.29 kB[39m[2m | [22m
+[32mchunk-43FD2HM3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m  [36m2.98 kB[39m[2m | [22m
+[32mchunk-2G74JVH5.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m[36m386 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m                      [2m | [22m[1m341.53 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                              [2m | [22m [1mRaw size[22m
+[32mchunk-PDF4HTPP.js[39m  [2m | [22m[2mflag-rebuild-game-page-component[22m   [2m | [22m[36m119.91 kB[39m[2m | [22m
+[32mchunk-Z37F4P36.js[39m  [2m | [22m[2mspeedrun-page-component[22m            [2m | [22m[36m100.96 kB[39m[2m | [22m
+[32mchunk-ISJVLRHW.js[39m  [2m | [22m[2mchrono-flags-game-page-component[22m   [2m | [22m [36m49.98 kB[39m[2m | [22m
+[32mchunk-LQ5AA4HH.js[39m  [2m | [22m[2mfind-the-error-game-page-component[22m [2m | [22m [36m49.45 kB[39m[2m | [22m
+[32mchunk-NZLWXJ2D.js[39m  [2m | [22m[2mdaily-challenge-page-component[22m     [2m | [22m [36m44.79 kB[39m[2m | [22m
+[32mchunk-MKFJ7FVF.js[39m  [2m | [22m[2mpixelated-flag-game-page-component[22m [2m | [22m [36m44.33 kB[39m[2m | [22m
+[32mchunk-FVY24ZIZ.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m37.63 kB[39m[2m | [22m
+[32mchunk-G7HJZHUX.js[39m  [2m | [22m[2mhome-page-component[22m                [2m | [22m [36m37.53 kB[39m[2m | [22m
+[32mchunk-E5T5T7GO.js[39m  [2m | [22m[2mcountries-page-component[22m           [2m | [22m [36m32.08 kB[39m[2m | [22m
+[32mchunk-2BM66OQ3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m18.56 kB[39m[2m | [22m
+[32mchunk-HI4WW5CL.js[39m  [2m | [22m[2machievements-page-component[22m        [2m | [22m [36m17.04 kB[39m[2m | [22m
+[32mchunk-RGEMQTO3.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m15.77 kB[39m[2m | [22m
+[32mchunk-DRZ2MGVW.js[39m  [2m | [22m[2mrecords-page-component[22m             [2m | [22m [36m14.39 kB[39m[2m | [22m
+[32mchunk-2VICFLHR.js[39m  [2m | [22m[2m-[22m                                  [2m | [22m [36m12.07 kB[39m[2m | [22m
+[32mchunk-HSSGTDRI.js[39m  [2m | [22m[2mcountry-to-flag-game-page-component[22m[2m | [22m [36m11.64 kB[39m[2m | [22m
+[2m...and 7 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [0.220 seconds] - 2026-05-27T21:34:36.577Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m108.44 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.262 seconds] - 2026-05-27T21:34:42.073Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m108.45 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.230 seconds] - 2026-05-27T21:34:51.648Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m108.44 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.221 seconds] - 2026-05-27T21:36:04.996Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m108.46 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.245 seconds] - 2026-05-27T21:36:18.710Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m108.53 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.201 seconds] - 2026-05-27T21:36:42.336Z
+
+Component update sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m[2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m [2m | [22m[36m108.43 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.256 seconds] - 2026-05-27T21:37:36.623Z
+
+Component update sent to client(s).

@@ -3,13 +3,14 @@ import { SpeedrunSplitBest, SpeedrunUserRecord } from '../models/speedrun';
 
 export const MAX_LEVEL = 50;
 export const DAILY_CHALLENGE_XP = 250;
-export const FIRST_MODE_COMPLETION_XP = 150;
-export const REPEAT_MODE_COMPLETION_XP = 12;
-export const LOW_VALUE_REPEAT_XP = 2;
-export const REPEAT_COMPLETION_XP_CAP = 20;
 export const SPEEDRUN_COMPLETION_XP = 350;
 export const SPEEDRUN_CLEAN_RUN_XP = 250;
 export const SPEEDRUN_SPLIT_BEST_XP = 90;
+
+const FIRST_MODE_COMPLETION_XP = 150;
+const REPEAT_MODE_COMPLETION_XP = 12;
+const LOW_VALUE_REPEAT_XP = 2;
+const REPEAT_COMPLETION_XP_CAP = 20;
 
 export type AchievementDifficulty = 'easy' | 'medium' | 'hard' | 'rare';
 export type LevelTierId = 'gray' | 'green' | 'blue' | 'violet' | 'red' | 'gold';
@@ -37,7 +38,7 @@ export const ACHIEVEMENT_XP_BY_DIFFICULTY: Record<AchievementDifficulty, number>
   rare: 400,
 };
 
-export const LEVEL_TIERS: LevelTierDefinition[] = [
+const LEVEL_TIERS: LevelTierDefinition[] = [
   {
     id: 'gray',
     minLevel: 1,

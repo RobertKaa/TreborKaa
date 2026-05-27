@@ -83,15 +83,21 @@ h2 {
 }
 
 .status-dock {
-  width: min(880px, 100%);
+  width: min(1100px, 100%);
 }
 
 .time-block {
-  min-width: min(360px, 100%);
+  grid-template-columns: auto 5ch minmax(180px, 1fr);
+  flex: 1 1 470px;
+  min-width: min(470px, 100%);
 }
 
-.progress-track {
-  width: 136px;
+.time-block .status-value {
+  text-align: right;
+}
+
+.status-block:not(.time-block) {
+  flex: 0 0 auto;
 }
 
 .time-fill {

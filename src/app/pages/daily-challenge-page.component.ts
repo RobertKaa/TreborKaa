@@ -12,6 +12,7 @@ import {
 } from '../services/daily-challenge.service';
 import { I18nService } from '../services/i18n.service';
 import { DEFAULT_SHAPE_VIEWBOX, buildShapeViewBox } from '../utils/country-shape-viewbox';
+import { ClassicQuizProgressComponent } from '../components/classic-quiz-progress.component';
 
 type DailyChallengeState = 'intro' | 'running' | 'success' | 'failed';
 type PromptMode = 'flag-options' | 'name-options';
@@ -20,7 +21,7 @@ const NEXT_QUESTION_DELAY_MS = 520;
 
 @Component({
   selector: 'app-daily-challenge-page',
-  imports: [RouterLink],
+  imports: [RouterLink, ClassicQuizProgressComponent],
   templateUrl: './daily-challenge-page.component.html',
   styleUrl: './daily-challenge-page.component.scss',
 })
@@ -80,10 +81,13 @@ export class DailyChallengePageComponent implements OnDestroy {
     () =>
       this.failedQuestion()?.options.find(
         (option) => option.code === this.failedQuestion()?.correctCode,
-      ) ?? this.failedQuestion()?.promptCountry ?? null,
+      ) ??
+      this.failedQuestion()?.promptCountry ??
+      null,
   );
   protected readonly failedSelectedCountry = computed(
-    () => this.failedQuestion()?.options.find((option) => option.code === this.selectedCode()) ?? null,
+    () =>
+      this.failedQuestion()?.options.find((option) => option.code === this.selectedCode()) ?? null,
   );
 
   protected startChallenge(): void {

@@ -195,7 +195,7 @@
 }
 
 .progress-block {
-  flex: 1 1 160px;
+  flex: 1 1 240px;
 }
 
 .progress-block .progress-track {
@@ -388,8 +388,7 @@
   :host-context(app-root.mobile-viewport) .status-dock {
     position: fixed !important;
     inset: auto max(10px, env(safe-area-inset-right, 0px))
-      max(10px, env(safe-area-inset-bottom, 0px))
-      max(10px, env(safe-area-inset-left, 0px)) !important;
+      max(10px, env(safe-area-inset-bottom, 0px)) max(10px, env(safe-area-inset-left, 0px)) !important;
     width: auto !important;
     z-index: 45 !important;
   }
@@ -420,6 +419,6 @@
   }
 
   .progress-block .progress-track {
-    height: 5px;
+    height: 14px;
   }
 }

@@ -1,4 +1,25 @@
+import { CountryShape } from '../models/country-shape';
+
 export const DEFAULT_SHAPE_VIEWBOX = '0 0 1000 1000';
+
+export type CountryShapeRenderData = {
+  path: string;
+  viewBox: string;
+};
+
+export function buildCountryShapeLookup(
+  shapes: readonly CountryShape[],
+): Map<string, CountryShapeRenderData> {
+  return new Map(
+    shapes.map((shape) => [
+      shape.code,
+      {
+        path: shape.path,
+        viewBox: buildShapeViewBox(shape.path),
+      },
+    ]),
+  );
+}
 
 export function buildShapeViewBox(path: string): string {
   const points = extractPathPoints(path);

@@ -1,0 +1,63 @@
+@use '../../styles/route-progress' as route;
+
+.quiz-progress-strip {
+  position: sticky;
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  z-index: 5;
+  display: grid;
+  grid-template-columns: auto auto minmax(220px, 1fr);
+  align-items: center;
+  gap: 12px;
+  width: min(
+    860px,
+    calc(100vw - 16px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px))
+  );
+  max-width: 100%;
+  padding: 10px 12px;
+  margin: 12px auto 0;
+  border: 1px solid var(--line);
+  border-radius: var(--ds-radius-xl);
+  background: color-mix(in srgb, var(--surface-strong) 92%, transparent);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px) saturate(120%);
+}
+
+.quiz-progress-kicker {
+  color: var(--accent-dark);
+  font-family: var(--ds-font-mono);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.quiz-progress-value {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--ds-font-mono);
+  font-size: 0.84rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+@include route.route-progress('.quiz-progress-track', '.quiz-progress-fill');
+
+.quiz-progress-track {
+  justify-self: stretch;
+}
+
+@media (max-width: 640px) {
+  .quiz-progress-strip {
+    grid-template-columns: auto auto;
+    width: calc(100vw - 12px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px));
+    padding: 9px 10px;
+    border-radius: 16px;
+  }
+
+  .quiz-progress-track {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}

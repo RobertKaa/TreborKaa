@@ -1,0 +1,16 @@
+.name-grid {
+  margin-top: 16px;
+}
+
+.name-card {
+  min-height: 74px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.name-card:disabled {
+  color: var(--ink);
+}

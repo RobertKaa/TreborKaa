@@ -1,0 +1,17 @@
+<section class="privacy-page">
+  <header class="privacy-hero ds-card">
+    <p class="section-kicker">{{ i18n.t('privacy.kicker') }}</p>
+    <h1>{{ i18n.t('privacy.title') }}</h1>
+    <p>{{ i18n.t('privacy.intro') }}</p>
+    <a class="ds-button is-secondary" routerLink="/">{{ i18n.t('common.backHome') }}</a>
+  </header>
+
+  <div class="privacy-grid">
+    @for (section of sections; track section.titleKey) {
+      <article class="privacy-card ds-card">
+        <h2>{{ i18n.t(section.titleKey) }}</h2>
+        <p>{{ i18n.t(section.textKey) }}</p>
+      </article>
+    }
+  </div>
+</section>

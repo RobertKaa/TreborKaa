@@ -237,9 +237,9 @@ app-home-page {
     backdrop-filter: blur(16px) saturate(128%);
   }
 
-  .featured-card,
-  .teaser-card,
-  .mode-card {
+  .featured-card.ds-card,
+  .teaser-card.ds-card,
+  .mode-card.ds-card {
     position: relative;
     background-image: var(--card-bg, var(--mode-bg));
     background-position: var(--card-bg-position, var(--mode-bg-position, center));
@@ -378,15 +378,17 @@ app-home-page {
     grid-template-rows: auto minmax(0, 1fr) auto;
     align-content: stretch;
     gap: clamp(14px, 2vh, 20px);
+    min-width: 0;
     background: color-mix(in srgb, var(--surface-strong) 90%, transparent);
   }
 
   .progress-main {
     display: grid;
-    grid-template-columns: minmax(150px, 172px) minmax(0, 1fr);
+    grid-template-columns: minmax(126px, 156px) minmax(0, 1fr);
     gap: clamp(16px, 2vw, 24px);
     align-items: center;
     min-height: 0;
+    min-width: 0;
   }
 
   .level-crest {
@@ -400,10 +402,10 @@ app-home-page {
     align-content: center;
     justify-items: center;
     gap: 5px;
-    width: clamp(150px, 8.6vw, 172px);
+    width: clamp(126px, 8.2vw, 156px);
     min-height: auto;
     aspect-ratio: 1;
-    padding: 34px 22px 28px;
+    padding: 30px 20px 25px;
     border: 0;
     background: var(--tier-badge) center / contain no-repeat;
   }
@@ -448,8 +450,11 @@ app-home-page {
 
   .xp-total {
     color: var(--ink);
-    font-size: clamp(1.45rem, 2vw, 2rem);
+    font-size: clamp(1.35rem, 1.8vw, 1.86rem);
     font-weight: 900;
+    line-height: 1.05;
+    text-wrap: balance;
+    white-space: nowrap;
   }
 
   .progress-copy {
@@ -459,18 +464,18 @@ app-home-page {
     min-width: 0;
   }
 
-  .progress-copy p:not(.xp-total):not(.tier-next) {
-    color: var(--ink-soft);
-    font-size: 0.88rem;
-    line-height: 1.25;
+  .progress-copy p {
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
-  .tier-next {
-    color: var(--accent-dark);
+  .level-xp-progress {
+    color: var(--ink-soft);
     font-family: var(--ds-font-mono);
-    font-size: 0.74rem;
+    font-size: 0.8rem;
     font-weight: 800;
-    text-transform: uppercase;
+    line-height: 1.25;
+    white-space: nowrap;
   }
 
   .progress-track {
@@ -498,10 +503,12 @@ app-home-page {
     display: grid;
     gap: 4px;
     justify-items: center;
+    min-width: 0;
     color: var(--ink-soft);
     font-size: 0.8rem;
     line-height: 1.25;
     text-align: center;
+    overflow-wrap: anywhere;
   }
 
   .metric-row span + span {
@@ -509,9 +516,11 @@ app-home-page {
   }
 
   .metric-row strong {
+    min-width: 0;
     color: var(--ink);
     font-size: clamp(1.1rem, 1.4vw, 1.35rem);
     line-height: 1;
+    overflow-wrap: anywhere;
   }
 
   .modes-section {
@@ -787,6 +796,55 @@ app-home-page {
     .progress-card p {
       font-size: 0.86rem;
       line-height: 1.35;
+    }
+
+    .progress-card {
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .progress-main {
+      grid-template-columns: minmax(112px, 128px) minmax(0, 1fr);
+      gap: 12px;
+    }
+
+    .level-crest {
+      width: clamp(112px, 8vw, 128px);
+      padding: 26px 16px 22px;
+    }
+
+    .level-crest strong {
+      font-size: clamp(2rem, 2.4vw, 2.35rem);
+    }
+
+    .level-crest small {
+      max-width: 10ch;
+      font-size: 0.7rem;
+    }
+
+    .xp-total {
+      font-size: clamp(1.22rem, 1.55vw, 1.45rem);
+    }
+
+    .progress-copy {
+      gap: 7px;
+    }
+
+    .level-xp-progress {
+      font-size: 0.68rem;
+      line-height: 1.22;
+    }
+
+    .metric-row {
+      padding-top: 10px;
+    }
+
+    .metric-row span {
+      font-size: 0.72rem;
+    }
+
+    .metric-row strong {
+      font-size: 1rem;
     }
 
     .featured-card .intro {

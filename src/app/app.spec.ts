@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { of } from 'rxjs';
 import { App } from './app';
+import { CountriesService } from './services/countries.service';
 import { SupabaseAuthService } from './services/supabase-auth.service';
 
 describe('App', () => {
@@ -10,6 +12,12 @@ describe('App', () => {
       imports: [App],
       providers: [
         provideRouter([]),
+        {
+          provide: CountriesService,
+          useValue: {
+            getCountries: () => of([]),
+          },
+        },
         {
           provide: SupabaseAuthService,
           useValue: {

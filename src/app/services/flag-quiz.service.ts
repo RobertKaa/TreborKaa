@@ -4,6 +4,7 @@ import { FLAG_PROFILES, FlagProfile } from '../data/flag-profiles';
 import { CountryNameQuizQuestion } from '../models/country-name-quiz-question';
 import { CountrySummary } from '../models/country-summary';
 import { FlagQuizQuestion } from '../models/flag-quiz-question';
+import { shuffleItems } from '../utils/array-utils';
 
 type ScoredCountry = {
   country: CountrySummary;
@@ -32,7 +33,7 @@ export class FlagQuizService {
   buildQuestion(
     countries: CountrySummary[],
     difficulty: 'easy' | 'hard',
-    excludeCodes: string[] = []
+    excludeCodes: string[] = [],
   ): FlagQuizQuestion {
     const baseQuestion = this.buildBaseQuestion(countries, difficulty, excludeCodes);
 
@@ -40,14 +41,14 @@ export class FlagQuizService {
       difficulty,
       promptCountry: baseQuestion.promptCountry,
       options: baseQuestion.options,
-      correctCode: baseQuestion.correctCode
+      correctCode: baseQuestion.correctCode,
     };
   }
 
   buildCountryNameQuestion(
     countries: CountrySummary[],
     difficulty: 'easy' | 'hard',
-    excludeCodes: string[] = []
+    excludeCodes: string[] = [],
   ): CountryNameQuizQuestion {
     const baseQuestion = this.buildBaseQuestion(countries, difficulty, excludeCodes);
 
@@ -55,14 +56,14 @@ export class FlagQuizService {
       difficulty,
       promptCountry: baseQuestion.promptCountry,
       options: baseQuestion.options,
-      correctCode: baseQuestion.correctCode
+      correctCode: baseQuestion.correctCode,
     };
   }
 
   private buildBaseQuestion(
     countries: CountrySummary[],
     difficulty: 'easy' | 'hard',
-    excludeCodes: string[] = []
+    excludeCodes: string[] = [],
   ) {
     const pool = countries.filter((country) => !excludeCodes.includes(country.code));
     const promptCountry = this.pickPromptCountry(pool);
@@ -71,8 +72,12 @@ export class FlagQuizService {
       difficulty === 'hard'
         ? this.selectHardDistractors(rankedDistractors)
         : this.selectEasyDistractors(rankedDistractors);
-    const options = this.shuffle([promptCountry, ...distractors]);
-    this.rememberQuestion(promptCountry.code, distractors.map((country) => country.code), options);
+    const options = shuffleItems([promptCountry, ...distractors]);
+    this.rememberQuestion(
+      promptCountry.code,
+      distractors.map((country) => country.code),
+      options,
+    );
 
     return { promptCountry, options, correctCode: promptCountry.code };
   }
@@ -116,13 +121,13 @@ export class FlagQuizService {
 
   private rankDistractors(
     countries: CountrySummary[],
-    promptCountry: CountrySummary
+    promptCountry: CountrySummary,
   ): ScoredCountry[] {
     return countries
       .filter((country) => country.code !== promptCountry.code)
       .map((country) => ({
         country,
-        score: this.computeSimilarity(promptCountry.code, country.code)
+        score: this.computeSimilarity(promptCountry.code, country.code),
       }))
       .sort((left, right) => right.score - left.score);
   }
@@ -176,7 +181,7 @@ export class FlagQuizService {
   private pickWeightedCountries(
     candidates: ScoredCountry[],
     count: number,
-    difficulty: 'easy' | 'hard'
+    difficulty: 'easy' | 'hard',
   ): CountrySummary[] {
     const selected: CountrySummary[] = [];
     const pool = [...candidates];
@@ -184,12 +189,16 @@ export class FlagQuizService {
     while (selected.length < count && pool.length > 0) {
       const weightedPool = pool.map((item) => ({
         item,
-        weight: this.computeDistractorWeight(item, difficulty)
+        weight: this.computeDistractorWeight(item, difficulty),
       }));
       const totalWeight = weightedPool.reduce((sum, entry) => sum + entry.weight, 0);
 
       if (totalWeight <= 0) {
-        selected.push(...this.shuffle(pool).slice(0, count - selected.length).map((item) => item.country));
+        selected.push(
+          ...shuffleItems(pool)
+            .slice(0, count - selected.length)
+            .map((item) => item.country),
+        );
         break;
       }
 
@@ -211,11 +220,10 @@ export class FlagQuizService {
     return selected;
   }
 
-  private computeDistractorWeight(
-    candidate: ScoredCountry,
-    difficulty: 'easy' | 'hard'
-  ): number {
-    const repetitionPenalty = this.recentDistractorCodes.includes(candidate.country.code) ? 0.34 : 1;
+  private computeDistractorWeight(candidate: ScoredCountry, difficulty: 'easy' | 'hard'): number {
+    const repetitionPenalty = this.recentDistractorCodes.includes(candidate.country.code)
+      ? 0.34
+      : 1;
     const baseWeight =
       difficulty === 'hard'
         ? Math.max(1, candidate.score + 2)
@@ -225,7 +233,11 @@ export class FlagQuizService {
     return baseWeight * repetitionPenalty * noise;
   }
 
-  private rememberQuestion(promptCode: string, distractorCodes: string[], options: CountrySummary[]): void {
+  private rememberQuestion(
+    promptCode: string,
+    distractorCodes: string[],
+    options: CountrySummary[],
+  ): void {
     this.pushRecent(this.recentPromptCodes, promptCode, this.recentPromptLimit);
 
     for (const code of distractorCodes) {
@@ -245,16 +257,5 @@ export class FlagQuizService {
     while (target.length > limit) {
       target.shift();
     }
-  }
-
-  private shuffle<T>(values: T[]): T[] {
-    const copy = [...values];
-
-    for (let index = copy.length - 1; index > 0; index -= 1) {
-      const swapIndex = Math.floor(Math.random() * (index + 1));
-      [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
-    }
-
-    return copy;
   }
 }

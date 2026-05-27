@@ -1,5 +1,4 @@
 <main class="game-shell daily-challenge-shell">
-
   <section class="hero-card daily-challenge-hero">
     <div>
       <p class="eyebrow">{{ i18n.t('daily.eyebrow') }}</p>
@@ -7,7 +6,9 @@
       <p class="intro">{{ i18n.t('daily.intro') }}</p>
     </div>
     <aside class="daily-status-card" [class.completed]="dailyChallenge().completed">
-      <span>{{ dailyChallenge().completed ? i18n.t('daily.completed') : i18n.t('daily.reward') }}</span>
+      <span>{{
+        dailyChallenge().completed ? i18n.t('daily.completed') : i18n.t('daily.reward')
+      }}</span>
       <strong>{{ i18n.t('home.dailyXp', { xp: dailyChallenge().xp }) }}</strong>
       <small>{{ i18n.t('daily.dateLabel', { date: dailyChallenge().dateKey }) }}</small>
     </aside>
@@ -20,7 +21,12 @@
         <h2>{{ i18n.t('daily.rulesTitle') }}</h2>
         <p class="question-help">{{ i18n.t('daily.rulesText') }}</p>
       </div>
-      <button type="button" class="primary-button" [disabled]="!isReady()" (click)="startChallenge()">
+      <button
+        type="button"
+        class="primary-button"
+        [disabled]="!isReady()"
+        (click)="startChallenge()"
+      >
         {{ isReady() ? i18n.t('daily.start') : i18n.t('common.loadingGame') }}
       </button>
     </section>
@@ -152,10 +158,5 @@
 </main>
 
 @if (state() === 'running') {
-  <section class="quiz-progress-strip" [attr.aria-label]="i18n.t('classic.stateAria')">
-    <p class="quiz-progress-value">{{ progressLabel() }}</p>
-    <div class="quiz-progress-track" aria-hidden="true">
-      <div class="quiz-progress-fill" [style.width.%]="progressPercent()"></div>
-    </div>
-  </section>
+  <app-classic-quiz-progress [label]="progressLabel()" [percent]="progressPercent()" />
 }

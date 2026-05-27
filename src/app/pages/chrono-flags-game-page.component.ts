@@ -126,6 +126,19 @@ export class ChronoFlagsGamePageComponent implements OnDestroy {
   protected readonly timerPercent = computed(() =>
     Math.max(0, Math.min(100, Math.round((this.timeLeft() / GAME_DURATION_SECONDS) * 100)))
   );
+  protected readonly timerTone = computed<'normal' | 'warning' | 'danger'>(() => {
+    const remaining = this.timeLeft();
+
+    if (remaining < 11) {
+      return 'danger';
+    }
+
+    if (remaining < 31) {
+      return 'warning';
+    }
+
+    return 'normal';
+  });
 
   constructor() {
     effect(() => {

@@ -1,13 +1,23 @@
 import { Component, OnDestroy, computed, effect, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { XpFeedbackToastComponent } from './components/xp-feedback-toast.component';
 import { AppLanguage } from './data/i18n-translations';
+import { CountrySummary } from './models/country-summary';
 import { AchievementsService } from './services/achievements.service';
 import { BrowserStorageService } from './services/browser-storage.service';
+import { CountriesService } from './services/countries.service';
 import { I18nService } from './services/i18n.service';
 import { SupabaseAuthService } from './services/supabase-auth.service';
 import { UserDataSyncService } from './services/user-data-sync.service';
 import { XpFeedbackService, XpFeedbackSnapshot } from './services/xp-feedback.service';
+import {
+  DEFAULT_PROFILE_AVATAR_KEY,
+  profileAvatarImageUrl,
+  readProfileAvatarKey,
+  validateProfileDisplayName,
+} from './utils/profile-safety';
+import type { ProfileAvatarKey } from './utils/profile-safety';
 
 @Component({
   selector: 'app-root',
@@ -28,6 +38,7 @@ export class App implements OnDestroy {
   private readonly achievementsService = inject(AchievementsService);
   private readonly xpFeedback = inject(XpFeedbackService);
   private readonly storage = inject(BrowserStorageService);
+  private readonly countriesService = inject(CountriesService);
   private readonly canUseWindow = typeof window !== 'undefined';
   private readonly viewportRef = this.canUseWindow ? window.visualViewport : null;
   private readonly prefersDark =
@@ -53,6 +64,35 @@ export class App implements OnDestroy {
   protected readonly keyboardOffset = signal(0);
   protected readonly isMenuOpen = signal(false);
   protected readonly isSettingsOpen = signal(false);
+  protected readonly isProfileMenuOpen = signal(false);
+  protected readonly isProfileSaving = signal(false);
+  protected readonly profileFormName = signal('');
+  protected readonly profileFormAvatarKey = signal<ProfileAvatarKey>(DEFAULT_PROFILE_AVATAR_KEY);
+  protected readonly profileFlagSearch = signal('');
+  protected readonly profileFormError = signal<string | null>(null);
+  protected readonly profileFormNotice = signal<string | null>(null);
+  protected readonly profileCountries = toSignal(this.countriesService.getCountries(), {
+    initialValue: [] as CountrySummary[],
+  });
+  protected readonly selectedProfileCountry = computed(
+    () =>
+      this.profileCountries().find((country) => country.code === this.profileFormAvatarKey()) ??
+      null,
+  );
+  protected readonly selectedProfileCountryName = computed(() => {
+    const country = this.selectedProfileCountry();
+    return country ? this.i18n.countryName(country) : this.profileFormAvatarKey().toUpperCase();
+  });
+  protected readonly profileFlagResults = computed(() => {
+    const query = this.normalizeSearch(this.profileFlagSearch());
+    const countries = this.sortCountriesByLocale(this.profileCountries());
+
+    if (!query) {
+      return countries;
+    }
+
+    return countries.filter((country) => this.matchesCountrySearch(country, query));
+  });
   protected readonly authProfile = this.auth.profile;
   protected readonly isAuthenticated = this.auth.isAuthenticated;
   protected readonly isAuthLoading = this.auth.isLoading;
@@ -62,10 +102,9 @@ export class App implements OnDestroy {
   protected readonly authDisplayName = computed(
     () => this.authProfile()?.displayName ?? this.i18n.t('auth.account'),
   );
-  protected readonly authInitial = computed(() => {
-    const displayName = this.authDisplayName().trim();
-    return (displayName.charAt(0) || 'V').toUpperCase();
-  });
+  protected readonly authAvatarKey = computed(
+    () => this.authProfile()?.avatarKey ?? DEFAULT_PROFILE_AVATAR_KEY,
+  );
   protected readonly mobileNotice = computed(() => {
     if (this.isOffline()) {
       return this.i18n.t('mobile.offline');
@@ -108,6 +147,25 @@ export class App implements OnDestroy {
       }, 5200);
     });
 
+    effect(() => {
+      const profile = this.authProfile();
+      if (!profile || this.isProfileMenuOpen()) {
+        return;
+      }
+
+      this.profileFormName.set(profile.displayName);
+      this.profileFormAvatarKey.set(profile.avatarKey);
+    });
+
+    effect(() => {
+      if (!this.canUseWindow) {
+        return;
+      }
+
+      document.documentElement.classList.toggle('theme-dark', this.isDarkTheme());
+      document.documentElement.classList.toggle('theme-light', !this.isDarkTheme());
+    });
+
     if (!this.canUseWindow) {
       return;
     }
@@ -124,11 +182,13 @@ export class App implements OnDestroy {
 
   protected toggleMenu(): void {
     this.isSettingsOpen.set(false);
+    this.isProfileMenuOpen.set(false);
     this.isMenuOpen.update((value) => !value);
   }
 
   protected toggleSettings(): void {
     this.isMenuOpen.set(false);
+    this.isProfileMenuOpen.set(false);
     this.isSettingsOpen.update((value) => !value);
   }
 
@@ -138,11 +198,31 @@ export class App implements OnDestroy {
     }
 
     if (this.isAuthenticated()) {
-      this.signOut();
+      this.toggleProfileMenu();
       return;
     }
 
     void this.auth.signInWithGoogle();
+  }
+
+  protected toggleProfileMenu(): void {
+    if (!this.isAuthenticated()) {
+      return;
+    }
+
+    this.isMenuOpen.set(false);
+    this.isSettingsOpen.set(false);
+    this.isProfileMenuOpen.update((value) => {
+      const nextValue = !value;
+      if (nextValue) {
+        this.prepareProfileForm();
+      }
+      return nextValue;
+    });
+  }
+
+  protected closeProfileMenu(): void {
+    this.isProfileMenuOpen.set(false);
   }
 
   protected signInWithGoogle(): void {
@@ -159,6 +239,76 @@ export class App implements OnDestroy {
     this.closeOverlays();
   }
 
+  protected updateProfileName(event: Event): void {
+    const target = event.target as HTMLInputElement | null;
+    this.profileFormName.set(target?.value ?? '');
+    this.profileFormError.set(null);
+    this.profileFormNotice.set(null);
+  }
+
+  protected selectProfileAvatar(key: ProfileAvatarKey): void {
+    this.profileFormAvatarKey.set(readProfileAvatarKey(key));
+    this.profileFlagSearch.set('');
+    this.profileFormError.set(null);
+    this.profileFormNotice.set(null);
+  }
+
+  protected updateProfileFlagSearch(event: Event): void {
+    const target = event.target as HTMLInputElement | null;
+    this.profileFlagSearch.set(target?.value ?? '');
+  }
+
+  protected selectProfileCountry(country: CountrySummary): void {
+    this.selectProfileAvatar(country.code);
+  }
+
+  protected countryName(country: CountrySummary): string {
+    return this.i18n.countryName(country);
+  }
+
+  protected profileAvatarUrl(key: ProfileAvatarKey): string {
+    return profileAvatarImageUrl(key);
+  }
+
+  protected profileAvatarAlt(key: ProfileAvatarKey): string {
+    const country = this.profileCountries().find((entry) => entry.code === readProfileAvatarKey(key));
+    return country
+      ? this.i18n.t('countries.flagOf', { country: this.i18n.countryName(country) })
+      : readProfileAvatarKey(key).toUpperCase();
+  }
+
+  protected async saveProfile(): Promise<void> {
+    if (this.isProfileSaving()) {
+      return;
+    }
+
+    const validation = validateProfileDisplayName(this.profileFormName());
+    if (validation.value === null) {
+      this.profileFormError.set(validation.errorKey);
+      this.profileFormNotice.set(null);
+      return;
+    }
+    const displayName = validation.value;
+
+    this.isProfileSaving.set(true);
+    this.profileFormError.set(null);
+    this.profileFormNotice.set(null);
+
+    try {
+      await this.auth.updateProfile({
+        displayName,
+        avatarKey: this.profileFormAvatarKey(),
+      });
+      this.profileFormName.set(displayName);
+      this.profileFormNotice.set('profile.saved');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '';
+      this.profileFormError.set(message.startsWith('profile.') ? message : 'profile.error.saveFailed');
+    } finally {
+      this.isProfileSaving.set(false);
+    }
+  }
+
   protected closeMenu(): void {
     this.isMenuOpen.set(false);
   }
@@ -170,6 +320,7 @@ export class App implements OnDestroy {
   protected closeOverlays(): void {
     this.closeMenu();
     this.closeSettings();
+    this.closeProfileMenu();
   }
 
   protected setLanguage(language: AppLanguage): void {
@@ -198,6 +349,7 @@ export class App implements OnDestroy {
       window.removeEventListener('offline', this.onOffline);
       window.removeEventListener('error', this.onGlobalResourceError, true);
       this.viewportRef?.removeEventListener('resize', this.onViewportResize);
+      document.documentElement.classList.remove('theme-dark', 'theme-light');
 
       if (this.achievementToastTimeoutId !== null) {
         window.clearTimeout(this.achievementToastTimeoutId);
@@ -265,6 +417,39 @@ export class App implements OnDestroy {
 
     this.keyboardOffset.set(keyboardOffset);
     document.documentElement.style.setProperty('--keyboard-offset', `${keyboardOffset}px`);
+  }
+
+  private prepareProfileForm(): void {
+    const profile = this.authProfile();
+    this.profileFormName.set(profile?.displayName ?? '');
+    this.profileFormAvatarKey.set(profile?.avatarKey ?? DEFAULT_PROFILE_AVATAR_KEY);
+    this.profileFlagSearch.set('');
+    this.profileFormError.set(null);
+    this.profileFormNotice.set(null);
+  }
+
+  private sortCountriesByLocale(countries: CountrySummary[]): CountrySummary[] {
+    return [...countries].sort((left, right) =>
+      this.i18n.countryName(left).localeCompare(this.i18n.countryName(right), this.i18n.locale()),
+    );
+  }
+
+  private matchesCountrySearch(country: CountrySummary, query: string): boolean {
+    return [
+      country.code,
+      country.nameFrench,
+      country.nameEnglish,
+      country.capitalFrench,
+      country.capitalEnglish,
+    ].some((value) => this.normalizeSearch(value).includes(query));
+  }
+
+  private normalizeSearch(value: string): string {
+    return value
+      .normalize('NFD')
+      .replace(/\p{M}/gu, '')
+      .toLowerCase()
+      .trim();
   }
 
   private isXpFeedbackHydrating(): boolean {

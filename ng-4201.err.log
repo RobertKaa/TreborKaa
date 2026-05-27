@@ -1,0 +1,383 @@
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'avatarUrl' does not exist on type 'AuthProfile'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.html:79:32:
+[37m      79 │             @if (authProfile()?.[32mavatarUrl[37m; as avatarUrl) {
+         ╵                                 [32m~~~~~~~~~[0m
+
+  Error occurs in the template of component App.
+
+    src/app/app.ts:21:15:
+[37m      21 │   templateUrl: [32m'./app.html'[37m,
+         ╵                [32m~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'avatarUrl' does not exist on type 'AuthProfile'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.html:79:32:
+[37m      79 │             @if (authProfile()?.[32mavatarUrl[37m; as avatarUrl) {
+         ╵                                 [32m~~~~~~~~~[0m
+
+  Error occurs in the template of component App.
+
+    src/app/app.ts:21:15:
+[37m      21 │   templateUrl: [32m'./app.html'[37m,
+         ╵                [32m~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'authInitial' does not exist on type 'App'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.html:79:69:
+[37m      79 │ ...uth-avatar-fallback" aria-hidden="true">{{ [32mauthInitial[37m() }}</span>
+         ╵                                               [32m~~~~~~~~~~~[0m
+
+  Error occurs in the template of component App.
+
+    src/app/app.ts:29:15:
+[37m      29 │   templateUrl: [32m'./app.html'[37m,
+         ╵                [32m~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:241:8:
+[37m      241 │         [32mdisplayName[37m: validation.value,
+          ╵         [32m~~~~~~~~~~~[0m
+
+  The expected type comes from property 'displayName' which is declared here on type 'ProfileUpdatePayload'
+
+    src/app/services/supabase-auth.service.ts:20:2:
+[37m      20 │   [32mdisplayName[37m: string;
+         ╵   [32m~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:244:31:
+[37m      244 │       this.profileFormName.set([32mvalidation.value[37m);
+          ╵                                [32m~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:241:8:
+[37m      241 │         [32mdisplayName[37m: validation.value,
+          ╵         [32m~~~~~~~~~~~[0m
+
+  The expected type comes from property 'displayName' which is declared here on type 'ProfileUpdatePayload'
+
+    src/app/services/supabase-auth.service.ts:20:2:
+[37m      20 │   [32mdisplayName[37m: string;
+         ╵   [32m~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:244:31:
+[37m      244 │       this.profileFormName.set([32mvalidation.value[37m);
+          ╵                                [32m~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:241:8:
+[37m      241 │         [32mdisplayName[37m: validation.value,
+          ╵         [32m~~~~~~~~~~~[0m
+
+  The expected type comes from property 'displayName' which is declared here on type 'ProfileUpdatePayload'
+
+    src/app/services/supabase-auth.service.ts:20:2:
+[37m      20 │   [32mdisplayName[37m: string;
+         ╵   [32m~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:244:31:
+[37m      244 │       this.profileFormName.set([32mvalidation.value[37m);
+          ╵                                [32m~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:241:8:
+[37m      241 │         [32mdisplayName[37m: validation.value,
+          ╵         [32m~~~~~~~~~~~[0m
+
+  The expected type comes from property 'displayName' which is declared here on type 'ProfileUpdatePayload'
+
+    src/app/services/supabase-auth.service.ts:20:2:
+[37m      20 │   [32mdisplayName[37m: string;
+         ╵   [32m~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:244:31:
+[37m      244 │       this.profileFormName.set([32mvalidation.value[37m);
+          ╵                                [32m~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:241:8:
+[37m      241 │         [32mdisplayName[37m: validation.value,
+          ╵         [32m~~~~~~~~~~~[0m
+
+  The expected type comes from property 'displayName' which is declared here on type 'ProfileUpdatePayload'
+
+    src/app/services/supabase-auth.service.ts:20:2:
+[37m      20 │   [32mdisplayName[37m: string;
+         ╵   [32m~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:244:31:
+[37m      244 │       this.profileFormName.set([32mvalidation.value[37m);
+          ╵                                [32m~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:241:8:
+[37m      241 │         [32mdisplayName[37m: validation.value,
+          ╵         [32m~~~~~~~~~~~[0m
+
+  The expected type comes from property 'displayName' which is declared here on type 'ProfileUpdatePayload'
+
+    src/app/services/supabase-auth.service.ts:20:2:
+[37m      20 │   [32mdisplayName[37m: string;
+         ╵   [32m~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:244:31:
+[37m      244 │       this.profileFormName.set([32mvalidation.value[37m);
+          ╵                                [32m~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:241:8:
+[37m      241 │         [32mdisplayName[37m: validation.value,
+          ╵         [32m~~~~~~~~~~~[0m
+
+  The expected type comes from property 'displayName' which is declared here on type 'ProfileUpdatePayload'
+
+    src/app/services/supabase-auth.service.ts:20:2:
+[37m      20 │   [32mdisplayName[37m: string;
+         ╵   [32m~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:244:31:
+[37m      244 │       this.profileFormName.set([32mvalidation.value[37m);
+          ╵                                [32m~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:241:8:
+[37m      241 │         [32mdisplayName[37m: validation.value,
+          ╵         [32m~~~~~~~~~~~[0m
+
+  The expected type comes from property 'displayName' which is declared here on type 'ProfileUpdatePayload'
+
+    src/app/services/supabase-auth.service.ts:20:2:
+[37m      20 │   [32mdisplayName[37m: string;
+         ╵   [32m~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:244:31:
+[37m      244 │       this.profileFormName.set([32mvalidation.value[37m);
+          ╵                                [32m~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:241:8:
+[37m      241 │         [32mdisplayName[37m: validation.value,
+          ╵         [32m~~~~~~~~~~~[0m
+
+  The expected type comes from property 'displayName' which is declared here on type 'ProfileUpdatePayload'
+
+    src/app/services/supabase-auth.service.ts:20:2:
+[37m      20 │   [32mdisplayName[37m: string;
+         ╵   [32m~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:244:31:
+[37m      244 │       this.profileFormName.set([32mvalidation.value[37m);
+          ╵                                [32m~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:241:8:
+[37m      241 │         [32mdisplayName[37m: validation.value,
+          ╵         [32m~~~~~~~~~~~[0m
+
+  The expected type comes from property 'displayName' which is declared here on type 'ProfileUpdatePayload'
+
+    src/app/services/supabase-auth.service.ts:20:2:
+[37m      20 │   [32mdisplayName[37m: string;
+         ╵   [32m~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:244:31:
+[37m      244 │       this.profileFormName.set([32mvalidation.value[37m);
+          ╵                                [32m~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:242:8:
+[37m      242 │         [32mdisplayName[37m,
+          ╵         [32m~~~~~~~~~~~[0m
+
+  The expected type comes from property 'displayName' which is declared here on type 'ProfileUpdatePayload'
+
+    src/app/services/supabase-auth.service.ts:20:2:
+[37m      20 │   [32mdisplayName[37m: string;
+         ╵   [32m~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:245:31:
+[37m      245 │       this.profileFormName.set([32mdisplayName[37m);
+          ╵                                [32m~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:242:8:
+[37m      242 │         [32mdisplayName[37m,
+          ╵         [32m~~~~~~~~~~~[0m
+
+  The expected type comes from property 'displayName' which is declared here on type 'ProfileUpdatePayload'
+
+    src/app/services/supabase-auth.service.ts:20:2:
+[37m      20 │   [32mdisplayName[37m: string;
+         ╵   [32m~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:245:31:
+[37m      245 │       this.profileFormName.set([32mdisplayName[37m);
+          ╵                                [32m~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2724: '"./utils/profile-safety"' has no exported member named 'profileAvatarGlyph'. Did you mean 'ProfileAvatarKey'?[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:14:2:
+[37m      14 │   [32mprofileAvatarGlyph[37m,
+         ╵   [32m~~~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2551: Property 'profileAvatarGlyph' does not exist on type 'App'. Did you mean 'profileAvatarUrl'?[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.html:86:17:
+[37m      86 │               {{ [32mprofileAvatarGlyph[37m(authAvatarKey()) }}
+         ╵                  [32m~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component App.
+
+    src/app/app.ts:30:15:
+[37m      30 │   templateUrl: [32m'./app.html'[37m,
+         ╵                [32m~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2551: Property 'profileAvatarGlyph' does not exist on type 'App'. Did you mean 'profileAvatarUrl'?[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.html:101:19:
+[37m      101 │                 {{ [32mprofileAvatarGlyph[37m(profileFormAvatarKey()) }}
+          ╵                    [32m~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component App.
+
+    src/app/app.ts:30:15:
+[37m      30 │   templateUrl: [32m'./app.html'[37m,
+         ╵                [32m~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'glyph' does not exist on type 'ProfileAvatarOption'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.html:136:34:
+[37m      136 │                         {{ avatar.[32mglyph[37m }}
+          ╵                                   [32m~~~~~[0m
+
+  Error occurs in the template of component App.
+
+    src/app/app.ts:30:15:
+[37m      30 │   templateUrl: [32m'./app.html'[37m,
+         ╵                [32m~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2551: Property 'profileAvatarOptions' does not exist on type 'App'. Did you mean 'profileAvatarAlt'?[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.html:131:34:
+[37m      131 │ ...        @for (avatar of [32mprofileAvatarOptions[37m; track avatar.key) {
+          ╵                            [32m~~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component App.
+
+    src/app/app.ts:31:15:
+[37m      31 │   templateUrl: [32m'./app.html'[37m,
+         ╵                [32m~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'nextTierLabel' does not exist on type 'HomePageComponent'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/pages/home-page.component.html:91:34:
+[37m      91 │           <p class="tier-next">{{ [32mnextTierLabel[37m() }}</p>
+         ╵                                   [32m~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component HomePageComponent.
+
+    src/app/pages/home-page.component.ts:75:15:
+[37m      75 │   templateUrl: [32m'./home-page.component.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mexpected selector.
+    ╷
+331 │     align-items: center;
+    │                         ^
+    ╵
+  src\app\app.scss 331:25  root stylesheet[0m [1m[35m[plugin angular-sass][0m
+
+[39m[22m

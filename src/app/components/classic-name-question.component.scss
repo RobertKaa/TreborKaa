@@ -1,0 +1,65 @@
+.question-card {
+  background: var(--card);
+}
+
+.prompt-flag,
+.prompt-shape {
+  margin: 16px 0 12px;
+  padding: clamp(12px, 1.6vw, 18px);
+  border: 1px solid var(--line-soft);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface-raise) 84%, transparent);
+}
+
+.prompt-flag {
+  min-height: 220px;
+  padding: 16px;
+}
+
+.prompt-flag img {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  max-height: 300px;
+}
+
+.prompt-shape {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(190px, 34dvh, 300px);
+  overflow: hidden;
+}
+
+.prompt-shape svg {
+  display: block;
+  width: min(100%, 560px);
+  height: auto;
+  max-height: min(42dvh, 320px);
+}
+
+.prompt-shape path {
+  fill: color-mix(in srgb, var(--accent) 36%, var(--surface-strong));
+  stroke: color-mix(in srgb, var(--accent-strong) 45%, var(--line));
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+@media (max-width: 640px) {
+  .prompt-flag {
+    min-height: 170px;
+    padding: 12px;
+  }
+
+  .prompt-shape {
+    min-height: 188px;
+    padding: 12px;
+  }
+
+  .prompt-shape svg {
+    width: min(100%, 520px);
+    max-height: min(40dvh, 300px);
+  }
+}

@@ -62,11 +62,9 @@
             @for (entry of visibleLeaderboardEntries(); track entry.userId) {
               <li class="inline-leaderboard-entry">
                 <span class="leaderboard-rank">{{ rankLabel(entry) }}</span>
-                @if (entry.avatarUrl) {
-                  <img class="leaderboard-avatar" [src]="entry.avatarUrl" [alt]="entry.displayName" />
-                } @else {
-                  <span class="leaderboard-avatar initials">{{ displayInitials(entry) }}</span>
-                }
+                <span class="leaderboard-avatar initials" aria-hidden="true">
+                  {{ displayInitials(entry) }}
+                </span>
                 <span class="leaderboard-player">
                   <strong>{{ entry.displayName }}</strong>
                   <span>{{ formatLeaderboardMeta(entry) }}</span>

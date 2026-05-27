@@ -1,0 +1,72 @@
+:host {
+  display: block;
+}
+
+.privacy-page {
+  display: grid;
+  gap: 16px;
+}
+
+.privacy-hero,
+.privacy-card {
+  background: var(--card);
+}
+
+.privacy-hero {
+  display: grid;
+  gap: 14px;
+  max-width: 980px;
+}
+
+.privacy-hero h1,
+.privacy-card h2,
+.privacy-hero p,
+.privacy-card p {
+  margin: 0;
+}
+
+.privacy-hero h1 {
+  color: var(--ink);
+  font-size: clamp(2.4rem, 6vw, 4.6rem);
+  line-height: 0.94;
+}
+
+.privacy-hero p,
+.privacy-card p {
+  max-width: 760px;
+  color: var(--ink-soft);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.privacy-hero .ds-button {
+  width: fit-content;
+  margin-top: 8px;
+}
+
+.privacy-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.privacy-card {
+  display: grid;
+  gap: 10px;
+}
+
+.privacy-card h2 {
+  color: var(--ink);
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  line-height: 1.05;
+}
+
+@media (max-width: 760px) {
+  .privacy-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .privacy-hero .ds-button {
+    width: 100%;
+  }
+}

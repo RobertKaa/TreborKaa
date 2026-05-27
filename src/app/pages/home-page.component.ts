@@ -110,11 +110,19 @@ export class HomePageComponent {
     const accuracy = this.progressStats().averageAccuracy;
     return accuracy === null ? this.i18n.t('common.none') : `${accuracy}%`;
   });
-  protected readonly nextTierLabel = computed(() => {
-    const nextTierLevel = this.profile().nextTierLevel;
-    return nextTierLevel
-      ? this.i18n.t('gamification.nextTier', { level: nextTierLevel })
-      : this.i18n.t('gamification.maxTier');
+  protected readonly levelXpProgressLabel = computed(() => {
+    const profile = this.profile();
+    const currentLevelXp = Math.max(0, profile.xp - profile.currentLevelXp);
+    const requiredLevelXp = Math.max(0, profile.nextLevelXp - profile.currentLevelXp);
+
+    if (requiredLevelXp === 0) {
+      return this.i18n.t('gamification.maxLevelProgress');
+    }
+
+    return this.i18n.t('gamification.levelXpProgress', {
+      current: this.formatNumber(currentLevelXp),
+      required: this.formatNumber(requiredLevelXp),
+    });
   });
   protected readonly games = computed<HomeGameView[]>(() => {
     const records = this.recordsService.snapshot();
@@ -325,5 +333,11 @@ export class HomePageComponent {
       .toLocaleLowerCase()
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  private formatNumber(value: number): string {
+    return new Intl.NumberFormat(this.i18n.locale(), { maximumFractionDigits: 0 }).format(
+      Math.max(0, Math.round(value)),
+    );
   }
 }
