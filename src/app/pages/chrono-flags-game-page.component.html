@@ -64,7 +64,12 @@
       <p class="status-value">{{ timerLabel() }}</p>
     </div>
     <div class="progress-track" aria-hidden="true">
-      <div class="progress-fill time-fill" [style.width.%]="timerPercent()"></div>
+      <div
+        class="progress-fill time-fill"
+        [class.is-warning]="timerTone() === 'warning'"
+        [class.is-danger]="timerTone() === 'danger'"
+        [style.width.%]="timerPercent()"
+      ></div>
     </div>
   </div>
 

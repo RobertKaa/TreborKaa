@@ -1,0 +1,70 @@
+@mixin route-progress($track-selector, $fill-selector) {
+  #{$track-selector} {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    height: 14px;
+    margin: 0;
+    overflow: visible;
+    border-radius: 999px;
+    background: transparent;
+  }
+
+  #{$track-selector}::before,
+  #{$track-selector}::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  #{$track-selector}::before {
+    right: 0;
+    left: 0;
+    height: 2px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--line) 78%, transparent);
+  }
+
+  #{$track-selector}::after {
+    right: 0;
+    width: 7px;
+    height: 7px;
+    border: 1px solid color-mix(in srgb, var(--line) 82%, transparent);
+    border-radius: 999px;
+    background: var(--surface-raise);
+  }
+
+  #{$fill-selector} {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    min-width: 7px;
+    height: 3px;
+    border-radius: 999px;
+    background: var(--success);
+    transform: translateY(-50%);
+    transition: width 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  #{$fill-selector}::before,
+  #{$fill-selector}::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border: 2px solid var(--surface-raise);
+    border-radius: 999px;
+    background: var(--success);
+    transform: translateY(-50%);
+  }
+
+  #{$fill-selector}::before {
+    left: -1px;
+  }
+
+  #{$fill-selector}::after {
+    right: -4px;
+  }
+}

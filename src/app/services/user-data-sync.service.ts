@@ -1,4 +1,5 @@
 import { Injectable, effect, inject } from '@angular/core';
+import { logger } from './logger.service';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { GameRecordKey, PersonalRecord } from '../models/personal-record';
 import { SpeedrunSplitBest, SpeedrunSplitId, SpeedrunUserRecord } from '../models/speedrun';
@@ -92,7 +93,7 @@ export class UserDataSyncService {
     } catch (error) {
       this.isApplyingRemote = false;
       this.initializedUserId = userId;
-      console.warn('Unable to synchronize user data', error);
+      logger.warn('Unable to synchronize user data', error);
     }
   }
 
@@ -134,7 +135,7 @@ export class UserDataSyncService {
       const client = await this.auth.getClient();
       await this.uploadAll(client, userId);
     } catch (error) {
-      console.warn('Unable to upload user data', error);
+      logger.warn('Unable to upload user data', error);
     }
   }
 
@@ -146,7 +147,7 @@ export class UserDataSyncService {
 
     for (const result of results) {
       if (result.status === 'rejected') {
-        console.warn('Unable to push user data', result.reason);
+        logger.warn('Unable to push user data', result.reason);
       }
     }
   }
@@ -306,7 +307,7 @@ export class UserDataSyncService {
     try {
       return await fetchData();
     } catch (error) {
-      console.warn('Unable to pull remote user data', error);
+      logger.warn('Unable to pull remote user data', error);
       return fallback;
     }
   }

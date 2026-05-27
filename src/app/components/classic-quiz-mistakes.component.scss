@@ -1,0 +1,48 @@
+.mistake-country {
+  margin-bottom: 6px;
+}
+
+.mistake-flag,
+.mistake-shape {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-raise) 82%, transparent);
+}
+
+.mistake-flag {
+  height: 70px;
+  overflow: hidden;
+}
+
+.mistake-flag img {
+  display: block;
+  width: auto;
+  max-width: min(100%, 160px);
+  height: auto;
+  max-height: 54px;
+  object-fit: contain;
+}
+
+.mistake-shape {
+  height: 104px;
+}
+
+.mistake-shape svg {
+  display: block;
+  width: min(100%, 170px);
+  height: auto;
+  max-height: 86px;
+}
+
+.mistake-shape path {
+  fill: color-mix(in srgb, var(--accent) 36%, var(--surface-strong));
+  stroke: color-mix(in srgb, var(--accent-strong) 45%, var(--line));
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}

@@ -1,13 +1,26 @@
 import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
+import { logger } from './logger.service';
 import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
+import {
+  DEFAULT_PROFILE_AVATAR_KEY,
+  buildDefaultPublicDisplayName,
+  readProfileAvatarKey,
+  sanitizeProfileDisplayName,
+  validateProfileDisplayName,
+} from '../utils/profile-safety';
+import type { ProfileAvatarKey } from '../utils/profile-safety';
 import { SUPABASE_CLIENT_LOADER } from './supabase-client';
 
 export interface AuthProfile {
   id: string;
-  email: string;
   displayName: string;
-  avatarUrl: string | null;
+  avatarKey: ProfileAvatarKey;
 }
+
+export type ProfileUpdatePayload = {
+  displayName: string;
+  avatarKey: ProfileAvatarKey;
+};
 
 interface OAuthHashTokens {
   accessToken: string;
@@ -19,6 +32,7 @@ export class SupabaseAuthService {
   private readonly loadClient = inject(SUPABASE_CLIENT_LOADER);
   private readonly destroyRef = inject(DestroyRef);
   private readonly sessionState = signal<Session | null>(null);
+  private readonly profileState = signal<AuthProfile | null>(null);
   private readonly loadingState = signal(true);
   private readonly errorState = signal<string | null>(null);
   private clientPromise: Promise<SupabaseClient> | null = null;
@@ -27,7 +41,7 @@ export class SupabaseAuthService {
 
   readonly session = computed(() => this.sessionState());
   readonly user = computed(() => this.sessionState()?.user ?? null);
-  readonly profile = computed(() => this.mapUserToProfile(this.user()));
+  readonly profile = computed(() => this.profileState() ?? this.mapUserToProfile(this.user()));
   readonly isAuthenticated = computed(() => this.user() !== null);
   readonly isLoading = computed(() => this.loadingState());
   readonly lastError = computed(() => this.errorState());
@@ -66,6 +80,47 @@ export class SupabaseAuthService {
     }
 
     this.sessionState.set(null);
+    this.profileState.set(null);
+  }
+
+  async updateProfile(payload: ProfileUpdatePayload): Promise<void> {
+    this.errorState.set(null);
+
+    const user = this.user();
+    if (!user) {
+      throw new Error('profile.error.notAuthenticated');
+    }
+
+    const displayNameResult = validateProfileDisplayName(payload.displayName);
+    if (displayNameResult.errorKey) {
+      throw new Error(displayNameResult.errorKey);
+    }
+
+    const avatarKey = readProfileAvatarKey(payload.avatarKey);
+    const client = await this.getClient();
+    const { data, error } = await client.auth.updateUser({
+      data: {
+        vexiio_display_name: displayNameResult.value,
+        vexiio_avatar_key: avatarKey,
+      },
+    });
+
+    if (error) {
+      this.errorState.set(error.message);
+      throw error;
+    }
+
+    const nextUser = data.user ?? {
+      ...user,
+      user_metadata: {
+        ...user.user_metadata,
+        vexiio_display_name: displayNameResult.value,
+        vexiio_avatar_key: avatarKey,
+      },
+    };
+
+    this.applyUserToCurrentSession(nextUser);
+    void this.syncUserProfile(nextUser);
   }
 
   getClient(): Promise<SupabaseClient> {
@@ -77,6 +132,7 @@ export class SupabaseAuthService {
     const client = await this.getClient();
     const { data: authStateData } = client.auth.onAuthStateChange((event, session) => {
       this.sessionState.set(session);
+      this.profileState.set(this.mapUserToProfile(session?.user ?? null));
       this.loadingState.set(false);
 
       if (event === 'SIGNED_IN' && session?.user) {
@@ -88,6 +144,7 @@ export class SupabaseAuthService {
     const oauthSession = await this.consumeOAuthHashSession(client);
     if (oauthSession) {
       this.sessionState.set(oauthSession);
+      this.profileState.set(this.mapUserToProfile(oauthSession.user));
       this.loadingState.set(false);
       void this.syncUserProfile(oauthSession.user);
       return;
@@ -102,6 +159,7 @@ export class SupabaseAuthService {
     }
 
     this.sessionState.set(data.session);
+    this.profileState.set(this.mapUserToProfile(data.session?.user ?? null));
     this.loadingState.set(false);
 
     if (data.session?.user) {
@@ -171,19 +229,13 @@ export class SupabaseAuthService {
       return null;
     }
 
-    const email = user.email ?? '';
-    const displayName =
-      this.readMetadataString(user, 'full_name') ??
-      this.readMetadataString(user, 'name') ??
-      email.split('@')[0] ??
-      'Joueur';
+    const displayName = this.readCustomDisplayName(user) ?? buildDefaultPublicDisplayName(user.id);
+    const avatarKey = readProfileAvatarKey(this.readMetadataString(user, 'vexiio_avatar_key'));
 
     return {
       id: user.id,
-      email,
       displayName,
-      avatarUrl:
-        this.readMetadataString(user, 'avatar_url') ?? this.readMetadataString(user, 'picture'),
+      avatarKey,
     };
   }
 
@@ -202,8 +254,7 @@ export class SupabaseAuthService {
     const { error } = await client.from('user_profiles').upsert(
       {
         user_id: profile.id,
-        display_name: profile.displayName,
-        avatar_url: profile.avatarUrl,
+        display_name: this.readCustomDisplayName(user) ?? buildDefaultPublicDisplayName(profile.id),
         locale,
       },
       { onConflict: 'user_id' },
@@ -211,7 +262,7 @@ export class SupabaseAuthService {
 
     if (error) {
       this.errorState.set(null);
-      console.warn('Unable to sync Supabase profile', error);
+      logger.warn('Unable to sync Supabase profile', error);
     }
   }
 
@@ -223,5 +274,25 @@ export class SupabaseAuthService {
 
     const trimmed = value.trim();
     return trimmed.length > 0 ? trimmed : null;
+  }
+
+  private readCustomDisplayName(user: User): string | null {
+    return sanitizeProfileDisplayName(user.user_metadata?.['vexiio_display_name']);
+  }
+
+  private applyUserToCurrentSession(user: User): void {
+    const currentSession = this.sessionState();
+    if (currentSession) {
+      this.sessionState.set({
+        ...currentSession,
+        user,
+      });
+    }
+
+    this.profileState.set(this.mapUserToProfile(user) ?? {
+      id: user.id,
+      displayName: buildDefaultPublicDisplayName(user.id),
+      avatarKey: DEFAULT_PROFILE_AVATAR_KEY,
+    });
   }
 }

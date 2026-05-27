@@ -1,10 +1,10 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
+import { buildDefaultPublicDisplayName, sanitizeProfileDisplayName } from '../utils/profile-safety';
 import { SUPABASE_CLIENT_LOADER } from './supabase-client';
 
 export type SpeedrunLeaderboardEntry = {
   userId: string;
   displayName: string;
-  avatarUrl: string | null;
   totalTimeMs: number;
   rawTimeMs: number;
   penaltyMs: number;
@@ -16,7 +16,6 @@ export type SpeedrunLeaderboardEntry = {
 type RemoteLeaderboardEntry = {
   user_id: string;
   display_name: string | null;
-  avatar_url: string | null;
   total_time_ms: number;
   raw_time_ms: number;
   penalty_ms: number;
@@ -46,7 +45,7 @@ export class SpeedrunLeaderboardService {
       const { data, error } = await client
         .from('speedrun_leaderboard')
         .select(
-          'user_id,display_name,avatar_url,total_time_ms,raw_time_ms,penalty_ms,mistake_count,correct_count,completed_at',
+          'user_id,display_name,total_time_ms,raw_time_ms,penalty_ms,mistake_count,correct_count,completed_at',
         )
         .order('total_time_ms', { ascending: true })
         .order('completed_at', { ascending: true })
@@ -68,8 +67,8 @@ export class SpeedrunLeaderboardService {
   private mapEntries(entries: RemoteLeaderboardEntry[]): SpeedrunLeaderboardEntry[] {
     return entries.map((entry) => ({
       userId: entry.user_id,
-      displayName: entry.display_name || 'Joueur',
-      avatarUrl: entry.avatar_url,
+      displayName:
+        sanitizeProfileDisplayName(entry.display_name) ?? buildDefaultPublicDisplayName(entry.user_id),
       totalTimeMs: entry.total_time_ms,
       rawTimeMs: entry.raw_time_ms,
       penaltyMs: entry.penalty_ms,
@@ -78,4 +77,5 @@ export class SpeedrunLeaderboardService {
       completedAt: entry.completed_at,
     }));
   }
+
 }

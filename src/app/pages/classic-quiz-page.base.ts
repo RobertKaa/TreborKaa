@@ -83,7 +83,9 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
   protected readonly errors = signal<ClassicQuizError[]>([]);
   protected readonly isComplete = signal(false);
   protected readonly countries$ = this.countriesService.getCountries();
-  protected readonly countriesSignal = toSignal(this.countries$, { initialValue: [] as CountrySummary[] });
+  protected readonly countriesSignal = toSignal(this.countries$, {
+    initialValue: [] as CountrySummary[],
+  });
   protected readonly currentQuestion = signal<TQuestion | null>(null);
   protected readonly totalQuestions = computed(() => {
     const countries = this.countriesSignal();
@@ -93,14 +95,18 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
 
     return countries.length;
   });
-  protected readonly answeredCount = computed(() => this.usedCodes().length + (this.answered() ? 1 : 0));
+  protected readonly answeredCount = computed(
+    () => this.usedCodes().length + (this.answered() ? 1 : 0),
+  );
   protected readonly progressLabel = computed(
-    () => `${Math.min(this.questionIndex(), this.totalQuestions())} / ${this.totalQuestions()}`
+    () => `${Math.min(this.questionIndex(), this.totalQuestions())} / ${this.totalQuestions()}`,
   );
   protected readonly progressPercent = computed(() => {
     const total = this.totalQuestions();
     return total > 0 ? Math.round((this.answeredCount() / total) * 100) : 0;
   });
+  protected readonly getOptionStateForCode = (code: string) => this.getOptionState(code);
+  protected readonly isOptionDisabledForCode = (code: string) => this.isOptionDisabled(code);
 
   protected constructor() {}
 
@@ -153,7 +159,8 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
 
     const selectedCountry = question?.options.find((option) => option.code === code) ?? null;
     const correctCountry =
-      question?.options.find((option) => option.code === question.correctCode) ?? question?.promptCountry;
+      question?.options.find((option) => option.code === question.correctCode) ??
+      question?.promptCountry;
 
     this.wrongAttempts.update((value) => value + 1);
     this.wrongCodes.update((codes) => (codes.includes(code) ? codes : [...codes, code]));
@@ -164,8 +171,8 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
         {
           promptCountry: question.promptCountry,
           selectedCountry,
-          correctCountry
-        }
+          correctCountry,
+        },
       ]);
     }
 
@@ -311,7 +318,7 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
 
     this.personalRecordsService.saveResult(this.getRecordKeyFn(), {
       score: this.score(),
-      maxScore: Math.max(1, this.score() + this.wrongAttempts())
+      maxScore: Math.max(1, this.score() + this.wrongAttempts()),
     });
     this.hasSavedRecord = true;
   }
@@ -341,15 +348,13 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
         labelKey: this.progressLabelKey,
         labelParams: {
           current: Math.min(this.questionIndex(), this.totalQuestions()),
-          total: this.totalQuestions()
-        }
+          total: this.totalQuestions(),
+        },
       });
     });
   }
 
-  private buildProgressSnapshot(
-    question: TQuestion
-  ): ClassicQuizProgressSnapshot {
+  private buildProgressSnapshot(question: TQuestion): ClassicQuizProgressSnapshot {
     return {
       version: 1,
       score: this.score(),
@@ -363,13 +368,13 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
       errors: this.errors().map((error) => ({
         promptCode: error.promptCountry.code,
         selectedCode: error.selectedCountry?.code ?? null,
-        correctCode: error.correctCountry.code
+        correctCode: error.correctCountry.code,
       })),
       currentQuestion: {
         promptCode: question.promptCountry.code,
         optionCodes: question.options.map((option) => option.code),
-        correctCode: question.correctCode
-      }
+        correctCode: question.correctCode,
+      },
     };
   }
 
@@ -402,7 +407,9 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
       snapshot.errors
         .map((error) => {
           const promptCountry = byCode.get(error.promptCode) ?? null;
-          const selectedCountry = error.selectedCode ? byCode.get(error.selectedCode) ?? null : null;
+          const selectedCountry = error.selectedCode
+            ? (byCode.get(error.selectedCode) ?? null)
+            : null;
           const correctCountry = byCode.get(error.correctCode) ?? null;
           if (!promptCountry || !correctCountry) {
             return null;
@@ -411,10 +418,10 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
           return {
             promptCountry,
             selectedCountry,
-            correctCountry
+            correctCountry,
           };
         })
-        .filter((item): item is ClassicQuizError => !!item)
+        .filter((item): item is ClassicQuizError => !!item),
     );
     this.currentQuestion.set(question);
     this.hasSavedRecord = false;
@@ -423,7 +430,7 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
 
   private hydrateQuestion(
     snapshot: ClassicQuestionSnapshot | null,
-    byCode: Map<string, CountrySummary>
+    byCode: Map<string, CountrySummary>,
   ): TQuestion | null {
     if (!snapshot) {
       return null;
@@ -444,7 +451,7 @@ export abstract class ClassicQuizPageBase<TQuestion extends BaseQuestion> {
     const baseQuestion: BaseQuestion = {
       promptCountry,
       options,
-      correctCode: snapshot.correctCode
+      correctCode: snapshot.correctCode,
     };
 
     return baseQuestion as TQuestion;

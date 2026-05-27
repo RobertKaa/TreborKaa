@@ -1,3 +1,5 @@
+@use './route-progress' as route;
+
 :root {
   --game-card-radius: var(--ds-radius-xl);
   --game-card-padding: 20px 24px;
@@ -14,15 +16,9 @@
   margin: 0;
 }
 
-:where(
-  .game-shell,
-  .chrono-shell,
-  .pixel-shell,
-  .error-shell,
-  .rebuild-shell,
-  .speedrun-shell
-) {
+:where(.game-shell, .chrono-shell, .pixel-shell, .error-shell, .rebuild-shell, .speedrun-shell) {
   display: grid;
+  align-content: start;
   padding-bottom: 24px;
 }
 
@@ -64,14 +60,7 @@
   padding: var(--game-card-padding-large);
 }
 
-:where(
-    .game-shell,
-    .chrono-shell,
-    .pixel-shell,
-    .error-shell,
-    .rebuild-shell,
-    .speedrun-shell
-  )
+:where(.game-shell, .chrono-shell, .pixel-shell, .error-shell, .rebuild-shell, .speedrun-shell)
   > .hero-card {
   display: flex;
   align-items: center;
@@ -438,51 +427,61 @@
   z-index: 5;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
   width: min(760px, 100%);
-  padding: 8px;
-  margin: 10px auto 0;
-  background: color-mix(in srgb, var(--surface-raise) 96%, transparent);
+  padding: 10px;
+  margin: 12px auto 0;
+  background: color-mix(in srgb, var(--surface-strong) 92%, transparent);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: var(--ds-radius-xl);
   box-shadow: var(--shadow);
+  backdrop-filter: blur(12px) saturate(120%);
 }
 
 .status-block {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
+  gap: 9px;
+  min-height: 40px;
+  padding: 8px 12px;
   border: 1px solid var(--line-soft);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  border-radius: var(--ds-radius-md);
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+}
+
+.status-block:has(.progress-track):not(.progress-block) {
+  display: grid;
+  grid-template-columns: auto auto minmax(180px, 1fr);
+  flex: 1 1 420px;
+  min-width: min(420px, 100%);
+}
+
+.status-row {
+  display: contents;
+}
+
+.status-block:has(.progress-track) .progress-track {
+  justify-self: stretch;
+  width: 100%;
 }
 
 .status-dock .status-label {
   margin: 0;
-  font-size: 0.6rem;
+  color: var(--accent-dark);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
 }
 
 :where(.status-value, .summary-value, .mistake-country, .mistake-question) {
   font-weight: 800;
 }
 
-.progress-track {
-  width: 132px;
-  height: 6px;
-  margin-top: 0;
-  overflow: hidden;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--line-soft) 80%, transparent);
+.status-value {
+  font-family: 'Space Mono', monospace;
 }
 
-.progress-fill {
-  height: 100%;
-  border-radius: inherit;
-  background: var(--success);
-  box-shadow: none;
-  transition: width 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
+@include route.route-progress('.status-dock .progress-track', '.status-dock .progress-fill');
 
 .modal-backdrop {
   position: fixed;

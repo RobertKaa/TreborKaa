@@ -1,9 +1,13 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+const ALLOWED_ORIGINS = new Set([
+  'https://vexiio.com',
+  'https://www.vexiio.com',
+  'http://localhost:4200',
+  'http://localhost:4201',
+  'http://127.0.0.1:4200',
+  'http://127.0.0.1:4201',
+]);
 
 const SPEEDRUN_SPLITS = [
   {
@@ -37,12 +41,15 @@ const SPEEDRUN_SPLITS = [
 ];
 
 Deno.serve(async (request) => {
+  const corsHeaders = buildCorsHeaders(request);
+  const sendJson = (body: unknown, status = 200) => jsonResponse(body, status, corsHeaders);
+
   if (request.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
 
   if (request.method !== 'POST') {
-    return jsonResponse({ error: 'method_not_allowed' }, 405);
+    return sendJson({ error: 'method_not_allowed' }, 405);
   }
 
   const supabaseUrl = Deno.env.get('SUPABASE_URL');
@@ -50,7 +57,7 @@ Deno.serve(async (request) => {
   const authHeader = request.headers.get('Authorization');
 
   if (!supabaseUrl || !serviceRoleKey || !authHeader) {
-    return jsonResponse({ error: 'unauthorized' }, 401);
+    return sendJson({ error: 'unauthorized' }, 401);
   }
 
   const client = createClient(supabaseUrl, serviceRoleKey);
@@ -59,7 +66,7 @@ Deno.serve(async (request) => {
   );
 
   if (userError || !userData.user) {
-    return jsonResponse({ error: 'unauthorized' }, 401);
+    return sendJson({ error: 'unauthorized' }, 401);
   }
 
   const seed = crypto.randomUUID();
@@ -75,10 +82,10 @@ Deno.serve(async (request) => {
     .single();
 
   if (error) {
-    return jsonResponse({ error: 'attempt_create_failed' }, 500);
+    return sendJson({ error: 'attempt_create_failed' }, 500);
   }
 
-  return jsonResponse({
+  return sendJson({
     attemptId: data.id,
     seed: data.seed,
     splits: data.step_plan,
@@ -86,7 +93,24 @@ Deno.serve(async (request) => {
   });
 });
 
-function jsonResponse(body: unknown, status = 200): Response {
+function buildCorsHeaders(request: Request): Record<string, string> {
+  const origin = request.headers.get('Origin');
+  const allowOrigin = origin && ALLOWED_ORIGINS.has(origin) ? origin : 'https://vexiio.com';
+
+  return {
+    'Access-Control-Allow-Origin': allowOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Max-Age': '86400',
+    'Vary': 'Origin',
+  };
+}
+
+function jsonResponse(
+  body: unknown,
+  status = 200,
+  corsHeaders: Record<string, string>,
+): Response {
   return new Response(JSON.stringify(body), {
     status,
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },

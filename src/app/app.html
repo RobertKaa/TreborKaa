@@ -71,16 +71,20 @@
           [class.signed-in]="isAuthenticated()"
           [disabled]="isAuthLoading()"
           [attr.aria-label]="
-            isAuthenticated() ? i18n.t('auth.signOut') : i18n.t('auth.signInWithGoogle')
+            isAuthenticated() ? i18n.t('profile.open') : i18n.t('auth.signInWithGoogle')
           "
+          [attr.aria-haspopup]="isAuthenticated() ? 'dialog' : null"
+          [attr.aria-expanded]="isAuthenticated() ? isProfileMenuOpen() : null"
           (click)="handleAuthButtonClick()"
         >
           @if (isAuthenticated()) {
-            @if (authProfile()?.avatarUrl; as avatarUrl) {
-              <img class="auth-avatar" [src]="avatarUrl" [alt]="authDisplayName()" />
-            } @else {
-              <span class="auth-avatar-fallback" aria-hidden="true">{{ authInitial() }}</span>
-            }
+            <span class="profile-avatar-mini" aria-hidden="true">
+              <img
+                class="profile-avatar-img"
+                [src]="profileAvatarUrl(authAvatarKey())"
+                [alt]="''"
+              />
+            </span>
             <span class="auth-label">{{ authDisplayName() }}</span>
           } @else {
             <span class="google-mark" aria-hidden="true">G</span>
@@ -89,6 +93,109 @@
             </span>
           }
         </button>
+
+        @if (isProfileMenuOpen()) {
+          <section class="profile-panel" role="dialog" [attr.aria-label]="i18n.t('profile.title')">
+            <div class="profile-panel-head">
+              <span class="profile-avatar-large">
+                <img
+                  class="profile-avatar-img"
+                  [src]="profileAvatarUrl(profileFormAvatarKey())"
+                  [alt]="profileAvatarAlt(profileFormAvatarKey())"
+                />
+              </span>
+              <div>
+                <p class="profile-panel-kicker">{{ i18n.t('profile.kicker') }}</p>
+                <strong>{{ authDisplayName() }}</strong>
+              </div>
+            </div>
+
+            <form class="profile-form" (submit)="saveProfile(); $event.preventDefault()">
+              <label class="profile-field">
+                <span>{{ i18n.t('profile.pseudo') }}</span>
+                <input
+                  type="text"
+                  autocomplete="off"
+                  inputmode="text"
+                  maxlength="18"
+                  [value]="profileFormName()"
+                  [attr.aria-describedby]="'profile-help'"
+                  (input)="updateProfileName($event)"
+                />
+              </label>
+              <p id="profile-help" class="profile-help">{{ i18n.t('profile.pseudoHelp') }}</p>
+
+              <fieldset class="profile-avatar-field">
+                <legend>{{ i18n.t('profile.avatar') }}</legend>
+                <div class="profile-flag-picker">
+                  <div class="profile-selected-flag">
+                    <span class="profile-avatar-preview">
+                      <img
+                        class="profile-avatar-img"
+                        [src]="profileAvatarUrl(profileFormAvatarKey())"
+                        [alt]="profileAvatarAlt(profileFormAvatarKey())"
+                      />
+                    </span>
+                    <div>
+                      <span>{{ i18n.t('profile.avatarSelected') }}</span>
+                      <strong>{{ selectedProfileCountryName() }}</strong>
+                    </div>
+                  </div>
+
+                  <label class="profile-field profile-flag-search">
+                    <span>{{ i18n.t('profile.avatarSearch') }}</span>
+                    <input
+                      type="search"
+                      autocomplete="off"
+                      inputmode="search"
+                      [value]="profileFlagSearch()"
+                      [placeholder]="i18n.t('profile.avatarSearchPlaceholder')"
+                      (input)="updateProfileFlagSearch($event)"
+                    />
+                  </label>
+
+                  <div class="profile-flag-results" role="listbox">
+                    @for (country of profileFlagResults(); track country.code) {
+                      <button
+                        type="button"
+                        class="profile-flag-option"
+                        [class.active]="profileFormAvatarKey() === country.code"
+                        [attr.aria-selected]="profileFormAvatarKey() === country.code"
+                        (click)="selectProfileCountry(country)"
+                      >
+                        <span class="profile-avatar-preview">
+                          <img
+                            class="profile-avatar-img"
+                            [src]="profileAvatarUrl(country.code)"
+                            [alt]="i18n.t('countries.flagOf', { country: countryName(country) })"
+                          />
+                        </span>
+                        <span>{{ countryName(country) }}</span>
+                      </button>
+                    } @empty {
+                      <p class="profile-flag-empty">{{ i18n.t('profile.avatarNoResults') }}</p>
+                    }
+                  </div>
+                </div>
+              </fieldset>
+
+              @if (profileFormError(); as errorKey) {
+                <p class="profile-feedback is-error" role="alert">{{ i18n.t(errorKey) }}</p>
+              } @else if (profileFormNotice(); as noticeKey) {
+                <p class="profile-feedback is-success" role="status">{{ i18n.t(noticeKey) }}</p>
+              }
+
+              <div class="profile-actions">
+                <button type="submit" class="ds-button is-primary" [disabled]="isProfileSaving()">
+                  {{ isProfileSaving() ? i18n.t('profile.saving') : i18n.t('profile.save') }}
+                </button>
+                <button type="button" class="ds-button is-secondary" (click)="signOut()">
+                  {{ i18n.t('auth.signOut') }}
+                </button>
+              </div>
+            </form>
+          </section>
+        }
 
         <div class="header-menu">
           <button
@@ -132,6 +239,10 @@
                 <span>{{ i18n.t('menu.speedrun') }}</span>
               </a>
               <div class="menu-settings-group">
+                <a routerLink="/confidentialite" (click)="closeMenu()">
+                  <span class="menu-icon icon-privacy" aria-hidden="true">&#9671;</span>
+                  <span>{{ i18n.t('privacy.title') }}</span>
+                </a>
                 <button type="button" (click)="toggleTheme()">
                   @if (isDarkTheme()) {
                     <span class="menu-icon icon-theme" aria-hidden="true">&#9728;</span>
@@ -195,6 +306,7 @@
 
         @if (isSettingsOpen()) {
           <section class="settings-panel" [attr.aria-label]="i18n.t('settings.title')">
+            <p class="settings-panel-title">{{ i18n.t('settings.title') }}</p>
             <button type="button" (click)="toggleTheme(); closeSettings()">
               @if (isDarkTheme()) {
                 <span class="menu-icon icon-theme">&#9728;</span>
@@ -203,31 +315,43 @@
               }
               <span>{{ themeLabel() }}</span>
             </button>
-            <div class="language-switch" role="group" [attr.aria-label]="i18n.t('language.label')">
-              <button
-                type="button"
-                class="language-button"
-                [class.active]="isActiveLanguage('fr')"
-                (click)="setLanguage('fr')"
+            <div class="settings-language-row">
+              <span>{{ i18n.t('language.label') }}</span>
+              <div
+                class="language-switch"
+                role="group"
+                [attr.aria-label]="i18n.t('language.label')"
               >
-                FR
-              </button>
-              <button
-                type="button"
-                class="language-button"
-                [class.active]="isActiveLanguage('en')"
-                (click)="setLanguage('en')"
-              >
-                EN
-              </button>
+                <button
+                  type="button"
+                  class="language-button"
+                  [class.active]="isActiveLanguage('fr')"
+                  (click)="setLanguage('fr')"
+                >
+                  FR
+                </button>
+                <button
+                  type="button"
+                  class="language-button"
+                  [class.active]="isActiveLanguage('en')"
+                  (click)="setLanguage('en')"
+                >
+                  EN
+                </button>
+              </div>
             </div>
           </section>
         }
       </div>
+
+      <a class="sidebar-privacy-link" routerLink="/confidentialite" routerLinkActive="active">
+        <span class="menu-icon icon-privacy" aria-hidden="true">&#9671;</span>
+        <span>{{ i18n.t('privacy.title') }}</span>
+      </a>
     </div>
   </header>
 
-  @if (isMenuOpen() || isSettingsOpen()) {
+  @if (isMenuOpen() || isSettingsOpen() || isProfileMenuOpen()) {
     <button
       type="button"
       class="menu-backdrop"

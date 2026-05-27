@@ -167,19 +167,7 @@
   border-radius: var(--ds-radius-lg);
 }
 
-.flag-surface {
-  min-height: min(20vh, 150px);
-  padding: 12px;
-  border: 1px solid var(--line-soft);
-  border-radius: 14px;
-}
-
-.flag-surface img {
-  width: auto;
-  height: auto;
-  max-width: min(100%, 220px);
-  max-height: 118px;
-}
+.flag-surface { min-height: min(20vh, 150px); }
 
 .summary-split.is-improved {
   border-color: color-mix(in srgb, #ffd34d 70%, var(--line));
@@ -195,7 +183,7 @@
 }
 
 .progress-block {
-  flex: 1 1 160px;
+  flex: 1 1 240px;
 }
 
 .progress-block .progress-track {
@@ -388,8 +376,7 @@
   :host-context(app-root.mobile-viewport) .status-dock {
     position: fixed !important;
     inset: auto max(10px, env(safe-area-inset-right, 0px))
-      max(10px, env(safe-area-inset-bottom, 0px))
-      max(10px, env(safe-area-inset-left, 0px)) !important;
+      max(10px, env(safe-area-inset-bottom, 0px)) max(10px, env(safe-area-inset-left, 0px)) !important;
     width: auto !important;
     z-index: 45 !important;
   }
@@ -420,6 +407,6 @@
   }
 
   .progress-block .progress-track {
-    height: 5px;
+    height: 14px;
   }
 }

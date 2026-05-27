@@ -164,12 +164,7 @@
   background: color-mix(in srgb, var(--surface-raise) 84%, transparent);
 }
 
-.flag-surface {
-  min-height: min(20vh, 160px);
-  padding: 12px;
-  border: 1px solid var(--line-soft);
-  border-radius: var(--ds-radius-md);
-}
+.flag-surface { min-height: min(20vh, 160px); }
 
 .option-card img {
   display: block;

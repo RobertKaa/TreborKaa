@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { CountryShape } from '../models/country-shape';
 import { CountrySummary } from '../models/country-summary';
+import { shuffleItems } from '../utils/array-utils';
 import { BrowserStorageService } from './browser-storage.service';
 import { DAILY_CHALLENGE_XP } from './xp-progression';
 
@@ -104,7 +105,7 @@ export class DailyChallengeService {
         OPTION_COUNT - 1,
         rng,
       );
-      const options = this.shuffle([promptCountry, ...distractors], rng);
+      const options = shuffleItems([promptCountry, ...distractors], rng);
 
       return {
         id: `${dateKey}-${index + 1}`,
@@ -174,17 +175,7 @@ export class DailyChallengeService {
   }
 
   private pickMany<T>(items: T[], count: number, rng: () => number): T[] {
-    return this.shuffle(items, rng).slice(0, count);
-  }
-
-  private shuffle<T>(items: T[], rng: () => number): T[] {
-    const copy = [...items];
-    for (let index = copy.length - 1; index > 0; index -= 1) {
-      const swapIndex = Math.floor(rng() * (index + 1));
-      [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
-    }
-
-    return copy;
+    return shuffleItems(items, rng).slice(0, count);
   }
 
   private loadCompletions(): DailyChallengeStore {

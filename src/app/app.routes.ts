@@ -38,6 +38,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'confidentialite',
+    loadComponent: () =>
+      import('./pages/privacy-page.component').then((m) => m.PrivacyPageComponent),
+  },
+  {
     path: 'jeu/pays-vers-drapeaux',
     loadComponent: () =>
       import('./pages/country-to-flag-game-page.component').then(

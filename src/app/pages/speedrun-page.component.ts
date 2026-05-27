@@ -1,4 +1,5 @@
 import { Component, OnDestroy, computed, effect, inject, signal } from '@angular/core';
+import { logger } from '../services/logger.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { CountryShape } from '../models/country-shape';
@@ -29,7 +30,8 @@ import {
 import { SpeedrunRecordsService } from '../services/speedrun-records.service';
 import { SpeedrunRunSubmissionService } from '../services/speedrun-run-submission.service';
 import { SupabaseAuthService } from '../services/supabase-auth.service';
-import { DEFAULT_SHAPE_VIEWBOX, buildShapeViewBox } from '../utils/country-shape-viewbox';
+import { shuffleItems } from '../utils/array-utils';
+import { DEFAULT_SHAPE_VIEWBOX, buildCountryShapeLookup } from '../utils/country-shape-viewbox';
 
 type SpeedrunState = 'intro' | 'countdown' | 'running' | 'finished';
 type SpeedrunRankingState = 'idle' | 'local' | 'pending' | 'accepted' | 'failed';
@@ -102,18 +104,7 @@ export class SpeedrunPageComponent implements OnDestroy {
   protected readonly totalQuestions = SPEEDRUN_TOTAL_QUESTIONS;
   protected readonly isAuthenticated = this.auth.isAuthenticated;
   protected readonly isRunning = computed(() => this.state() === 'running');
-  protected readonly shapeByCode = computed(
-    () =>
-      new Map(
-        this.shapes().map((shape) => [
-          shape.code,
-          {
-            path: shape.path,
-            viewBox: buildShapeViewBox(shape.path),
-          },
-        ]),
-      ),
-  );
+  protected readonly shapeByCode = computed(() => buildCountryShapeLookup(this.shapes()));
   protected readonly playableShapeCountries = computed(() => {
     const shapeCodes = new Set(this.shapes().map((shape) => shape.code));
     return this.countries().filter((country) => shapeCodes.has(country.code));
@@ -269,7 +260,7 @@ export class SpeedrunPageComponent implements OnDestroy {
         const attempt = await this.runSubmission.startAttempt();
         this.attemptId = attempt.attemptId;
       } catch (error) {
-        console.warn('Unable to start ranked speedrun attempt', error);
+        logger.warn('Unable to start ranked speedrun attempt', error);
         this.rankingState.set('local');
       }
     }
@@ -584,7 +575,7 @@ export class SpeedrunPageComponent implements OnDestroy {
       split,
       questionNumber: this.questionIndex() + 1,
       promptCountry: baseQuestion.promptCountry,
-      options: this.shuffleOptions(baseQuestion.options),
+      options: shuffleItems(baseQuestion.options),
       correctCode: baseQuestion.correctCode,
       shapePath: shape?.path,
       shapeViewBox: shape?.viewBox ?? DEFAULT_SHAPE_VIEWBOX,
@@ -622,16 +613,6 @@ export class SpeedrunPageComponent implements OnDestroy {
 
   private getSplitById(splitId: string): SpeedrunSplit {
     return this.splits.find((split) => split.id === splitId) ?? this.splits[0];
-  }
-
-  private shuffleOptions(options: CountrySummary[]): CountrySummary[] {
-    const copy = [...options];
-    for (let index = copy.length - 1; index > 0; index -= 1) {
-      const swapIndex = Math.floor(Math.random() * (index + 1));
-      [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
-    }
-
-    return copy;
   }
 
   private clearTimers(): void {
@@ -692,7 +673,7 @@ export class SpeedrunPageComponent implements OnDestroy {
       this.rankingState.set('accepted');
       void this.leaderboard.refresh(SPEEDRUN_LEADERBOARD_LIMIT);
     } catch (error) {
-      console.warn('Unable to submit ranked speedrun result', error);
+      logger.warn('Unable to submit ranked speedrun result', error);
       this.rankingState.set('failed');
     }
   }

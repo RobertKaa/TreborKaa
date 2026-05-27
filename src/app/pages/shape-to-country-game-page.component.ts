@@ -1,11 +1,13 @@
 import { Component, OnDestroy, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { ClassicNameQuestionComponent } from '../components/classic-name-question.component';
+import { ClassicQuizMistakesComponent } from '../components/classic-quiz-mistakes.component';
+import { ClassicQuizStatusComponent } from '../components/classic-quiz-status.component';
 import { CountryNameQuizQuestion } from '../models/country-name-quiz-question';
 import { CountrySummary } from '../models/country-summary';
 import { CountryShapesService } from '../services/country-shapes.service';
 import { FlagQuizService } from '../services/flag-quiz.service';
-import { DEFAULT_SHAPE_VIEWBOX, buildShapeViewBox } from '../utils/country-shape-viewbox';
+import { DEFAULT_SHAPE_VIEWBOX, buildCountryShapeLookup } from '../utils/country-shape-viewbox';
 import { ClassicQuizPageBase } from './classic-quiz-page.base';
 
 const SHAPE_EXCLUDED_CODES = new Set([
@@ -110,7 +112,7 @@ const SHAPE_EXTRA_EXCLUDED_CODES = new Set([
 
 @Component({
   selector: 'app-shape-to-country-game-page',
-  imports: [RouterLink],
+  imports: [ClassicNameQuestionComponent, ClassicQuizMistakesComponent, ClassicQuizStatusComponent],
   templateUrl: './shape-to-country-game-page.component.html',
   styleUrl: './shape-to-country-game-page.component.scss',
 })
@@ -121,18 +123,7 @@ export class ShapeToCountryGamePageComponent
   private readonly flagQuizService = inject(FlagQuizService);
   private readonly shapesService = inject(CountryShapesService);
   private readonly shapes = toSignal(this.shapesService.getCountryShapes(), { initialValue: [] });
-  private readonly shapeByCode = computed(
-    () =>
-      new Map(
-        this.shapes().map((shape) => [
-          shape.code,
-          {
-            path: shape.path,
-            viewBox: buildShapeViewBox(shape.path),
-          },
-        ]),
-      ),
-  );
+  protected readonly shapeByCode = computed(() => buildCountryShapeLookup(this.shapes()));
   private readonly playableCodes = computed(
     () => new Set(this.shapes().map((shape) => shape.code)),
   );
@@ -174,14 +165,6 @@ export class ShapeToCountryGamePageComponent
       isReady: () => this.playableCountries().length >= 4,
       getTotalQuestions: (countries) => this.filterPlayableCountries(countries).length,
     });
-  }
-
-  protected shapePath(country: CountrySummary): string | null {
-    return this.shapeByCode().get(country.code)?.path ?? null;
-  }
-
-  protected shapeViewBox(country: CountrySummary): string {
-    return this.shapeByCode().get(country.code)?.viewBox ?? DEFAULT_SHAPE_VIEWBOX;
   }
 
   ngOnDestroy(): void {

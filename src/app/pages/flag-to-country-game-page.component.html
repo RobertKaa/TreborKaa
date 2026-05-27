@@ -1,83 +1,22 @@
-<main class="game-shell">
-  @if (currentQuestion(); as question) {
-    <section class="question-card">
-      <p class="question-label">{{ i18n.t('classic.questionFlagToCountry') }}</p>
-      <div class="prompt-flag">
-        <img [src]="question.promptCountry.flagUrl" [alt]="i18n.t('countries.flagOf', { country: countryName(question.promptCountry) })" />
-      </div>
-      <p class="question-help">{{ i18n.t('classic.capital', { capital: capitalName(question.promptCountry) }) }}</p>
+<app-classic-name-question
+  [question]="currentQuestion()"
+  labelKey="classic.questionFlagToCountry"
+  prompt="flag"
+  [optionState]="getOptionStateForCode"
+  [optionDisabled]="isOptionDisabledForCode"
+  (selectCode)="selectAnswer($event)"
+/>
 
-      <div class="name-grid">
-        @for (option of question.options; track option.code) {
-          <button
-            type="button"
-            class="name-card"
-            [class.is-correct]="getOptionState(option.code) === 'correct'"
-            [class.is-wrong]="getOptionState(option.code) === 'wrong'"
-            [disabled]="isOptionDisabled(option.code)"
-            (click)="selectAnswer(option.code)"
-          >
-            {{ countryName(option) }}
-          </button>
-        }
-      </div>
-    </section>
-  } @else {
-    <section class="question-card">
-      <p class="question-help">{{ i18n.t('common.loadingGame') }}</p>
-    </section>
-  }
-</main>
-
-@if (currentQuestion()) {
-  <section class="quiz-progress-strip" [attr.aria-label]="i18n.t('classic.stateAria')">
-    <p class="quiz-progress-value">{{ progressLabel() }}</p>
-    <div class="quiz-progress-track" aria-hidden="true">
-      <div class="quiz-progress-fill" [style.width.%]="progressPercent()"></div>
-    </div>
-  </section>
-}
-
-@if (isComplete()) {
-  <button type="button" class="modal-backdrop" [attr.aria-label]="i18n.t('common.close')" (click)="closeSummary()"></button>
-  <section class="summary-modal" role="dialog" aria-modal="true" aria-labelledby="summary-title">
-    <div class="summary-head">
-      <div>
-        <p class="eyebrow">{{ i18n.t('common.completed') }}</p>
-        <h2 id="summary-title">{{ i18n.t('common.finalResult') }}</h2>
-      </div>
-    </div>
-
-    <div class="summary-score">
-      <div>
-        <p class="status-label">{{ i18n.t('common.correctAnswers') }}</p>
-        <p class="summary-value">{{ score() }}</p>
-      </div>
-      <div>
-        <p class="status-label">{{ i18n.t('common.errors') }}</p>
-        <p class="summary-value">{{ wrongAttempts() }} / {{ getErrorsLimit() }}</p>
-      </div>
-    </div>
-
-    <div class="mistakes-list">
-      @if (errors().length === 0) {
-        <p class="empty-state">{{ i18n.t('classic.emptyErrors') }}</p>
-      } @else {
-        @for (error of errors(); track $index) {
-          <article class="mistake-card">
-            <div class="mistake-flag">
-              <img [src]="error.promptCountry.flagUrl" [alt]="i18n.t('countries.flagOf', { country: countryName(error.promptCountry) })" />
-            </div>
-            <p class="mistake-line">{{ i18n.t('common.yourAnswer') }}: {{ error.selectedCountry ? countryName(error.selectedCountry) : i18n.t('common.none') }}</p>
-            <p class="mistake-line">{{ i18n.t('common.correctAnswer') }}: {{ countryName(error.correctCountry) }}</p>
-          </article>
-        }
-      }
-    </div>
-
-    <div class="summary-actions">
-      <button type="button" class="ghost-link" routerLink="/">{{ i18n.t('common.home') }}</button>
-      <button type="button" class="next-button" (click)="restartGame()">{{ i18n.t('common.restart') }}</button>
-    </div>
-  </section>
-}
+<app-classic-quiz-status
+  [showProgress]="!!currentQuestion()"
+  [showSummary]="isComplete()"
+  [progressLabel]="progressLabel()"
+  [progressPercent]="progressPercent()"
+  [score]="score()"
+  [wrongAttempts]="wrongAttempts()"
+  [errorsLimit]="getErrorsLimit()"
+  (close)="closeSummary()"
+  (restart)="restartGame()"
+>
+  <app-classic-quiz-mistakes [errors]="errors()" prompt="flag" />
+</app-classic-quiz-status>

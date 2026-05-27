@@ -29,7 +29,7 @@
     </div>
 
     <a
-      class="top-stat rank-stat"
+      class="top-stat rank-stat ds-button is-secondary"
       routerLink="/speedrun"
       [attr.aria-label]="i18n.t('home.speedrunRank')"
     >
@@ -39,7 +39,10 @@
   </section>
 
   <section class="overview-grid">
-    <article class="featured-card daily-hero-card" [class.completed]="dailyChallenge().completed">
+    <article
+      class="featured-card daily-hero-card ds-card is-featured"
+      [class.completed]="dailyChallenge().completed"
+    >
       <div class="featured-copy">
         <p class="eyebrow">{{ i18n.t('daily.eyebrow') }}</p>
         <h1>{{ i18n.t('daily.homeTitle') }}</h1>
@@ -51,7 +54,7 @@
               : i18n.t('home.dailyXp', { xp: dailyChallenge().xp })
           }}
         </span>
-        <a class="featured-action" routerLink="/defi-du-jour">
+        <a class="featured-action ds-button is-primary" routerLink="/defi-du-jour">
           <span>{{
             dailyChallenge().completed ? i18n.t('home.dailyCompleted') : i18n.t('home.dailyCta')
           }}</span>
@@ -60,17 +63,17 @@
       </div>
     </article>
 
-    <article class="teaser-card speedrun-preview-card">
+    <article class="teaser-card speedrun-preview-card ds-card is-featured">
       <p class="eyebrow">{{ i18n.t('speedrun.homeEyebrow') }}</p>
       <h2>{{ i18n.t('speedrun.homeTitle') }}</h2>
       <p>{{ i18n.t('speedrun.homeIntro') }}</p>
-      <a class="ghost-action" routerLink="/speedrun">
+      <a class="ghost-action ds-button is-secondary" routerLink="/speedrun">
         <span>{{ i18n.t('common.play') }}</span>
         <span aria-hidden="true">→</span>
       </a>
     </article>
 
-    <aside class="progress-card" [attr.aria-label]="i18n.t('gamification.profileAria')">
+    <aside class="progress-card ds-card" [attr.aria-label]="i18n.t('gamification.profileAria')">
       <p class="eyebrow">{{ i18n.t('gamification.progressTitle') }}</p>
       <div class="progress-main">
         <div class="level-crest" [attr.data-tier]="profile().levelTier">
@@ -82,10 +85,7 @@
           <div class="progress-track" aria-hidden="true">
             <div class="progress-fill" [style.width.%]="profile().progressPercent"></div>
           </div>
-          <p>
-            {{ i18n.t('gamification.nextLevelProgress', { percent: profile().progressPercent }) }}
-          </p>
-          <p class="tier-next">{{ nextTierLabel() }}</p>
+          <p class="level-xp-progress">{{ levelXpProgressLabel() }}</p>
         </div>
       </div>
       <div class="metric-row">
@@ -111,7 +111,7 @@
         <h2>{{ i18n.t('home.modesTitle') }}</h2>
       </div>
       @if (hiddenGames().length > 0) {
-        <button type="button" class="games-summary" (click)="toggleAllGames()">
+        <button type="button" class="games-summary ds-button is-ghost" (click)="toggleAllGames()">
           {{ showAllGames() ? i18n.t('home.hideAllGames') : i18n.t('home.showAllGames') }}
           <span aria-hidden="true">→</span>
         </button>
@@ -124,7 +124,7 @@
       } @else {
         @for (family of visibleClassicFamilies(); track family.id) {
           <article
-            class="mode-card"
+            class="mode-card ds-card"
             [class.mode-card-p-d]="family.id === 'country-to-flag'"
             [class.mode-card-d-p]="family.id === 'flag-to-country'"
             [class.mode-card-f-p]="family.id === 'shape-to-country'"
@@ -136,7 +136,7 @@
                 <small>{{ bestLine }}</small>
               </div>
             }
-            <a class="play-link card-action" [routerLink]="family.game.route">
+            <a class="play-link card-action ds-button is-primary" [routerLink]="family.game.route">
               {{ family.game.hasInProgress ? i18n.t('home.resumeAction') : i18n.t('common.play') }}
             </a>
           </article>
@@ -144,7 +144,7 @@
 
         @for (game of displayedSecondaryGames(); track game.id) {
           <article
-            class="mode-card"
+            class="mode-card ds-card"
             [class.mode-card-r]="game.id === 'flag-rebuild'"
             [class.mode-card-chrono]="game.id === 'flag-chrono'"
           >
@@ -161,7 +161,7 @@
               </div>
             }
             @if (game.available) {
-              <a class="play-link" [routerLink]="game.route">
+              <a class="play-link ds-button is-primary" [routerLink]="game.route">
                 {{ game.hasInProgress ? i18n.t('home.resumeAction') : i18n.t('common.play') }}
               </a>
             }
