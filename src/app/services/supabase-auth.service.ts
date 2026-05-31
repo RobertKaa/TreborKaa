@@ -1,4 +1,5 @@
 import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
+import { logger } from './logger.service';
 import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
 import {
   DEFAULT_PROFILE_AVATAR_KEY,
@@ -261,7 +262,7 @@ export class SupabaseAuthService {
 
     if (error) {
       this.errorState.set(null);
-      console.warn('Unable to sync Supabase profile', error);
+      logger.warn('Unable to sync Supabase profile', error);
     }
   }
 

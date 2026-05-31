@@ -167,19 +167,7 @@
   border-radius: var(--ds-radius-lg);
 }
 
-.flag-surface {
-  min-height: min(20vh, 150px);
-  padding: 12px;
-  border: 1px solid var(--line-soft);
-  border-radius: 14px;
-}
-
-.flag-surface img {
-  width: auto;
-  height: auto;
-  max-width: min(100%, 220px);
-  max-height: 118px;
-}
+.flag-surface { min-height: min(20vh, 150px); }
 
 .summary-split.is-improved {
   border-color: color-mix(in srgb, #ffd34d 70%, var(--line));

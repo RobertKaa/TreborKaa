@@ -1,4 +1,5 @@
 import { Component, OnDestroy, computed, effect, inject, signal } from '@angular/core';
+import { logger } from '../services/logger.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { CountryShape } from '../models/country-shape';
@@ -259,7 +260,7 @@ export class SpeedrunPageComponent implements OnDestroy {
         const attempt = await this.runSubmission.startAttempt();
         this.attemptId = attempt.attemptId;
       } catch (error) {
-        console.warn('Unable to start ranked speedrun attempt', error);
+        logger.warn('Unable to start ranked speedrun attempt', error);
         this.rankingState.set('local');
       }
     }
@@ -672,7 +673,7 @@ export class SpeedrunPageComponent implements OnDestroy {
       this.rankingState.set('accepted');
       void this.leaderboard.refresh(SPEEDRUN_LEADERBOARD_LIMIT);
     } catch (error) {
-      console.warn('Unable to submit ranked speedrun result', error);
+      logger.warn('Unable to submit ranked speedrun result', error);
       this.rankingState.set('failed');
     }
   }
