@@ -1,34 +1,195 @@
 <main class="records-shell">
-  <section class="header-card">
+  <header class="page-header">
     <div>
       <p class="eyebrow">{{ i18n.t('records.eyebrow') }}</p>
       <h1>{{ i18n.t('records.title') }}</h1>
       <p class="intro">{{ i18n.t('records.intro') }}</p>
     </div>
 
-    <div class="header-actions">
-      <button type="button" class="danger-button" (click)="clearAllRecords()">
+    @if (hasRecords()) {
+      <button type="button" class="reset-button" (click)="openResetDialog()">
         {{ i18n.t('records.clear') }}
       </button>
-    </div>
-  </section>
+    }
+  </header>
 
-  <section class="records-card">
-    @if (!hasRecords()) {
-      <p class="empty-state">{{ i18n.t('records.empty') }}</p>
-    } @else {
-      <div class="records-grid">
-        @for (row of rows(); track row.key) {
-          <article class="record-row">
-            <p class="record-title">{{ row.label }}</p>
-            <p class="record-value">{{ formatRecord(row.key, row.record!) }}</p>
-            <p class="record-meta">
-              {{ formatGamesPlayed(row.record!.gamesPlayed) }} |
-              {{ formatLastPlayed(row.record!.lastPlayedAt) }}
+  @if (!hasRecords()) {
+    <section class="empty-state" aria-live="polite">
+      <strong>{{ i18n.t('records.empty.title') }}</strong>
+      <p>{{ i18n.t('records.empty') }}</p>
+    </section>
+  } @else {
+    <section class="record-spotlight" [attr.aria-label]="i18n.t('records.spotlight.label')">
+      @if (strongestMode(); as strongest) {
+        <article class="featured-record">
+          <div class="featured-copy">
+            <p class="eyebrow">{{ i18n.t('records.spotlight.eyebrow') }}</p>
+            <h2>{{ strongest.label }}</h2>
+            <p>{{ i18n.t('records.spotlight.description') }}</p>
+          </div>
+
+          <div class="featured-score">
+            <span>{{ i18n.t('records.personalBest') }}</span>
+            <strong>{{ strongest.record.bestPercent }}%</strong>
+            <p>{{ formatRecord(strongest.key, strongest.record) }}</p>
+          </div>
+
+          <div
+            class="featured-progress"
+            role="meter"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            [attr.aria-valuenow]="strongest.record.bestPercent"
+            [attr.aria-label]="strongest.label"
+          >
+            <span [style.width.%]="strongest.record.bestPercent"></span>
+          </div>
+
+          <a [routerLink]="strongest.route">
+            {{ i18n.t('records.replay') }}
+            <span aria-hidden="true">→</span>
+          </a>
+        </article>
+      }
+
+      <aside class="player-profile">
+        <p class="eyebrow">{{ i18n.t('records.profile.eyebrow') }}</p>
+        <div class="profile-stat">
+          <span>{{ i18n.t('records.profile.games') }}</span>
+          <strong>{{ totalGames() }}</strong>
+        </div>
+        <div class="profile-stat">
+          <span>{{ i18n.t('records.profile.perfect') }}</span>
+          <strong>{{ perfectRecordCount() }} / {{ rows().length }}</strong>
+        </div>
+        @if (mostPlayedMode(); as favorite) {
+          <div class="profile-insight">
+            <span>{{ i18n.t('records.profile.favorite') }}</span>
+            <strong>{{ favorite.label }}</strong>
+            <small>{{ formatGamesPlayed(favorite.record.gamesPlayed) }}</small>
+          </div>
+        }
+        <div class="profile-insight">
+          <span>{{ i18n.t('records.profile.streak') }}</span>
+          <strong>x{{ bestStreak() }}</strong>
+          <small>{{ i18n.t('records.profile.streakHelp') }}</small>
+        </div>
+      </aside>
+    </section>
+
+    @if (nextChallenge(); as challenge) {
+      <section class="next-target">
+        <div class="target-mark" aria-hidden="true">◎</div>
+        <div>
+          <p class="eyebrow">{{ i18n.t('records.challenge.eyebrow') }}</p>
+          @if (challenge.record.bestPercent < 100) {
+            <h2>
+              {{
+                i18n.t('records.challenge.title', {
+                  mode: challenge.label,
+                  target: nextChallengeTarget(),
+                })
+              }}
+            </h2>
+            <p>
+              {{
+                i18n.t('records.challenge.description', {
+                  current: challenge.record.bestPercent,
+                  gap: nextChallengeTarget() - challenge.record.bestPercent,
+                })
+              }}
             </p>
+          } @else {
+            <h2>{{ i18n.t('records.challenge.completeTitle') }}</h2>
+            <p>{{ i18n.t('records.challenge.completeDescription') }}</p>
+          }
+        </div>
+        <a [routerLink]="challenge.route">{{ i18n.t('records.challenge.action') }}</a>
+      </section>
+    }
+
+    <section class="records-list" [attr.aria-label]="i18n.t('records.board.title')">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">{{ i18n.t('records.board.eyebrow') }}</p>
+          <h2>{{ i18n.t('records.board.title') }}</h2>
+        </div>
+        <p>{{ i18n.t('records.board.count', { count: rows().length, total: tiles.length }) }}</p>
+      </div>
+
+      <div class="record-board">
+        @for (row of rows(); track row.key; let index = $index) {
+          <article class="record-row">
+            <span class="record-index">{{ index + 1 }}</span>
+            <div class="record-identity">
+              <p class="record-title">{{ row.label }}</p>
+              <p class="record-meta">{{ formatLastPlayed(row.record.lastPlayedAt) }}</p>
+            </div>
+            <div class="record-score">
+              <span class="record-status">{{ i18n.t(recordStatusKey(row.record)) }}</span>
+              <strong>{{ formatRecord(row.key, row.record) }}</strong>
+              <span>
+                {{ row.record.bestPercent }}% · {{ formatGamesPlayed(row.record.gamesPlayed) }}
+              </span>
+            </div>
+            <a
+              class="record-action"
+              [routerLink]="row.route"
+              [attr.aria-label]="i18n.t('records.replayMode', { mode: row.label })"
+            >
+              <span aria-hidden="true">→</span>
+            </a>
           </article>
         }
       </div>
-    }
-  </section>
+    </section>
+  }
 </main>
+
+@if (resetDialogOpen()) {
+  <button
+    type="button"
+    class="modal-backdrop"
+    [attr.aria-label]="i18n.t('common.close')"
+    (click)="closeResetDialog()"
+  ></button>
+  <section
+    class="reset-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="reset-records-title"
+  >
+    <p class="eyebrow">{{ i18n.t('records.reset.eyebrow') }}</p>
+    <h2 id="reset-records-title">{{ i18n.t('records.reset.title') }}</h2>
+    <p>
+      {{
+        auth.isAuthenticated()
+          ? i18n.t('records.reset.remoteDescription')
+          : i18n.t('records.reset.localDescription')
+      }}
+    </p>
+
+    @if (resetError()) {
+      <p class="reset-error" role="alert">{{ resetError() }}</p>
+    }
+
+    <div class="dialog-actions">
+      <button
+        type="button"
+        class="secondary-button"
+        [disabled]="resetPending()"
+        (click)="closeResetDialog()"
+      >
+        {{ i18n.t('common.cancel') }}
+      </button>
+      <button
+        type="button"
+        class="danger-button"
+        [disabled]="resetPending()"
+        (click)="confirmReset()"
+      >
+        {{ resetPending() ? i18n.t('records.reset.pending') : i18n.t('records.reset.confirm') }}
+      </button>
+    </div>
+  </section>
+}

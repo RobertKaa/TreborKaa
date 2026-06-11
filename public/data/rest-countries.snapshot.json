@@ -1,0 +1,1502 @@
+[
+  {
+    "name": { "common": "Aruba" },
+    "translations": { "fra": { "common": "Aruba" } },
+    "capital": ["Oranjestad"],
+    "cca2": "AW"
+  },
+  {
+    "name": { "common": "Afghanistan" },
+    "translations": { "fra": { "common": "Afghanistan" } },
+    "capital": ["Kabul"],
+    "cca2": "AF"
+  },
+  {
+    "name": { "common": "Angola" },
+    "translations": { "fra": { "common": "Angola" } },
+    "capital": ["Luanda"],
+    "cca2": "AO"
+  },
+  {
+    "name": { "common": "Anguilla" },
+    "translations": { "fra": { "common": "Anguilla" } },
+    "capital": ["The Valley"],
+    "cca2": "AI"
+  },
+  {
+    "name": { "common": "Åland Islands" },
+    "translations": { "fra": { "common": "Ahvenanmaa" } },
+    "capital": ["Mariehamn"],
+    "cca2": "AX"
+  },
+  {
+    "name": { "common": "Albania" },
+    "translations": { "fra": { "common": "Albanie" } },
+    "capital": ["Tirana"],
+    "cca2": "AL"
+  },
+  {
+    "name": { "common": "Andorra" },
+    "translations": { "fra": { "common": "Andorre" } },
+    "capital": ["Andorra la Vella"],
+    "cca2": "AD"
+  },
+  {
+    "name": { "common": "United Arab Emirates" },
+    "translations": { "fra": { "common": "Émirats arabes unis" } },
+    "capital": ["Abu Dhabi"],
+    "cca2": "AE"
+  },
+  {
+    "name": { "common": "Argentina" },
+    "translations": { "fra": { "common": "Argentine" } },
+    "capital": ["Buenos Aires"],
+    "cca2": "AR"
+  },
+  {
+    "name": { "common": "Armenia" },
+    "translations": { "fra": { "common": "Arménie" } },
+    "capital": ["Yerevan"],
+    "cca2": "AM"
+  },
+  {
+    "name": { "common": "American Samoa" },
+    "translations": { "fra": { "common": "Samoa américaines" } },
+    "capital": ["Pago Pago"],
+    "cca2": "AS"
+  },
+  {
+    "name": { "common": "Antarctica" },
+    "translations": { "fra": { "common": "Antarctique" } },
+    "capital": [],
+    "cca2": "AQ"
+  },
+  {
+    "name": { "common": "French Southern and Antarctic Lands" },
+    "translations": { "fra": { "common": "Terres australes et antarctiques françaises" } },
+    "capital": ["Port-aux-Français"],
+    "cca2": "TF"
+  },
+  {
+    "name": { "common": "Antigua and Barbuda" },
+    "translations": { "fra": { "common": "Antigua-et-Barbuda" } },
+    "capital": ["Saint John's"],
+    "cca2": "AG"
+  },
+  {
+    "name": { "common": "Australia" },
+    "translations": { "fra": { "common": "Australie" } },
+    "capital": ["Canberra"],
+    "cca2": "AU"
+  },
+  {
+    "name": { "common": "Austria" },
+    "translations": { "fra": { "common": "Autriche" } },
+    "capital": ["Vienna"],
+    "cca2": "AT"
+  },
+  {
+    "name": { "common": "Azerbaijan" },
+    "translations": { "fra": { "common": "Azerbaïdjan" } },
+    "capital": ["Baku"],
+    "cca2": "AZ"
+  },
+  {
+    "name": { "common": "Burundi" },
+    "translations": { "fra": { "common": "Burundi" } },
+    "capital": ["Gitega"],
+    "cca2": "BI"
+  },
+  {
+    "name": { "common": "Belgium" },
+    "translations": { "fra": { "common": "Belgique" } },
+    "capital": ["Brussels"],
+    "cca2": "BE"
+  },
+  {
+    "name": { "common": "Benin" },
+    "translations": { "fra": { "common": "Bénin" } },
+    "capital": ["Porto-Novo"],
+    "cca2": "BJ"
+  },
+  {
+    "name": { "common": "Burkina Faso" },
+    "translations": { "fra": { "common": "Burkina Faso" } },
+    "capital": ["Ouagadougou"],
+    "cca2": "BF"
+  },
+  {
+    "name": { "common": "Bangladesh" },
+    "translations": { "fra": { "common": "Bangladesh" } },
+    "capital": ["Dhaka"],
+    "cca2": "BD"
+  },
+  {
+    "name": { "common": "Bulgaria" },
+    "translations": { "fra": { "common": "Bulgarie" } },
+    "capital": ["Sofia"],
+    "cca2": "BG"
+  },
+  {
+    "name": { "common": "Bahrain" },
+    "translations": { "fra": { "common": "Bahreïn" } },
+    "capital": ["Manama"],
+    "cca2": "BH"
+  },
+  {
+    "name": { "common": "Bahamas" },
+    "translations": { "fra": { "common": "Bahamas" } },
+    "capital": ["Nassau"],
+    "cca2": "BS"
+  },
+  {
+    "name": { "common": "Bosnia and Herzegovina" },
+    "translations": { "fra": { "common": "Bosnie-Herzégovine" } },
+    "capital": ["Sarajevo"],
+    "cca2": "BA"
+  },
+  {
+    "name": { "common": "Saint Barthélemy" },
+    "translations": { "fra": { "common": "Saint-Barthélemy" } },
+    "capital": ["Gustavia"],
+    "cca2": "BL"
+  },
+  {
+    "name": { "common": "Saint Helena, Ascension and Tristan da Cunha" },
+    "translations": { "fra": { "common": "Sainte-Hélène, Ascension et Tristan da Cunha" } },
+    "capital": ["Jamestown"],
+    "cca2": "SH"
+  },
+  {
+    "name": { "common": "Belarus" },
+    "translations": { "fra": { "common": "Biélorussie" } },
+    "capital": ["Minsk"],
+    "cca2": "BY"
+  },
+  {
+    "name": { "common": "Belize" },
+    "translations": { "fra": { "common": "Belize" } },
+    "capital": ["Belmopan"],
+    "cca2": "BZ"
+  },
+  {
+    "name": { "common": "Bermuda" },
+    "translations": { "fra": { "common": "Bermudes" } },
+    "capital": ["Hamilton"],
+    "cca2": "BM"
+  },
+  {
+    "name": { "common": "Bolivia" },
+    "translations": { "fra": { "common": "Bolivie" } },
+    "capital": ["Sucre"],
+    "cca2": "BO"
+  },
+  {
+    "name": { "common": "Caribbean Netherlands" },
+    "translations": { "fra": { "common": "Pays-Bas caribéens" } },
+    "capital": ["Kralendijk"],
+    "cca2": "BQ"
+  },
+  {
+    "name": { "common": "Brazil" },
+    "translations": { "fra": { "common": "Brésil" } },
+    "capital": ["Brasília"],
+    "cca2": "BR"
+  },
+  {
+    "name": { "common": "Barbados" },
+    "translations": { "fra": { "common": "Barbade" } },
+    "capital": ["Bridgetown"],
+    "cca2": "BB"
+  },
+  {
+    "name": { "common": "Brunei" },
+    "translations": { "fra": { "common": "Brunei" } },
+    "capital": ["Bandar Seri Begawan"],
+    "cca2": "BN"
+  },
+  {
+    "name": { "common": "Bhutan" },
+    "translations": { "fra": { "common": "Bhoutan" } },
+    "capital": ["Thimphu"],
+    "cca2": "BT"
+  },
+  {
+    "name": { "common": "Bouvet Island" },
+    "translations": { "fra": { "common": "Île Bouvet" } },
+    "capital": [],
+    "cca2": "BV"
+  },
+  {
+    "name": { "common": "Botswana" },
+    "translations": { "fra": { "common": "Botswana" } },
+    "capital": ["Gaborone"],
+    "cca2": "BW"
+  },
+  {
+    "name": { "common": "Central African Republic" },
+    "translations": { "fra": { "common": "République centrafricaine" } },
+    "capital": ["Bangui"],
+    "cca2": "CF"
+  },
+  {
+    "name": { "common": "Canada" },
+    "translations": { "fra": { "common": "Canada" } },
+    "capital": ["Ottawa"],
+    "cca2": "CA"
+  },
+  {
+    "name": { "common": "Cocos (Keeling) Islands" },
+    "translations": { "fra": { "common": "Îles Cocos" } },
+    "capital": ["West Island"],
+    "cca2": "CC"
+  },
+  {
+    "name": { "common": "Switzerland" },
+    "translations": { "fra": { "common": "Suisse" } },
+    "capital": ["Bern"],
+    "cca2": "CH"
+  },
+  {
+    "name": { "common": "Chile" },
+    "translations": { "fra": { "common": "Chili" } },
+    "capital": ["Santiago"],
+    "cca2": "CL"
+  },
+  {
+    "name": { "common": "China" },
+    "translations": { "fra": { "common": "Chine" } },
+    "capital": ["Beijing"],
+    "cca2": "CN"
+  },
+  {
+    "name": { "common": "Ivory Coast" },
+    "translations": { "fra": { "common": "Côte d'Ivoire" } },
+    "capital": ["Yamoussoukro"],
+    "cca2": "CI"
+  },
+  {
+    "name": { "common": "Cameroon" },
+    "translations": { "fra": { "common": "Cameroun" } },
+    "capital": ["Yaoundé"],
+    "cca2": "CM"
+  },
+  {
+    "name": { "common": "DR Congo" },
+    "translations": { "fra": { "common": "Congo (Rép. dém.)" } },
+    "capital": ["Kinshasa"],
+    "cca2": "CD"
+  },
+  {
+    "name": { "common": "Congo" },
+    "translations": { "fra": { "common": "Congo" } },
+    "capital": ["Brazzaville"],
+    "cca2": "CG"
+  },
+  {
+    "name": { "common": "Cook Islands" },
+    "translations": { "fra": { "common": "Îles Cook" } },
+    "capital": ["Avarua"],
+    "cca2": "CK"
+  },
+  {
+    "name": { "common": "Colombia" },
+    "translations": { "fra": { "common": "Colombie" } },
+    "capital": ["Bogotá"],
+    "cca2": "CO"
+  },
+  {
+    "name": { "common": "Comoros" },
+    "translations": { "fra": { "common": "Comores" } },
+    "capital": ["Moroni"],
+    "cca2": "KM"
+  },
+  {
+    "name": { "common": "Cape Verde" },
+    "translations": { "fra": { "common": "Îles du Cap-Vert" } },
+    "capital": ["Praia"],
+    "cca2": "CV"
+  },
+  {
+    "name": { "common": "Costa Rica" },
+    "translations": { "fra": { "common": "Costa Rica" } },
+    "capital": ["San José"],
+    "cca2": "CR"
+  },
+  {
+    "name": { "common": "Cuba" },
+    "translations": { "fra": { "common": "Cuba" } },
+    "capital": ["Havana"],
+    "cca2": "CU"
+  },
+  {
+    "name": { "common": "Curaçao" },
+    "translations": { "fra": { "common": "Curaçao" } },
+    "capital": ["Willemstad"],
+    "cca2": "CW"
+  },
+  {
+    "name": { "common": "Christmas Island" },
+    "translations": { "fra": { "common": "Île Christmas" } },
+    "capital": ["Flying Fish Cove"],
+    "cca2": "CX"
+  },
+  {
+    "name": { "common": "Cayman Islands" },
+    "translations": { "fra": { "common": "Îles Caïmans" } },
+    "capital": ["George Town"],
+    "cca2": "KY"
+  },
+  {
+    "name": { "common": "Cyprus" },
+    "translations": { "fra": { "common": "Chypre" } },
+    "capital": ["Nicosia"],
+    "cca2": "CY"
+  },
+  {
+    "name": { "common": "Czechia" },
+    "translations": { "fra": { "common": "Tchéquie" } },
+    "capital": ["Prague"],
+    "cca2": "CZ"
+  },
+  {
+    "name": { "common": "Germany" },
+    "translations": { "fra": { "common": "Allemagne" } },
+    "capital": ["Berlin"],
+    "cca2": "DE"
+  },
+  {
+    "name": { "common": "Djibouti" },
+    "translations": { "fra": { "common": "Djibouti" } },
+    "capital": ["Djibouti"],
+    "cca2": "DJ"
+  },
+  {
+    "name": { "common": "Dominica" },
+    "translations": { "fra": { "common": "Dominique" } },
+    "capital": ["Roseau"],
+    "cca2": "DM"
+  },
+  {
+    "name": { "common": "Denmark" },
+    "translations": { "fra": { "common": "Danemark" } },
+    "capital": ["Copenhagen"],
+    "cca2": "DK"
+  },
+  {
+    "name": { "common": "Dominican Republic" },
+    "translations": { "fra": { "common": "République dominicaine" } },
+    "capital": ["Santo Domingo"],
+    "cca2": "DO"
+  },
+  {
+    "name": { "common": "Algeria" },
+    "translations": { "fra": { "common": "Algérie" } },
+    "capital": ["Algiers"],
+    "cca2": "DZ"
+  },
+  {
+    "name": { "common": "Ecuador" },
+    "translations": { "fra": { "common": "Équateur" } },
+    "capital": ["Quito"],
+    "cca2": "EC"
+  },
+  {
+    "name": { "common": "Egypt" },
+    "translations": { "fra": { "common": "Égypte" } },
+    "capital": ["Cairo"],
+    "cca2": "EG"
+  },
+  {
+    "name": { "common": "Eritrea" },
+    "translations": { "fra": { "common": "Érythrée" } },
+    "capital": ["Asmara"],
+    "cca2": "ER"
+  },
+  {
+    "name": { "common": "Western Sahara" },
+    "translations": { "fra": { "common": "Sahara Occidental" } },
+    "capital": ["El Aaiún"],
+    "cca2": "EH"
+  },
+  {
+    "name": { "common": "Spain" },
+    "translations": { "fra": { "common": "Espagne" } },
+    "capital": ["Madrid"],
+    "cca2": "ES"
+  },
+  {
+    "name": { "common": "Estonia" },
+    "translations": { "fra": { "common": "Estonie" } },
+    "capital": ["Tallinn"],
+    "cca2": "EE"
+  },
+  {
+    "name": { "common": "Ethiopia" },
+    "translations": { "fra": { "common": "Éthiopie" } },
+    "capital": ["Addis Ababa"],
+    "cca2": "ET"
+  },
+  {
+    "name": { "common": "Finland" },
+    "translations": { "fra": { "common": "Finlande" } },
+    "capital": ["Helsinki"],
+    "cca2": "FI"
+  },
+  {
+    "name": { "common": "Fiji" },
+    "translations": { "fra": { "common": "Fidji" } },
+    "capital": ["Suva"],
+    "cca2": "FJ"
+  },
+  {
+    "name": { "common": "Falkland Islands" },
+    "translations": { "fra": { "common": "Îles Malouines" } },
+    "capital": ["Stanley"],
+    "cca2": "FK"
+  },
+  {
+    "name": { "common": "France" },
+    "translations": { "fra": { "common": "France" } },
+    "capital": ["Paris"],
+    "cca2": "FR"
+  },
+  {
+    "name": { "common": "Faroe Islands" },
+    "translations": { "fra": { "common": "Îles Féroé" } },
+    "capital": ["Tórshavn"],
+    "cca2": "FO"
+  },
+  {
+    "name": { "common": "Micronesia" },
+    "translations": { "fra": { "common": "Micronésie" } },
+    "capital": ["Palikir"],
+    "cca2": "FM"
+  },
+  {
+    "name": { "common": "Gabon" },
+    "translations": { "fra": { "common": "Gabon" } },
+    "capital": ["Libreville"],
+    "cca2": "GA"
+  },
+  {
+    "name": { "common": "United Kingdom" },
+    "translations": { "fra": { "common": "Royaume-Uni" } },
+    "capital": ["London"],
+    "cca2": "GB"
+  },
+  {
+    "name": { "common": "Georgia" },
+    "translations": { "fra": { "common": "Géorgie" } },
+    "capital": ["Tbilisi"],
+    "cca2": "GE"
+  },
+  {
+    "name": { "common": "Guernsey" },
+    "translations": { "fra": { "common": "Guernesey" } },
+    "capital": ["St. Peter Port"],
+    "cca2": "GG"
+  },
+  {
+    "name": { "common": "Ghana" },
+    "translations": { "fra": { "common": "Ghana" } },
+    "capital": ["Accra"],
+    "cca2": "GH"
+  },
+  {
+    "name": { "common": "Gibraltar" },
+    "translations": { "fra": { "common": "Gibraltar" } },
+    "capital": ["Gibraltar"],
+    "cca2": "GI"
+  },
+  {
+    "name": { "common": "Guinea" },
+    "translations": { "fra": { "common": "Guinée" } },
+    "capital": ["Conakry"],
+    "cca2": "GN"
+  },
+  {
+    "name": { "common": "Guadeloupe" },
+    "translations": { "fra": { "common": "Guadeloupe" } },
+    "capital": ["Basse-Terre"],
+    "cca2": "GP"
+  },
+  {
+    "name": { "common": "Gambia" },
+    "translations": { "fra": { "common": "Gambie" } },
+    "capital": ["Banjul"],
+    "cca2": "GM"
+  },
+  {
+    "name": { "common": "Guinea-Bissau" },
+    "translations": { "fra": { "common": "Guinée-Bissau" } },
+    "capital": ["Bissau"],
+    "cca2": "GW"
+  },
+  {
+    "name": { "common": "Equatorial Guinea" },
+    "translations": { "fra": { "common": "Guinée équatoriale" } },
+    "capital": ["Malabo"],
+    "cca2": "GQ"
+  },
+  {
+    "name": { "common": "Greece" },
+    "translations": { "fra": { "common": "Grèce" } },
+    "capital": ["Athens"],
+    "cca2": "GR"
+  },
+  {
+    "name": { "common": "Grenada" },
+    "translations": { "fra": { "common": "Grenade" } },
+    "capital": ["St. George's"],
+    "cca2": "GD"
+  },
+  {
+    "name": { "common": "Greenland" },
+    "translations": { "fra": { "common": "Groenland" } },
+    "capital": ["Nuuk"],
+    "cca2": "GL"
+  },
+  {
+    "name": { "common": "Guatemala" },
+    "translations": { "fra": { "common": "Guatemala" } },
+    "capital": ["Guatemala City"],
+    "cca2": "GT"
+  },
+  {
+    "name": { "common": "French Guiana" },
+    "translations": { "fra": { "common": "Guyane" } },
+    "capital": ["Cayenne"],
+    "cca2": "GF"
+  },
+  {
+    "name": { "common": "Guam" },
+    "translations": { "fra": { "common": "Guam" } },
+    "capital": ["Hagåtña"],
+    "cca2": "GU"
+  },
+  {
+    "name": { "common": "Guyana" },
+    "translations": { "fra": { "common": "Guyana" } },
+    "capital": ["Georgetown"],
+    "cca2": "GY"
+  },
+  {
+    "name": { "common": "Hong Kong" },
+    "translations": { "fra": { "common": "Hong Kong" } },
+    "capital": ["City of Victoria"],
+    "cca2": "HK"
+  },
+  {
+    "name": { "common": "Heard Island and McDonald Islands" },
+    "translations": { "fra": { "common": "Îles Heard-et-MacDonald" } },
+    "capital": [],
+    "cca2": "HM"
+  },
+  {
+    "name": { "common": "Honduras" },
+    "translations": { "fra": { "common": "Honduras" } },
+    "capital": ["Tegucigalpa"],
+    "cca2": "HN"
+  },
+  {
+    "name": { "common": "Croatia" },
+    "translations": { "fra": { "common": "Croatie" } },
+    "capital": ["Zagreb"],
+    "cca2": "HR"
+  },
+  {
+    "name": { "common": "Haiti" },
+    "translations": { "fra": { "common": "Haïti" } },
+    "capital": ["Port-au-Prince"],
+    "cca2": "HT"
+  },
+  {
+    "name": { "common": "Hungary" },
+    "translations": { "fra": { "common": "Hongrie" } },
+    "capital": ["Budapest"],
+    "cca2": "HU"
+  },
+  {
+    "name": { "common": "Indonesia" },
+    "translations": { "fra": { "common": "Indonésie" } },
+    "capital": ["Jakarta"],
+    "cca2": "ID"
+  },
+  {
+    "name": { "common": "Isle of Man" },
+    "translations": { "fra": { "common": "Île de Man" } },
+    "capital": ["Douglas"],
+    "cca2": "IM"
+  },
+  {
+    "name": { "common": "India" },
+    "translations": { "fra": { "common": "Inde" } },
+    "capital": ["New Delhi"],
+    "cca2": "IN"
+  },
+  {
+    "name": { "common": "British Indian Ocean Territory" },
+    "translations": { "fra": { "common": "Territoire britannique de l'océan Indien" } },
+    "capital": ["Diego Garcia"],
+    "cca2": "IO"
+  },
+  {
+    "name": { "common": "Ireland" },
+    "translations": { "fra": { "common": "Irlande" } },
+    "capital": ["Dublin"],
+    "cca2": "IE"
+  },
+  {
+    "name": { "common": "Iran" },
+    "translations": { "fra": { "common": "Iran" } },
+    "capital": ["Tehran"],
+    "cca2": "IR"
+  },
+  {
+    "name": { "common": "Iraq" },
+    "translations": { "fra": { "common": "Irak" } },
+    "capital": ["Baghdad"],
+    "cca2": "IQ"
+  },
+  {
+    "name": { "common": "Iceland" },
+    "translations": { "fra": { "common": "Islande" } },
+    "capital": ["Reykjavik"],
+    "cca2": "IS"
+  },
+  {
+    "name": { "common": "Israel" },
+    "translations": { "fra": { "common": "Israël" } },
+    "capital": ["Jerusalem"],
+    "cca2": "IL"
+  },
+  {
+    "name": { "common": "Italy" },
+    "translations": { "fra": { "common": "Italie" } },
+    "capital": ["Rome"],
+    "cca2": "IT"
+  },
+  {
+    "name": { "common": "Jamaica" },
+    "translations": { "fra": { "common": "Jamaïque" } },
+    "capital": ["Kingston"],
+    "cca2": "JM"
+  },
+  {
+    "name": { "common": "Jersey" },
+    "translations": { "fra": { "common": "Jersey" } },
+    "capital": ["Saint Helier"],
+    "cca2": "JE"
+  },
+  {
+    "name": { "common": "Jordan" },
+    "translations": { "fra": { "common": "Jordanie" } },
+    "capital": ["Amman"],
+    "cca2": "JO"
+  },
+  {
+    "name": { "common": "Japan" },
+    "translations": { "fra": { "common": "Japon" } },
+    "capital": ["Tokyo"],
+    "cca2": "JP"
+  },
+  {
+    "name": { "common": "Kazakhstan" },
+    "translations": { "fra": { "common": "Kazakhstan" } },
+    "capital": ["Astana"],
+    "cca2": "KZ"
+  },
+  {
+    "name": { "common": "Kenya" },
+    "translations": { "fra": { "common": "Kenya" } },
+    "capital": ["Nairobi"],
+    "cca2": "KE"
+  },
+  {
+    "name": { "common": "Kyrgyzstan" },
+    "translations": { "fra": { "common": "Kirghizistan" } },
+    "capital": ["Bishkek"],
+    "cca2": "KG"
+  },
+  {
+    "name": { "common": "Cambodia" },
+    "translations": { "fra": { "common": "Cambodge" } },
+    "capital": ["Phnom Penh"],
+    "cca2": "KH"
+  },
+  {
+    "name": { "common": "Kiribati" },
+    "translations": { "fra": { "common": "Kiribati" } },
+    "capital": ["South Tarawa"],
+    "cca2": "KI"
+  },
+  {
+    "name": { "common": "Saint Kitts and Nevis" },
+    "translations": { "fra": { "common": "Saint-Christophe-et-Niévès" } },
+    "capital": ["Basseterre"],
+    "cca2": "KN"
+  },
+  {
+    "name": { "common": "South Korea" },
+    "translations": { "fra": { "common": "Corée du Sud" } },
+    "capital": ["Seoul"],
+    "cca2": "KR"
+  },
+  {
+    "name": { "common": "Kosovo" },
+    "translations": { "fra": { "common": "Kosovo" } },
+    "capital": ["Pristina"],
+    "cca2": "XK"
+  },
+  {
+    "name": { "common": "Kuwait" },
+    "translations": { "fra": { "common": "Koweït" } },
+    "capital": ["Kuwait City"],
+    "cca2": "KW"
+  },
+  {
+    "name": { "common": "Laos" },
+    "translations": { "fra": { "common": "Laos" } },
+    "capital": ["Vientiane"],
+    "cca2": "LA"
+  },
+  {
+    "name": { "common": "Lebanon" },
+    "translations": { "fra": { "common": "Liban" } },
+    "capital": ["Beirut"],
+    "cca2": "LB"
+  },
+  {
+    "name": { "common": "Liberia" },
+    "translations": { "fra": { "common": "Liberia" } },
+    "capital": ["Monrovia"],
+    "cca2": "LR"
+  },
+  {
+    "name": { "common": "Libya" },
+    "translations": { "fra": { "common": "Libye" } },
+    "capital": ["Tripoli"],
+    "cca2": "LY"
+  },
+  {
+    "name": { "common": "Saint Lucia" },
+    "translations": { "fra": { "common": "Sainte-Lucie" } },
+    "capital": ["Castries"],
+    "cca2": "LC"
+  },
+  {
+    "name": { "common": "Liechtenstein" },
+    "translations": { "fra": { "common": "Liechtenstein" } },
+    "capital": ["Vaduz"],
+    "cca2": "LI"
+  },
+  {
+    "name": { "common": "Sri Lanka" },
+    "translations": { "fra": { "common": "Sri Lanka" } },
+    "capital": ["Colombo"],
+    "cca2": "LK"
+  },
+  {
+    "name": { "common": "Lesotho" },
+    "translations": { "fra": { "common": "Lesotho" } },
+    "capital": ["Maseru"],
+    "cca2": "LS"
+  },
+  {
+    "name": { "common": "Lithuania" },
+    "translations": { "fra": { "common": "Lituanie" } },
+    "capital": ["Vilnius"],
+    "cca2": "LT"
+  },
+  {
+    "name": { "common": "Luxembourg" },
+    "translations": { "fra": { "common": "Luxembourg" } },
+    "capital": ["Luxembourg"],
+    "cca2": "LU"
+  },
+  {
+    "name": { "common": "Latvia" },
+    "translations": { "fra": { "common": "Lettonie" } },
+    "capital": ["Riga"],
+    "cca2": "LV"
+  },
+  {
+    "name": { "common": "Macau" },
+    "translations": { "fra": { "common": "Macao" } },
+    "capital": [],
+    "cca2": "MO"
+  },
+  {
+    "name": { "common": "Saint Martin" },
+    "translations": { "fra": { "common": "Saint-Martin" } },
+    "capital": ["Marigot"],
+    "cca2": "MF"
+  },
+  {
+    "name": { "common": "Morocco" },
+    "translations": { "fra": { "common": "Maroc" } },
+    "capital": ["Rabat"],
+    "cca2": "MA"
+  },
+  {
+    "name": { "common": "Monaco" },
+    "translations": { "fra": { "common": "Monaco" } },
+    "capital": ["Monaco"],
+    "cca2": "MC"
+  },
+  {
+    "name": { "common": "Moldova" },
+    "translations": { "fra": { "common": "Moldavie" } },
+    "capital": ["Chișinău"],
+    "cca2": "MD"
+  },
+  {
+    "name": { "common": "Madagascar" },
+    "translations": { "fra": { "common": "Madagascar" } },
+    "capital": ["Antananarivo"],
+    "cca2": "MG"
+  },
+  {
+    "name": { "common": "Maldives" },
+    "translations": { "fra": { "common": "Maldives" } },
+    "capital": ["Malé"],
+    "cca2": "MV"
+  },
+  {
+    "name": { "common": "Mexico" },
+    "translations": { "fra": { "common": "Mexique" } },
+    "capital": ["Mexico City"],
+    "cca2": "MX"
+  },
+  {
+    "name": { "common": "Marshall Islands" },
+    "translations": { "fra": { "common": "Îles Marshall" } },
+    "capital": ["Majuro"],
+    "cca2": "MH"
+  },
+  {
+    "name": { "common": "North Macedonia" },
+    "translations": { "fra": { "common": "Macédoine du Nord" } },
+    "capital": ["Skopje"],
+    "cca2": "MK"
+  },
+  {
+    "name": { "common": "Mali" },
+    "translations": { "fra": { "common": "Mali" } },
+    "capital": ["Bamako"],
+    "cca2": "ML"
+  },
+  {
+    "name": { "common": "Malta" },
+    "translations": { "fra": { "common": "Malte" } },
+    "capital": ["Valletta"],
+    "cca2": "MT"
+  },
+  {
+    "name": { "common": "Myanmar" },
+    "translations": { "fra": { "common": "Birmanie" } },
+    "capital": ["Naypyidaw"],
+    "cca2": "MM"
+  },
+  {
+    "name": { "common": "Montenegro" },
+    "translations": { "fra": { "common": "Monténégro" } },
+    "capital": ["Podgorica"],
+    "cca2": "ME"
+  },
+  {
+    "name": { "common": "Mongolia" },
+    "translations": { "fra": { "common": "Mongolie" } },
+    "capital": ["Ulan Bator"],
+    "cca2": "MN"
+  },
+  {
+    "name": { "common": "Northern Mariana Islands" },
+    "translations": { "fra": { "common": "Îles Mariannes du Nord" } },
+    "capital": ["Saipan"],
+    "cca2": "MP"
+  },
+  {
+    "name": { "common": "Mozambique" },
+    "translations": { "fra": { "common": "Mozambique" } },
+    "capital": ["Maputo"],
+    "cca2": "MZ"
+  },
+  {
+    "name": { "common": "Mauritania" },
+    "translations": { "fra": { "common": "Mauritanie" } },
+    "capital": ["Nouakchott"],
+    "cca2": "MR"
+  },
+  {
+    "name": { "common": "Montserrat" },
+    "translations": { "fra": { "common": "Montserrat" } },
+    "capital": ["Plymouth"],
+    "cca2": "MS"
+  },
+  {
+    "name": { "common": "Martinique" },
+    "translations": { "fra": { "common": "Martinique" } },
+    "capital": ["Fort-de-France"],
+    "cca2": "MQ"
+  },
+  {
+    "name": { "common": "Mauritius" },
+    "translations": { "fra": { "common": "Île Maurice" } },
+    "capital": ["Port Louis"],
+    "cca2": "MU"
+  },
+  {
+    "name": { "common": "Malawi" },
+    "translations": { "fra": { "common": "Malawi" } },
+    "capital": ["Lilongwe"],
+    "cca2": "MW"
+  },
+  {
+    "name": { "common": "Malaysia" },
+    "translations": { "fra": { "common": "Malaisie" } },
+    "capital": ["Kuala Lumpur"],
+    "cca2": "MY"
+  },
+  {
+    "name": { "common": "Mayotte" },
+    "translations": { "fra": { "common": "Mayotte" } },
+    "capital": ["Mamoudzou"],
+    "cca2": "YT"
+  },
+  {
+    "name": { "common": "Namibia" },
+    "translations": { "fra": { "common": "Namibie" } },
+    "capital": ["Windhoek"],
+    "cca2": "NA"
+  },
+  {
+    "name": { "common": "New Caledonia" },
+    "translations": { "fra": { "common": "Nouvelle-Calédonie" } },
+    "capital": ["Nouméa"],
+    "cca2": "NC"
+  },
+  {
+    "name": { "common": "Niger" },
+    "translations": { "fra": { "common": "Niger" } },
+    "capital": ["Niamey"],
+    "cca2": "NE"
+  },
+  {
+    "name": { "common": "Norfolk Island" },
+    "translations": { "fra": { "common": "Île Norfolk" } },
+    "capital": ["Kingston"],
+    "cca2": "NF"
+  },
+  {
+    "name": { "common": "Nigeria" },
+    "translations": { "fra": { "common": "Nigéria" } },
+    "capital": ["Abuja"],
+    "cca2": "NG"
+  },
+  {
+    "name": { "common": "Nicaragua" },
+    "translations": { "fra": { "common": "Nicaragua" } },
+    "capital": ["Managua"],
+    "cca2": "NI"
+  },
+  {
+    "name": { "common": "Niue" },
+    "translations": { "fra": { "common": "Niue" } },
+    "capital": ["Alofi"],
+    "cca2": "NU"
+  },
+  {
+    "name": { "common": "Netherlands" },
+    "translations": { "fra": { "common": "Pays-Bas" } },
+    "capital": ["Amsterdam"],
+    "cca2": "NL"
+  },
+  {
+    "name": { "common": "Norway" },
+    "translations": { "fra": { "common": "Norvège" } },
+    "capital": ["Oslo"],
+    "cca2": "NO"
+  },
+  {
+    "name": { "common": "Nepal" },
+    "translations": { "fra": { "common": "Népal" } },
+    "capital": ["Kathmandu"],
+    "cca2": "NP"
+  },
+  {
+    "name": { "common": "Nauru" },
+    "translations": { "fra": { "common": "Nauru" } },
+    "capital": ["Yaren"],
+    "cca2": "NR"
+  },
+  {
+    "name": { "common": "New Zealand" },
+    "translations": { "fra": { "common": "Nouvelle-Zélande" } },
+    "capital": ["Wellington"],
+    "cca2": "NZ"
+  },
+  {
+    "name": { "common": "Oman" },
+    "translations": { "fra": { "common": "Oman" } },
+    "capital": ["Muscat"],
+    "cca2": "OM"
+  },
+  {
+    "name": { "common": "Pakistan" },
+    "translations": { "fra": { "common": "Pakistan" } },
+    "capital": ["Islamabad"],
+    "cca2": "PK"
+  },
+  {
+    "name": { "common": "Panama" },
+    "translations": { "fra": { "common": "Panama" } },
+    "capital": ["Panama City"],
+    "cca2": "PA"
+  },
+  {
+    "name": { "common": "Pitcairn Islands" },
+    "translations": { "fra": { "common": "Îles Pitcairn" } },
+    "capital": ["Adamstown"],
+    "cca2": "PN"
+  },
+  {
+    "name": { "common": "Peru" },
+    "translations": { "fra": { "common": "Pérou" } },
+    "capital": ["Lima"],
+    "cca2": "PE"
+  },
+  {
+    "name": { "common": "Philippines" },
+    "translations": { "fra": { "common": "Philippines" } },
+    "capital": ["Manila"],
+    "cca2": "PH"
+  },
+  {
+    "name": { "common": "Palau" },
+    "translations": { "fra": { "common": "Palaos (Palau)" } },
+    "capital": ["Ngerulmud"],
+    "cca2": "PW"
+  },
+  {
+    "name": { "common": "Papua New Guinea" },
+    "translations": { "fra": { "common": "Papouasie-Nouvelle-Guinée" } },
+    "capital": ["Port Moresby"],
+    "cca2": "PG"
+  },
+  {
+    "name": { "common": "Poland" },
+    "translations": { "fra": { "common": "Pologne" } },
+    "capital": ["Warsaw"],
+    "cca2": "PL"
+  },
+  {
+    "name": { "common": "Puerto Rico" },
+    "translations": { "fra": { "common": "Porto Rico" } },
+    "capital": ["San Juan"],
+    "cca2": "PR"
+  },
+  {
+    "name": { "common": "North Korea" },
+    "translations": { "fra": { "common": "Corée du Nord" } },
+    "capital": ["Pyongyang"],
+    "cca2": "KP"
+  },
+  {
+    "name": { "common": "Portugal" },
+    "translations": { "fra": { "common": "Portugal" } },
+    "capital": ["Lisbon"],
+    "cca2": "PT"
+  },
+  {
+    "name": { "common": "Paraguay" },
+    "translations": { "fra": { "common": "Paraguay" } },
+    "capital": ["Asunción"],
+    "cca2": "PY"
+  },
+  {
+    "name": { "common": "Palestine" },
+    "translations": { "fra": { "common": "Palestine" } },
+    "capital": ["Ramallah"],
+    "cca2": "PS"
+  },
+  {
+    "name": { "common": "French Polynesia" },
+    "translations": { "fra": { "common": "Polynésie française" } },
+    "capital": ["Papeetē"],
+    "cca2": "PF"
+  },
+  {
+    "name": { "common": "Qatar" },
+    "translations": { "fra": { "common": "Qatar" } },
+    "capital": ["Doha"],
+    "cca2": "QA"
+  },
+  {
+    "name": { "common": "Réunion" },
+    "translations": { "fra": { "common": "Réunion" } },
+    "capital": ["Saint-Denis"],
+    "cca2": "RE"
+  },
+  {
+    "name": { "common": "Romania" },
+    "translations": { "fra": { "common": "Roumanie" } },
+    "capital": ["Bucharest"],
+    "cca2": "RO"
+  },
+  {
+    "name": { "common": "Russia" },
+    "translations": { "fra": { "common": "Russie" } },
+    "capital": ["Moscow"],
+    "cca2": "RU"
+  },
+  {
+    "name": { "common": "Rwanda" },
+    "translations": { "fra": { "common": "Rwanda" } },
+    "capital": ["Kigali"],
+    "cca2": "RW"
+  },
+  {
+    "name": { "common": "Saudi Arabia" },
+    "translations": { "fra": { "common": "Arabie Saoudite" } },
+    "capital": ["Riyadh"],
+    "cca2": "SA"
+  },
+  {
+    "name": { "common": "Sudan" },
+    "translations": { "fra": { "common": "Soudan" } },
+    "capital": ["Khartoum"],
+    "cca2": "SD"
+  },
+  {
+    "name": { "common": "Senegal" },
+    "translations": { "fra": { "common": "Sénégal" } },
+    "capital": ["Dakar"],
+    "cca2": "SN"
+  },
+  {
+    "name": { "common": "Singapore" },
+    "translations": { "fra": { "common": "Singapour" } },
+    "capital": ["Singapore"],
+    "cca2": "SG"
+  },
+  {
+    "name": { "common": "South Georgia" },
+    "translations": { "fra": { "common": "Géorgie du Sud-et-les Îles Sandwich du Sud" } },
+    "capital": ["King Edward Point"],
+    "cca2": "GS"
+  },
+  {
+    "name": { "common": "Svalbard and Jan Mayen" },
+    "translations": { "fra": { "common": "Svalbard et Jan Mayen" } },
+    "capital": ["Longyearbyen"],
+    "cca2": "SJ"
+  },
+  {
+    "name": { "common": "Solomon Islands" },
+    "translations": { "fra": { "common": "Îles Salomon" } },
+    "capital": ["Honiara"],
+    "cca2": "SB"
+  },
+  {
+    "name": { "common": "Sierra Leone" },
+    "translations": { "fra": { "common": "Sierra Leone" } },
+    "capital": ["Freetown"],
+    "cca2": "SL"
+  },
+  {
+    "name": { "common": "El Salvador" },
+    "translations": { "fra": { "common": "Salvador" } },
+    "capital": ["San Salvador"],
+    "cca2": "SV"
+  },
+  {
+    "name": { "common": "San Marino" },
+    "translations": { "fra": { "common": "Saint-Marin" } },
+    "capital": ["City of San Marino"],
+    "cca2": "SM"
+  },
+  {
+    "name": { "common": "Somalia" },
+    "translations": { "fra": { "common": "Somalie" } },
+    "capital": ["Mogadishu"],
+    "cca2": "SO"
+  },
+  {
+    "name": { "common": "Saint Pierre and Miquelon" },
+    "translations": { "fra": { "common": "Saint-Pierre-et-Miquelon" } },
+    "capital": ["Saint-Pierre"],
+    "cca2": "PM"
+  },
+  {
+    "name": { "common": "Serbia" },
+    "translations": { "fra": { "common": "Serbie" } },
+    "capital": ["Belgrade"],
+    "cca2": "RS"
+  },
+  {
+    "name": { "common": "South Sudan" },
+    "translations": { "fra": { "common": "Soudan du Sud" } },
+    "capital": ["Juba"],
+    "cca2": "SS"
+  },
+  {
+    "name": { "common": "São Tomé and Príncipe" },
+    "translations": { "fra": { "common": "São Tomé et Príncipe" } },
+    "capital": ["São Tomé"],
+    "cca2": "ST"
+  },
+  {
+    "name": { "common": "Suriname" },
+    "translations": { "fra": { "common": "Surinam" } },
+    "capital": ["Paramaribo"],
+    "cca2": "SR"
+  },
+  {
+    "name": { "common": "Slovakia" },
+    "translations": { "fra": { "common": "Slovaquie" } },
+    "capital": ["Bratislava"],
+    "cca2": "SK"
+  },
+  {
+    "name": { "common": "Slovenia" },
+    "translations": { "fra": { "common": "Slovénie" } },
+    "capital": ["Ljubljana"],
+    "cca2": "SI"
+  },
+  {
+    "name": { "common": "Sweden" },
+    "translations": { "fra": { "common": "Suède" } },
+    "capital": ["Stockholm"],
+    "cca2": "SE"
+  },
+  {
+    "name": { "common": "Eswatini" },
+    "translations": { "fra": { "common": "Eswatini" } },
+    "capital": ["Lobamba"],
+    "cca2": "SZ"
+  },
+  {
+    "name": { "common": "Sint Maarten" },
+    "translations": { "fra": { "common": "Saint-Martin" } },
+    "capital": ["Philipsburg"],
+    "cca2": "SX"
+  },
+  {
+    "name": { "common": "Seychelles" },
+    "translations": { "fra": { "common": "Seychelles" } },
+    "capital": ["Victoria"],
+    "cca2": "SC"
+  },
+  {
+    "name": { "common": "Syria" },
+    "translations": { "fra": { "common": "Syrie" } },
+    "capital": ["Damascus"],
+    "cca2": "SY"
+  },
+  {
+    "name": { "common": "Turks and Caicos Islands" },
+    "translations": { "fra": { "common": "Îles Turques-et-Caïques" } },
+    "capital": ["Cockburn Town"],
+    "cca2": "TC"
+  },
+  {
+    "name": { "common": "Chad" },
+    "translations": { "fra": { "common": "Tchad" } },
+    "capital": ["N'Djamena"],
+    "cca2": "TD"
+  },
+  {
+    "name": { "common": "Togo" },
+    "translations": { "fra": { "common": "Togo" } },
+    "capital": ["Lomé"],
+    "cca2": "TG"
+  },
+  {
+    "name": { "common": "Thailand" },
+    "translations": { "fra": { "common": "Thaïlande" } },
+    "capital": ["Bangkok"],
+    "cca2": "TH"
+  },
+  {
+    "name": { "common": "Tajikistan" },
+    "translations": { "fra": { "common": "Tadjikistan" } },
+    "capital": ["Dushanbe"],
+    "cca2": "TJ"
+  },
+  {
+    "name": { "common": "Tokelau" },
+    "translations": { "fra": { "common": "Tokelau" } },
+    "capital": ["Fakaofo"],
+    "cca2": "TK"
+  },
+  {
+    "name": { "common": "Turkmenistan" },
+    "translations": { "fra": { "common": "Turkménistan" } },
+    "capital": ["Ashgabat"],
+    "cca2": "TM"
+  },
+  {
+    "name": { "common": "Timor-Leste" },
+    "translations": { "fra": { "common": "Timor oriental" } },
+    "capital": ["Dili"],
+    "cca2": "TL"
+  },
+  {
+    "name": { "common": "Tonga" },
+    "translations": { "fra": { "common": "Tonga" } },
+    "capital": ["Nuku'alofa"],
+    "cca2": "TO"
+  },
+  {
+    "name": { "common": "Trinidad and Tobago" },
+    "translations": { "fra": { "common": "Trinité-et-Tobago" } },
+    "capital": ["Port of Spain"],
+    "cca2": "TT"
+  },
+  {
+    "name": { "common": "Tunisia" },
+    "translations": { "fra": { "common": "Tunisie" } },
+    "capital": ["Tunis"],
+    "cca2": "TN"
+  },
+  {
+    "name": { "common": "Türkiye" },
+    "translations": { "fra": { "common": "Turquie" } },
+    "capital": ["Ankara"],
+    "cca2": "TR"
+  },
+  {
+    "name": { "common": "Tuvalu" },
+    "translations": { "fra": { "common": "Tuvalu" } },
+    "capital": ["Funafuti"],
+    "cca2": "TV"
+  },
+  {
+    "name": { "common": "Taiwan" },
+    "translations": { "fra": { "common": "Taïwan" } },
+    "capital": ["Taipei"],
+    "cca2": "TW"
+  },
+  {
+    "name": { "common": "Tanzania" },
+    "translations": { "fra": { "common": "Tanzanie" } },
+    "capital": ["Dodoma"],
+    "cca2": "TZ"
+  },
+  {
+    "name": { "common": "Uganda" },
+    "translations": { "fra": { "common": "Ouganda" } },
+    "capital": ["Kampala"],
+    "cca2": "UG"
+  },
+  {
+    "name": { "common": "Ukraine" },
+    "translations": { "fra": { "common": "Ukraine" } },
+    "capital": ["Kyiv"],
+    "cca2": "UA"
+  },
+  {
+    "name": { "common": "United States Minor Outlying Islands" },
+    "translations": { "fra": { "common": "Îles mineures éloignées des États-Unis" } },
+    "capital": [],
+    "cca2": "UM"
+  },
+  {
+    "name": { "common": "Uruguay" },
+    "translations": { "fra": { "common": "Uruguay" } },
+    "capital": ["Montevideo"],
+    "cca2": "UY"
+  },
+  {
+    "name": { "common": "United States" },
+    "translations": { "fra": { "common": "États-Unis" } },
+    "capital": ["Washington D.C."],
+    "cca2": "US"
+  },
+  {
+    "name": { "common": "Uzbekistan" },
+    "translations": { "fra": { "common": "Ouzbékistan" } },
+    "capital": ["Tashkent"],
+    "cca2": "UZ"
+  },
+  {
+    "name": { "common": "Vatican City" },
+    "translations": { "fra": { "common": "Cité du Vatican" } },
+    "capital": ["Vatican City"],
+    "cca2": "VA"
+  },
+  {
+    "name": { "common": "Saint Vincent and the Grenadines" },
+    "translations": { "fra": { "common": "Saint-Vincent-et-les-Grenadines" } },
+    "capital": ["Kingstown"],
+    "cca2": "VC"
+  },
+  {
+    "name": { "common": "Venezuela" },
+    "translations": { "fra": { "common": "Venezuela" } },
+    "capital": ["Caracas"],
+    "cca2": "VE"
+  },
+  {
+    "name": { "common": "British Virgin Islands" },
+    "translations": { "fra": { "common": "Îles Vierges britanniques" } },
+    "capital": ["Road Town"],
+    "cca2": "VG"
+  },
+  {
+    "name": { "common": "United States Virgin Islands" },
+    "translations": { "fra": { "common": "Îles Vierges des États-Unis" } },
+    "capital": ["Charlotte Amalie"],
+    "cca2": "VI"
+  },
+  {
+    "name": { "common": "Vietnam" },
+    "translations": { "fra": { "common": "Viêt Nam" } },
+    "capital": ["Hanoi"],
+    "cca2": "VN"
+  },
+  {
+    "name": { "common": "Vanuatu" },
+    "translations": { "fra": { "common": "Vanuatu" } },
+    "capital": ["Port Vila"],
+    "cca2": "VU"
+  },
+  {
+    "name": { "common": "Wallis and Futuna" },
+    "translations": { "fra": { "common": "Wallis-et-Futuna" } },
+    "capital": ["Mata-Utu"],
+    "cca2": "WF"
+  },
+  {
+    "name": { "common": "Samoa" },
+    "translations": { "fra": { "common": "Samoa" } },
+    "capital": ["Apia"],
+    "cca2": "WS"
+  },
+  {
+    "name": { "common": "Yemen" },
+    "translations": { "fra": { "common": "Yémen" } },
+    "capital": ["Sana'a"],
+    "cca2": "YE"
+  },
+  {
+    "name": { "common": "South Africa" },
+    "translations": { "fra": { "common": "Afrique du Sud" } },
+    "capital": ["Pretoria"],
+    "cca2": "ZA"
+  },
+  {
+    "name": { "common": "Zambia" },
+    "translations": { "fra": { "common": "Zambie" } },
+    "capital": ["Lusaka"],
+    "cca2": "ZM"
+  },
+  {
+    "name": { "common": "Zimbabwe" },
+    "translations": { "fra": { "common": "Zimbabwe" } },
+    "capital": ["Harare"],
+    "cca2": "ZW"
+  }
+]

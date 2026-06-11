@@ -4,6 +4,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { GameRecordKey, PersonalRecord } from '../models/personal-record';
 import { SpeedrunSplitBest, SpeedrunSplitId, SpeedrunUserRecord } from '../models/speedrun';
 import { AchievementsService } from './achievements.service';
+import { DailyChallengeService } from './daily-challenge.service';
 import { PersonalRecordsService } from './personal-records.service';
 import { SpeedrunRecordsService } from './speedrun-records.service';
 import { SupabaseAuthService } from './supabase-auth.service';
@@ -42,16 +43,29 @@ type RemoteSpeedrunSplitBest = {
   completed_at: string;
 };
 
+type RemoteDailyChallengeXp = {
+  source_id: string;
+  awarded_at: string;
+};
+
+type RemoteProfileSyncState = {
+  personal_records_reset_at: string | null;
+};
+
 @Injectable({ providedIn: 'root' })
 export class UserDataSyncService {
   private readonly auth = inject(SupabaseAuthService);
   private readonly records = inject(PersonalRecordsService);
   private readonly achievements = inject(AchievementsService);
+  private readonly dailyChallenges = inject(DailyChallengeService);
   private readonly speedrunRecords = inject(SpeedrunRecordsService);
 
   private initializedUserId: string | null = null;
   private isApplyingRemote = false;
   private uploadTimeoutId: number | null = null;
+  private retryTimeoutId: number | null = null;
+  private claimedDailyChallengeKeys = new Set<string>();
+  private personalRecordsResetAt: string | null = null;
 
   constructor() {
     effect(() => {
@@ -59,6 +73,9 @@ export class UserDataSyncService {
 
       if (!userId) {
         this.initializedUserId = null;
+        this.personalRecordsResetAt = null;
+        this.claimedDailyChallengeKeys.clear();
+        this.clearRetry();
         return;
       }
 
@@ -71,6 +88,7 @@ export class UserDataSyncService {
       const userId = this.auth.user()?.id ?? null;
       this.records.snapshot();
       this.achievements.snapshot();
+      this.dailyChallenges.snapshot();
 
       if (!userId || this.initializedUserId !== userId || this.isApplyingRemote) {
         return;
@@ -83,6 +101,7 @@ export class UserDataSyncService {
   private async initialSync(userId: string): Promise<void> {
     this.initializedUserId = null;
     this.isApplyingRemote = true;
+    this.claimedDailyChallengeKeys.clear();
 
     try {
       const client = await this.auth.getClient();
@@ -92,21 +111,33 @@ export class UserDataSyncService {
       this.initializedUserId = userId;
     } catch (error) {
       this.isApplyingRemote = false;
-      this.initializedUserId = userId;
       logger.warn('Unable to synchronize user data', error);
+      this.scheduleRetry(userId);
     }
   }
 
   private async pullRemoteData(client: SupabaseClient, userId: string): Promise<void> {
-    const [records, achievements, speedrunBest, speedrunSplitBests] = await Promise.all([
-      this.safeFetch(() => this.fetchRecords(client, userId), []),
-      this.safeFetch(() => this.fetchAchievements(client, userId), []),
-      this.safeFetch(() => this.fetchSpeedrunBest(client, userId), null),
-      this.safeFetch(() => this.fetchSpeedrunSplitBests(client, userId), []),
+    const [
+      records,
+      achievements,
+      speedrunBest,
+      speedrunSplitBests,
+      dailyChallengeXp,
+      profileSyncState,
+    ] = await Promise.all([
+      this.fetchRecords(client, userId),
+      this.fetchAchievements(client, userId),
+      this.fetchSpeedrunBest(client, userId),
+      this.fetchSpeedrunSplitBests(client, userId),
+      this.fetchDailyChallengeXp(client, userId),
+      this.fetchProfileSyncState(client, userId),
     ]);
 
+    this.personalRecordsResetAt = profileSyncState?.personal_records_reset_at ?? null;
+    this.records.discardAtOrBefore(this.personalRecordsResetAt);
     this.records.mergeRecords(this.mapRemoteRecords(records));
     this.achievements.mergeUnlocks(this.mapRemoteAchievements(achievements));
+    this.mergeRemoteDailyChallengeXp(dailyChallengeXp);
     this.speedrunRecords.mergeBestForUser(userId, this.mapRemoteSpeedrunBest(userId, speedrunBest));
     this.speedrunRecords.mergeSplitBestsForUser(
       userId,
@@ -141,13 +172,14 @@ export class UserDataSyncService {
 
   private async uploadAll(client: SupabaseClient, userId: string): Promise<void> {
     const results = await Promise.allSettled([
-      this.syncRecords(client, userId),
+      this.syncRecords(client),
       this.syncAchievements(client, userId),
+      this.syncDailyChallenges(client),
     ]);
 
     for (const result of results) {
       if (result.status === 'rejected') {
-        logger.warn('Unable to push user data', result.reason);
+        logger.warn('Unable to push user data:', this.describeError(result.reason));
       }
     }
   }
@@ -165,6 +197,23 @@ export class UserDataSyncService {
     }
 
     return (data ?? []) as RemoteRecord[];
+  }
+
+  private async fetchProfileSyncState(
+    client: SupabaseClient,
+    userId: string,
+  ): Promise<RemoteProfileSyncState | null> {
+    const { data, error } = await client
+      .from('user_profiles')
+      .select('personal_records_reset_at')
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if (error) {
+      throw error;
+    }
+
+    return (data ?? null) as RemoteProfileSyncState | null;
   }
 
   private async fetchAchievements(
@@ -218,17 +267,28 @@ export class UserDataSyncService {
     return (data ?? []) as RemoteSpeedrunSplitBest[];
   }
 
-  private async syncRecords(client: SupabaseClient, userId: string): Promise<void> {
-    const remoteRecords = await this.safeFetch(() => this.fetchRecords(client, userId), []);
+  private async fetchDailyChallengeXp(
+    client: SupabaseClient,
+    userId: string,
+  ): Promise<RemoteDailyChallengeXp[]> {
+    const { data, error } = await client
+      .from('xp_events')
+      .select('source_id,awarded_at')
+      .eq('user_id', userId)
+      .eq('source_type', 'daily_challenge');
+
+    if (error) {
+      throw error;
+    }
+
+    return (data ?? []) as RemoteDailyChallengeXp[];
+  }
+
+  private async syncRecords(client: SupabaseClient): Promise<void> {
     const localRecords = Object.entries(this.records.snapshot())
       .filter((entry): entry is [GameRecordKey, PersonalRecord] => !!entry[1])
       .map(([recordKey, record]) => [recordKey, record] as const);
-    const localKeys = new Set(localRecords.map(([recordKey]) => recordKey));
-    const staleKeys = remoteRecords
-      .map((record) => record.record_key)
-      .filter((recordKey) => !localKeys.has(recordKey as GameRecordKey));
     const rows = localRecords.map(([recordKey, record]) => ({
-      user_id: userId,
       record_key: recordKey,
       best_score: record.bestScore,
       best_max_score: record.bestMaxScore,
@@ -238,51 +298,75 @@ export class UserDataSyncService {
       best_streak: record.bestStreak ?? 0,
     }));
 
-    await this.deleteRowsByValues(client, 'personal_records', userId, 'record_key', staleKeys);
-    await this.upsertRows(client, 'personal_records', rows, 'user_id,record_key');
+    if (rows.length === 0) {
+      return;
+    }
+
+    const { data, error } = await client.rpc('merge_personal_records', {
+      p_records: rows,
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    this.isApplyingRemote = true;
+    try {
+      this.records.mergeRecords(this.mapRemoteRecords((data ?? []) as RemoteRecord[]));
+    } finally {
+      this.isApplyingRemote = false;
+    }
+  }
+
+  async clearPersonalRecords(): Promise<void> {
+    const userId = this.auth.user()?.id ?? null;
+    if (!userId) {
+      this.records.clearAll();
+      return;
+    }
+
+    const client = await this.auth.getClient();
+    const { data, error } = await client.rpc('reset_personal_records');
+
+    if (error) {
+      throw error;
+    }
+
+    this.isApplyingRemote = true;
+    try {
+      this.personalRecordsResetAt = typeof data === 'string' ? data : new Date().toISOString();
+      this.records.clearAll();
+    } finally {
+      this.isApplyingRemote = false;
+    }
   }
 
   private async syncAchievements(client: SupabaseClient, userId: string): Promise<void> {
-    const remoteAchievements = await this.safeFetch(
-      () => this.fetchAchievements(client, userId),
-      [],
-    );
     const localEntries = Object.entries(this.achievements.snapshot());
-    const localIds = new Set(localEntries.map(([achievementId]) => achievementId));
-    const staleIds = remoteAchievements
-      .map((achievement) => achievement.achievement_id)
-      .filter((achievementId) => !localIds.has(achievementId));
     const rows = localEntries.map(([achievementId, unlockedAt]) => ({
       user_id: userId,
       achievement_id: achievementId,
       unlocked_at: unlockedAt,
     }));
 
-    await this.deleteRowsByValues(
-      client,
-      'achievement_unlocks',
-      userId,
-      'achievement_id',
-      staleIds,
-    );
     await this.upsertRows(client, 'achievement_unlocks', rows, 'user_id,achievement_id');
   }
 
-  private async deleteRowsByValues(
-    client: SupabaseClient,
-    table: string,
-    userId: string,
-    column: string,
-    values: string[],
-  ): Promise<void> {
-    if (values.length === 0) {
-      return;
-    }
+  private async syncDailyChallenges(client: SupabaseClient): Promise<void> {
+    const dateKeys = Object.keys(this.dailyChallenges.snapshot()).filter(
+      (dateKey) => !this.claimedDailyChallengeKeys.has(dateKey),
+    );
 
-    const { error } = await client.from(table).delete().eq('user_id', userId).in(column, values);
+    for (const dateKey of dateKeys) {
+      const { error } = await client.rpc('claim_daily_challenge_xp', {
+        p_date: dateKey,
+      });
 
-    if (error) {
-      throw error;
+      if (error) {
+        throw error;
+      }
+
+      this.claimedDailyChallengeKeys.add(dateKey);
     }
   }
 
@@ -303,13 +387,56 @@ export class UserDataSyncService {
     }
   }
 
-  private async safeFetch<T>(fetchData: () => Promise<T>, fallback: T): Promise<T> {
-    try {
-      return await fetchData();
-    } catch (error) {
-      logger.warn('Unable to pull remote user data', error);
-      return fallback;
+  private mergeRemoteDailyChallengeXp(events: RemoteDailyChallengeXp[]): void {
+    const completions: Record<string, string> = {};
+
+    for (const event of events) {
+      const dateKey = event.source_id.replace(/^daily-challenge:/, '');
+      if (dateKey === event.source_id) {
+        continue;
+      }
+
+      completions[dateKey] = event.awarded_at;
+      this.claimedDailyChallengeKeys.add(dateKey);
     }
+
+    this.dailyChallenges.mergeRemoteCompletions(completions);
+  }
+
+  private scheduleRetry(userId: string): void {
+    this.clearRetry();
+
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    this.retryTimeoutId = window.setTimeout(() => {
+      this.retryTimeoutId = null;
+      if (this.auth.user()?.id === userId && this.initializedUserId !== userId) {
+        void this.initialSync(userId);
+      }
+    }, 5_000);
+  }
+
+  private clearRetry(): void {
+    if (this.retryTimeoutId !== null && typeof window !== 'undefined') {
+      window.clearTimeout(this.retryTimeoutId);
+    }
+
+    this.retryTimeoutId = null;
+  }
+
+  private describeError(error: unknown): string {
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'message' in error &&
+      typeof error.message === 'string'
+    ) {
+      return error.message;
+    }
+
+    return String(error);
   }
 
   private mapRemoteRecords(

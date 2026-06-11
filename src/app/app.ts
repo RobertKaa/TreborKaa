@@ -106,10 +106,6 @@ export class App implements OnDestroy {
     () => this.authProfile()?.avatarKey ?? DEFAULT_PROFILE_AVATAR_KEY,
   );
   protected readonly mobileNotice = computed(() => {
-    if (this.isOffline()) {
-      return this.i18n.t('mobile.offline');
-    }
-
     if (this.isMobileLandscape()) {
       return this.i18n.t('mobile.landscape');
     }

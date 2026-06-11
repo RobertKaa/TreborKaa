@@ -3,31 +3,25 @@ import { TestBed } from '@angular/core/testing';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { vi } from 'vitest';
 import { AchievementsService } from './achievements.service';
+import { DailyChallengeService } from './daily-challenge.service';
 import { PersonalRecordsService } from './personal-records.service';
+import { SpeedrunRecordsService } from './speedrun-records.service';
 import { SupabaseAuthService } from './supabase-auth.service';
 import { UserDataSyncService } from './user-data-sync.service';
 
 type QueryCall =
-  | { type: 'delete'; table: string; column: string; values: string[] }
   | {
       type: 'upsert';
       table: string;
       rows: Record<string, unknown>[];
       options: { onConflict: string };
-    };
+    }
+  | { type: 'rpc'; name: string; parameters: Record<string, unknown> | undefined };
 
 describe('UserDataSyncService', () => {
-  it('syncs user data without deleting every remote row first', async () => {
+  it('merges records atomically and only adds monotonic user data', async () => {
     const calls: QueryCall[] = [];
-    const client = createClientStub(
-      {
-        personal_records: [{ record_key: 'country-to-flag-hard' }],
-        achievement_unlocks: [{ achievement_id: 'twenty-runs' }],
-        speedrun_leaderboard: [],
-        speedrun_split_bests: [],
-      },
-      calls,
-    );
+    const client = createClientStub(calls);
 
     TestBed.configureTestingModule({
       providers: [
@@ -63,6 +57,22 @@ describe('UserDataSyncService', () => {
             mergeUnlocks: vi.fn(),
           },
         },
+        {
+          provide: DailyChallengeService,
+          useValue: {
+            snapshot: signal({
+              '2026-06-11': '2026-06-11T08:00:00.000Z',
+            }),
+            mergeRemoteCompletions: vi.fn(),
+          },
+        },
+        {
+          provide: SpeedrunRecordsService,
+          useValue: {
+            mergeBestForUser: vi.fn(),
+            mergeSplitBestsForUser: vi.fn(),
+          },
+        },
       ],
     });
     const service = TestBed.inject(UserDataSyncService) as unknown as {
@@ -72,23 +82,21 @@ describe('UserDataSyncService', () => {
     await service.uploadAll(client, 'user-1');
 
     expect(calls).toContainEqual({
-      type: 'delete',
-      table: 'personal_records',
-      column: 'record_key',
-      values: ['country-to-flag-hard'],
-    });
-    expect(calls).toContainEqual(
-      expect.objectContaining({
-        type: 'upsert',
-        table: 'personal_records',
-        options: { onConflict: 'user_id,record_key' },
-      }),
-    );
-    expect(calls).toContainEqual({
-      type: 'delete',
-      table: 'achievement_unlocks',
-      column: 'achievement_id',
-      values: ['twenty-runs'],
+      type: 'rpc',
+      name: 'merge_personal_records',
+      parameters: {
+        p_records: [
+          {
+            record_key: 'country-to-flag-easy',
+            best_score: 8,
+            best_max_score: 10,
+            best_percent: 80,
+            games_played: 3,
+            last_played_at: '2026-05-19T18:00:00.000Z',
+            best_streak: 4,
+          },
+        ],
+      },
     });
     expect(calls).toContainEqual(
       expect.objectContaining({
@@ -97,41 +105,88 @@ describe('UserDataSyncService', () => {
         options: { onConflict: 'user_id,achievement_id' },
       }),
     );
+    expect(calls).toContainEqual({
+      type: 'rpc',
+      name: 'claim_daily_challenge_xp',
+      parameters: { p_date: '2026-06-11' },
+    });
+    expect(calls.some((call) => 'table' in call && call.table === 'personal_records')).toBe(false);
+  });
+
+  it('resets remote records before clearing the local snapshot', async () => {
+    const calls: QueryCall[] = [];
+    const client = createClientStub(calls, '2026-06-11T10:00:00.000Z');
+    const user = signal<{ id: string } | null>(null);
+    const clearAll = vi.fn();
+
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: SupabaseAuthService,
+          useValue: {
+            user,
+            getClient: vi.fn().mockResolvedValue(client),
+          },
+        },
+        {
+          provide: PersonalRecordsService,
+          useValue: {
+            snapshot: signal({}),
+            mergeRecords: vi.fn(),
+            discardAtOrBefore: vi.fn(),
+            clearAll,
+          },
+        },
+        {
+          provide: AchievementsService,
+          useValue: {
+            snapshot: signal({}),
+            mergeUnlocks: vi.fn(),
+          },
+        },
+        {
+          provide: DailyChallengeService,
+          useValue: {
+            snapshot: signal({}),
+            mergeRemoteCompletions: vi.fn(),
+          },
+        },
+        {
+          provide: SpeedrunRecordsService,
+          useValue: {
+            mergeBestForUser: vi.fn(),
+            mergeSplitBestsForUser: vi.fn(),
+          },
+        },
+      ],
+    });
+    const service = TestBed.inject(UserDataSyncService);
+    user.set({ id: 'user-1' });
+
+    await service.clearPersonalRecords();
+
+    expect(calls).toContainEqual({
+      type: 'rpc',
+      name: 'reset_personal_records',
+      parameters: undefined,
+    });
+    expect(clearAll).toHaveBeenCalledOnce();
   });
 });
 
-function createClientStub(
-  dataByTable: Record<string, Record<string, unknown>[]>,
-  calls: QueryCall[],
-): SupabaseClient {
+function createClientStub(calls: QueryCall[], rpcData: unknown = []): SupabaseClient {
   return {
     from(table: string) {
       return {
-        select: () => ({
-          eq: () => createSelectResult(dataByTable[table] ?? []),
-        }),
-        delete: () => ({
-          eq: () => ({
-            in: async (column: string, values: string[]) => {
-              calls.push({ type: 'delete', table, column, values });
-              return { error: null };
-            },
-          }),
-        }),
         upsert: async (rows: Record<string, unknown>[], options: { onConflict: string }) => {
           calls.push({ type: 'upsert', table, rows, options });
           return { error: null };
         },
       };
     },
+    rpc: async (name: string, parameters?: Record<string, unknown>) => {
+      calls.push({ type: 'rpc', name, parameters });
+      return { data: rpcData, error: null };
+    },
   } as unknown as SupabaseClient;
-}
-
-function createSelectResult(rows: Record<string, unknown>[]) {
-  const result = { data: rows, error: null };
-
-  return {
-    then: (resolve: (value: typeof result) => unknown) => Promise.resolve(result).then(resolve),
-    maybeSingle: async () => ({ data: rows[0] ?? null, error: null }),
-  };
 }

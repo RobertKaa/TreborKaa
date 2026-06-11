@@ -79,6 +79,48 @@ describe('AchievementsService', () => {
     expect(profile.nextAchievement?.hidden).not.toBe(true);
   });
 
+  it('sorts achievements from easy to mystery difficulty', () => {
+    const achievements = TestBed.inject(AchievementsService);
+    const difficultyOrder = { easy: 0, medium: 1, hard: 2, rare: 3 };
+    const difficulties = achievements
+      .achievements()
+      .map((achievement) => difficultyOrder[achievement.difficulty]);
+
+    expect(difficulties).toEqual([...difficulties].sort((left, right) => left - right));
+  });
+
+  it('unlocks advanced and mystery achievements from complete records', () => {
+    const records = TestBed.inject(PersonalRecordsService);
+    const achievements = TestBed.inject(AchievementsService);
+    const recordKeys = [
+      'country-to-flag-easy',
+      'flag-to-country-easy',
+      'shape-to-country-easy',
+      'chrono-flags',
+      'find-the-error',
+      'pixel-flag',
+      'flag-rebuild',
+    ] as const;
+
+    for (const key of recordKeys) {
+      records.saveResult(key, {
+        score: key === 'chrono-flags' ? 1600 : 100,
+        maxScore: key === 'chrono-flags' ? 1600 : 100,
+        percentOverride: 100,
+        streak: 20,
+      });
+    }
+    TestBed.tick();
+
+    const byId = new Map(achievements.achievements().map((item) => [item.id, item]));
+
+    expect(byId.get('three-perfect-records')?.unlocked).toBe(true);
+    expect(byId.get('all-excellent')?.unlocked).toBe(true);
+    expect(byId.get('chrono-expert')?.unlocked).toBe(true);
+    expect(byId.get('rebuild-master')?.unlocked).toBe(true);
+    expect(byId.get('mystery-seven-perfect')?.unlocked).toBe(true);
+  });
+
   it('merges remote unlocks without exposing invalid achievement ids', () => {
     const achievements = TestBed.inject(AchievementsService);
 
@@ -89,5 +131,17 @@ describe('AchievementsService', () => {
 
     expect(achievements.snapshot()['first-game']).toBe('2026-01-01T00:00:00.000Z');
     expect(achievements.snapshot()['invalid' as never]).toBeUndefined();
+  });
+
+  it('keeps the same snapshot when remote unlocks are already present', () => {
+    const achievements = TestBed.inject(AchievementsService);
+    achievements.mergeUnlocks({
+      'first-game': '2026-01-01T00:00:00.000Z',
+    });
+    const snapshot = achievements.snapshot();
+
+    achievements.mergeUnlocks(snapshot);
+
+    expect(achievements.snapshot()).toBe(snapshot);
   });
 });

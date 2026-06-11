@@ -46,6 +46,8 @@ export class DailyChallengeService {
   private readonly storage = inject(BrowserStorageService);
   private readonly completions = signal<DailyChallengeStore>(this.loadCompletions());
 
+  readonly snapshot = computed(() => this.completions());
+
   readonly today = computed<DailyChallengeState>(() => {
     const dateKey = this.todayDateKey();
     const completedAt = this.completions()[dateKey] ?? null;
@@ -137,6 +139,30 @@ export class DailyChallengeService {
     return true;
   }
 
+  mergeRemoteCompletions(completions: DailyChallengeStore): void {
+    const next = { ...this.completions() };
+    let changed = false;
+
+    for (const [dateKey, completedAt] of Object.entries(completions)) {
+      if (!this.isValidCompletion(dateKey, completedAt)) {
+        continue;
+      }
+
+      const currentCompletedAt = next[dateKey];
+      if (!currentCompletedAt || Date.parse(completedAt) < Date.parse(currentCompletedAt)) {
+        next[dateKey] = completedAt;
+        changed = true;
+      }
+    }
+
+    if (!changed) {
+      return;
+    }
+
+    this.completions.set(next);
+    this.storage.setJson(STORAGE_KEY, next);
+  }
+
   private buildDailyModes(dateKey: string): DailyChallengeMode[] {
     const dayIndex = Math.floor(Date.parse(`${dateKey}T00:00:00.000Z`) / 86_400_000);
     const offset = dayIndex % MODE_SEQUENCE.length;
@@ -185,10 +211,17 @@ export class DailyChallengeService {
     }
 
     return Object.fromEntries(
-      Object.entries(parsed).filter(
-        ([dateKey, completedAt]) =>
-          /^\d{4}-\d{2}-\d{2}$/.test(dateKey) && typeof completedAt === 'string',
+      Object.entries(parsed).filter(([dateKey, completedAt]) =>
+        this.isValidCompletion(dateKey, completedAt),
       ),
+    );
+  }
+
+  private isValidCompletion(dateKey: string, completedAt: unknown): completedAt is string {
+    return (
+      /^\d{4}-\d{2}-\d{2}$/.test(dateKey) &&
+      typeof completedAt === 'string' &&
+      Number.isFinite(Date.parse(completedAt))
     );
   }
 }

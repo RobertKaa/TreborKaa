@@ -1,4 +1,4 @@
-import {
+﻿import {
   AfterViewInit,
   Component,
   ElementRef,
@@ -179,12 +179,12 @@ const REBUILD_SHARED_DECOY_COLORS = [
 const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
   {
     code: 'id',
-    nameFrench: 'Indonésie',
+    nameFrench: 'IndonÃ©sie',
     targetPattern: 'horizontal-stripes',
     patternOptions: ['horizontal-stripes', 'vertical-stripes', 'center-disc'],
     targetColors: ['#ff0000', '#ffffff'],
     palette: ['#e63737', '#f5f5f5', '#ff0000', '#ffffff'],
-    flagUrl: 'https://flagcdn.com/w320/id.png',
+    flagUrl: '/data/flags/id.png',
   },
   {
     code: 'lv',
@@ -193,7 +193,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     patternOptions: ['horizontal-stripes', 'vertical-stripes', 'left-band-horizontal'],
     targetColors: ['#9e3039', '#ffffff', '#9e3039'],
     palette: ['#b64a53', '#f5f5f5', '#9e3039', '#ffffff'],
-    flagUrl: 'https://flagcdn.com/w320/lv.png',
+    flagUrl: '/data/flags/lv.png',
   },
   {
     code: 'es',
@@ -202,7 +202,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     patternOptions: ['horizontal-stripes', 'vertical-stripes', 'left-band-horizontal'],
     targetColors: ['#aa151b', '#f1bf00', '#aa151b'],
     palette: ['#c7353a', '#ffd33d', '#aa151b', '#f1bf00'],
-    flagUrl: 'https://flagcdn.com/w320/es.png',
+    flagUrl: '/data/flags/es.png',
   },
   {
     code: 'co',
@@ -211,7 +211,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     patternOptions: ['horizontal-stripes', 'vertical-stripes', 'left-band-horizontal'],
     targetColors: ['#fcd116', '#003893', '#ce1126'],
     palette: ['#ffe04b', '#2b58ac', '#df3a4d', '#fcd116', '#003893', '#ce1126'],
-    flagUrl: 'https://flagcdn.com/w320/co.png',
+    flagUrl: '/data/flags/co.png',
   },
   {
     code: 'cr',
@@ -220,7 +220,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     patternOptions: ['horizontal-stripes', 'vertical-stripes', 'left-band-horizontal'],
     targetColors: ['#002b7f', '#ffffff', '#ce1126', '#ffffff', '#002b7f'],
     palette: ['#264c9f', '#f5f5f5', '#de3448', '#002b7f', '#ffffff', '#ce1126'],
-    flagUrl: 'https://flagcdn.com/w320/cr.png',
+    flagUrl: '/data/flags/cr.png',
   },
   {
     code: 'jp',
@@ -229,7 +229,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     patternOptions: ['center-disc', 'horizontal-stripes', 'vertical-stripes'],
     targetColors: ['#ffffff', '#bc002d'],
     palette: ['#f5f5f5', '#d12f52', '#ffffff', '#bc002d'],
-    flagUrl: 'https://flagcdn.com/w320/jp.png',
+    flagUrl: '/data/flags/jp.png',
   },
   {
     code: 'bd',
@@ -238,7 +238,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     patternOptions: ['center-disc', 'horizontal-stripes-center-disc', 'vertical-stripes'],
     targetColors: ['#006a4e', '#f42a41'],
     palette: ['#258564', '#ff4b61', '#006a4e', '#f42a41'],
-    flagUrl: 'https://flagcdn.com/w320/bd.png',
+    flagUrl: '/data/flags/bd.png',
   },
   {
     code: 'pw',
@@ -247,7 +247,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     patternOptions: ['center-disc', 'horizontal-stripes-center-disc', 'horizontal-stripes'],
     targetColors: ['#0099ff', '#ffde00'],
     palette: ['#2eb0ff', '#ffe04b', '#0099ff', '#ffde00'],
-    flagUrl: 'https://flagcdn.com/w320/pw.png',
+    flagUrl: '/data/flags/pw.png',
   },
   {
     code: 'la',
@@ -256,16 +256,16 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     patternOptions: ['horizontal-stripes-center-disc', 'horizontal-stripes', 'center-disc'],
     targetColors: ['#ce1126', '#002868', '#ce1126', '#ffffff'],
     palette: ['#df3d4f', '#244b8b', '#f5f5f5', '#ce1126', '#002868', '#ffffff'],
-    flagUrl: 'https://flagcdn.com/w320/la.png',
+    flagUrl: '/data/flags/la.png',
   },
   {
     code: 'jm',
-    nameFrench: 'Jamaïque',
+    nameFrench: 'JamaÃ¯que',
     targetPattern: 'saltire',
     patternOptions: ['saltire', 'diagonal-rays', 'nordic-cross'],
     targetColors: ['#009b3a', '#fed100', '#000000'],
     palette: ['#24b85a', '#ffe04b', '#2a2a2a', '#009b3a', '#fed100', '#000000'],
-    flagUrl: 'https://flagcdn.com/w320/jm.png',
+    flagUrl: '/data/flags/jm.png',
   },
   {
     code: 'sc',
@@ -285,7 +285,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
       '#ffffff',
       '#007a3d',
     ],
-    flagUrl: 'https://flagcdn.com/w320/sc.png',
+    flagUrl: '/data/flags/sc.png',
   },
   {
     code: 'ps',
@@ -303,7 +303,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
       '#ffffff',
       '#149954',
     ],
-    flagUrl: 'https://flagcdn.com/w320/ps.png',
+    flagUrl: '/data/flags/ps.png',
   },
   {
     code: 'sd',
@@ -321,7 +321,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
       '#ffffff',
       '#000000',
     ],
-    flagUrl: 'https://flagcdn.com/w320/sd.png',
+    flagUrl: '/data/flags/sd.png',
   },
   {
     code: 'cl',
@@ -330,16 +330,16 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     patternOptions: ['canton-horizontal-bands', 'horizontal-stripes', 'left-band-horizontal'],
     targetColors: ['#0039a6', '#ffffff', '#d52b1e'],
     palette: ['#2d62bd', '#f5f5f5', '#e34a3e', '#0039a6', '#ffffff', '#d52b1e'],
-    flagUrl: 'https://flagcdn.com/w320/cl.png',
+    flagUrl: '/data/flags/cl.png',
   },
   {
     code: 'ci',
-    nameFrench: "Côte d'Ivoire",
+    nameFrench: "CÃ´te d'Ivoire",
     targetPattern: 'vertical-stripes',
     patternOptions: ['vertical-stripes', 'horizontal-stripes', 'left-band-horizontal'],
     targetColors: ['#f77f00', '#ffffff', '#009e60'],
     palette: ['#ff9a2b', '#f5f5f5', '#28b47a', '#f77f00', '#ffffff', '#009e60'],
-    flagUrl: 'https://flagcdn.com/w320/ci.png',
+    flagUrl: '/data/flags/ci.png',
   },
   {
     code: 'bo',
@@ -348,16 +348,16 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     patternOptions: ['horizontal-stripes', 'vertical-stripes', 'left-band-horizontal'],
     targetColors: ['#d52b1e', '#f9e300', '#007934'],
     palette: ['#e34a3e', '#ffed4f', '#269354', '#d52b1e', '#f9e300', '#007934'],
-    flagUrl: 'https://flagcdn.com/w320/bo.png',
+    flagUrl: '/data/flags/bo.png',
   },
   {
     code: 'bj',
-    nameFrench: 'Bénin',
+    nameFrench: 'BÃ©nin',
     targetPattern: 'left-band-horizontal',
     patternOptions: ['left-band-horizontal', 'horizontal-stripes', 'vertical-stripes'],
     targetColors: ['#008751', '#fcd116', '#e8112d'],
     palette: ['#29a672', '#ffe04b', '#f04255', '#008751', '#fcd116', '#e8112d'],
-    flagUrl: 'https://flagcdn.com/w320/bj.png',
+    flagUrl: '/data/flags/bj.png',
   },
   {
     code: 'mg',
@@ -366,7 +366,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     patternOptions: ['left-band-horizontal', 'vertical-stripes', 'horizontal-stripes'],
     targetColors: ['#ffffff', '#fc3d32', '#007e3a'],
     palette: ['#f5f5f5', '#ff5b50', '#27975a', '#ffffff', '#fc3d32', '#007e3a'],
-    flagUrl: 'https://flagcdn.com/w320/mg.png',
+    flagUrl: '/data/flags/mg.png',
   },
   {
     code: 'gm',
@@ -375,7 +375,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     patternOptions: ['horizontal-stripes', 'vertical-stripes', 'left-band-horizontal'],
     targetColors: ['#ce1126', '#ffffff', '#0c1c8c', '#ffffff', '#3a7728'],
     palette: ['#df3d4f', '#f5f5f5', '#2f3fa6', '#58934a', '#ce1126', '#0c1c8c', '#3a7728'],
-    flagUrl: 'https://flagcdn.com/w320/gm.png',
+    flagUrl: '/data/flags/gm.png',
   },
   {
     code: 'bw',
@@ -384,7 +384,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     patternOptions: ['horizontal-stripes', 'vertical-stripes', 'nordic-cross'],
     targetColors: ['#75aadb', '#ffffff', '#000000', '#ffffff', '#75aadb'],
     palette: ['#8ec0e5', '#f5f5f5', '#2a2a2a', '#75aadb', '#ffffff', '#000000'],
-    flagUrl: 'https://flagcdn.com/w320/bw.png',
+    flagUrl: '/data/flags/bw.png',
   },
   {
     code: 'ne',
@@ -393,7 +393,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     patternOptions: ['horizontal-stripes-center-disc', 'horizontal-stripes', 'center-disc'],
     targetColors: ['#e05206', '#ffffff', '#0db02b', '#e05206'],
     palette: ['#ef7330', '#f5f5f5', '#31c650', '#e05206', '#ffffff', '#0db02b'],
-    flagUrl: 'https://flagcdn.com/w320/ne.png',
+    flagUrl: '/data/flags/ne.png',
   },
   {
     code: 'mc',
@@ -402,16 +402,16 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     patternOptions: ['horizontal-stripes', 'vertical-stripes', 'center-disc'],
     targetColors: ['#ce1126', '#ffffff'],
     palette: ['#df3d4f', '#f5f5f5', '#ce1126', '#ffffff'],
-    flagUrl: 'https://flagcdn.com/w320/mc.png',
+    flagUrl: '/data/flags/mc.png',
   },
   {
     code: 'vn',
-    nameFrench: 'Viêt Nam',
+    nameFrench: 'ViÃªt Nam',
     targetPattern: 'center-star',
     patternOptions: ['center-star', 'center-disc', 'horizontal-stripes-center-star'],
     targetColors: ['#da251d', '#ffff00'],
     palette: ['#e94a43', '#fff35a', '#da251d', '#ffff00'],
-    flagUrl: 'https://flagcdn.com/w320/vn.png',
+    flagUrl: '/data/flags/vn.png',
   },
   {
     code: 'so',
@@ -420,7 +420,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     patternOptions: ['center-star', 'center-disc', 'horizontal-stripes-center-star'],
     targetColors: ['#4189dd', '#ffffff'],
     palette: ['#61a0ea', '#f5f5f5', '#4189dd', '#ffffff'],
-    flagUrl: 'https://flagcdn.com/w320/so.png',
+    flagUrl: '/data/flags/so.png',
   },
   {
     code: 'gh',
@@ -433,7 +433,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     ],
     targetColors: ['#ce1126', '#fcd116', '#006b3f', '#000000'],
     palette: ['#df3d4f', '#ffe04b', '#278858', '#2a2a2a', '#ce1126', '#fcd116', '#006b3f'],
-    flagUrl: 'https://flagcdn.com/w320/gh.png',
+    flagUrl: '/data/flags/gh.png',
   },
   {
     code: 'mm',
@@ -446,7 +446,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
     ],
     targetColors: ['#fecb00', '#34b233', '#ea2839', '#ffffff'],
     palette: ['#ffdd45', '#54c651', '#ef5260', '#f5f5f5', '#fecb00', '#34b233', '#ea2839'],
-    flagUrl: 'https://flagcdn.com/w320/mm.png',
+    flagUrl: '/data/flags/mm.png',
   },
 ];
 

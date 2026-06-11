@@ -27,6 +27,7 @@ import {
   SpeedrunLeaderboardEntry,
   SpeedrunLeaderboardService,
 } from '../services/speedrun-leaderboard.service';
+import { SpeedrunAssetCacheService } from '../services/speedrun-asset-cache.service';
 import { SpeedrunRecordsService } from '../services/speedrun-records.service';
 import { SpeedrunRunSubmissionService } from '../services/speedrun-run-submission.service';
 import { SupabaseAuthService } from '../services/supabase-auth.service';
@@ -62,6 +63,7 @@ export class SpeedrunPageComponent implements OnDestroy {
   private readonly countryShapesService = inject(CountryShapesService);
   private readonly storage = inject(BrowserStorageService);
   private readonly flagQuizService = inject(FlagQuizService);
+  private readonly assetCache = inject(SpeedrunAssetCacheService);
   private readonly records = inject(SpeedrunRecordsService);
   private readonly runSubmission = inject(SpeedrunRunSubmissionService);
   protected readonly leaderboard = inject(SpeedrunLeaderboardService);
@@ -72,7 +74,7 @@ export class SpeedrunPageComponent implements OnDestroy {
   private splitStartedAtMs = 0;
   private completedRawTimeMs = 0;
   private attemptId: string | null = null;
-  private readonly askedCodesBySplit = new Map<string, string[]>();
+  private readonly preparedQuestions = new Map<string, SpeedrunQuestion[]>();
 
   protected readonly countries = toSignal(this.countriesService.getCountries(), {
     initialValue: [] as CountrySummary[],
@@ -96,6 +98,8 @@ export class SpeedrunPageComponent implements OnDestroy {
   protected readonly savedBestTimeMs = signal<number | null>(null);
   protected readonly rankingState = signal<SpeedrunRankingState>('idle');
   protected readonly pendingGuestSaveCompleted = signal(false);
+  protected readonly isPreparing = signal(false);
+  protected readonly preparationFailed = signal(false);
   protected readonly leaderboardSearch = signal('');
   protected readonly leaderboardPage = signal(1);
   protected readonly leaderboardPageSize = SPEEDRUN_LEADERBOARD_PAGE_SIZE;
@@ -220,6 +224,13 @@ export class SpeedrunPageComponent implements OnDestroy {
     void this.leaderboard.refresh(SPEEDRUN_LEADERBOARD_LIMIT);
 
     effect(() => {
+      const countries = this.countries();
+      if (countries.length > 0) {
+        this.assetCache.refreshAllFlagsInBackground(countries);
+      }
+    });
+
+    effect(() => {
       const userId = this.auth.user()?.id;
       if (!userId) {
         return;
@@ -230,7 +241,27 @@ export class SpeedrunPageComponent implements OnDestroy {
   }
 
   protected async startRun(): Promise<void> {
-    if (!this.isReady()) {
+    if (!this.isReady() || this.isPreparing()) {
+      return;
+    }
+
+    this.isPreparing.set(true);
+    this.preparationFailed.set(false);
+    this.preparedQuestions.clear();
+
+    try {
+      const questions = this.buildRunQuestions();
+      const preparedQuestions = await this.assetCache.prepareQuestions(questions);
+      for (const split of this.splits) {
+        this.preparedQuestions.set(
+          split.id,
+          preparedQuestions.filter((question) => question.split.id === split.id),
+        );
+      }
+    } catch (error) {
+      logger.warn('Unable to prepare speedrun assets', error);
+      this.preparationFailed.set(true);
+      this.isPreparing.set(false);
       return;
     }
 
@@ -251,7 +282,6 @@ export class SpeedrunPageComponent implements OnDestroy {
     this.result.set(null);
     this.savedBestTimeMs.set(null);
     this.pendingGuestSaveCompleted.set(false);
-    this.askedCodesBySplit.clear();
     this.rankingState.set(this.isAuthenticated() ? 'pending' : 'local');
     this.attemptId = null;
 
@@ -265,6 +295,7 @@ export class SpeedrunPageComponent implements OnDestroy {
       }
     }
 
+    this.isPreparing.set(false);
     this.countdownIntervalId = window.setInterval(() => {
       const next = this.countdown() - 1;
       this.countdown.set(next);
@@ -460,6 +491,7 @@ export class SpeedrunPageComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.clearTimers();
+    this.assetCache.releaseRunAssets();
   }
 
   private startCurrentSplit(): void {
@@ -541,6 +573,7 @@ export class SpeedrunPageComponent implements OnDestroy {
     );
     this.result.set(finalResult);
     this.state.set('finished');
+    this.assetCache.releaseRunAssets();
 
     const userId = this.auth.user()?.id;
     if (userId) {
@@ -555,13 +588,33 @@ export class SpeedrunPageComponent implements OnDestroy {
   }
 
   private generateQuestion(): void {
-    const split = this.currentSplit();
-    const basePool = this.getQuestionPool(split);
-    if (!split || basePool.length < 4) {
+    const question = this.preparedQuestions.get(this.currentSplit().id)?.[this.questionIndex()];
+    if (!question) {
       return;
     }
 
-    const excludeCodes = this.computeExcludeCodes(split, basePool.length);
+    this.question.set(question);
+    this.selectedCode.set(null);
+    this.answered.set(false);
+  }
+
+  private buildRunQuestions(): SpeedrunQuestion[] {
+    const askedCodesBySplit = new Map<string, string[]>();
+
+    return this.splits.flatMap((split) =>
+      Array.from({ length: split.questionCount }, (_, questionIndex) =>
+        this.buildQuestion(split, questionIndex, askedCodesBySplit),
+      ),
+    );
+  }
+
+  private buildQuestion(
+    split: SpeedrunSplit,
+    questionIndex: number,
+    askedCodesBySplit: Map<string, string[]>,
+  ): SpeedrunQuestion {
+    const basePool = this.getQuestionPool(split);
+    const excludeCodes = this.computeExcludeCodes(split, basePool.length, askedCodesBySplit);
     const baseQuestion =
       split.mode === 'country-to-flag'
         ? this.flagQuizService.buildQuestion(basePool, split.difficulty, excludeCodes)
@@ -571,18 +624,20 @@ export class SpeedrunPageComponent implements OnDestroy {
         ? this.shapeByCode().get(baseQuestion.promptCountry.code)
         : null;
 
-    this.question.set({
+    askedCodesBySplit.set(split.id, [
+      ...(askedCodesBySplit.get(split.id) ?? []),
+      baseQuestion.correctCode,
+    ]);
+
+    return {
       split,
-      questionNumber: this.questionIndex() + 1,
+      questionNumber: questionIndex + 1,
       promptCountry: baseQuestion.promptCountry,
       options: shuffleItems(baseQuestion.options),
       correctCode: baseQuestion.correctCode,
       shapePath: shape?.path,
       shapeViewBox: shape?.viewBox ?? DEFAULT_SHAPE_VIEWBOX,
-    });
-    this.rememberAskedCode(split, baseQuestion.correctCode);
-    this.selectedCode.set(null);
-    this.answered.set(false);
+    };
   }
 
   private getQuestionPool(split: SpeedrunSplit): CountrySummary[] {
@@ -597,18 +652,18 @@ export class SpeedrunPageComponent implements OnDestroy {
     return this.countries();
   }
 
-  private computeExcludeCodes(split: SpeedrunSplit, countryCount: number): string[] {
-    const asked = this.askedCodesBySplit.get(split.id) ?? [];
+  private computeExcludeCodes(
+    split: SpeedrunSplit,
+    countryCount: number,
+    askedCodesBySplit: Map<string, string[]>,
+  ): string[] {
+    const asked = askedCodesBySplit.get(split.id) ?? [];
     if (countryCount - asked.length < 4) {
-      this.askedCodesBySplit.set(split.id, []);
+      askedCodesBySplit.set(split.id, []);
       return [];
     }
 
     return asked;
-  }
-
-  private rememberAskedCode(split: SpeedrunSplit, code: string): void {
-    this.askedCodesBySplit.set(split.id, [...(this.askedCodesBySplit.get(split.id) ?? []), code]);
   }
 
   private getSplitById(splitId: string): SpeedrunSplit {

@@ -1,3 +1,5 @@
+import { resolveLocalFlagUrl } from '../config/flag-source.config';
+
 export type ProfileAvatarKey = string;
 
 export const DEFAULT_PROFILE_AVATAR_KEY: ProfileAvatarKey = 'fr';
@@ -126,5 +128,5 @@ function looksLikeContactOrUrl(value: string): boolean {
 }
 
 function buildProfileFlagUrl(code: ProfileAvatarKey): string {
-  return `https://flagcdn.com/w80/${code}.png`;
+  return resolveLocalFlagUrl(code);
 }

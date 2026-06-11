@@ -87,7 +87,26 @@
             </span>
             <span class="auth-label">{{ authDisplayName() }}</span>
           } @else {
-            <span class="google-mark" aria-hidden="true">G</span>
+            <span class="google-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path
+                  fill="#4285f4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.76h3.56c2.08-1.92 3.28-4.74 3.28-8.09Z"
+                />
+                <path
+                  fill="#34a853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.56-2.76c-.98.66-2.24 1.06-3.72 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z"
+                />
+                <path
+                  fill="#fbbc05"
+                  d="M5.84 14.11a6.6 6.6 0 0 1 0-4.22V7.05H2.18a11 11 0 0 0 0 9.9l3.66-2.84Z"
+                />
+                <path
+                  fill="#ea4335"
+                  d="M12 5.36c1.62 0 3.06.56 4.21 1.64l3.15-3.15A10.56 10.56 0 0 0 12 1 11 11 0 0 0 2.18 7.05l3.66 2.84C6.71 7.29 9.14 5.36 12 5.36Z"
+                />
+              </svg>
+            </span>
             <span class="auth-label">
               {{ isAuthLoading() ? i18n.t('auth.loading') : i18n.t('auth.signIn') }}
             </span>
@@ -360,12 +379,6 @@
     ></button>
   }
 
-  @if (mobileNotice(); as notice) {
-    <aside class="mobile-notice" role="status" aria-live="polite">
-      {{ notice }}
-    </aside>
-  }
-
   @if (latestAchievement(); as achievement) {
     <aside class="achievement-toast" role="status" aria-live="polite">
       <div class="achievement-toast-mark" aria-hidden="true">&#10022;</div>
@@ -387,6 +400,19 @@
   <app-xp-feedback-toast />
 
   <main class="app-main">
+    @if (isOffline()) {
+      <aside class="offline-banner" role="status" aria-live="polite">
+        <span class="offline-banner-dot" aria-hidden="true"></span>
+        {{ i18n.t('mobile.offline') }}
+      </aside>
+    }
+
+    @if (mobileNotice(); as notice) {
+      <aside class="mobile-notice" role="status" aria-live="polite">
+        {{ notice }}
+      </aside>
+    }
+
     <router-outlet />
   </main>
 </div>

@@ -2,30 +2,44 @@
   @if (state() === 'intro') {
     <section class="speedrun-top-grid">
       <section class="hero-card speedrun-hero">
-      <div class="speedrun-hero-copy">
-        <p class="eyebrow">{{ i18n.t('speedrun.eyebrow') }}</p>
-        <h1>{{ i18n.t('speedrun.title') }}</h1>
-        <p class="intro">{{ i18n.t('speedrun.intro') }}</p>
-        <p class="personal-record-line">
-          @if (bestRecord(); as record) {
-            {{
-              i18n.t('speedrun.personalBestInline', {
-                time: formatTime(record.totalTimeMs),
-                errors: record.mistakeCount,
-              })
-            }}
-          } @else if (isAuthenticated()) {
-            {{ i18n.t('speedrun.noPersonalBestInline') }}
-          } @else {
-            {{ i18n.t('speedrun.signInForRecord') }}
+        <div class="speedrun-hero-copy">
+          <p class="eyebrow">{{ i18n.t('speedrun.eyebrow') }}</p>
+          <h1>{{ i18n.t('speedrun.title') }}</h1>
+          <p class="intro">{{ i18n.t('speedrun.intro') }}</p>
+          <p class="personal-record-line">
+            @if (bestRecord(); as record) {
+              {{
+                i18n.t('speedrun.personalBestInline', {
+                  time: formatTime(record.totalTimeMs),
+                  errors: record.mistakeCount,
+                })
+              }}
+            } @else if (isAuthenticated()) {
+              {{ i18n.t('speedrun.noPersonalBestInline') }}
+            } @else {
+              {{ i18n.t('speedrun.signInForRecord') }}
+            }
+          </p>
+          <div class="speedrun-hero-actions">
+            <button
+              type="button"
+              class="primary-button"
+              [disabled]="!isReady() || isPreparing()"
+              (click)="startRun()"
+            >
+              {{ i18n.t(isPreparing() ? 'speedrun.preparing' : 'speedrun.start') }}
+            </button>
+          </div>
+          @if (isPreparing()) {
+            <p class="preparation-state" aria-live="polite">
+              {{ i18n.t('speedrun.preparingHint') }}
+            </p>
+          } @else if (preparationFailed()) {
+            <p class="preparation-state is-error" role="alert">
+              {{ i18n.t('speedrun.preparationFailed') }}
+            </p>
           }
-        </p>
-        <div class="speedrun-hero-actions">
-          <button type="button" class="primary-button" [disabled]="!isReady()" (click)="startRun()">
-            {{ i18n.t('speedrun.start') }}
-          </button>
         </div>
-      </div>
       </section>
 
       <aside
@@ -73,7 +87,6 @@
               </li>
             }
           </ol>
-
         }
         <div class="leaderboard-pager" [attr.aria-label]="i18n.t('speedrun.leaderboardPagination')">
           <button
@@ -321,7 +334,11 @@
         }
       } @else {
         <span>{{ i18n.t('speedrun.guestResult') }}</span>
-        <button type="button" class="primary-button inline-save-button" (click)="signInToSaveResult(finalResult)">
+        <button
+          type="button"
+          class="primary-button inline-save-button"
+          (click)="signInToSaveResult(finalResult)"
+        >
           {{ i18n.t('speedrun.signInToSave') }}
         </button>
       }

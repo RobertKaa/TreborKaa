@@ -1,0 +1,56 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app-shell",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/favicon.png",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    },
+    {
+      "name": "offline-game-assets",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/data/**/*.json",
+          "/data/flags/*.png",
+          "/data/img/*.png",
+          "/data/img/*.svg",
+          "/icons/*.png"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "google-font-styles",
+      "urls": ["https://fonts.googleapis.com/**"],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 12,
+        "maxAge": "365d",
+        "timeout": "3s"
+      }
+    },
+    {
+      "name": "google-font-files",
+      "urls": ["https://fonts.gstatic.com/**"],
+      "cacheConfig": {
+        "strategy": "performance",
+        "maxSize": 30,
+        "maxAge": "365d"
+      }
+    }
+  ],
+  "navigationUrls": ["/**", "!/**/*.*", "!/**/*__*"]
+}

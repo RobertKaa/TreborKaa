@@ -13,9 +13,9 @@
   justify-content: center;
   gap: 8px;
   min-width: 0;
-  max-width: min(220px, 42vw);
+  max-width: min(260px, 48vw);
   height: 44px;
-  padding: 0 14px 0 10px;
+  padding: 0 16px 0 12px;
   border: 1px solid var(--line);
   border-radius: 16px;
   color: var(--ink);
@@ -62,23 +62,23 @@
   display: inline-grid;
   place-items: center;
   color: var(--ink);
-  background: var(--secondary-soft);
   font-family: 'Space Mono', monospace;
   font-weight: 700;
 }
 
 .google-mark {
-  width: 24px;
-  height: 24px;
-  font-size: 0.78rem;
-  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  padding: 4px;
+  border: 1px solid var(--line-soft);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--surface-raise) 88%, transparent);
 }
 
-.google-mark {
-  border: 2px solid transparent;
-  background:
-    linear-gradient(var(--surface), var(--surface)) padding-box,
-    linear-gradient(135deg, #4285f4, #34a853 34%, #fbbc05 68%, #ea4335) border-box;
+.google-mark svg {
+  display: block;
+  width: 18px;
+  height: 18px;
 }
 
 .profile-avatar-mini,
@@ -105,7 +105,7 @@
 
 .auth-label {
   min-width: 0;
-  max-width: 13ch;
+  max-width: none;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -341,13 +341,13 @@
   }
 
   .auth-button {
-    max-width: 148px;
+    max-width: 178px;
     height: 40px;
     padding: 0 10px 0 8px;
   }
 
   .auth-label {
-    max-width: 9ch;
+    max-width: none;
   }
 
   .profile-panel {

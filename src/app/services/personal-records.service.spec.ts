@@ -53,4 +53,42 @@ describe('PersonalRecordsService', () => {
     expect(record?.bestStreak).toBe(4);
     expect(record?.lastPlayedAt).toBe('2999-01-01T00:00:00.000Z');
   });
+
+  it('keeps the same snapshot when a merge does not change records', () => {
+    const service = TestBed.inject(PersonalRecordsService);
+    service.saveResult('country-to-flag-easy', { score: 7, maxScore: 10 });
+    const snapshot = service.snapshot();
+
+    service.mergeRecords(snapshot);
+
+    expect(service.snapshot()).toBe(snapshot);
+  });
+
+  it('discards records that predate a remote reset while preserving newer games', () => {
+    localStorage.setItem(
+      'vexiio.personal-records.v1',
+      JSON.stringify({
+        'country-to-flag-easy': {
+          bestScore: 8,
+          bestMaxScore: 10,
+          bestPercent: 80,
+          gamesPlayed: 3,
+          lastPlayedAt: '2026-06-10T10:00:00.000Z',
+        },
+        'chrono-flags': {
+          bestScore: 900,
+          bestMaxScore: 1000,
+          bestPercent: 90,
+          gamesPlayed: 1,
+          lastPlayedAt: '2026-06-12T10:00:00.000Z',
+        },
+      }),
+    );
+    const service = TestBed.inject(PersonalRecordsService);
+
+    service.discardAtOrBefore('2026-06-11T10:00:00.000Z');
+
+    expect(service.getRecord('country-to-flag-easy')).toBeNull();
+    expect(service.getRecord('chrono-flags')).not.toBeNull();
+  });
 });

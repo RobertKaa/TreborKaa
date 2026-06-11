@@ -9,7 +9,8 @@ import {
 } from './daily-challenge.service';
 
 const countries: CountrySummary[] = Array.from({ length: 20 }, (_, index) => {
-  const code = String.fromCharCode(97 + Math.floor(index / 26)) + String.fromCharCode(97 + (index % 26));
+  const code =
+    String.fromCharCode(97 + Math.floor(index / 26)) + String.fromCharCode(97 + (index % 26));
 
   return {
     code,
@@ -86,5 +87,35 @@ describe('DailyChallengeService', () => {
     expect(dailyChallenge.completeToday(15, 0)).toBe(false);
     expect(dailyChallenge.today().completed).toBe(true);
     expect(dailyChallenge.bonusXp()).toBe(250);
+  });
+
+  it('merges remote completions without replacing an earlier completion date', () => {
+    const dailyChallenge = TestBed.inject(DailyChallengeService);
+
+    dailyChallenge.mergeRemoteCompletions({
+      '2026-05-21': '2026-05-21T12:00:00.000Z',
+      '2026-05-22': '2026-05-22T13:00:00.000Z',
+    });
+    dailyChallenge.mergeRemoteCompletions({
+      '2026-05-22': '2026-05-22T11:00:00.000Z',
+    });
+
+    expect(dailyChallenge.snapshot()).toEqual({
+      '2026-05-21': '2026-05-21T12:00:00.000Z',
+      '2026-05-22': '2026-05-22T11:00:00.000Z',
+    });
+    expect(dailyChallenge.bonusXp()).toBe(500);
+  });
+
+  it('keeps the same snapshot when remote completions are already present', () => {
+    const dailyChallenge = TestBed.inject(DailyChallengeService);
+    dailyChallenge.mergeRemoteCompletions({
+      '2026-05-22': '2026-05-22T11:00:00.000Z',
+    });
+    const snapshot = dailyChallenge.snapshot();
+
+    dailyChallenge.mergeRemoteCompletions(snapshot);
+
+    expect(dailyChallenge.snapshot()).toBe(snapshot);
   });
 });

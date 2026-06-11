@@ -50,6 +50,44 @@ h1 {
   color: var(--ink-soft);
 }
 
+.difficulty-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.difficulty-legend span,
+.difficulty-label {
+  padding: 4px 8px;
+  border: 1px solid currentColor;
+  border-radius: var(--ds-radius-pill);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+[data-difficulty='easy'] .difficulty-label,
+.difficulty-legend [data-difficulty='easy'] {
+  color: #45b36a;
+}
+
+[data-difficulty='medium'] .difficulty-label,
+.difficulty-legend [data-difficulty='medium'] {
+  color: #3182ce;
+}
+
+[data-difficulty='hard'] .difficulty-label,
+.difficulty-legend [data-difficulty='hard'] {
+  color: #df5a67;
+}
+
+[data-difficulty='rare'] .difficulty-label,
+.difficulty-legend [data-difficulty='rare'] {
+  color: #956fe8;
+}
+
 .profile-summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -104,32 +142,25 @@ h1 {
 }
 
 .achievement-card.unlocked {
+  border-color: color-mix(in srgb, #45b36a 68%, var(--line));
+  background: color-mix(in srgb, #45b36a 18%, transparent);
   opacity: 1;
 }
 
-.achievement-card[data-color='lime'].unlocked {
-  border-color: color-mix(in srgb, #45b36a 68%, var(--line));
-  background: color-mix(in srgb, #45b36a 18%, transparent);
+.achievement-card[data-difficulty='easy'] {
+  border-left-color: #45b36a;
 }
 
-.achievement-card[data-color='amber'].unlocked {
-  border-color: color-mix(in srgb, #f39c12 68%, var(--line));
-  background: color-mix(in srgb, #f39c12 18%, transparent);
+.achievement-card[data-difficulty='medium'] {
+  border-left-color: #3182ce;
 }
 
-.achievement-card[data-color='cyan'].unlocked {
-  border-color: color-mix(in srgb, #20b2aa 68%, var(--line));
-  background: color-mix(in srgb, #20b2aa 16%, transparent);
+.achievement-card[data-difficulty='hard'] {
+  border-left-color: #df5a67;
 }
 
-.achievement-card[data-color='rose'].unlocked {
-  border-color: color-mix(in srgb, #d9647a 68%, var(--line));
-  background: color-mix(in srgb, #d9647a 16%, transparent);
-}
-
-.achievement-card[data-color='violet'].unlocked {
-  border-color: color-mix(in srgb, #7d5cc6 68%, var(--line));
-  background: color-mix(in srgb, #7d5cc6 18%, transparent);
+.achievement-card[data-difficulty='rare'] {
+  border-left-color: #956fe8;
 }
 
 .card-topline {
@@ -144,6 +175,13 @@ h1 {
   font-weight: 700;
 }
 
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
 .card-state {
   font-size: 0.72rem;
   font-family: 'Space Mono', monospace;
@@ -156,6 +194,14 @@ h1 {
   line-height: 1.4;
 }
 
+.card-reward {
+  margin-top: 14px;
+  color: var(--accent-dark);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
 @media (max-width: 760px) {
   .achievement-grid {
     grid-template-columns: 1fr;
@@ -163,6 +209,10 @@ h1 {
 
   .profile-summary {
     grid-template-columns: 1fr;
+  }
+
+  .card-topline {
+    align-items: flex-start;
   }
 }
 

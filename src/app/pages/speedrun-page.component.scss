@@ -29,6 +29,17 @@
   min-width: min(100%, 220px);
 }
 
+.preparation-state {
+  margin-top: 10px;
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.preparation-state.is-error {
+  color: var(--danger);
+}
+
 .loading-card,
 .countdown-card {
   display: grid;
@@ -167,7 +178,9 @@
   border-radius: var(--ds-radius-lg);
 }
 
-.flag-surface { min-height: min(20vh, 150px); }
+.flag-surface {
+  min-height: min(20vh, 150px);
+}
 
 .summary-split.is-improved {
   border-color: color-mix(in srgb, #ffd34d 70%, var(--line));

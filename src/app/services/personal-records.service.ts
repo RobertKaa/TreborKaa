@@ -63,8 +63,43 @@ export class PersonalRecordsService {
     this.storage.remove(STORAGE_KEY);
   }
 
+  discardAtOrBefore(resetAt: string | null): void {
+    if (!resetAt) {
+      return;
+    }
+
+    const resetTimestamp = Date.parse(resetAt);
+    if (!Number.isFinite(resetTimestamp)) {
+      return;
+    }
+
+    const next: StoredRecords = {};
+    let changed = false;
+
+    for (const [key, record] of Object.entries(this.records()) as [
+      GameRecordKey,
+      PersonalRecord,
+    ][]) {
+      const playedAt = Date.parse(record.lastPlayedAt);
+      if (!Number.isFinite(playedAt) || playedAt <= resetTimestamp) {
+        changed = true;
+        continue;
+      }
+
+      next[key] = record;
+    }
+
+    if (!changed) {
+      return;
+    }
+
+    this.records.set(next);
+    this.persist();
+  }
+
   mergeRecords(records: StoredRecords): void {
     const next: StoredRecords = { ...this.records() };
+    let changed = false;
 
     for (const [key, incoming] of Object.entries(records) as [GameRecordKey, PersonalRecord][]) {
       if (!VALID_RECORD_KEYS.has(key)) {
@@ -72,7 +107,15 @@ export class PersonalRecordsService {
       }
 
       const existing = next[key];
-      next[key] = this.mergeRecord(existing, incoming);
+      const merged = this.mergeRecord(existing, incoming);
+      if (!existing || !this.recordsAreEqual(existing, merged)) {
+        next[key] = merged;
+        changed = true;
+      }
+    }
+
+    if (!changed) {
+      return;
     }
 
     this.records.set(next);
@@ -123,5 +166,16 @@ export class PersonalRecordsService {
           : existing.lastPlayedAt,
       bestStreak: Math.max(existing.bestStreak ?? 0, incoming.bestStreak ?? 0),
     };
+  }
+
+  private recordsAreEqual(first: PersonalRecord, second: PersonalRecord): boolean {
+    return (
+      first.bestScore === second.bestScore &&
+      first.bestMaxScore === second.bestMaxScore &&
+      first.bestPercent === second.bestPercent &&
+      first.gamesPlayed === second.gamesPlayed &&
+      first.lastPlayedAt === second.lastPlayedAt &&
+      (first.bestStreak ?? 0) === (second.bestStreak ?? 0)
+    );
   }
 }

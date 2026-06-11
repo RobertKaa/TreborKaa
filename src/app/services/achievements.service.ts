@@ -21,29 +21,36 @@ export type AchievementId =
   | 'first-game'
   | 'five-runs'
   | 'twenty-runs'
+  | 'fifty-runs'
   | 'three-games'
   | 'seven-games'
   | 'accuracy-90'
   | 'perfect-score'
+  | 'three-perfect-records'
+  | 'all-excellent'
   | 'streak-master'
   | 'streak-legend'
   | 'resume-ready'
   | 'visual-trio'
   | 'chrono-sprinter'
+  | 'chrono-expert'
   | 'rebuild-architect'
+  | 'rebuild-master'
   | 'all-available-games'
   | 'collector-level-5'
   | 'collector-level-10'
+  | 'collector-level-20'
   | 'mystery-combo'
   | 'mystery-clean-tour'
-  | 'mystery-full-house';
+  | 'mystery-full-house'
+  | 'mystery-seven-perfect'
+  | 'mystery-centurion';
 
 type AchievementDefinition = {
   id: AchievementId;
   titleKey: string;
   descriptionKey: string;
   hidden?: boolean;
-  color: 'lime' | 'amber' | 'cyan' | 'rose' | 'violet';
   difficulty: AchievementDifficulty;
 };
 
@@ -81,118 +88,144 @@ const CLASSIC_RECORD_KEYS: GameRecordKey[] = [
   'shape-to-country-easy',
 ];
 const VISUAL_RECORD_KEYS: GameRecordKey[] = ['find-the-error', 'pixel-flag', 'flag-rebuild'];
+const DIFFICULTY_ORDER: Record<AchievementDifficulty, number> = {
+  easy: 0,
+  medium: 1,
+  hard: 2,
+  rare: 3,
+};
 
 const DEFINITIONS: AchievementDefinition[] = [
   {
     id: 'first-game',
     titleKey: 'achievement.first-game.title',
     descriptionKey: 'achievement.first-game.description',
-    color: 'lime',
     difficulty: 'easy',
   },
   {
     id: 'five-runs',
     titleKey: 'achievement.five-runs.title',
     descriptionKey: 'achievement.five-runs.description',
-    color: 'lime',
     difficulty: 'easy',
   },
   {
     id: 'three-games',
     titleKey: 'achievement.three-games.title',
     descriptionKey: 'achievement.three-games.description',
-    color: 'amber',
     difficulty: 'medium',
   },
   {
     id: 'seven-games',
     titleKey: 'achievement.seven-games.title',
     descriptionKey: 'achievement.seven-games.description',
-    color: 'amber',
     difficulty: 'medium',
   },
   {
     id: 'accuracy-90',
     titleKey: 'achievement.accuracy-90.title',
     descriptionKey: 'achievement.accuracy-90.description',
-    color: 'cyan',
     difficulty: 'medium',
   },
   {
     id: 'perfect-score',
     titleKey: 'achievement.perfect-score.title',
     descriptionKey: 'achievement.perfect-score.description',
-    color: 'violet',
     difficulty: 'hard',
   },
   {
     id: 'twenty-runs',
     titleKey: 'achievement.twenty-runs.title',
     descriptionKey: 'achievement.twenty-runs.description',
-    color: 'amber',
+    difficulty: 'hard',
+  },
+  {
+    id: 'fifty-runs',
+    titleKey: 'achievement.fifty-runs.title',
+    descriptionKey: 'achievement.fifty-runs.description',
+    difficulty: 'hard',
+  },
+  {
+    id: 'three-perfect-records',
+    titleKey: 'achievement.three-perfect-records.title',
+    descriptionKey: 'achievement.three-perfect-records.description',
+    difficulty: 'hard',
+  },
+  {
+    id: 'all-excellent',
+    titleKey: 'achievement.all-excellent.title',
+    descriptionKey: 'achievement.all-excellent.description',
     difficulty: 'hard',
   },
   {
     id: 'streak-master',
     titleKey: 'achievement.streak-master.title',
     descriptionKey: 'achievement.streak-master.description',
-    color: 'rose',
     difficulty: 'hard',
   },
   {
     id: 'streak-legend',
     titleKey: 'achievement.streak-legend.title',
     descriptionKey: 'achievement.streak-legend.description',
-    color: 'violet',
     difficulty: 'hard',
   },
   {
     id: 'resume-ready',
     titleKey: 'achievement.resume-ready.title',
     descriptionKey: 'achievement.resume-ready.description',
-    color: 'lime',
     difficulty: 'easy',
   },
   {
     id: 'visual-trio',
     titleKey: 'achievement.visual-trio.title',
     descriptionKey: 'achievement.visual-trio.description',
-    color: 'cyan',
     difficulty: 'medium',
   },
   {
     id: 'chrono-sprinter',
     titleKey: 'achievement.chrono-sprinter.title',
     descriptionKey: 'achievement.chrono-sprinter.description',
-    color: 'amber',
     difficulty: 'medium',
+  },
+  {
+    id: 'chrono-expert',
+    titleKey: 'achievement.chrono-expert.title',
+    descriptionKey: 'achievement.chrono-expert.description',
+    difficulty: 'hard',
   },
   {
     id: 'rebuild-architect',
     titleKey: 'achievement.rebuild-architect.title',
     descriptionKey: 'achievement.rebuild-architect.description',
-    color: 'lime',
     difficulty: 'medium',
+  },
+  {
+    id: 'rebuild-master',
+    titleKey: 'achievement.rebuild-master.title',
+    descriptionKey: 'achievement.rebuild-master.description',
+    difficulty: 'hard',
   },
   {
     id: 'all-available-games',
     titleKey: 'achievement.all-available-games.title',
     descriptionKey: 'achievement.all-available-games.description',
-    color: 'violet',
     difficulty: 'hard',
   },
   {
     id: 'collector-level-5',
     titleKey: 'achievement.collector-level-5.title',
     descriptionKey: 'achievement.collector-level-5.description',
-    color: 'lime',
     difficulty: 'medium',
   },
   {
     id: 'collector-level-10',
     titleKey: 'achievement.collector-level-10.title',
     descriptionKey: 'achievement.collector-level-10.description',
-    color: 'violet',
+    difficulty: 'hard',
+  },
+  {
+    id: 'collector-level-20',
+    titleKey: 'achievement.collector-level-20.title',
+    descriptionKey: 'achievement.collector-level-20.description',
     difficulty: 'hard',
   },
   {
@@ -200,7 +233,6 @@ const DEFINITIONS: AchievementDefinition[] = [
     titleKey: 'achievement.mystery-combo.title',
     descriptionKey: 'achievement.mystery-combo.description',
     hidden: true,
-    color: 'violet',
     difficulty: 'rare',
   },
   {
@@ -208,7 +240,6 @@ const DEFINITIONS: AchievementDefinition[] = [
     titleKey: 'achievement.mystery-clean-tour.title',
     descriptionKey: 'achievement.mystery-clean-tour.description',
     hidden: true,
-    color: 'violet',
     difficulty: 'rare',
   },
   {
@@ -216,7 +247,20 @@ const DEFINITIONS: AchievementDefinition[] = [
     titleKey: 'achievement.mystery-full-house.title',
     descriptionKey: 'achievement.mystery-full-house.description',
     hidden: true,
-    color: 'violet',
+    difficulty: 'rare',
+  },
+  {
+    id: 'mystery-seven-perfect',
+    titleKey: 'achievement.mystery-seven-perfect.title',
+    descriptionKey: 'achievement.mystery-seven-perfect.description',
+    hidden: true,
+    difficulty: 'rare',
+  },
+  {
+    id: 'mystery-centurion',
+    titleKey: 'achievement.mystery-centurion.title',
+    descriptionKey: 'achievement.mystery-centurion.description',
+    hidden: true,
     difficulty: 'rare',
   },
 ];
@@ -250,7 +294,9 @@ export class AchievementsService {
             ? 'achievement.mystery.locked.description'
             : definition.descriptionKey,
       };
-    }),
+    }).sort(
+      (left, right) => DIFFICULTY_ORDER[left.difficulty] - DIFFICULTY_ORDER[right.difficulty],
+    ),
   );
   readonly visibleAchievements = computed(() =>
     this.achievements().filter((achievement) => !achievement.hidden || achievement.unlocked),
@@ -269,9 +315,12 @@ export class AchievementsService {
       const uniqueRecordCount = entries.length;
       const maxStreak = entries.reduce((max, entry) => Math.max(max, entry?.bestStreak ?? 0), 0);
       const maxPercent = entries.reduce((max, entry) => Math.max(max, entry?.bestPercent ?? 0), 0);
+      const perfectRecordCount = entries.filter((entry) => entry.bestPercent >= 100).length;
       const inProgressCount = this.progressService.count();
       const visualRecordCount = VISUAL_RECORD_KEYS.filter((key) => !!records[key]).length;
       const hasAllAvailableGames = uniqueRecordCount >= ENABLED_RECORD_KEYS.size;
+      const hasExcellentRecordEverywhere =
+        hasAllAvailableGames && entries.every((entry) => entry.bestPercent >= 90);
 
       if (totalGamesPlayed >= 1) {
         this.unlock('first-game');
@@ -293,12 +342,24 @@ export class AchievementsService {
         this.unlock('twenty-runs');
       }
 
+      if (totalGamesPlayed >= 50) {
+        this.unlock('fifty-runs');
+      }
+
       if (maxPercent >= 90) {
         this.unlock('accuracy-90');
       }
 
       if (maxPercent >= 100) {
         this.unlock('perfect-score');
+      }
+
+      if (perfectRecordCount >= 3) {
+        this.unlock('three-perfect-records');
+      }
+
+      if (hasExcellentRecordEverywhere) {
+        this.unlock('all-excellent');
       }
 
       if (maxStreak >= 10) {
@@ -325,10 +386,21 @@ export class AchievementsService {
       }
 
       if (
+        (records['chrono-flags']?.bestStreak ?? 0) >= 15 ||
+        (records['chrono-flags']?.bestScore ?? 0) >= 1500
+      ) {
+        this.unlock('chrono-expert');
+      }
+
+      if (
         (records['flag-rebuild']?.gamesPlayed ?? 0) > 0 &&
         (records['flag-rebuild']?.bestPercent ?? 0) >= 80
       ) {
         this.unlock('rebuild-architect');
+      }
+
+      if ((records['flag-rebuild']?.bestPercent ?? 0) >= 95) {
+        this.unlock('rebuild-master');
       }
 
       if (hasAllAvailableGames) {
@@ -341,6 +413,10 @@ export class AchievementsService {
 
       if (this.profile().level >= 10) {
         this.unlock('collector-level-10');
+      }
+
+      if (this.profile().level >= 20) {
+        this.unlock('collector-level-20');
       }
 
       const hasClassicCombo =
@@ -361,6 +437,14 @@ export class AchievementsService {
       if (hasAllAvailableGames && totalGamesPlayed >= 20 && maxStreak >= 10) {
         this.unlock('mystery-full-house');
       }
+
+      if (hasAllAvailableGames && perfectRecordCount >= ENABLED_RECORD_KEYS.size) {
+        this.unlock('mystery-seven-perfect');
+      }
+
+      if (hasAllAvailableGames && totalGamesPlayed >= 100) {
+        this.unlock('mystery-centurion');
+      }
     });
   }
 
@@ -370,6 +454,7 @@ export class AchievementsService {
 
   mergeUnlocks(unlocks: Partial<Record<string, string>>): void {
     const next: AchievementStore = { ...this.unlocked() };
+    let changed = false;
 
     for (const [id, unlockedAt] of Object.entries(unlocks)) {
       if (!this.isAchievementId(id) || typeof unlockedAt !== 'string') {
@@ -377,7 +462,16 @@ export class AchievementsService {
       }
 
       const existing = next[id];
-      next[id] = existing && Date.parse(existing) <= Date.parse(unlockedAt) ? existing : unlockedAt;
+      const merged =
+        existing && Date.parse(existing) <= Date.parse(unlockedAt) ? existing : unlockedAt;
+      if (existing !== merged) {
+        next[id] = merged;
+        changed = true;
+      }
+    }
+
+    if (!changed) {
+      return;
     }
 
     this.unlocked.set(next);

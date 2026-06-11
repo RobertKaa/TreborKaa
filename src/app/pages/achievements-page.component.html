@@ -8,6 +8,12 @@
         i18n.t('achievements.count', { unlocked: unlockedCount(), total: achievements().length })
       }}
     </p>
+    <div class="difficulty-legend" [attr.aria-label]="i18n.t('achievements.legend')">
+      <span data-difficulty="easy">{{ i18n.t('achievements.difficulty.easy') }}</span>
+      <span data-difficulty="medium">{{ i18n.t('achievements.difficulty.medium') }}</span>
+      <span data-difficulty="hard">{{ i18n.t('achievements.difficulty.hard') }}</span>
+      <span data-difficulty="rare">{{ i18n.t('achievements.difficulty.rare') }}</span>
+    </div>
     <div class="profile-summary" [attr.aria-label]="i18n.t('gamification.profileAria')">
       <div>
         <span>{{ i18n.t('gamification.level', { level: profile().level }) }}</span>
@@ -30,19 +36,27 @@
         <article
           class="achievement-card"
           [class.unlocked]="achievement.unlocked"
-          [attr.data-color]="achievement.color"
+          [attr.data-difficulty]="achievement.difficulty"
         >
           <div class="card-topline">
             <p class="card-title">{{ i18n.t(achievement.displayTitleKey) }}</p>
-            <span class="card-state">
-              {{
-                achievement.unlocked
-                  ? i18n.t('achievements.unlocked')
-                  : i18n.t('achievements.locked')
-              }}
-            </span>
+            <div class="card-meta">
+              <span class="difficulty-label">
+                {{ i18n.t('achievements.difficulty.' + achievement.difficulty) }}
+              </span>
+              <span class="card-state">
+                {{
+                  achievement.unlocked
+                    ? i18n.t('achievements.unlocked')
+                    : i18n.t('achievements.locked')
+                }}
+              </span>
+            </div>
           </div>
           <p class="card-desc">{{ i18n.t(achievement.displayDescriptionKey) }}</p>
+          <p class="card-reward">
+            {{ i18n.t('achievements.reward', { points: achievement.points }) }}
+          </p>
         </article>
       }
     </div>

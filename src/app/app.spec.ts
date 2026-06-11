@@ -54,4 +54,18 @@ describe('App', () => {
     expect(compiled.querySelector('.menu-trigger')).toBeTruthy();
     expect(compiled.querySelector('.auth-button')).toBeTruthy();
   });
+
+  it('should show a concise offline status when the connection is lost', async () => {
+    const fixture = TestBed.createComponent(App);
+    window.dispatchEvent(new Event('offline'));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const banner = compiled.querySelector('.offline-banner');
+    expect(banner).toBeTruthy();
+    expect(banner?.getAttribute('role')).toBe('status');
+
+    window.dispatchEvent(new Event('online'));
+  });
 });

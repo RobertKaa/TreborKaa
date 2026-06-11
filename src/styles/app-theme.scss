@@ -288,7 +288,7 @@ app-root .settings-language-row {
   }
 
   app-root .auth-button {
-    max-width: 116px;
+    max-width: 178px;
   }
 }
 
@@ -307,7 +307,7 @@ app-root .settings-language-row {
 @media (min-width: 1180px) {
   app-root .app-shell {
     display: grid;
-    grid-template-columns: 200px minmax(0, 1fr) !important;
+    grid-template-columns: 220px minmax(0, 1fr) !important;
     gap: 24px !important;
     width: 100% !important;
     min-height: calc(var(--app-vh, 1vh) * 100);
@@ -321,7 +321,7 @@ app-root .settings-language-row {
     left: 0 !important;
     z-index: 110;
     align-self: start;
-    width: 200px !important;
+    width: 220px !important;
     height: calc(var(--app-vh, 1vh) * 100) !important;
     margin: 0 !important;
     background: var(--sidebar-bg) !important;
@@ -507,7 +507,7 @@ app-root .settings-language-row {
     right: auto;
     bottom: 0;
     left: calc(100% + 14px);
-    width: min(370px, calc(100vw - 232px));
+    width: min(370px, calc(100vw - 252px));
     max-height: calc((var(--app-vh, 1vh) * 100) - 32px);
     transform-origin: bottom left;
   }
@@ -553,7 +553,7 @@ app-root .settings-language-row {
     right: auto !important;
     bottom: 0 !important;
     left: calc(100% + 14px) !important;
-    width: min(280px, calc(100vw - 232px));
+    width: min(280px, calc(100vw - 252px));
     min-width: 260px;
     max-height: calc((var(--app-vh, 1vh) * 100) - 32px);
     overflow: auto;
