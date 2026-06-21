@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
+import { signal } from '@angular/core';
 import { AchievementsService } from './achievements.service';
 import { GameProgressService } from './game-progress.service';
 import { PersonalRecordsService } from './personal-records.service';
+import { SupabaseAuthService } from './supabase-auth.service';
 
 describe('AchievementsService', () => {
   beforeEach(() => {
@@ -43,6 +45,7 @@ describe('AchievementsService', () => {
     records.saveResult('country-to-flag-easy', { score: 10, maxScore: 10, streak: 10 });
     records.saveResult('flag-to-country-easy', { score: 10, maxScore: 10 });
     records.saveResult('shape-to-country-easy', { score: 10, maxScore: 10 });
+    records.saveResult('capital-to-country-easy', { score: 10, maxScore: 10 });
     records.saveResult('chrono-flags', {
       score: 950,
       maxScore: 950,
@@ -62,6 +65,95 @@ describe('AchievementsService', () => {
     expect(byId.get('mystery-clean-tour')?.unlocked).toBe(true);
   });
 
+  it('uses authoritative server xp when available', () => {
+    const records = TestBed.inject(PersonalRecordsService);
+    const achievements = TestBed.inject(AchievementsService);
+
+    records.saveResult('country-to-flag-easy', { score: 8, maxScore: 10 });
+    TestBed.tick();
+
+    const localProfile = achievements.profile();
+    expect(localProfile.xpSource).toBe('local');
+
+    achievements.setAuthoritativeXpTotal(localProfile.xp + 500);
+    TestBed.tick();
+
+    const serverProfile = achievements.profile();
+    expect(serverProfile.xpSource).toBe('server');
+    expect(serverProfile.xp).toBe(localProfile.xp + 500);
+    expect(serverProfile.level).toBeGreaterThanOrEqual(localProfile.level);
+  });
+
+  it('falls back to local xp after clearing authoritative total', () => {
+    const records = TestBed.inject(PersonalRecordsService);
+    const achievements = TestBed.inject(AchievementsService);
+
+    records.saveResult('country-to-flag-easy', { score: 8, maxScore: 10 });
+    TestBed.tick();
+
+    const localXp = achievements.profile().xp;
+    achievements.setAuthoritativeXpTotal(localXp + 250);
+    achievements.clearAuthoritativeXpTotal();
+    TestBed.tick();
+
+    expect(achievements.profile().xpSource).toBe('local');
+    expect(achievements.profile().xp).toBe(localXp);
+    expect(achievements.xpProfileReady()).toBe(true);
+  });
+
+  it('waits for authoritative xp before exposing profile when authenticated', () => {
+    const user = signal<{ id: string } | null>({ id: 'user-1' });
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: SupabaseAuthService,
+          useValue: { user },
+        },
+      ],
+    });
+
+    const records = TestBed.inject(PersonalRecordsService);
+    const achievements = TestBed.inject(AchievementsService);
+
+    records.saveResult('country-to-flag-easy', { score: 8, maxScore: 10 });
+    TestBed.tick();
+
+    expect(achievements.xpProfileReady()).toBe(false);
+    expect(achievements.profile().xpSource).toBe('local');
+
+    achievements.setAuthoritativeXpTotal(1200);
+    TestBed.tick();
+
+    expect(achievements.xpProfileReady()).toBe(true);
+    expect(achievements.profile().xpSource).toBe('server');
+    expect(achievements.profile().xp).toBe(1200);
+  });
+
+  it('allows local xp display after resolving without server total', () => {
+    const user = signal<{ id: string } | null>({ id: 'user-1' });
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: SupabaseAuthService,
+          useValue: { user },
+        },
+      ],
+    });
+
+    const achievements = TestBed.inject(AchievementsService);
+    TestBed.tick();
+
+    expect(achievements.xpProfileReady()).toBe(false);
+
+    achievements.resolveXpDisplayWithoutServer();
+    TestBed.tick();
+
+    expect(achievements.xpProfileReady()).toBe(true);
+    expect(achievements.profile().xpSource).toBe('local');
+  });
+
   it('computes a profile with xp, level and next visible achievement', () => {
     const records = TestBed.inject(PersonalRecordsService);
     const achievements = TestBed.inject(AchievementsService);
@@ -73,6 +165,7 @@ describe('AchievementsService', () => {
     const profile = achievements.profile();
 
     expect(profile.xp).toBeGreaterThan(0);
+    expect(profile.xpSource).toBe('local');
     expect(profile.level).toBeGreaterThanOrEqual(1);
     expect(profile.progressPercent).toBeGreaterThanOrEqual(0);
     expect(profile.progressPercent).toBeLessThanOrEqual(100);
@@ -96,6 +189,7 @@ describe('AchievementsService', () => {
       'country-to-flag-easy',
       'flag-to-country-easy',
       'shape-to-country-easy',
+      'capital-to-country-easy',
       'chrono-flags',
       'find-the-error',
       'pixel-flag',

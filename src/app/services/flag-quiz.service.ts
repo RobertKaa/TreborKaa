@@ -60,6 +60,26 @@ export class FlagQuizService {
     };
   }
 
+  buildCapitalToCountryQuestion(
+    countries: CountrySummary[],
+    difficulty: 'easy' | 'hard',
+    excludeCodes: string[] = [],
+  ): CountryNameQuizQuestion {
+    const capitalCountries = this.filterCapitalCountries(countries);
+    const baseQuestion = this.buildBaseQuestion(capitalCountries, difficulty, excludeCodes);
+
+    return {
+      difficulty,
+      promptCountry: baseQuestion.promptCountry,
+      options: baseQuestion.options,
+      correctCode: baseQuestion.correctCode,
+    };
+  }
+
+  filterCapitalCountries(countries: CountrySummary[]): CountrySummary[] {
+    return countries.filter((country) => this.hasValidCapital(country));
+  }
+
   private buildBaseQuestion(
     countries: CountrySummary[],
     difficulty: 'easy' | 'hard',
@@ -257,5 +277,10 @@ export class FlagQuizService {
     while (target.length > limit) {
       target.shift();
     }
+  }
+
+  private hasValidCapital(country: CountrySummary): boolean {
+    const capital = country.capitalEnglish.trim() || country.capitalFrench.trim();
+    return capital.length > 0 && capital !== '-';
   }
 }

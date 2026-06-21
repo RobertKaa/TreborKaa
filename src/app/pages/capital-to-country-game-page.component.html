@@ -1,0 +1,22 @@
+<app-classic-name-question
+  [question]="currentQuestion()"
+  labelKey="classic.questionCapitalToCountry"
+  prompt="capital"
+  [optionState]="getOptionStateForCode"
+  [optionDisabled]="isOptionDisabledForCode"
+  (selectCode)="selectAnswer($event)"
+/>
+
+<app-classic-quiz-status
+  [showProgress]="!!currentQuestion()"
+  [showSummary]="isComplete()"
+  [progressLabel]="progressLabel()"
+  [progressPercent]="progressPercent()"
+  [score]="score()"
+  [wrongAttempts]="wrongAttempts()"
+  [errorsLimit]="getErrorsLimit()"
+  (close)="closeSummary()"
+  (restart)="restartGame()"
+>
+  <app-classic-quiz-mistakes [errors]="errors()" prompt="capital" />
+</app-classic-quiz-status>

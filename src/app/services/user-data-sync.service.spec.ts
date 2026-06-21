@@ -55,6 +55,9 @@ describe('UserDataSyncService', () => {
               'first-game': '2026-05-19T18:00:00.000Z',
             }),
             mergeUnlocks: vi.fn(),
+            setAuthoritativeXpTotal: vi.fn(),
+            clearAuthoritativeXpTotal: vi.fn(),
+            resolveXpDisplayWithoutServer: vi.fn(),
           },
         },
         {
@@ -118,9 +121,67 @@ describe('UserDataSyncService', () => {
     expect(calls.some((call) => 'table' in call && call.table === 'personal_records')).toBe(false);
   });
 
+  it('refreshes authoritative xp total after syncing claims', async () => {
+    const calls: QueryCall[] = [];
+    const client = createClientStub(calls, {
+      xpEvents: [{ amount: 120 }, { amount: 80 }],
+    });
+    const setAuthoritativeXpTotal = vi.fn();
+
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: SupabaseAuthService,
+          useValue: {
+            user: signal(null),
+            getClient: vi.fn().mockResolvedValue(client),
+          },
+        },
+        {
+          provide: PersonalRecordsService,
+          useValue: {
+            snapshot: signal({}),
+            mergeRecords: vi.fn(),
+          },
+        },
+        {
+          provide: AchievementsService,
+          useValue: {
+            snapshot: signal({}),
+            mergeUnlocks: vi.fn(),
+            setAuthoritativeXpTotal,
+            clearAuthoritativeXpTotal: vi.fn(),
+            resolveXpDisplayWithoutServer: vi.fn(),
+          },
+        },
+        {
+          provide: DailyChallengeService,
+          useValue: {
+            snapshot: signal({}),
+            mergeRemoteCompletions: vi.fn(),
+          },
+        },
+        {
+          provide: SpeedrunRecordsService,
+          useValue: {
+            mergeBestForUser: vi.fn(),
+            mergeSplitBestsForUser: vi.fn(),
+          },
+        },
+      ],
+    });
+    const service = TestBed.inject(UserDataSyncService) as unknown as {
+      uploadAll(client: SupabaseClient, userId: string): Promise<void>;
+    };
+
+    await service.uploadAll(client, 'user-1');
+
+    expect(setAuthoritativeXpTotal).toHaveBeenCalledWith(200);
+  });
+
   it('resets remote records before clearing the local snapshot', async () => {
     const calls: QueryCall[] = [];
-    const client = createClientStub(calls, '2026-06-11T10:00:00.000Z');
+    const client = createClientStub(calls, { rpcData: '2026-06-11T10:00:00.000Z' });
     const user = signal<{ id: string } | null>(null);
     const clearAll = vi.fn();
 
@@ -147,6 +208,8 @@ describe('UserDataSyncService', () => {
           useValue: {
             snapshot: signal({}),
             mergeUnlocks: vi.fn(),
+            clearAuthoritativeXpTotal: vi.fn(),
+            resolveXpDisplayWithoutServer: vi.fn(),
           },
         },
         {
@@ -179,10 +242,31 @@ describe('UserDataSyncService', () => {
   });
 });
 
-function createClientStub(calls: QueryCall[], rpcData: unknown = []): SupabaseClient {
+type ClientStubOptions = {
+  rpcData?: unknown;
+  xpEvents?: Array<{ amount: number }>;
+};
+
+function createClientStub(
+  calls: QueryCall[],
+  options: ClientStubOptions | unknown = {},
+): SupabaseClient {
+  const config: ClientStubOptions =
+    options !== null && typeof options === 'object' && !Array.isArray(options)
+      ? (options as ClientStubOptions)
+      : { rpcData: options };
+  const rpcData = config.rpcData ?? [];
+  const xpEvents = config.xpEvents ?? [];
+
+  const createFilterBuilder = (data: unknown) => ({
+    eq: () => Promise.resolve({ data, error: null }),
+    maybeSingle: () => Promise.resolve({ data, error: null }),
+  });
+
   return {
     from(table: string) {
       return {
+        select: () => createFilterBuilder(table === 'xp_events' ? xpEvents : rpcData),
         upsert: async (rows: Record<string, unknown>[], options: { onConflict: string }) => {
           calls.push({ type: 'upsert', table, rows, options });
           return { error: null };

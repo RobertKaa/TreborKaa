@@ -3,7 +3,8 @@
 }
 
 .prompt-flag,
-.prompt-shape {
+.prompt-shape,
+.prompt-capital {
   margin: 16px 0 12px;
   padding: clamp(12px, 1.6vw, 18px);
   border: 1px solid var(--line-soft);
@@ -47,6 +48,33 @@
   vector-effect: non-scaling-stroke;
 }
 
+.prompt-capital {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  min-height: clamp(150px, 28dvh, 240px);
+  padding: clamp(18px, 2.4vw, 28px);
+  text-align: center;
+}
+
+.prompt-capital-label {
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--ds-font-mono);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.prompt-capital-name {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 900;
+  line-height: 1.05;
+}
+
 @media (max-width: 640px) {
   .prompt-flag {
     min-height: 170px;
@@ -56,6 +84,11 @@
   .prompt-shape {
     min-height: 188px;
     padding: 12px;
+  }
+
+  .prompt-capital {
+    min-height: 140px;
+    padding: 16px;
   }
 
   .prompt-shape svg {

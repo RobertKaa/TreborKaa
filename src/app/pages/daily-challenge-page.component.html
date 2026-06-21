@@ -9,8 +9,37 @@
       <span>{{
         dailyChallenge().completed ? i18n.t('daily.completed') : i18n.t('daily.reward')
       }}</span>
-      <strong>{{ i18n.t('home.dailyXp', { xp: dailyChallenge().xp }) }}</strong>
+      <strong>{{ i18n.t('daily.totalReward', { xp: dailyChallenge().totalXp }) }}</strong>
       <small>{{ i18n.t('daily.dateLabel', { date: dailyChallenge().dateKey }) }}</small>
+      <div class="daily-streak-panel">
+        <span
+          class="daily-streak-chip"
+          [class.has-bonus]="dailyChallenge().streakBonus > 0"
+        >
+          @if (dailyChallenge().streakBonus > 0) {
+            {{
+              dailyChallenge().completed
+                ? i18n.t('daily.streakChipWithBonus', {
+                    days: dailyChallenge().streak,
+                    bonus: dailyChallenge().streakBonus,
+                  })
+                : i18n.t('daily.streakChipWithBonusNext', {
+                    days: dailyChallenge().streak,
+                    bonus: dailyChallenge().streakBonus,
+                  })
+            }}
+          } @else {
+            {{ i18n.t('daily.streakChip', { days: dailyChallenge().streak }) }}
+          }
+        </span>
+        @if (dailyChallenge().streakBroken) {
+          <p class="daily-streak-broken">{{ i18n.t('daily.streakBroken') }}</p>
+        } @else if (!dailyChallenge().completed && dailyChallenge().streak <= 1) {
+          <p class="daily-streak-hint">
+            {{ i18n.t('daily.streakMaxHint', { bonus: 1000 }) }}
+          </p>
+        }
+      </div>
     </aside>
   </section>
 
@@ -120,7 +149,10 @@
       <p class="question-help">
         {{
           rewardEarned()
-            ? i18n.t('daily.successText', { xp: dailyChallenge().xp })
+            ? i18n.t('daily.successText', {
+                xp: dailyChallenge().totalXp,
+                days: dailyChallenge().streak,
+              })
             : i18n.t('daily.successReplayText')
         }}
       </p>

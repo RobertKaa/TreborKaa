@@ -8,6 +8,7 @@ import { DailyChallengeService } from './daily-challenge.service';
 import { PersonalRecordsService } from './personal-records.service';
 import { SpeedrunRecordsService } from './speedrun-records.service';
 import { SupabaseAuthService } from './supabase-auth.service';
+import { sumXpEventAmounts } from './xp-progression';
 
 type RemoteRecord = {
   record_key: string;
@@ -43,6 +44,10 @@ type RemoteSpeedrunSplitBest = {
   completed_at: string;
 };
 
+type RemoteXpEvent = {
+  amount: number;
+};
+
 type RemoteDailyChallengeXp = {
   source_id: string;
   awarded_at: string;
@@ -75,6 +80,7 @@ export class UserDataSyncService {
         this.initializedUserId = null;
         this.personalRecordsResetAt = null;
         this.claimedDailyChallengeKeys.clear();
+        this.achievements.clearAuthoritativeXpTotal();
         this.clearRetry();
         return;
       }
@@ -108,10 +114,18 @@ export class UserDataSyncService {
       await this.pullRemoteData(client, userId);
       this.isApplyingRemote = false;
       await this.uploadAll(client, userId);
+      await this.refreshAuthoritativeXp(client, userId);
       this.initializedUserId = userId;
     } catch (error) {
       this.isApplyingRemote = false;
       logger.warn('Unable to synchronize user data', error);
+      try {
+        const client = await this.auth.getClient();
+        await this.refreshAuthoritativeXp(client, userId);
+      } catch (refreshError) {
+        logger.warn('Unable to load authoritative XP', refreshError);
+        this.achievements.resolveXpDisplayWithoutServer();
+      }
       this.scheduleRetry(userId);
     }
   }
@@ -184,6 +198,25 @@ export class UserDataSyncService {
     }
 
     await this.syncAuthoritativeXp(client);
+    await this.refreshAuthoritativeXp(client, userId);
+  }
+
+  private async refreshAuthoritativeXp(client: SupabaseClient, userId: string): Promise<void> {
+    const total = await this.fetchAuthoritativeXpTotal(client, userId);
+    this.achievements.setAuthoritativeXpTotal(total);
+  }
+
+  private async fetchAuthoritativeXpTotal(client: SupabaseClient, userId: string): Promise<number> {
+    const { data, error } = await client
+      .from('xp_events')
+      .select('amount')
+      .eq('user_id', userId);
+
+    if (error) {
+      throw error;
+    }
+
+    return sumXpEventAmounts((data ?? []) as RemoteXpEvent[]);
   }
 
   private async syncAuthoritativeXp(client: SupabaseClient): Promise<void> {

@@ -18,7 +18,7 @@ type HomeGameView = GameCatalogItem & {
 };
 
 type ClassicGameFamilyView = {
-  id: 'country-to-flag' | 'flag-to-country' | 'shape-to-country';
+  id: 'country-to-flag' | 'flag-to-country' | 'shape-to-country' | 'capital-to-country';
   labelKey: string;
   descriptionKey: string;
   game: HomeGameView;
@@ -60,6 +60,12 @@ const CLASSIC_FAMILIES: Array<{
     labelKey: 'home.classicShapeToCountry',
     descriptionKey: 'home.classicShapeToCountry.description',
     gameId: 'classic-shape-to-country-easy',
+  },
+  {
+    id: 'capital-to-country',
+    labelKey: 'home.classicCapitalToCountry',
+    descriptionKey: 'home.classicCapitalToCountry.description',
+    gameId: 'classic-capital-to-country-easy',
   },
 ];
 

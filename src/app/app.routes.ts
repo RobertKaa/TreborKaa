@@ -76,6 +76,17 @@ export const routes: Routes = [
     redirectTo: '/jeu/formes-vers-pays',
   },
   {
+    path: 'jeu/capitale-vers-pays',
+    loadComponent: () =>
+      import('./pages/capital-to-country-game-page.component').then(
+        (m) => m.CapitalToCountryGamePageComponent,
+      ),
+  },
+  {
+    path: 'jeu/capitale-vers-pays/:difficulty',
+    redirectTo: '/jeu/capitale-vers-pays',
+  },
+  {
     path: 'jeu/reconstruction-drapeau',
     loadComponent: () =>
       import('./pages/flag-rebuild-game-page.component').then(

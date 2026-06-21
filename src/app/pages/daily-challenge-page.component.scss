@@ -51,6 +51,49 @@
   color: var(--success);
 }
 
+.daily-streak-panel {
+  display: grid;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.daily-streak-chip {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 6px 10px;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  color: var(--ink);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.daily-streak-chip.has-bonus {
+  color: var(--ds-color-gold-300);
+  border-color: color-mix(in srgb, var(--ds-color-gold-300) 42%, var(--line-soft));
+  background: color-mix(in srgb, var(--ds-color-gold-300) 10%, transparent);
+}
+
+.daily-streak-broken,
+.daily-streak-hint {
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.45;
+  text-transform: none;
+}
+
+.daily-streak-broken {
+  color: color-mix(in srgb, var(--danger) 78%, var(--ink-soft));
+}
+
 .daily-intro-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

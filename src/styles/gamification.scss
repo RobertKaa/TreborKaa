@@ -280,4 +280,206 @@ app-root {
   app-root .xp-feedback-meter span {
     transition: none;
   }
+
+  app-root .xp-progress-meter span {
+    transition: none;
+  }
+
+  app-root .xp-progress-skeleton {
+    animation: none;
+  }
+}
+
+app-root {
+  --xp-level-bar-track: color-mix(in srgb, var(--line) 72%, transparent);
+  --xp-level-bar-fill: var(--success);
+  --xp-level-bar-radius: 999px;
+
+  .xp-progress-header {
+    display: none;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    max-width: min(200px, 40vw);
+    padding: 5px 8px;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--ds-radius-md);
+    background: color-mix(in srgb, var(--surface) 72%, transparent);
+  }
+
+  .xp-progress-header--loading {
+    pointer-events: none;
+  }
+
+  .xp-progress-crest {
+    --tier-badge: url('/data/img/level-grey.png');
+    --badge-text: var(--ds-text-primary-light);
+    --badge-shadow: none;
+
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+    padding: 9px;
+    background: var(--tier-badge) center / contain no-repeat;
+  }
+
+  .xp-progress-crest[data-tier='green'] {
+    --tier-badge: url('/data/img/level-green.png');
+  }
+
+  .xp-progress-crest[data-tier='blue'] {
+    --tier-badge: url('/data/img/level-blue.png');
+  }
+
+  .xp-progress-crest[data-tier='violet'] {
+    --tier-badge: url('/data/img/level-purple.png');
+  }
+
+  .xp-progress-crest[data-tier='red'] {
+    --tier-badge: url('/data/img/level-red.png');
+  }
+
+  .xp-progress-crest[data-tier='gold'] {
+    --tier-badge: url('/data/img/level-gold.png');
+  }
+
+  .xp-progress-crest strong {
+    color: var(--badge-text);
+    font-family: var(--ds-font-mono);
+    font-size: 0.92rem;
+    font-weight: 900;
+    line-height: 1;
+    text-shadow: var(--badge-shadow);
+  }
+
+  &.theme-dark .xp-progress-crest {
+    --badge-text: var(--ds-color-white);
+    --badge-shadow: 0 1px 2px rgba(2, 9, 19, 0.82), 0 0 8px rgba(2, 9, 19, 0.6);
+  }
+
+  .xp-progress-body {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .xp-progress-goal {
+    margin: 0;
+  }
+
+  .xp-progress-meter {
+    overflow: hidden;
+    height: 6px;
+    border-radius: var(--xp-level-bar-radius);
+    background: var(--xp-level-bar-track);
+  }
+
+  .xp-progress-meter span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--xp-level-bar-fill);
+    transition: width 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .xp-progress-goal {
+    overflow: hidden;
+    color: var(--ink-soft);
+    font-size: 0.62rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .xp-progress-skeleton {
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--line-soft) 88%, transparent) 0%,
+      color-mix(in srgb, var(--line) 62%, transparent) 50%,
+      color-mix(in srgb, var(--line-soft) 88%, transparent) 100%
+    );
+    background-size: 200% 100%;
+    animation: xp-progress-skeleton 1.2s ease-in-out infinite;
+  }
+
+  .xp-progress-skeleton--badge {
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+  }
+
+  .xp-progress-skeleton--meter {
+    height: 6px;
+  }
+
+  .xp-progress-skeleton--goal {
+    width: 72%;
+    height: 0.62rem;
+  }
+}
+
+@keyframes xp-progress-skeleton {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (max-width: 640px) {
+  app-root .xp-progress-header {
+    display: flex;
+  }
+}
+
+@media (min-width: 1180px) {
+  app-root .xp-progress-header {
+    display: grid !important;
+    place-items: center;
+    justify-self: center;
+    gap: 6px !important;
+    width: 112px !important;
+    min-height: clamp(88px, 12vh, 108px) !important;
+    max-width: none !important;
+    margin-top: auto;
+    padding: 8px 8px !important;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--ds-radius-lg) !important;
+    background: var(--sidebar-link-bg) !important;
+  }
+
+  app-root .xp-progress-crest {
+    width: 52px !important;
+    height: 56px !important;
+    padding: 13px !important;
+  }
+
+  app-root .xp-progress-crest strong {
+    font-size: 1.28rem !important;
+  }
+
+  app-root .xp-progress-body {
+    width: 100%;
+    gap: 4px !important;
+  }
+
+  app-root .xp-progress-goal {
+    text-align: center;
+    white-space: normal;
+    font-size: 0.6rem !important;
+  }
+
+  app-root .xp-progress-skeleton--badge {
+    width: 52px !important;
+    height: 56px !important;
+  }
 }

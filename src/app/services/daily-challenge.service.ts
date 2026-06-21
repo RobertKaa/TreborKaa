@@ -3,7 +3,13 @@ import { CountryShape } from '../models/country-shape';
 import { CountrySummary } from '../models/country-summary';
 import { shuffleItems } from '../utils/array-utils';
 import { BrowserStorageService } from './browser-storage.service';
-import { DAILY_CHALLENGE_XP } from './xp-progression';
+import {
+  DAILY_CHALLENGE_XP,
+  calculateDailyStreakBonus,
+  computeDailyChallengeStreak,
+  computeDailyChallengeStreakAfterCompletion,
+  isDailyChallengeStreakBroken,
+} from './xp-progression';
 
 export type DailyChallengeMode =
   | 'country-to-flag'
@@ -14,6 +20,10 @@ export type DailyChallengeMode =
 export type DailyChallengeState = {
   dateKey: string;
   xp: number;
+  streakBonus: number;
+  totalXp: number;
+  streak: number;
+  streakBroken: boolean;
   questionCount: number;
   completed: boolean;
   completedAt: string | null;
@@ -51,17 +61,34 @@ export class DailyChallengeService {
   readonly today = computed<DailyChallengeState>(() => {
     const dateKey = this.todayDateKey();
     const completedAt = this.completions()[dateKey] ?? null;
+    const completedDateKeys = Object.keys(this.completions());
+    const completed = completedAt !== null;
+    const streak = computeDailyChallengeStreak(completedDateKeys, dateKey);
+    const streakBonus = completed
+      ? calculateDailyStreakBonus(streak)
+      : calculateDailyStreakBonus(
+          computeDailyChallengeStreakAfterCompletion(completedDateKeys, dateKey),
+        );
 
     return {
       dateKey,
       xp: DAILY_CHALLENGE_XP,
+      streakBonus,
+      totalXp: DAILY_CHALLENGE_XP + streakBonus,
+      streak: completed ? streak : computeDailyChallengeStreakAfterCompletion(completedDateKeys, dateKey),
+      streakBroken: isDailyChallengeStreakBroken(completedDateKeys, dateKey),
       questionCount: DAILY_CHALLENGE_QUESTION_COUNT,
-      completed: completedAt !== null,
+      completed,
       completedAt,
     };
   });
 
-  readonly bonusXp = computed(() => Object.keys(this.completions()).length * DAILY_CHALLENGE_XP);
+  readonly bonusXp = computed(() =>
+    Object.keys(this.completions()).reduce((sum, dateKey) => {
+      const streak = computeDailyChallengeStreak(Object.keys(this.completions()), dateKey);
+      return sum + DAILY_CHALLENGE_XP + calculateDailyStreakBonus(streak);
+    }, 0),
+  );
 
   buildQuestionPlan(
     countries: CountrySummary[],

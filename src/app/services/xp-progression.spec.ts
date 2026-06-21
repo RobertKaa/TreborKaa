@@ -1,4 +1,11 @@
 import {
+  DAILY_CHALLENGE_XP,
+  DAILY_STREAK_BONUS_MAX,
+  calculateDailyStreakBonus,
+  computeDailyChallengeStreak,
+  computeDailyChallengeStreakAfterCompletion,
+  isDailyChallengeStreakBroken,
+  shiftUtcDateKey,
   SPEEDRUN_CLEAN_RUN_XP,
   SPEEDRUN_COMPLETION_XP,
   SPEEDRUN_SPLIT_BEST_XP,
@@ -11,6 +18,7 @@ import {
   getLevelTier,
   getXpRequiredForNextLevel,
   resolveLevelFromXp,
+  sumXpEventAmounts,
 } from './xp-progression';
 import { SPEEDRUN_SPLITS, buildSpeedrunResult, buildSpeedrunSplitResult } from '../models/speedrun';
 
@@ -77,5 +85,29 @@ describe('xp progression', () => {
         SPEEDRUN_CLEAN_RUN_XP +
         SPEEDRUN_SPLIT_BEST_XP,
     );
+  });
+
+  it('sums xp event amounts while ignoring null values', () => {
+    expect(sumXpEventAmounts([{ amount: 120 }, { amount: 80 }, { amount: null }])).toBe(200);
+    expect(sumXpEventAmounts([])).toBe(0);
+  });
+
+  it('scales daily streak bonus up to the configured cap', () => {
+    expect(calculateDailyStreakBonus(1)).toBe(0);
+    expect(calculateDailyStreakBonus(2)).toBeGreaterThan(0);
+    expect(calculateDailyStreakBonus(30)).toBe(DAILY_STREAK_BONUS_MAX);
+    expect(calculateDailyStreakBonus(60)).toBe(DAILY_STREAK_BONUS_MAX);
+  });
+
+  it('counts consecutive UTC daily challenge streaks and detects breaks', () => {
+    const completions = ['2026-05-20', '2026-05-21', '2026-05-22'];
+
+    expect(computeDailyChallengeStreak(completions, '2026-05-22')).toBe(3);
+    expect(computeDailyChallengeStreak(completions, '2026-05-23')).toBe(3);
+    expect(computeDailyChallengeStreakAfterCompletion(['2026-05-21'], '2026-05-22')).toBe(2);
+    expect(computeDailyChallengeStreak(['2026-05-20', '2026-05-22'], '2026-05-22')).toBe(1);
+    expect(isDailyChallengeStreakBroken(completions, '2026-05-23')).toBe(false);
+    expect(isDailyChallengeStreakBroken(['2026-05-20'], '2026-05-22')).toBe(true);
+    expect(shiftUtcDateKey('2026-05-22', -1)).toBe('2026-05-21');
   });
 });

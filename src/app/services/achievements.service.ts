@@ -64,8 +64,11 @@ export type AchievementState = AchievementDefinition & {
   displayDescriptionKey: string;
 };
 
+export type GamificationXpSource = 'local' | 'server';
+
 export type GamificationProfile = {
   xp: number;
+  xpSource: GamificationXpSource;
   level: number;
   levelTier: LevelTierId;
   levelTierLabelKey: string;
@@ -86,6 +89,7 @@ const CLASSIC_RECORD_KEYS: GameRecordKey[] = [
   'country-to-flag-easy',
   'flag-to-country-easy',
   'shape-to-country-easy',
+  'capital-to-country-easy',
 ];
 const VISUAL_RECORD_KEYS: GameRecordKey[] = ['find-the-error', 'pixel-flag', 'flag-rebuild'];
 const DIFFICULTY_ORDER: Record<AchievementDifficulty, number> = {
@@ -275,6 +279,8 @@ export class AchievementsService {
   private readonly auth = inject(SupabaseAuthService);
   private readonly unlocked = signal<AchievementStore>(this.loadFromStorage());
   private readonly latestUnlockSignal = signal<AchievementState | null>(null);
+  private readonly authoritativeXpTotal = signal<number | null>(null);
+  private readonly authoritativeXpLoaded = signal(false);
 
   readonly unlockedCount = computed(() => Object.keys(this.unlocked()).length);
   readonly achievements = computed<AchievementState[]>(() =>
@@ -304,6 +310,7 @@ export class AchievementsService {
   readonly latestUnlock = this.latestUnlockSignal.asReadonly();
   readonly snapshot = computed(() => this.unlocked());
   readonly profile = computed<GamificationProfile>(() => this.buildProfile());
+  readonly xpProfileReady = computed(() => !this.auth.user() || this.authoritativeXpLoaded());
 
   constructor() {
     effect(() => {
@@ -532,6 +539,26 @@ export class AchievementsService {
     };
   }
 
+  setAuthoritativeXpTotal(total: number | null): void {
+    if (total === null) {
+      this.authoritativeXpTotal.set(null);
+      this.authoritativeXpLoaded.set(false);
+      return;
+    }
+
+    this.authoritativeXpTotal.set(Math.max(0, Math.round(total)));
+    this.authoritativeXpLoaded.set(true);
+  }
+
+  clearAuthoritativeXpTotal(): void {
+    this.authoritativeXpTotal.set(null);
+    this.authoritativeXpLoaded.set(false);
+  }
+
+  resolveXpDisplayWithoutServer(): void {
+    this.authoritativeXpLoaded.set(true);
+  }
+
   private buildProfile(): GamificationProfile {
     const records = Object.entries(this.recordsService.snapshot())
       .filter(([key, entry]) => ENABLED_RECORD_KEYS.has(key as GameRecordKey) && !!entry)
@@ -541,9 +568,12 @@ export class AchievementsService {
       .reduce((sum, achievement) => sum + achievement.points, 0);
     const recordXp = records.reduce((sum, record) => sum + calculateRecordXp(record), 0);
     const speedrunPoints = this.buildSpeedrunXp();
-    const xp = Math.round(
+    const localXp = Math.round(
       recordXp + achievementPoints + speedrunPoints + this.dailyChallengeService.bonusXp(),
     );
+    const authoritativeXp = this.authoritativeXpTotal();
+    const xp = authoritativeXp ?? localXp;
+    const xpSource: GamificationXpSource = authoritativeXp === null ? 'local' : 'server';
     const levelProgress = buildLevelProgress(xp);
     const nextAchievement =
       this.achievements().find((achievement) => !achievement.unlocked && !achievement.hidden) ??
@@ -552,6 +582,7 @@ export class AchievementsService {
 
     return {
       xp,
+      xpSource,
       level: levelProgress.level,
       levelTier: levelProgress.tier.id,
       levelTierLabelKey: levelProgress.tier.labelKey,

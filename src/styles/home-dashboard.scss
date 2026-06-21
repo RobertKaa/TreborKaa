@@ -365,6 +365,42 @@ app-home-page {
     background: rgba(82, 217, 139, 0.14);
   }
 
+  .daily-streak-teaser {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  .daily-streak-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 4px 10px;
+    border: 1px solid rgba(139, 92, 246, 0.34);
+    border-radius: 999px;
+    color: #d8c4ff;
+    background: rgba(139, 92, 246, 0.12);
+    font-family: var(--ds-font-mono);
+    font-size: 0.74rem;
+    font-weight: 700;
+  }
+
+  .daily-streak-chip.has-bonus {
+    color: #ffd98a;
+    border-color: rgba(255, 196, 86, 0.42);
+    background: rgba(255, 196, 86, 0.12);
+  }
+
+  .daily-streak-broken {
+    flex: 1 1 100%;
+    margin: 0;
+    color: rgba(255, 196, 196, 0.92);
+    font-size: 0.82rem;
+    line-height: 1.4;
+  }
+
   .progress-card {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
@@ -376,7 +412,7 @@ app-home-page {
 
   .progress-main {
     display: grid;
-    grid-template-columns: minmax(126px, 156px) minmax(0, 1fr);
+    grid-template-columns: minmax(148px, 184px) minmax(0, 1fr);
     gap: clamp(16px, 2vw, 24px);
     align-items: center;
     min-height: 0;
@@ -393,11 +429,11 @@ app-home-page {
     justify-self: center;
     align-content: center;
     justify-items: center;
-    gap: 5px;
-    width: clamp(126px, 8.2vw, 156px);
+    gap: 4px;
+    width: clamp(148px, 10vw, 184px);
     min-height: auto;
     aspect-ratio: 1;
-    padding: 30px 20px 25px;
+    padding: 38px 10px 32px;
     border: 0;
     background: var(--tier-badge) center / contain no-repeat;
   }
@@ -424,11 +460,14 @@ app-home-page {
 
   .level-crest small {
     color: var(--badge-muted);
-    max-width: 11ch;
-    font-size: 0.82rem;
+    max-width: 100%;
+    padding-inline: 2px;
+    font-size: 0.76rem;
     font-weight: 800;
-    line-height: 1;
+    line-height: 1.08;
+    letter-spacing: 0.01em;
     text-align: center;
+    text-wrap: balance;
     text-shadow: var(--badge-text-shadow);
   }
 
@@ -473,14 +512,14 @@ app-home-page {
   .progress-track {
     height: 9px;
     overflow: hidden;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--line) 72%, transparent);
+    border-radius: var(--xp-level-bar-radius);
+    background: var(--xp-level-bar-track);
   }
 
   .progress-fill {
     height: 100%;
     border-radius: inherit;
-    background: var(--success);
+    background: var(--xp-level-bar-fill);
   }
 
   .metric-row {
@@ -601,6 +640,12 @@ app-home-page {
     --mode-bg-dark: url('/data/img/background-f-p.png');
     --mode-bg-light: url('/data/img/background-f-p-light.png');
     --mode-bg-position: 58% 50%;
+  }
+
+  .mode-card-capital {
+    --mode-bg-dark: url('/data/img/background-capital.png');
+    --mode-bg-light: url('/data/img/background-capital-light.png');
+    --mode-bg-position: 57% 50%;
   }
 
   .mode-card-r {
@@ -790,13 +835,13 @@ app-home-page {
     }
 
     .progress-main {
-      grid-template-columns: minmax(112px, 128px) minmax(0, 1fr);
+      grid-template-columns: minmax(136px, 160px) minmax(0, 1fr);
       gap: 12px;
     }
 
     .level-crest {
-      width: clamp(112px, 8vw, 128px);
-      padding: 26px 16px 22px;
+      width: clamp(136px, 9vw, 160px);
+      padding: 34px 8px 28px;
     }
 
     .level-crest strong {
@@ -804,8 +849,7 @@ app-home-page {
     }
 
     .level-crest small {
-      max-width: 10ch;
-      font-size: 0.7rem;
+      font-size: 0.72rem;
     }
 
     .xp-total {
@@ -918,6 +962,15 @@ app-home-page {
     .metric-row,
     .mode-grid {
       grid-template-columns: 1fr;
+    }
+
+    .level-crest {
+      width: min(184px, 52vw);
+      padding: 38px 10px 32px;
+    }
+
+    .level-crest small {
+      font-size: 0.78rem;
     }
 
     .mode-card {

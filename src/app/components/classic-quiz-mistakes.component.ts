@@ -4,7 +4,7 @@ import { I18nService } from '../services/i18n.service';
 import { CountryShapeRenderData, DEFAULT_SHAPE_VIEWBOX } from '../utils/country-shape-viewbox';
 import { ClassicQuizError } from '../pages/classic-quiz-page.base';
 
-export type ClassicQuizMistakePrompt = 'country' | 'flag' | 'shape';
+export type ClassicQuizMistakePrompt = 'country' | 'flag' | 'shape' | 'capital';
 
 @Component({
   selector: 'app-classic-quiz-mistakes',
@@ -38,6 +38,9 @@ export type ClassicQuizMistakePrompt = 'country' | 'flag' | 'shape';
                 <p class="mistake-country">{{ countryName(error.promptCountry) }}</p>
               }
             }
+            @case ('capital') {
+              <p class="mistake-country">{{ capitalName(error.promptCountry) }}</p>
+            }
             @default {
               <p class="mistake-country">{{ countryName(error.promptCountry) }}</p>
             }
@@ -65,6 +68,10 @@ export class ClassicQuizMistakesComponent {
 
   protected countryName(country: CountrySummary): string {
     return this.i18n.countryName(country);
+  }
+
+  protected capitalName(country: CountrySummary): string {
+    return this.i18n.capitalName(country);
   }
 
   protected shapePath(country: CountrySummary): string | null {

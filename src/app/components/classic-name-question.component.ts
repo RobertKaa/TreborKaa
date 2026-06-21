@@ -5,7 +5,7 @@ import { DEFAULT_SHAPE_VIEWBOX } from '../utils/country-shape-viewbox';
 import { ClassicNameOptionsComponent } from './classic-name-options.component';
 
 type OptionState = 'default' | 'correct' | 'wrong';
-export type ClassicNameQuestionPrompt = 'flag' | 'shape';
+export type ClassicNameQuestionPrompt = 'flag' | 'shape' | 'capital';
 
 @Component({
   selector: 'app-classic-name-question',
@@ -27,7 +27,7 @@ export type ClassicNameQuestionPrompt = 'flag' | 'shape';
                 "
               />
             </div>
-          } @else {
+          } @else if (prompt === 'shape') {
             <div class="prompt-shape">
               @if (shapePath) {
                 <svg
@@ -42,11 +42,18 @@ export type ClassicNameQuestionPrompt = 'flag' | 'shape';
                 <p class="question-help">{{ i18n.t('common.loadingGame') }}</p>
               }
             </div>
+          } @else {
+            <div class="prompt-capital" role="group" [attr.aria-label]="i18n.t('classic.capitalAria')">
+              <p class="prompt-capital-label">{{ i18n.t('classic.promptCapitalLabel') }}</p>
+              <p class="prompt-capital-name">{{ capitalName(currentQuestion) }}</p>
+            </div>
           }
 
-          <p class="question-help">
-            {{ i18n.t('classic.capital', { capital: capitalName(currentQuestion) }) }}
-          </p>
+          @if (prompt !== 'capital') {
+            <p class="question-help">
+              {{ i18n.t('classic.capital', { capital: capitalName(currentQuestion) }) }}
+            </p>
+          }
 
           <app-classic-name-options
             [options]="currentQuestion.options"

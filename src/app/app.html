@@ -2,13 +2,7 @@
   <header class="topbar-shell">
     <div class="topbar">
       <a class="brand" routerLink="/">Vexiio</a>
-      <div
-        class="topbar-level-badge"
-        [attr.data-tier]="profile().levelTier"
-        [attr.aria-label]="i18n.t('gamification.level', { level: profile().level })"
-      >
-        <strong>{{ profile().level }}</strong>
-      </div>
+      <app-xp-progress-header />
 
       <nav class="desktop-nav" [attr.aria-label]="i18n.t('menu.nav')">
         <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">

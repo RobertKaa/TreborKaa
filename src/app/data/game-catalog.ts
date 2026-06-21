@@ -4,6 +4,7 @@ export type GameId =
   | 'classic-country-to-flag-easy'
   | 'classic-flag-to-country-easy'
   | 'classic-shape-to-country-easy'
+  | 'classic-capital-to-country-easy'
   | 'flag-chrono'
   | 'find-the-error'
   | 'pixel-flag'
@@ -41,6 +42,14 @@ export const GAME_CATALOG: GameCatalogItem[] = [
     descriptionKey: 'home.classicShapeToCountry.description',
     route: ['/jeu/formes-vers-pays'],
     recordKeys: ['shape-to-country-easy'],
+    available: true
+  },
+  {
+    id: 'classic-capital-to-country-easy',
+    labelKey: 'home.classicCapitalToCountry',
+    descriptionKey: 'home.classicCapitalToCountry.description',
+    route: ['/jeu/capitale-vers-pays'],
+    recordKeys: ['capital-to-country-easy'],
     available: true
   },
   {

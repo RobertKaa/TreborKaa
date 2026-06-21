@@ -2,6 +2,7 @@ import { Component, OnDestroy, computed, effect, inject, signal } from '@angular
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { XpFeedbackToastComponent } from './components/xp-feedback-toast.component';
+import { XpProgressHeaderComponent } from './components/xp-progress-header.component';
 import { AppLanguage } from './data/i18n-translations';
 import { CountrySummary } from './models/country-summary';
 import { AchievementsService } from './services/achievements.service';
@@ -28,7 +29,7 @@ import type { ProfileAvatarKey } from './utils/profile-safety';
     '[class.mobile-landscape]': 'isMobileLandscape()',
     '[class.mobile-keyboard-open]': 'keyboardOffset() > 0',
   },
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, XpFeedbackToastComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, XpFeedbackToastComponent, XpProgressHeaderComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

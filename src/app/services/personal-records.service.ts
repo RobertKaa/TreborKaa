@@ -9,6 +9,7 @@ const VALID_RECORD_KEYS = new Set<GameRecordKey>([
   'country-to-flag-easy',
   'flag-to-country-easy',
   'shape-to-country-easy',
+  'capital-to-country-easy',
   'flag-rebuild',
   'find-the-error',
   'pixel-flag',

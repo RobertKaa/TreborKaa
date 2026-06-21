@@ -51,9 +51,34 @@
           {{
             dailyChallenge().completed
               ? i18n.t('home.dailyXpClaimed')
-              : i18n.t('home.dailyXp', { xp: dailyChallenge().xp })
+              : i18n.t('home.dailyXp', { xp: dailyChallenge().totalXp })
           }}
         </span>
+        <div class="daily-streak-teaser">
+          <span
+            class="daily-streak-chip"
+            [class.has-bonus]="dailyChallenge().streakBonus > 0"
+          >
+            @if (dailyChallenge().streakBonus > 0) {
+              {{
+                dailyChallenge().completed
+                  ? i18n.t('home.dailyStreakWithBonus', {
+                      days: dailyChallenge().streak,
+                      bonus: dailyChallenge().streakBonus,
+                    })
+                  : i18n.t('home.dailyStreakWithBonusNext', {
+                      days: dailyChallenge().streak,
+                      bonus: dailyChallenge().streakBonus,
+                    })
+              }}
+            } @else {
+              {{ i18n.t('home.dailyStreak', { days: dailyChallenge().streak }) }}
+            }
+          </span>
+          @if (dailyChallenge().streakBroken) {
+            <p class="daily-streak-broken">{{ i18n.t('daily.streakBroken') }}</p>
+          }
+        </div>
         <a class="featured-action ds-button is-primary" routerLink="/defi-du-jour">
           <span>{{
             dailyChallenge().completed ? i18n.t('home.dailyCompleted') : i18n.t('home.dailyCta')
@@ -122,6 +147,7 @@
             [class.mode-card-p-d]="family.id === 'country-to-flag'"
             [class.mode-card-d-p]="family.id === 'flag-to-country'"
             [class.mode-card-f-p]="family.id === 'shape-to-country'"
+            [class.mode-card-capital]="family.id === 'capital-to-country'"
           >
             <h3>{{ i18n.t(family.labelKey) }}</h3>
             <p class="game-desc">{{ i18n.t(family.descriptionKey) }}</p>

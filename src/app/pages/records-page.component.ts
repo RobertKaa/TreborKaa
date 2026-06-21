@@ -36,6 +36,7 @@ export class RecordsPageComponent {
     { key: 'country-to-flag-easy', route: '/jeu/pays-vers-drapeaux' },
     { key: 'flag-to-country-easy', route: '/jeu/drapeaux-vers-pays' },
     { key: 'shape-to-country-easy', route: '/jeu/formes-vers-pays' },
+    { key: 'capital-to-country-easy', route: '/jeu/capitale-vers-pays' },
     { key: 'chrono-flags', route: '/jeu/chrono-drapeaux' },
     { key: 'flag-rebuild', route: '/jeu/reconstruction-drapeau' },
     { key: 'find-the-error', route: '/jeu/trouver-erreur' },
@@ -139,7 +140,8 @@ export class RecordsPageComponent {
     if (
       key === 'country-to-flag-easy' ||
       key === 'flag-to-country-easy' ||
-      key === 'shape-to-country-easy'
+      key === 'shape-to-country-easy' ||
+      key === 'capital-to-country-easy'
     ) {
       return this.i18n.t('records.value.classic', { score: record.bestScore });
     }

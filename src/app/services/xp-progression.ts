@@ -3,6 +3,8 @@ import { SpeedrunSplitBest, SpeedrunUserRecord } from '../models/speedrun';
 
 export const MAX_LEVEL = 50;
 export const DAILY_CHALLENGE_XP = 250;
+export const DAILY_STREAK_BONUS_MAX = 1000;
+export const DAILY_STREAK_DAYS_TO_MAX = 30;
 export const SPEEDRUN_COMPLETION_XP = 350;
 export const SPEEDRUN_CLEAN_RUN_XP = 250;
 export const SPEEDRUN_SPLIT_BEST_XP = 90;
@@ -237,4 +239,78 @@ function getCompletionXpMultiplier(bestPercent: number): number {
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
+}
+
+export function sumXpEventAmounts(events: ReadonlyArray<{ amount: number | null }>): number {
+  return events.reduce((sum, event) => sum + Math.max(0, event.amount ?? 0), 0);
+}
+
+export function calculateDailyStreakBonus(streakDays: number): number {
+  if (streakDays <= 1) {
+    return 0;
+  }
+
+  const cappedStreak = Math.min(Math.floor(streakDays), DAILY_STREAK_DAYS_TO_MAX);
+  return Math.round(
+    ((cappedStreak - 1) / (DAILY_STREAK_DAYS_TO_MAX - 1)) * DAILY_STREAK_BONUS_MAX,
+  );
+}
+
+export function shiftUtcDateKey(dateKey: string, dayOffset: number): string {
+  const timestamp = Date.parse(`${dateKey}T00:00:00.000Z`);
+  if (!Number.isFinite(timestamp)) {
+    return dateKey;
+  }
+
+  return new Date(timestamp + dayOffset * 86_400_000).toISOString().slice(0, 10);
+}
+
+export function computeDailyChallengeStreak(
+  completedDateKeys: ReadonlyArray<string>,
+  referenceDateKey: string,
+): number {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(referenceDateKey)) {
+    return 0;
+  }
+
+  const completedDates = new Set(completedDateKeys);
+  let cursor = referenceDateKey;
+
+  if (!completedDates.has(cursor)) {
+    cursor = shiftUtcDateKey(referenceDateKey, -1);
+  }
+
+  let streak = 0;
+  while (completedDates.has(cursor)) {
+    streak += 1;
+    cursor = shiftUtcDateKey(cursor, -1);
+  }
+
+  return streak;
+}
+
+export function computeDailyChallengeStreakAfterCompletion(
+  completedDateKeys: ReadonlyArray<string>,
+  dateKey: string,
+): number {
+  if (completedDateKeys.includes(dateKey)) {
+    return computeDailyChallengeStreak(completedDateKeys, dateKey);
+  }
+
+  return computeDailyChallengeStreak([...completedDateKeys, dateKey], dateKey);
+}
+
+export function isDailyChallengeStreakBroken(
+  completedDateKeys: ReadonlyArray<string>,
+  referenceDateKey: string,
+): boolean {
+  if (completedDateKeys.length === 0 || completedDateKeys.includes(referenceDateKey)) {
+    return false;
+  }
+
+  if (computeDailyChallengeStreak(completedDateKeys, referenceDateKey) > 0) {
+    return false;
+  }
+
+  return completedDateKeys.some((dateKey) => dateKey < referenceDateKey);
 }
