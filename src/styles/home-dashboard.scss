@@ -17,8 +17,7 @@ app-home-page {
   }
 
   .eyebrow,
-  .mode-meta,
-  .games-summary {
+  .mode-meta {
     color: var(--accent-dark);
     font-family: var(--ds-font-mono);
     font-size: 0.72rem;
@@ -66,18 +65,14 @@ app-home-page {
 
   .featured-action,
   .ghost-action,
-  .play-link {
+  .mode-card .ds-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
     min-height: clamp(42px, 5.8vh, 52px);
     padding: 0 24px;
-    border: 1px solid color-mix(in srgb, var(--accent-strong) 72%, transparent);
     border-radius: var(--home-button-radius);
-    color: #120a02;
-    background: var(--accent);
-    box-shadow: none;
     font-weight: 900;
     line-height: 1;
     text-decoration: none;
@@ -334,9 +329,6 @@ app-home-page {
     align-self: end;
     width: max-content;
     margin-top: auto;
-    color: var(--ink);
-    border-color: var(--line);
-    background: color-mix(in srgb, var(--surface) 72%, transparent);
   }
 
   .teaser-card > * {
@@ -557,24 +549,6 @@ app-home-page {
     text-transform: uppercase;
   }
 
-  .games-summary {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0;
-    border: 0;
-    color: var(--ink-soft);
-    background: transparent;
-    letter-spacing: 0;
-    text-decoration: none;
-    text-transform: none;
-    cursor: pointer;
-  }
-
-  .games-summary:hover {
-    color: var(--accent-dark);
-  }
-
   .mode-grid {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -664,7 +638,7 @@ app-home-page {
     text-transform: none;
   }
 
-  .play-link {
+  .mode-card .ds-button {
     align-self: end;
     min-height: 42px;
     padding: 0 16px;
@@ -863,7 +837,7 @@ app-home-page {
 
     .featured-action,
     .ghost-action,
-    .play-link {
+    .mode-card .ds-button {
       min-height: 38px;
       padding: 0 16px;
       font-size: 0.84rem;
@@ -940,7 +914,7 @@ app-home-page {
     }
 
     .card-action,
-    .play-link,
+    .mode-card .ds-button,
     .teaser-card .ghost-action {
       width: 100%;
     }

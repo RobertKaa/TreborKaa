@@ -8,43 +8,13 @@
 }
 
 .auth-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   gap: 8px;
   min-width: 0;
   max-width: min(260px, 48vw);
-  height: 44px;
   padding: 0 16px 0 12px;
-  border: 1px solid var(--line);
   border-radius: 16px;
-  color: var(--ink);
-  background: color-mix(in srgb, var(--surface) 82%, transparent);
-  font: inherit;
   font-size: 0.9rem;
   font-weight: 700;
-  cursor: pointer;
-  transition:
-    transform 180ms ease,
-    border-color 180ms ease,
-    background 180ms ease;
-}
-
-.auth-button:hover:not(:disabled) {
-  transform: translateY(-1px);
-  background: color-mix(in srgb, var(--surface-raise) 84%, transparent);
-  border-color: var(--accent-line);
-  box-shadow: var(--ds-shadow-gold);
-}
-
-.auth-button:focus-visible {
-  outline: 2px solid var(--accent-line-strong);
-  outline-offset: 2px;
-}
-
-.auth-button:disabled {
-  cursor: wait;
-  opacity: 0.72;
 }
 
 .google-mark,
@@ -333,6 +303,46 @@
 .profile-actions .ds-button {
   min-width: 0;
   width: 100%;
+}
+
+.profile-account-links {
+  display: grid;
+  gap: 6px;
+  padding-top: 10px;
+  margin-top: 4px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.profile-data-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 9px 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: 13px;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--surface) 52%, transparent);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    transform 140ms ease,
+    background 140ms ease,
+    color 140ms ease,
+    border-color 140ms ease;
+}
+
+.profile-data-link:hover {
+  transform: translateX(2px);
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+}
+
+.profile-data-help {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  line-height: 1.45;
 }
 
 @media (max-width: 640px) {

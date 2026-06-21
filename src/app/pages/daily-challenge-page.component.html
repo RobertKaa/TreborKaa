@@ -23,7 +23,7 @@
       </div>
       <button
         type="button"
-        class="primary-button"
+        class="ds-button is-primary"
         [disabled]="!isReady()"
         (click)="startChallenge()"
       >
@@ -43,7 +43,7 @@
           <div class="daily-run-actions">
             <span class="daily-progress-pill">{{ progressLabel() }}</span>
             <span class="daily-error-pill">{{ mistakeLabel() }}</span>
-            <button type="button" class="daily-quit-button" (click)="quitChallenge()">
+            <button type="button" class="ds-button is-ghost is-small daily-quit-button" (click)="quitChallenge()">
               {{ i18n.t('daily.quit') }}
             </button>
           </div>
@@ -125,8 +125,8 @@
         }}
       </p>
       <div class="summary-actions">
-        <a class="ghost-link" routerLink="/">{{ i18n.t('common.home') }}</a>
-        <button type="button" class="primary-button" (click)="restartChallenge()">
+        <a class="ds-button is-secondary" routerLink="/">{{ i18n.t('common.home') }}</a>
+        <button type="button" class="ds-button is-primary" (click)="restartChallenge()">
           {{ i18n.t('common.replay') }}
         </button>
       </div>
@@ -148,8 +148,8 @@
         </p>
       }
       <div class="summary-actions">
-        <a class="ghost-link" routerLink="/">{{ i18n.t('common.home') }}</a>
-        <button type="button" class="primary-button" (click)="restartChallenge()">
+        <a class="ds-button is-secondary" routerLink="/">{{ i18n.t('common.home') }}</a>
+        <button type="button" class="ds-button is-primary" (click)="restartChallenge()">
           {{ i18n.t('common.restart') }}
         </button>
       </div>

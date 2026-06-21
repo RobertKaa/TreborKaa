@@ -68,8 +68,11 @@ Les tokens semantiques appliques dans l'app shell sont mappes dans:
 
 ### Boutons
 
-- `primary`: action principale (degrade accent)
-- `secondary/ghost`: action secondaire sur surface
+Classes de base: `ds-button` + variante (`is-primary`, `is-secondary`, `is-ghost`, `is-danger`, `is-speedrun`).
+
+- `is-primary`: action principale (degrade accent)
+- `is-secondary` / `is-ghost`: action secondaire sur surface
+- `is-danger`: action destructive irreversible (suppression de compte, reinitialisation)
 - Toutes les actions de modale de fin doivent utiliser un vrai element bouton (`button`) pour rester homogene avec les autres controles.
 
 ### Cards
@@ -100,6 +103,12 @@ Implementation:
 
 ## Changelog DS
 
+- `2026-06-21`
+  - Migration globale des boutons vers `ds-button` + variantes (`is-primary`, `is-secondary`, `is-ghost`, `is-danger`, `is-speedrun`, `is-small`).
+  - Pages jeux, speedrun, records, defi du jour et header auth alignes sur le design system.
+  - Suppression des classes legacy `primary-button`, `secondary-button`, `danger-button`, `ghost-link`, `next-button`, `play-link`.
+  - Ajout de la variante bouton `ds-button is-danger` pour les actions destructives.
+  - Page confidentialite: boutons export/suppression/dialogue alignes sur `ds-button`.
 - `2026-04-26`
   - Refonte palette sombre (`fond` + `card`) avec contraste plus propre et teintes moins violettes.
   - Initialisation des tokens globaux dans `src/styles/design-system.css`.

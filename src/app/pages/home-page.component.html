@@ -110,12 +110,6 @@
       <div class="modes-head-title">
         <h2>{{ i18n.t('home.modesTitle') }}</h2>
       </div>
-      @if (hiddenGames().length > 0) {
-        <button type="button" class="games-summary ds-button is-ghost" (click)="toggleAllGames()">
-          {{ showAllGames() ? i18n.t('home.hideAllGames') : i18n.t('home.showAllGames') }}
-          <span aria-hidden="true">→</span>
-        </button>
-      }
     </div>
 
     <div class="mode-grid">
@@ -136,7 +130,7 @@
                 <small>{{ bestLine }}</small>
               </div>
             }
-            <a class="play-link card-action ds-button is-primary" [routerLink]="family.game.route">
+            <a class="card-action ds-button is-primary" [routerLink]="family.game.route">
               {{ family.game.hasInProgress ? i18n.t('home.resumeAction') : i18n.t('common.play') }}
             </a>
           </article>
@@ -161,7 +155,7 @@
               </div>
             }
             @if (game.available) {
-              <a class="play-link ds-button is-primary" [routerLink]="game.route">
+              <a class="ds-button is-primary" [routerLink]="game.route">
                 {{ game.hasInProgress ? i18n.t('home.resumeAction') : i18n.t('common.play') }}
               </a>
             }

@@ -7,7 +7,7 @@
     </div>
 
     @if (hasRecords()) {
-      <button type="button" class="reset-button" (click)="openResetDialog()">
+      <button type="button" class="ds-button is-secondary records-clear-button" (click)="openResetDialog()">
         {{ i18n.t('records.clear') }}
       </button>
     }
@@ -45,7 +45,7 @@
             <span [style.width.%]="strongest.record.bestPercent"></span>
           </div>
 
-          <a [routerLink]="strongest.route">
+          <a class="ds-button is-primary" [routerLink]="strongest.route">
             {{ i18n.t('records.replay') }}
             <span aria-hidden="true">→</span>
           </a>
@@ -104,7 +104,7 @@
             <p>{{ i18n.t('records.challenge.completeDescription') }}</p>
           }
         </div>
-        <a [routerLink]="challenge.route">{{ i18n.t('records.challenge.action') }}</a>
+        <a class="ds-button is-primary" [routerLink]="challenge.route">{{ i18n.t('records.challenge.action') }}</a>
       </section>
     }
 
@@ -133,7 +133,7 @@
               </span>
             </div>
             <a
-              class="record-action"
+              class="ds-icon-button record-action"
               [routerLink]="row.route"
               [attr.aria-label]="i18n.t('records.replayMode', { mode: row.label })"
             >
@@ -176,7 +176,7 @@
     <div class="dialog-actions">
       <button
         type="button"
-        class="secondary-button"
+        class="ds-button is-secondary"
         [disabled]="resetPending()"
         (click)="closeResetDialog()"
       >
@@ -184,7 +184,7 @@
       </button>
       <button
         type="button"
-        class="danger-button"
+        class="ds-button is-danger"
         [disabled]="resetPending()"
         (click)="confirmReset()"
       >

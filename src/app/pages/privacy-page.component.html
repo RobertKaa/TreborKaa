@@ -1,9 +1,18 @@
 <section class="privacy-page">
   <header class="privacy-hero ds-card">
-    <p class="section-kicker">{{ i18n.t('privacy.kicker') }}</p>
-    <h1>{{ i18n.t('privacy.title') }}</h1>
-    <p>{{ i18n.t('privacy.intro') }}</p>
-    <a class="ds-button is-secondary" routerLink="/">{{ i18n.t('common.backHome') }}</a>
+    <div class="privacy-hero-copy">
+      <p class="section-kicker">{{ i18n.t('privacy.kicker') }}</p>
+      <h1>{{ i18n.t('privacy.title') }}</h1>
+      <p>{{ i18n.t('privacy.intro') }}</p>
+    </div>
+    <div class="privacy-hero-actions">
+      @if (auth.isAuthenticated()) {
+        <a class="ds-button is-secondary privacy-jump-link" href="#donnees-compte">
+          {{ i18n.t('privacy.jumpToActions') }}
+        </a>
+      }
+      <a class="ds-button is-secondary" routerLink="/">{{ i18n.t('common.backHome') }}</a>
+    </div>
   </header>
 
   <div class="privacy-grid">
@@ -14,4 +23,104 @@
       </article>
     }
   </div>
+
+  <section
+    id="donnees-compte"
+    class="privacy-actions ds-card"
+    [attr.aria-label]="i18n.t('privacy.actionsTitle')"
+  >
+    <p class="section-kicker">{{ i18n.t('privacy.actionsKicker') }}</p>
+    <h2>{{ i18n.t('privacy.actionsTitle') }}</h2>
+    <p>{{ i18n.t('privacy.actionsIntro') }}</p>
+
+    @if (!auth.isAuthenticated()) {
+      <p class="privacy-guest-note">{{ i18n.t('privacy.signInRequired') }}</p>
+    } @else {
+      <div class="privacy-action-group">
+        <div class="privacy-action-copy">
+          <h3>{{ i18n.t('privacy.exportTitle') }}</h3>
+          <p>{{ i18n.t('privacy.exportDescription') }}</p>
+        </div>
+        <button
+          type="button"
+          class="ds-button is-secondary"
+          [disabled]="exportPending()"
+          (click)="exportData()"
+        >
+          {{ exportPending() ? i18n.t('privacy.exportPending') : i18n.t('privacy.exportAction') }}
+        </button>
+      </div>
+
+      @if (exportNotice()) {
+        <p class="privacy-notice" role="status">{{ exportNotice() }}</p>
+      }
+
+      @if (exportError()) {
+        <p class="privacy-error" role="alert">{{ exportError() }}</p>
+      }
+
+      <div class="privacy-action-group is-danger">
+        <div class="privacy-action-copy">
+          <h3>{{ i18n.t('privacy.deleteTitle') }}</h3>
+          <p>{{ i18n.t('privacy.deleteDescription') }}</p>
+        </div>
+        <button type="button" class="ds-button is-danger" (click)="openDeleteDialog()">
+          {{ i18n.t('privacy.deleteAction') }}
+        </button>
+      </div>
+    }
+  </section>
 </section>
+
+@if (showDeleteDialog()) {
+  <div class="privacy-dialog-backdrop" (click)="closeDeleteDialog()"></div>
+  <section
+    class="privacy-dialog ds-card"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="privacy-delete-title"
+  >
+    <p class="section-kicker">{{ i18n.t('privacy.deleteDialogKicker') }}</p>
+    <h2 id="privacy-delete-title">{{ i18n.t('privacy.deleteDialogTitle') }}</h2>
+    <p>{{ i18n.t('privacy.deleteDialogDescription') }}</p>
+
+    <label class="ds-field privacy-confirm-field">
+      <span>{{ i18n.t('privacy.deleteConfirmLabel') }}</span>
+      <input
+        type="text"
+        class="ds-input"
+        [value]="deleteConfirmation()"
+        [attr.placeholder]="deleteConfirmationPhrase"
+        [disabled]="deletePending()"
+        autocomplete="off"
+        spellcheck="false"
+        (input)="deleteConfirmation.set($any($event.target).value)"
+      />
+    </label>
+
+    @if (deleteError()) {
+      <p class="privacy-error" role="alert">{{ deleteError() }}</p>
+    }
+
+    <div class="privacy-dialog-actions">
+      <button
+        type="button"
+        class="ds-button is-secondary"
+        [disabled]="deletePending()"
+        (click)="closeDeleteDialog()"
+      >
+        {{ i18n.t('common.cancel') }}
+      </button>
+      <button
+        type="button"
+        class="ds-button is-danger"
+        [disabled]="deletePending() || deleteConfirmation().trim() !== deleteConfirmationPhrase"
+        (click)="confirmDeleteAccount()"
+      >
+        {{
+          deletePending() ? i18n.t('privacy.deletePending') : i18n.t('privacy.deleteConfirmAction')
+        }}
+      </button>
+    </div>
+  </section>
+}

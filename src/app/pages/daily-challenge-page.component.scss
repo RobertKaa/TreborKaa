@@ -85,8 +85,7 @@
 }
 
 .daily-progress-pill,
-.daily-error-pill,
-.daily-quit-button {
+.daily-error-pill {
   flex: 0 0 auto;
   padding: 8px 12px;
   border: 1px solid var(--line);
@@ -97,18 +96,15 @@
   font-weight: 800;
 }
 
+.daily-quit-button {
+  border-radius: 999px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
 .daily-error-pill {
   color: var(--ds-color-gold-300);
-}
-
-.daily-quit-button {
-  background: transparent;
-  cursor: pointer;
-}
-
-.daily-quit-button:hover {
-  border-color: var(--accent-line);
-  color: var(--accent-dark);
 }
 
 .prompt-flag,
@@ -202,7 +198,7 @@
     grid-template-columns: 1fr;
   }
 
-  .daily-intro-card .primary-button {
+  .daily-intro-card .ds-button {
     width: 100%;
   }
 }

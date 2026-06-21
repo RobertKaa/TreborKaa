@@ -48,13 +48,13 @@
             [disabled]="isLocked()"
             (input)="answer.set($any($event.target).value)"
           />
-          <button type="submit" class="primary-button" [disabled]="isLocked() || !answer().trim()">
+          <button type="submit" class="ds-button is-primary" [disabled]="isLocked() || !answer().trim()">
             {{ i18n.t('classic.pixel.submit') }}
           </button>
         </form>
       } @else {
         <div class="next-wrap">
-          <button #nextButton type="button" class="primary-button" (click)="goToNextRound()">
+          <button #nextButton type="button" class="ds-button is-primary" (click)="goToNextRound()">
             {{ i18n.t('common.next') }}
           </button>
         </div>
@@ -117,8 +117,8 @@
     </div>
 
     <div class="summary-actions">
-      <button type="button" class="ghost-link" routerLink="/">{{ i18n.t('common.home') }}</button>
-      <button type="button" class="primary-button" (click)="restartGame()">{{ i18n.t('common.restart') }}</button>
+      <button type="button" class="ds-button is-secondary" routerLink="/">{{ i18n.t('common.home') }}</button>
+      <button type="button" class="ds-button is-primary" (click)="restartGame()">{{ i18n.t('common.restart') }}</button>
     </div>
   </section>
 }

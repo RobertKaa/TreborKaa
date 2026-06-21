@@ -36,10 +36,10 @@ import { I18nService } from '../services/i18n.service';
       </div>
 
       <div class="summary-actions">
-        <button type="button" class="ghost-link ds-button is-secondary" routerLink="/">
+        <button type="button" class="ds-button is-secondary" routerLink="/">
           {{ i18n.t('common.home') }}
         </button>
-        <button type="button" class="next-button ds-button is-primary" (click)="restart.emit()">
+        <button type="button" class="ds-button is-primary" (click)="restart.emit()">
           {{ i18n.t('common.restart') }}
         </button>
       </div>

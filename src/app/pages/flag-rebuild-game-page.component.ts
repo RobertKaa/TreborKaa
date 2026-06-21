@@ -179,7 +179,7 @@ const REBUILD_SHARED_DECOY_COLORS = [
 const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
   {
     code: 'id',
-    nameFrench: 'IndonÃ©sie',
+    nameFrench: 'Indonésie',
     targetPattern: 'horizontal-stripes',
     patternOptions: ['horizontal-stripes', 'vertical-stripes', 'center-disc'],
     targetColors: ['#ff0000', '#ffffff'],
@@ -260,7 +260,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
   },
   {
     code: 'jm',
-    nameFrench: 'JamaÃ¯que',
+    nameFrench: 'Jamaïque',
     targetPattern: 'saltire',
     patternOptions: ['saltire', 'diagonal-rays', 'nordic-cross'],
     targetColors: ['#009b3a', '#fed100', '#000000'],
@@ -334,7 +334,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
   },
   {
     code: 'ci',
-    nameFrench: "CÃ´te d'Ivoire",
+    nameFrench: "Côte d'Ivoire",
     targetPattern: 'vertical-stripes',
     patternOptions: ['vertical-stripes', 'horizontal-stripes', 'left-band-horizontal'],
     targetColors: ['#f77f00', '#ffffff', '#009e60'],
@@ -352,7 +352,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
   },
   {
     code: 'bj',
-    nameFrench: 'BÃ©nin',
+    nameFrench: 'Bénin',
     targetPattern: 'left-band-horizontal',
     patternOptions: ['left-band-horizontal', 'horizontal-stripes', 'vertical-stripes'],
     targetColors: ['#008751', '#fcd116', '#e8112d'],
@@ -406,7 +406,7 @@ const EXTRA_FLAG_REBUILD_PUZZLES: FlagRebuildPuzzle[] = [
   },
   {
     code: 'vn',
-    nameFrench: 'ViÃªt Nam',
+    nameFrench: 'Viêt Nam',
     targetPattern: 'center-star',
     patternOptions: ['center-star', 'center-disc', 'horizontal-stripes-center-star'],
     targetColors: ['#da251d', '#ffff00'],

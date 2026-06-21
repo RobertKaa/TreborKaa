@@ -252,6 +252,13 @@
   background: transparent;
 }
 
+.ds-button.is-danger {
+  border-color: color-mix(in srgb, var(--ds-color-red-500) 72%, transparent);
+  color: #fff;
+  background: var(--ds-color-red-500);
+  box-shadow: none;
+}
+
 .ds-button.is-speedrun {
   border-color: var(--ds-border-gold);
   color: var(--ds-color-gold-300);
@@ -270,6 +277,11 @@
 .ds-chip:hover:not(:disabled) {
   transform: translateY(-1px);
   border-color: var(--accent-line);
+}
+
+.ds-button.is-danger:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--ds-color-red-500) 88%, transparent);
+  background: color-mix(in srgb, var(--ds-color-red-500) 88%, #000);
 }
 
 .ds-button:focus-visible,

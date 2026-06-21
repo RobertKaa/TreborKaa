@@ -42,36 +42,6 @@
   font-weight: 800;
 }
 
-/* Button utilities */
-.btn-base {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  min-height: 42px;
-  padding: 10px 16px;
-  border-radius: var(--ds-radius-md);
-  border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--surface) 86%, transparent);
-  color: var(--ink);
-  font-weight: 800;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.btn-accent {
-  @extend .btn-base;
-  color: #120a02;
-  border-color: color-mix(in srgb, var(--accent-strong) 72%, transparent);
-  background: var(--accent);
-}
-
-.btn-ghost {
-  @extend .btn-base;
-  border-color: transparent;
-  background: transparent;
-}
-
 /* Small utility mixin for responsive breakpoint (use where needed) */
 @mixin bp-max($px) {
   @media (max-width: $px) { @content; }
@@ -133,7 +103,7 @@ app-records-page {
   background: color-mix(in srgb, var(--danger) 8%, transparent);
 }
 
-.reset-dialog :is(.danger-button, .secondary-button):disabled {
+.reset-dialog .ds-button:disabled {
   cursor: wait;
   opacity: 0.58;
 }

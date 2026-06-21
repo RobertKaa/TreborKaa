@@ -67,7 +67,7 @@
       <div class="header-actions">
         <button
           type="button"
-          class="auth-button"
+          class="ds-button is-secondary auth-button"
           [class.signed-in]="isAuthenticated()"
           [disabled]="isAuthLoading()"
           [attr.aria-label]="
@@ -212,6 +212,19 @@
                   {{ i18n.t('auth.signOut') }}
                 </button>
               </div>
+
+              <div class="profile-account-links">
+                <a
+                  class="profile-data-link"
+                  routerLink="/confidentialite"
+                  fragment="donnees-compte"
+                  (click)="closeProfileMenu()"
+                >
+                  <span class="menu-icon icon-privacy" aria-hidden="true">&#9671;</span>
+                  <span>{{ i18n.t('profile.manageData') }}</span>
+                </a>
+                <p class="profile-data-help">{{ i18n.t('profile.manageDataHelp') }}</p>
+              </div>
             </form>
           </section>
         }
@@ -258,9 +271,9 @@
                 <span>{{ i18n.t('menu.speedrun') }}</span>
               </a>
               <div class="menu-settings-group">
-                <a routerLink="/confidentialite" (click)="closeMenu()">
+                <a routerLink="/confidentialite" fragment="donnees-compte" (click)="closeMenu()">
                   <span class="menu-icon icon-privacy" aria-hidden="true">&#9671;</span>
-                  <span>{{ i18n.t('privacy.title') }}</span>
+                  <span>{{ i18n.t('privacy.navLink') }}</span>
                 </a>
                 <button type="button" (click)="toggleTheme()">
                   @if (isDarkTheme()) {
@@ -326,6 +339,10 @@
         @if (isSettingsOpen()) {
           <section class="settings-panel" [attr.aria-label]="i18n.t('settings.title')">
             <p class="settings-panel-title">{{ i18n.t('settings.title') }}</p>
+            <a routerLink="/confidentialite" fragment="donnees-compte" (click)="closeSettings()">
+              <span class="menu-icon icon-privacy" aria-hidden="true">&#9671;</span>
+              <span>{{ i18n.t('privacy.navLink') }}</span>
+            </a>
             <button type="button" (click)="toggleTheme(); closeSettings()">
               @if (isDarkTheme()) {
                 <span class="menu-icon icon-theme">&#9728;</span>
@@ -363,9 +380,14 @@
         }
       </div>
 
-      <a class="sidebar-privacy-link" routerLink="/confidentialite" routerLinkActive="active">
+      <a
+        class="sidebar-privacy-link"
+        routerLink="/confidentialite"
+        fragment="donnees-compte"
+        routerLinkActive="active"
+      >
         <span class="menu-icon icon-privacy" aria-hidden="true">&#9671;</span>
-        <span>{{ i18n.t('privacy.title') }}</span>
+        <span>{{ i18n.t('privacy.navLink') }}</span>
       </a>
     </div>
   </header>

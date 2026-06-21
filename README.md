@@ -1,5 +1,7 @@
 # Vexiio
 
+Vexiio (FindTheFlag) is a French-first flag quiz and speedrun PWA built with Angular.
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.6.
 
 ## Development server
@@ -7,10 +9,20 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 To start a local development server, run:
 
 ```bash
-ng serve
+npm start
 ```
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+
+## PWA preview
+
+To build the production bundle and serve it locally with the service worker enabled:
+
+```bash
+npm run start:pwa
+```
+
+This runs a production build, then serves the output from `dist/` so you can test offline behaviour and install prompts.
 
 ## Code scaffolding
 
@@ -74,15 +86,21 @@ For GitHub Actions:
 - if those values are absent, the deploy workflow falls back to the public Vexiio Supabase URL and
   publishable key so the frontend build remains reproducible.
 
-## Running end-to-end tests
+## End-to-end tests (Playwright)
 
-For end-to-end (e2e) testing, run:
+Install browsers once:
 
 ```bash
-ng e2e
+npx playwright install
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Run the guest-flow and critical-path specs (home, speedrun, privacy):
+
+```bash
+npm run e2e
+```
+
+The Playwright config starts `ng serve` automatically. CI runs unit tests and Playwright on pull requests and pushes to `main` via `.github/workflows/ci.yml`.
 
 ## Additional Resources
 

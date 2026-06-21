@@ -23,7 +23,7 @@
           <div class="speedrun-hero-actions">
             <button
               type="button"
-              class="primary-button"
+              class="ds-button is-primary"
               [disabled]="!isReady() || isPreparing()"
               (click)="startRun()"
             >
@@ -76,9 +76,11 @@
             @for (entry of visibleLeaderboardEntries(); track entry.userId) {
               <li class="inline-leaderboard-entry">
                 <span class="leaderboard-rank">{{ rankLabel(entry) }}</span>
-                <span class="leaderboard-avatar initials" aria-hidden="true">
-                  {{ displayInitials(entry) }}
-                </span>
+                <img
+                  class="leaderboard-avatar"
+                  [src]="leaderboardAvatarUrl(entry)"
+                  [alt]="leaderboardAvatarAlt(entry)"
+                />
                 <span class="leaderboard-player">
                   <strong>{{ entry.displayName }}</strong>
                   <span>{{ formatLeaderboardMeta(entry) }}</span>
@@ -336,7 +338,7 @@
         <span>{{ i18n.t('speedrun.guestResult') }}</span>
         <button
           type="button"
-          class="primary-button inline-save-button"
+          class="ds-button is-primary inline-save-button"
           (click)="signInToSaveResult(finalResult)"
         >
           {{ i18n.t('speedrun.signInToSave') }}
@@ -373,8 +375,8 @@
     </div>
 
     <div class="summary-actions">
-      <a class="ghost-link" routerLink="/">{{ i18n.t('common.home') }}</a>
-      <button type="button" class="primary-button" (click)="restartRun()">
+      <a class="ds-button is-secondary" routerLink="/">{{ i18n.t('common.home') }}</a>
+      <button type="button" class="ds-button is-primary" (click)="restartRun()">
         {{ i18n.t('common.replay') }}
       </button>
     </div>

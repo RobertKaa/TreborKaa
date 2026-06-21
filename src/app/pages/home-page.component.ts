@@ -84,7 +84,6 @@ export class HomePageComponent {
   private readonly leaderboardService = inject(SpeedrunLeaderboardService);
   private readonly auth = inject(SupabaseAuthService);
   protected readonly homeSearch = signal('');
-  protected readonly showAllGames = signal(false);
   protected readonly achievements = this.achievementsService.achievements;
   protected readonly profile = this.achievementsService.profile;
   protected readonly unlockedCount = this.achievementsService.unlockedCount;
@@ -156,7 +155,7 @@ export class HomePageComponent {
   );
   protected readonly displayedSecondaryGames = computed(() => [
     ...this.visibleGames(),
-    ...(this.showAllGames() ? this.hiddenGames() : []),
+    ...this.hiddenGames(),
   ]);
   protected readonly visibleClassicFamilies = computed<ClassicGameFamilyView[]>(() => {
     const byId = new Map(this.games().map((game) => [game.id, game]));
@@ -177,10 +176,7 @@ export class HomePageComponent {
     }).filter((family): family is ClassicGameFamilyView => family !== null);
   });
   protected readonly displayedGamesCount = computed(
-    () =>
-      this.visibleClassicFamilies().length +
-      this.visibleGames().length +
-      (this.showAllGames() ? this.hiddenGames().length : 0),
+    () => this.visibleClassicFamilies().length + this.displayedSecondaryGames().length,
   );
   protected readonly hasDisplayedGames = computed(() => this.displayedGamesCount() > 0);
   protected readonly dailyChallenge = this.dailyChallengeService.today;
@@ -217,10 +213,6 @@ export class HomePageComponent {
 
   protected clearHomeSearch(): void {
     this.homeSearch.set('');
-  }
-
-  protected toggleAllGames(): void {
-    this.showAllGames.update((value) => !value);
   }
 
   protected recordLine(game: HomeGameView): string | null {

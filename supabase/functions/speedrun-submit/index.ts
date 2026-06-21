@@ -106,6 +106,9 @@ Deno.serve(async (request) => {
   const publicDisplayName =
     sanitizeProfileDisplayName(userData.user.user_metadata?.['vexiio_display_name']) ??
     buildPublicDisplayName(userData.user.id);
+  const publicAvatarKey = sanitizeProfileAvatarKey(
+    userData.user.user_metadata?.['vexiio_avatar_key'],
+  );
 
   const { error: updateError } = await client
     .from('speedrun_run_attempts')
@@ -137,6 +140,7 @@ Deno.serve(async (request) => {
         user_id: userData.user.id,
         attempt_id: attempt.id,
         display_name: publicDisplayName,
+        avatar_key: publicAvatarKey,
         total_time_ms: totalTimeMs,
         raw_time_ms: rawTimeMs,
         penalty_ms: penaltyMs,
@@ -322,6 +326,15 @@ async function rejectAttempt(
 function buildPublicDisplayName(userId: string): string {
   const suffix = userId.replaceAll('-', '').slice(0, 6).toUpperCase();
   return suffix ? `Joueur ${suffix}` : 'Joueur Vexiio';
+}
+
+function sanitizeProfileAvatarKey(value: unknown): string {
+  if (typeof value !== 'string') {
+    return 'fr';
+  }
+
+  const normalized = value.trim().toLowerCase();
+  return /^[a-z]{2}$/u.test(normalized) ? normalized : 'fr';
 }
 
 function sanitizeProfileDisplayName(value: unknown): string | null {

@@ -127,6 +127,7 @@ describe('SupabaseAuthService', () => {
       expect.objectContaining({
         user_id: 'user-id',
         display_name: 'Joueur USERID',
+        avatar_key: 'fr',
       }),
       { onConflict: 'user_id' },
     );
@@ -182,5 +183,13 @@ describe('SupabaseAuthService', () => {
       displayName: 'Capitaine Bleu',
       avatarKey: 'jp',
     });
+    expect(upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        user_id: 'user-id',
+        display_name: 'Capitaine Bleu',
+        avatar_key: 'jp',
+      }),
+      { onConflict: 'user_id' },
+    );
   });
 });

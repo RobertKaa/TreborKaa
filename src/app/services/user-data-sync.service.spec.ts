@@ -110,6 +110,11 @@ describe('UserDataSyncService', () => {
       name: 'claim_daily_challenge_xp',
       parameters: { p_date: '2026-06-11' },
     });
+    expect(calls).toContainEqual({
+      type: 'rpc',
+      name: 'sync_authoritative_xp_claims',
+      parameters: undefined,
+    });
     expect(calls.some((call) => 'table' in call && call.table === 'personal_records')).toBe(false);
   });
 

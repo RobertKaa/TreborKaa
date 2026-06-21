@@ -103,13 +103,10 @@
   background: var(--ds-color-green-400);
 }
 
-.featured-record > a {
+.featured-record > .ds-button {
   grid-column: 1 / -1;
   justify-self: start;
   gap: 18px;
-  color: #120a02;
-  border-color: color-mix(in srgb, var(--accent-strong) 72%, transparent);
-  background: var(--accent);
 }
 
 .player-profile {
@@ -196,7 +193,7 @@
   font-size: 0.82rem;
 }
 
-.next-target > a {
+.next-target > .ds-button {
   white-space: nowrap;
 }
 
@@ -316,16 +313,6 @@
   margin-top: 22px;
 }
 
-.danger-button {
-  color: #fff;
-  border-color: var(--danger);
-  background: var(--danger);
-}
-
-.secondary-button {
-  background: var(--surface);
-}
-
 @media (max-width: 1050px) {
   .record-spotlight {
     grid-template-columns: 1fr;
@@ -359,11 +346,11 @@
   }
 
   .featured-progress,
-  .featured-record > a {
+  .featured-record > .ds-button {
     grid-column: 1;
   }
 
-  .featured-record > a {
+  .featured-record > .ds-button {
     width: 100%;
   }
 
@@ -376,7 +363,7 @@
     padding-inline: 4px;
   }
 
-  .next-target > a {
+  .next-target > .ds-button {
     grid-column: 1 / -1;
     width: 100%;
   }

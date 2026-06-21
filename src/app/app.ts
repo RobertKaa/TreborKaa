@@ -8,6 +8,7 @@ import { AchievementsService } from './services/achievements.service';
 import { BrowserStorageService } from './services/browser-storage.service';
 import { CountriesService } from './services/countries.service';
 import { I18nService } from './services/i18n.service';
+import { SpeedrunLeaderboardService } from './services/speedrun-leaderboard.service';
 import { SupabaseAuthService } from './services/supabase-auth.service';
 import { UserDataSyncService } from './services/user-data-sync.service';
 import { XpFeedbackService, XpFeedbackSnapshot } from './services/xp-feedback.service';
@@ -34,6 +35,7 @@ import type { ProfileAvatarKey } from './utils/profile-safety';
 export class App implements OnDestroy {
   protected readonly i18n = inject(I18nService);
   private readonly auth = inject(SupabaseAuthService);
+  private readonly leaderboard = inject(SpeedrunLeaderboardService);
   private readonly userDataSync = inject(UserDataSyncService);
   private readonly achievementsService = inject(AchievementsService);
   private readonly xpFeedback = inject(XpFeedbackService);
@@ -297,6 +299,7 @@ export class App implements OnDestroy {
       });
       this.profileFormName.set(displayName);
       this.profileFormNotice.set('profile.saved');
+      void this.leaderboard.refresh();
     } catch (error) {
       const message = error instanceof Error ? error.message : '';
       this.profileFormError.set(message.startsWith('profile.') ? message : 'profile.error.saveFailed');

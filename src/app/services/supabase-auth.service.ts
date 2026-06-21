@@ -120,7 +120,7 @@ export class SupabaseAuthService {
     };
 
     this.applyUserToCurrentSession(nextUser);
-    void this.syncUserProfile(nextUser);
+    await this.syncUserProfile(nextUser);
   }
 
   getClient(): Promise<SupabaseClient> {
@@ -255,6 +255,7 @@ export class SupabaseAuthService {
       {
         user_id: profile.id,
         display_name: this.readCustomDisplayName(user) ?? buildDefaultPublicDisplayName(profile.id),
+        avatar_key: profile.avatarKey,
         locale,
       },
       { onConflict: 'user_id' },

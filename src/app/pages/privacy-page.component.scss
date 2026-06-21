@@ -13,9 +13,27 @@
 }
 
 .privacy-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(16px, 3vw, 32px);
+}
+
+.privacy-hero-copy {
   display: grid;
   gap: 14px;
-  max-width: 980px;
+  flex: 1 1 280px;
+  min-width: 0;
+  max-width: 760px;
+}
+
+.privacy-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex: 0 0 auto;
 }
 
 .privacy-hero h1,
@@ -33,15 +51,13 @@
 
 .privacy-hero p,
 .privacy-card p {
-  max-width: 760px;
   color: var(--ink-soft);
   font-size: 1rem;
   line-height: 1.65;
 }
 
-.privacy-hero .ds-button {
-  width: fit-content;
-  margin-top: 8px;
+.privacy-card p {
+  max-width: 760px;
 }
 
 .privacy-grid {
@@ -66,7 +82,118 @@
     grid-template-columns: 1fr;
   }
 
-  .privacy-hero .ds-button {
+  .privacy-hero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .privacy-hero-copy {
+    max-width: none;
+  }
+
+  .privacy-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+
+  .privacy-hero-actions .ds-button {
     width: 100%;
   }
+
+  .privacy-action-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .privacy-action-group .ds-button {
+    width: 100%;
+  }
+
+  .privacy-dialog-actions {
+    flex-direction: column;
+  }
+
+  .privacy-dialog-actions .ds-button {
+    width: 100%;
+  }
+}
+
+.privacy-actions {
+  display: grid;
+  gap: 16px;
+  scroll-margin-top: 24px;
+}
+
+.privacy-actions h2,
+.privacy-actions h3,
+.privacy-actions p {
+  margin: 0;
+}
+
+.privacy-actions h2 {
+  color: var(--ink);
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+}
+
+.privacy-actions h3 {
+  color: var(--ink);
+  font-size: 1.15rem;
+}
+
+.privacy-action-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.privacy-action-copy {
+  display: grid;
+  gap: 8px;
+  max-width: 760px;
+}
+
+.privacy-action-copy p,
+.privacy-guest-note,
+.privacy-notice,
+.privacy-error {
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+.privacy-error {
+  color: var(--danger, #b42318);
+}
+
+.privacy-notice {
+  color: var(--success, #027a48);
+}
+
+.privacy-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(15 23 42 / 45%);
+  z-index: 40;
+}
+
+.privacy-dialog {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 41;
+  width: min(92vw, 560px);
+  max-height: min(88vh, 720px);
+  overflow: auto;
+  transform: translate(-50%, -50%);
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+}
+
+.privacy-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }

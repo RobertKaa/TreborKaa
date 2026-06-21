@@ -182,6 +182,16 @@ export class UserDataSyncService {
         logger.warn('Unable to push user data:', this.describeError(result.reason));
       }
     }
+
+    await this.syncAuthoritativeXp(client);
+  }
+
+  private async syncAuthoritativeXp(client: SupabaseClient): Promise<void> {
+    const { error } = await client.rpc('sync_authoritative_xp_claims');
+
+    if (error) {
+      throw error;
+    }
   }
 
   private async fetchRecords(client: SupabaseClient, userId: string): Promise<RemoteRecord[]> {

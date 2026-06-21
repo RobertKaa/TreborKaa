@@ -72,54 +72,35 @@ app-records-page {
     margin-top: 10px;
   }
 
-  .reset-button,
-  .secondary-button,
-  .danger-button,
-  .featured-record > a,
-  .next-target > a,
+  .records-clear-button,
+  .featured-record > .ds-button,
+  .next-target > .ds-button,
   .record-action {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 42px;
-    border: 1px solid var(--line);
-    border-radius: var(--ds-radius-md);
-    color: var(--ink);
-    background: transparent;
-    font: inherit;
+    gap: 12px;
     font-weight: 800;
     text-decoration: none;
-    cursor: pointer;
-    transition:
-      transform var(--ds-transition-fast),
-      border-color var(--ds-transition-fast),
-      background var(--ds-transition-fast);
   }
 
-  .reset-button,
-  .secondary-button,
-  .danger-button,
-  .featured-record > a,
-  .next-target > a {
+  .records-clear-button,
+  .featured-record > .ds-button,
+  .next-target > .ds-button {
     padding: 10px 16px;
   }
 
-  .reset-button {
+  .records-clear-button {
     color: var(--danger);
     border-color: color-mix(in srgb, var(--danger) 48%, var(--line));
+    background: transparent;
   }
 
-  .reset-button:hover,
-  .secondary-button:hover,
-  .danger-button:hover,
-  .featured-record > a:hover,
-  .next-target > a:hover,
-  .record-action:hover {
-    transform: translateY(-1px);
-  }
-
-  .reset-button:hover {
+  .records-clear-button:hover:not(:disabled) {
     background: color-mix(in srgb, var(--danger) 8%, transparent);
+  }
+
+  .featured-record > .ds-button:hover:not(:disabled),
+  .next-target > .ds-button:hover:not(:disabled),
+  .record-action:hover:not(:disabled) {
+    transform: translateY(-1px);
   }
 
   @media (max-width: 640px) {
@@ -132,7 +113,7 @@ app-records-page {
       flex-direction: column;
     }
 
-    .reset-button {
+    .records-clear-button {
       width: 100%;
     }
   }

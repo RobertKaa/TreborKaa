@@ -33,6 +33,7 @@ import { SpeedrunRunSubmissionService } from '../services/speedrun-run-submissio
 import { SupabaseAuthService } from '../services/supabase-auth.service';
 import { shuffleItems } from '../utils/array-utils';
 import { DEFAULT_SHAPE_VIEWBOX, buildCountryShapeLookup } from '../utils/country-shape-viewbox';
+import { profileAvatarImageUrl } from '../utils/profile-safety';
 
 type SpeedrunState = 'intro' | 'countdown' | 'running' | 'finished';
 type SpeedrunRankingState = 'idle' | 'local' | 'pending' | 'accepted' | 'failed';
@@ -192,9 +193,20 @@ export class SpeedrunPageComponent implements OnDestroy {
     const previous = this.splitResults().at(-1);
     return previous ? this.getSplitDeltaLabel(previous) : this.i18n.t('common.none');
   });
-  protected readonly topLeaderboardEntries = computed(() =>
-    this.leaderboard.entries().slice(0, SPEEDRUN_LEADERBOARD_LIMIT),
-  );
+  protected readonly topLeaderboardEntries = computed(() => {
+    const authProfile = this.auth.profile();
+    return this.leaderboard.entries().slice(0, SPEEDRUN_LEADERBOARD_LIMIT).map((entry) => {
+      if (!authProfile || entry.userId !== authProfile.id) {
+        return entry;
+      }
+
+      return {
+        ...entry,
+        displayName: authProfile.displayName,
+        avatarKey: authProfile.avatarKey,
+      };
+    });
+  });
   protected readonly filteredLeaderboardEntries = computed(() => {
     const search = this.normalizeSearch(this.leaderboardSearch());
     const entries = this.topLeaderboardEntries();
@@ -424,16 +436,12 @@ export class SpeedrunPageComponent implements OnDestroy {
     return rank === -1 ? '-' : `#${rank + 1}`;
   }
 
-  protected displayInitials(entry: SpeedrunLeaderboardEntry): string {
-    const initials = entry.displayName
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part) => part.charAt(0).toLocaleUpperCase(this.i18n.locale()))
-      .join('');
+  protected leaderboardAvatarUrl(entry: SpeedrunLeaderboardEntry): string {
+    return profileAvatarImageUrl(entry.avatarKey);
+  }
 
-    return initials || '?';
+  protected leaderboardAvatarAlt(entry: SpeedrunLeaderboardEntry): string {
+    return this.i18n.t('profile.avatarSelected') + ` - ${entry.displayName}`;
   }
 
   protected formatLeaderboardMeta(entry: SpeedrunLeaderboardEntry): string {
