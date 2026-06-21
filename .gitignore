@@ -38,6 +38,8 @@ yarn-error.log
 testem.log
 /typings
 __screenshots__/
+/test-results/
+/playwright-report/
 dev-server*.log
 /\.env.local
 /\.env*.local

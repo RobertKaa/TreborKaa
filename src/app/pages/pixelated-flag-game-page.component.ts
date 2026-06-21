@@ -9,6 +9,7 @@ import { CountriesService } from '../services/countries.service';
 import { GameProgressService } from '../services/game-progress.service';
 import { I18nService } from '../services/i18n.service';
 import { PersonalRecordsService } from '../services/personal-records.service';
+import { matchesCountryName } from '../utils/country-name-match';
 
 type PixelatedError = {
   country: CountrySummary;
@@ -187,10 +188,7 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
       return;
     }
 
-    const normalizedAnswer = this.normalize(rawAnswer);
-    const acceptedAnswers = new Set([this.normalize(country.nameFrench), this.normalize(country.nameEnglish)]);
-
-    if (acceptedAnswers.has(normalizedAnswer)) {
+    if (matchesCountryName(rawAnswer, country, { pool: this.countryPool() })) {
       const gained = this.pointsForCurrentTry();
       this.score.update((score) => score + gained);
       this.solvedCount.update((count) => count + 1);
@@ -388,16 +386,6 @@ export class PixelatedFlagGamePageComponent implements AfterViewInit {
     image.src = src;
     this.imageCache.set(src, image);
     return image;
-  }
-
-  private normalize(value: string): string {
-    return value
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
   }
 
   private drawShiftedPixels(

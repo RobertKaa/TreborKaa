@@ -24,6 +24,14 @@ describe('PixelatedFlagGamePageComponent', () => {
       capitalEnglish: 'Berlin',
       capitalFrench: 'Berlin',
       flagUrl: 'https://example.com/de.png'
+    },
+    {
+      code: 'ci',
+      nameEnglish: "Côte d'Ivoire",
+      nameFrench: "Côte d'Ivoire",
+      capitalEnglish: 'Yamoussoukro',
+      capitalFrench: 'Yamoussoukro',
+      flagUrl: 'https://example.com/ci.png'
     }
   ];
 
@@ -57,6 +65,7 @@ describe('PixelatedFlagGamePageComponent', () => {
     (component as any).isLoading.set(false);
     (component as any).isLocked.set(false);
     (component as any).isComplete.set(false);
+    (component as any).countryPool.set(countriesMock);
     (component as any).currentCountry.set(currentCountry);
     (component as any).answer.set('France');
 
@@ -67,11 +76,35 @@ describe('PixelatedFlagGamePageComponent', () => {
     expect((component as any).score()).toBeGreaterThan(0);
   });
 
+  it('accepts minor typos and answers without accents', () => {
+    (component as any).isLoading.set(false);
+    (component as any).isLocked.set(false);
+    (component as any).isComplete.set(false);
+    (component as any).countryPool.set(countriesMock);
+    (component as any).currentCountry.set(countriesMock[1]);
+    (component as any).answer.set('Allemangne');
+
+    (component as any).submitAnswer();
+
+    expect((component as any).roundResult()).toBe('correct');
+
+    (component as any).roundResult.set(null);
+    (component as any).isLocked.set(false);
+    (component as any).attemptsUsed.set(0);
+    (component as any).currentCountry.set(countriesMock[2]);
+    (component as any).answer.set("Cote d'Ivoire");
+
+    (component as any).submitAnswer();
+
+    expect((component as any).roundResult()).toBe('correct');
+  });
+
   it('marks game complete after max wrong attempts', () => {
     const currentCountry = countriesMock[0];
     (component as any).isLoading.set(false);
     (component as any).isLocked.set(false);
     (component as any).isComplete.set(false);
+    (component as any).countryPool.set(countriesMock);
     (component as any).currentCountry.set(currentCountry);
     (component as any).attemptsUsed.set(4);
     (component as any).answer.set('mauvaise reponse');

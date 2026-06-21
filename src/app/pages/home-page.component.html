@@ -141,6 +141,8 @@
             class="mode-card ds-card"
             [class.mode-card-r]="game.id === 'flag-rebuild'"
             [class.mode-card-chrono]="game.id === 'flag-chrono'"
+            [class.mode-card-pixel]="game.id === 'pixel-flag'"
+            [class.mode-card-error]="game.id === 'find-the-error'"
           >
             <h3>{{ i18n.t(game.labelKey) }}</h3>
             <p class="game-desc">{{ i18n.t(game.descriptionKey) }}</p>

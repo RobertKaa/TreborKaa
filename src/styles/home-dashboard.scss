@@ -615,6 +615,18 @@ app-home-page {
     --mode-bg-position: 61% 50%;
   }
 
+  .mode-card-pixel {
+    --mode-bg-dark: url('/data/img/background-pixel.png');
+    --mode-bg-light: url('/data/img/background-pixel-light.png');
+    --mode-bg-position: 58% 50%;
+  }
+
+  .mode-card-error {
+    --mode-bg-dark: url('/data/img/background-error.png');
+    --mode-bg-light: url('/data/img/background-error-light.png');
+    --mode-bg-position: 57% 50%;
+  }
+
   .game-desc {
     min-height: 0;
     font-size: clamp(0.78rem, 0.82vw, 0.88rem);
